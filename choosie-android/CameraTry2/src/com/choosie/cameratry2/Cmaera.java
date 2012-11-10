@@ -59,7 +59,7 @@ public class Cmaera extends Activity implements OnClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
+		
 		// Button buttonPic = (Button) findViewById(R.id.buttonPic);
 
 		super.onCreate(savedInstanceState);
