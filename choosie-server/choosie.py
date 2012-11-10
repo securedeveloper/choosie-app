@@ -2,14 +2,13 @@ import logging
 import jinja2
 import os
 import webapp2
-
+import json
 from google.appengine.ext import db
 from google.appengine.api import images
 
 
 jinja_environment = jinja2.Environment(
     loader = jinja2.FileSystemLoader(os.path.dirname(__file__)))
-
 
 class ChoosiePost(db.Model):
   photo1 = db.BlobProperty()
@@ -19,10 +18,22 @@ class ChoosiePost(db.Model):
   question = db.StringProperty()
   date = db.DateTimeProperty(auto_now_add = True)
 
+  def to_json(self):
+    return {
+            "photo1": self.photo_path(1),
+            "photo2": self.photo_path(2),
+            "votes1": int(self.votes1),
+            "votes2": int(self.votes2),
+            "question": str(self.question),
+            "date": str(self.date)
+           }
 
-class MainPage(webapp2.RequestHandler):
+  def photo_path(self, which_photo):
+    return "/photo?which_photo=" + str(which_photo) + "&post_key=" + str(self.key())
+
+
+class MainHandler(webapp2.RequestHandler):
   def get(self):
-    print 'esh'
     self.response.headers['Content-Type'] = 'text/html'
 
     choosie_posts = db.GqlQuery('SELECT * '
@@ -47,10 +58,10 @@ class UploadHandler(webapp2.RequestHandler):
     choosie_post.question = self.request.get('question')
     choosie_post.votes1 = 0
     choosie_post.votes2 = 0
-    if self.request.get('photo1'):
-	  choosie_post.photo1 = db.Blob(self.shrinkImage(self.request.get('photo1')))
-    if self.request.get('photo2'):
+    if self.request.get('photo1') and self.request.get('photo2'):
+      choosie_post.photo1 = db.Blob(self.shrinkImage(self.request.get('photo1')))
       choosie_post.photo2 = db.Blob(self.shrinkImage(self.request.get('photo2')))
+
     choosie_post.put()
     self.redirect('/')
 
@@ -59,16 +70,14 @@ class ImageHandler(webapp2.RequestHandler):
   def get(self):
     choosie_post = db.get(self.request.get('post_key'))
     which_photo = int(self.request.get('which_photo'))
-    if which_photo == 1:
-      result = choosie_post.photo1
-    elif which_photo == 2:
-      result = choosie_post.photo2
+    result = {
+    1 : choosie_post.photo1,
+    2 : choosie_post.photo2
+    }[which_photo]
       
-    if result:
-      self.response.headers['Content-Type'] = 'image/png'
-      self.response.out.write(result)
-    else:
-      self.response.out.write('Image not found. :(')
+    self.response.headers['Content-Type'] = 'image/png'
+    self.response.out.write(result)
+   
 
 class VotesHandler(webapp2.RequestHandler):
   def get(self):
@@ -87,9 +96,24 @@ class VotesHandler(webapp2.RequestHandler):
   def post(self):
     get(self)
 
-app = webapp2.WSGIApplication([('/', MainPage),
+
+class FeedHandler(webapp2.RequestHandler):
+  def get(self):
+    choosie_posts = db.GqlQuery('SELECT * '
+                                'FROM ChoosiePost '
+                                'ORDER BY date DESC LIMIT 10')
+
+    feed = []
+    for choosie_post in choosie_posts:
+      feed.append(choosie_post.to_json())
+
+    self.response.out.write(json.dumps({"feed" : feed}))
+
+
+app = webapp2.WSGIApplication([('/', MainHandler),
                                ('/upload', UploadHandler),
                                ('/photo', ImageHandler),
-                               ('/vote', VotesHandler)
+                               ('/vote', VotesHandler),
+                               ('/feed', FeedHandler)
                                ],
                               debug=True)
