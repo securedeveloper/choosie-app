@@ -134,17 +134,17 @@ public class Cmaera extends Activity implements OnClickListener {
 			byte[] data1 = bos1.toByteArray();
 			// byte[] data2 = bos2.toByteArray();
 			HttpClient httpClient = new DefaultHttpClient();
-			HttpPost postRequest = new HttpPost(
-					"http://choosieapp.appspot.com/upload");
-			// ByteArrayBody bab1 = new ByteArrayBody(data1, "forest.jpg");
+			HttpPost postRequest = new HttpPost("http://choosieapp.appspot.com/upload");
+			ByteArrayBody bab1 = new ByteArrayBody(data1, "forest.jpg");
 			// ByteArrayBody bab2 = new ByteArrayBody(data1, "forest.jpg");
 			// File file= new File("/mnt/sdcard/forest.png");
 			// FileBody bin = new FileBody(file);
 
-			// MultipartEntity reqEntity1 = new
-			// MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-			// reqEntity1.addPart("photo1", bab1);
-			// reqEntity1.addPart("photoCaption", new StringBody("sfsdfsdf"));
+			 MultipartEntity reqEntity1 = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		
+			 reqEntity1.addPart("photo1", bab1);
+			 reqEntity1.addPart("photo2", new StringBody(""));
+			 reqEntity1.addPart("question", new StringBody("why like dis?"));
 			// postRequest.setEntity(reqEntity1);
 			/*
 			 * MultipartEntity reqEntity2 = new MultipartEntity(
@@ -153,17 +153,17 @@ public class Cmaera extends Activity implements OnClickListener {
 			 * reqEntity2.addPart("photoCaption", new StringBody("sfsdfsdf"));
 			 * postRequest.setEntity(reqEntity2);
 			 */
-
-			String data_string = Base64.encodeToString(data1, Base64.DEFAULT);
-
+ 
+			String data_string = com.choosie.cameratry2.Base64.encodeBytes(data1);
+ 
 			// Add your data
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			nameValuePairs.add(new BasicNameValuePair("photo1", new String(
-					data1)));
-			nameValuePairs.add(new BasicNameValuePair("photo2", ""));
+			/*List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			//nameValuePairs.add(new BasicNameValuePair("photo1", data1));
+			nameValuePairs.add(new BasicNameValuePair("photo2", data_string));
 			nameValuePairs
 					.add(new BasicNameValuePair("question", "ohhhh yeah"));
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));*/
+			postRequest.setEntity(reqEntity1);
 
 			// StrictMode.ThreadPolicy policy = new
 			// StrictMode.ThreadPolicy.Builder().permitAll().build();
