@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <style>
+      .chs-stream {
+	    border-style: solid;
+	    border-width: 1px;
+        float: left;
+        margin: 5px;
+        margin-top: 0px;
+		padding: 10px;
+		position: absolute;
+		    top: 8px;
+		    left: 5px;
+		    bottom: 5px;
+		    overflow: auto;
+      }
+      .chs-img {
+    	max-width: 375px;
+      }
+      .chs-or {
+    	width: 40px;
+        font-weight: bold;
+      }
+      .chs-post {
+	    border-style: solid;
+	    border-width: 1px;
+	    margin-bottom: -1px;
+	    border-color: black;
+		padding: 10px;
+      }
+      .chs-votes {
+		margin: 10px;
+	  }
+      .chs-vote:hover {
+	    background: #eee;
+	    color: #11a;
+      }
+      .chs-vote {
+		margin: 36px;
+		padding: 10px;
+      }
+      .chs-vote:link {
+	    color: black;
+	    text-decoration: none;
+      }
+     .vote {
+    	color: transparent;
+	  	margin: 20px;
+	  }
+ 	  .chs-vote:hover {
+		text-decoration: underline;
+	  }
+	  .chs-vote:hover .vote {
+		color: blue;
+	}
+      .chs-questcont {
+		margin: 20px;
+	}
+      .chs-question {
+	    border-style: solid;
+		padding: 10px;
+		margin: 10px;
+	    border-width: 1px;
+      }
+      .chs-form {
+	    border-style: solid;
+		padding: 10px;
+	    border-width: 1px;
+        margin: 5px;
+        margin-left: 550px;
+      }
+    </style>
+  </head>
+  <body>
+	<div class="chs-stream">
+    <h1>Choosie Public Feed</h1>
+      <div class="chs-feed">
+      {% for choosie_post in choosie_posts %}
+        <div class="chs-post">
+          <div>
+            <img class="chs-img" src="/photo1?image_id={{ choosie_post.key() }}"></img>
+            <span class="chs-or">or</span>
+            <img class="chs-img" src="/photo2?image_id={{ choosie_post.key() }}"></img>
+          </div>
+      <div class="chs-votes">
+      	<a class="chs-vote" href="/vote1?vote_id={{ choosie_post.key() }}">
+	       {{ choosie_post.votes1 }} votes
+	      <span class="vote">Vote!!</span>
+	    </a>
+      	<a class="chs-vote" href="/vote2?vote_id={{ choosie_post.key() }}">
+	      {{ choosie_post.votes2 }} votes
+	    <span class="vote">Vote!!</span>
+	    </a>
+      	</div>
+          <div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
+        </div>
+      {% endfor %}
+      </div>
+	</div>
+    <div class="chs-form">
+      <h1>Upload your dilemma</h1>
+      <form action="/upload" enctype="multipart/form-data" method="post">
+        <div>Photo 1: <input type="file" name="photo1" /></div>
+        <div>Photo 2: <input type="file" name="photo2" /></div>
+        <div>Question: <input type="text" name="question" /></div>
+        <div><input type="submit" value="Post!"></div>
+      </form>
+    </div>
+  </body>
+</html>
