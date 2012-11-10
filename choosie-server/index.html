@@ -78,16 +78,16 @@
       {% for choosie_post in choosie_posts %}
         <div class="chs-post">
           <div>
-            <img class="chs-img" src="/photo1?image_id={{ choosie_post.key() }}"></img>
+            <img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key() }}"></img>
             <span class="chs-or">or</span>
-            <img class="chs-img" src="/photo2?image_id={{ choosie_post.key() }}"></img>
+            <img class="chs-img" src="/photo?which_photo=2&post_key={{ choosie_post.key() }}"></img>
           </div>
       <div class="chs-votes">
-      	<a class="chs-vote" href="/vote1?vote_id={{ choosie_post.key() }}">
+      	<a class="chs-vote" href="/vote?which_photo=1&post_key={{ choosie_post.key() }}">
 	       {{ choosie_post.votes1 }} votes
 	      <span class="vote">Vote!!</span>
 	    </a>
-      	<a class="chs-vote" href="/vote2?vote_id={{ choosie_post.key() }}">
+      	<a class="chs-vote" href="/vote?which_photo=2&post_key={{ choosie_post.key() }}">
 	      {{ choosie_post.votes2 }} votes
 	    <span class="vote">Vote!!</span>
 	    </a>

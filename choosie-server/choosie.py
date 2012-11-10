@@ -35,8 +35,8 @@ class MainPage(webapp2.RequestHandler):
 
 
 class UploadHandler(webapp2.RequestHandler):
-  def shrinkImage(self, img):
-    img = images.Image(img)
+  def shrinkImage(self, data):
+    img = images.Image(data)
     img.resize(width=200, height=200)
     img.im_feeling_lucky()
     return img.execute_transforms(output_encoding=images.PNG)
@@ -47,7 +47,6 @@ class UploadHandler(webapp2.RequestHandler):
     choosie_post.votes1 = 0
     choosie_post.votes2 = 0
     if self.request.get('photo1'):
-	  logging.info(len(self.request.get('photo1')))
 	  choosie_post.photo1 = db.Blob(self.shrinkImage(self.request.get('photo1')))
     if self.request.get('photo2'):
       choosie_post.photo2 = db.Blob(self.shrinkImage(self.request.get('photo2')))
@@ -55,48 +54,41 @@ class UploadHandler(webapp2.RequestHandler):
     self.redirect('/')
 
 
-class ImageHandler1(webapp2.RequestHandler):
+class ImageHandler(webapp2.RequestHandler):
   def get(self):
-    choosie_post = db.get(self.request.get('image_id'))
-    if choosie_post.photo1:
+    choosie_post = db.get(self.request.get('post_key'))
+    which_photo = int(self.request.get('which_photo'))
+    if which_photo == 1:
+      result = choosie_post.photo1
+    elif which_photo == 2:
+      result = choosie_post.photo2
+      
+    if result:
       self.response.headers['Content-Type'] = 'image/png'
-      self.response.out.write(choosie_post.photo1)
+      self.response.out.write(result)
     else:
-	  self.response.out.write('Image not found. :(')
+      self.response.out.write('Image not found. :(')
 
-class ImageHandler2(webapp2.RequestHandler):
+class VotesHandler(webapp2.RequestHandler):
   def get(self):
-    choosie_post = db.get(self.request.get('image_id'))
-    if choosie_post.photo2:
-      self.response.headers['Content-Type'] = 'image/png'
-      self.response.out.write(choosie_post.photo2)
+    choosie_post = db.get(self.request.get('post_key'))
+    vote_for = int(self.request.get('which_photo'))
+    save_vote = true
+    if vote_for == 1:
+      choosie_post.votes1 += 1
+    elif vote_for == 2:
+      choosie_post.votes2 += 1
     else:
-	  self.response.out.write('Image not found. :(')
-
-class VotesHandler1(webapp2.RequestHandler):
-  def get(self):
-    choosie_post = db.get(self.request.get('vote_id'))
-    if not choosie_post.votes1:
-      choosie_post.votes1 = 0
-    choosie_post.votes1 += 1
-    choosie_post.put()
+      save_vote = false
+    if save_vote:
+      choosie_post.put()
     self.redirect('/')
+  def post(self):
+    get(self)
 
-class VotesHandler2(webapp2.RequestHandler):
-  def get(self):
-    choosie_post = db.get(self.request.get('vote_id'))
-    if not choosie_post.votes2:
-      choosie_post.votes2 = 0
-    choosie_post.votes2 += 1
-    choosie_post.put()
-    self.redirect('/')
-
-app = webapp2.WSGIApplication([
-             ('/', MainPage),
-             ('/upload', UploadHandler),
- 		     ('/photo1', ImageHandler1),
- 		     ('/photo2', ImageHandler2),
- 		     ('/vote1', VotesHandler1),
- 		     ('/vote2', VotesHandler2)
-         ],
-         debug=True)
+app = webapp2.WSGIApplication([('/', MainPage),
+                               ('/upload', UploadHandler),
+                               ('/photo', ImageHandler),
+                               ('/vote', VotesHandler)
+                               ],
+                              debug=True)
