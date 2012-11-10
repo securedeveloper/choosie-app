@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/photoHolder1"
+        android:layout_width="150sp"
+        android:layout_height="220sp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@android:drawable/picture_frame" />
+
+    <Button
+        android:id="@+id/buttonPic1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/photoHolder1"
+        android:layout_marginLeft="31dp"
+        android:layout_marginTop="19dp"
+        android:text="@string/photoButton1" />
+
+    <ImageView
+        android:id="@+id/photoHolder2"
+        android:layout_width="150sp"
+        android:layout_height="220sp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@android:drawable/picture_frame" />
+
+    <Button
+        android:id="@+id/buttonPic2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonPic1"
+        android:layout_alignBottom="@+id/buttonPic1"
+        android:layout_alignLeft="@+id/photoHolder2"
+        android:layout_marginLeft="15dp"
+        android:text="@string/buttonPic2" />
+
+    <Button
+        android:id="@+id/button_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/photoHolder2"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="22dp"
+        android:text="@string/button_submit" />
+
+    <EditText
+        android:id="@+id/test_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/button_submit"
+        android:layout_below="@+id/buttonPic1"
+        android:layout_marginTop="47dp"
+        android:ems="10"
+        android:text="@string/TextQuestion" >
+
+        <requestFocus />
+    </EditText>
+
+</RelativeLayout>
