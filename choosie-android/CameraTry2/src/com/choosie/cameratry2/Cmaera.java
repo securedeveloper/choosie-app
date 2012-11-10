@@ -1,51 +1,36 @@
 package com.choosie.cameratry2;
 
-import java.io.BufferedReader;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.ContentHandler;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.graphics.Matrix;
 import android.widget.Toast;
+
+import com.choosie.cameratry2.HttpHandler;
 import com.choosie.cameratry2.R;
 
 public class Cmaera extends Activity implements OnClickListener {
@@ -56,12 +41,10 @@ public class Cmaera extends Activity implements OnClickListener {
 	private Bitmap mPhotoTemp;
 	private Bitmap mPhoto1;
 	private Bitmap mPhoto2;
+	private String mQuestion;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		
-		// Button buttonPic = (Button) findViewById(R.id.buttonPic);
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
@@ -75,7 +58,9 @@ public class Cmaera extends Activity implements OnClickListener {
 
 		if (arg0.getId() == R.id.button_submit) {
 			try {
-				executeMultipartPost(mPhoto1, mPhoto2);
+				EditText questionText = (EditText) findViewById(R.id.question_text);
+				mQuestion = questionText.getText().toString();
+				executeMultipartPost(mPhoto1, mPhoto2, mQuestion);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.getMessage();
@@ -124,64 +109,33 @@ public class Cmaera extends Activity implements OnClickListener {
 		}
 	}
 
-	public void executeMultipartPost(Bitmap photo1, Bitmap photo2)
+	public void executeMultipartPost(Bitmap photo1, Bitmap photo2, String question)
 			throws Exception {
 		try {
 			ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
 			ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
 			photo1.compress(CompressFormat.JPEG, 75, bos1);
-			// photo2.compress(CompressFormat.JPEG, 75, bos2);
+			photo2.compress(CompressFormat.JPEG, 75, bos2);
 			byte[] data1 = bos1.toByteArray();
-			// byte[] data2 = bos2.toByteArray();
+			byte[] data2 = bos2.toByteArray();
 			HttpClient httpClient = new DefaultHttpClient();
-			HttpPost postRequest = new HttpPost("http://choosieapp.appspot.com/upload");
-			ByteArrayBody bab1 = new ByteArrayBody(data1, "forest.jpg");
-			// ByteArrayBody bab2 = new ByteArrayBody(data1, "forest.jpg");
-			// File file= new File("/mnt/sdcard/forest.png");
-			// FileBody bin = new FileBody(file);
+			HttpPost postRequest = new HttpPost(
+					"http://choosieapp.appspot.com/upload");
+			ByteArrayBody bab1 = new ByteArrayBody(data1, "photo1.jpg");
+			ByteArrayBody bab2 = new ByteArrayBody(data2, "photo2.jpg");
 
-			 MultipartEntity reqEntity1 = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-		
-			 reqEntity1.addPart("photo1", bab1);
-			 reqEntity1.addPart("photo2", new StringBody(""));
-			 reqEntity1.addPart("question", new StringBody("why like dis?"));
-			// postRequest.setEntity(reqEntity1);
-			/*
-			 * MultipartEntity reqEntity2 = new MultipartEntity(
-			 * HttpMultipartMode.BROWSER_COMPATIBLE);
-			 * reqEntity2.addPart("photo2", bab2);
-			 * reqEntity2.addPart("photoCaption", new StringBody("sfsdfsdf"));
-			 * postRequest.setEntity(reqEntity2);
-			 */
- 
-			String data_string = com.choosie.cameratry2.Base64.encodeBytes(data1);
- 
-			// Add your data
-			/*List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-			//nameValuePairs.add(new BasicNameValuePair("photo1", data1));
-			nameValuePairs.add(new BasicNameValuePair("photo2", data_string));
-			nameValuePairs
-					.add(new BasicNameValuePair("question", "ohhhh yeah"));
-			postRequest.setEntity(new UrlEncodedFormEntity(nameValuePairs));*/
-			postRequest.setEntity(reqEntity1);
+			MultipartEntity reqEntity = new MultipartEntity(
+					HttpMultipartMode.BROWSER_COMPATIBLE);
 
-			// StrictMode.ThreadPolicy policy = new
-			// StrictMode.ThreadPolicy.Builder().permitAll().build();
-			// StrictMode.setThreadPolicy(policy);
+			reqEntity.addPart("photo1", bab1);
+			reqEntity.addPart("photo2", bab2);
+			reqEntity.addPart("question", new StringBody(question));
+
+			postRequest.setEntity(reqEntity);
 
 			HttpHandler httpTask = new HttpHandler(httpClient, postRequest);
-			httpTask.execute(null);
-			// HttpResponse response = httpClient.execute(postRequest);
-			/*
-			 * BufferedReader reader = new BufferedReader(new InputStreamReader(
-			 * response.getEntity().getContent(), "UTF-8")); String sResponse;
-			 * StringBuilder s = new StringBuilder();
-			 * 
-			 * while ((sResponse = reader.readLine()) != null) { s =
-			 * s.append(sResponse); } // System.out.println("Response: " + s);
-			 */
+			httpTask.execute();
 		} catch (Exception e) {
-			// handle exception here
 			Log.e(e.getClass().getName(), e.getMessage());
 		}
 	}
