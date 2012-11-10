@@ -22,6 +22,7 @@ class ChoosiePost(db.Model):
 
 class MainPage(webapp2.RequestHandler):
   def get(self):
+    print 'esh'
     self.response.headers['Content-Type'] = 'text/html'
 
     choosie_posts = db.GqlQuery('SELECT * '
