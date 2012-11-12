@@ -9,5 +9,6 @@
     <string name="buttonPic2">snap second</string>
     <string name="button_submit">Post it!</string>
     <string name="TextQuestion">question something</string>
+    <string name="post">post</string>
 
 </resources>

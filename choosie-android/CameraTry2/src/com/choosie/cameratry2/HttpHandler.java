@@ -14,7 +14,7 @@ public class HttpHandler extends AsyncTask<String, Void, String> {
 	private HttpClient m_httpClient;	
 	private HttpPost m_httpPost;
 	
-	public HttpHandler(HttpClient httpClient, HttpPost httpPost)
+	public HttpHandler(HttpClient httpClient, HttpPost httpPost) 
 	{
 		m_httpClient = httpClient;
 		m_httpPost = httpPost; 

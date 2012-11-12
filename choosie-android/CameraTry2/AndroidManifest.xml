@@ -21,16 +21,17 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".Cmaera"
+            android:name=".MainScreen"
             android:label="@string/title_activity_cmaera" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Camera" 
-                  android:screenOrientation="landscape" />
+        <activity
+            android:name=".Cmaera">
+        </activity>
+        
     </application>
 
 </manifest>

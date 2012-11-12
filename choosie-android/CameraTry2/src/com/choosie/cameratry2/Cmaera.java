@@ -36,7 +36,6 @@ import com.choosie.cameratry2.R;
 public class Cmaera extends Activity implements OnClickListener {
 	private static int TAKE_FIRST_PICTURE = 1;
 	private static int TAKE_SECOND_PICTURE = 2;
-	private static int POST_IT = 3;
 	private Uri outputFileUri;
 	private Bitmap mPhotoTemp;
 	private Bitmap mPhoto1;
@@ -58,7 +57,7 @@ public class Cmaera extends Activity implements OnClickListener {
 
 		if (arg0.getId() == R.id.button_submit) {
 			try {
-				EditText questionText = (EditText) findViewById(R.id.question_text);
+				EditText questionText = (EditText) findViewById(R.id.test_question);
 				mQuestion = questionText.getText().toString();
 				executeMultipartPost(mPhoto1, mPhoto2, mQuestion);
 			} catch (Exception e) {
@@ -66,6 +65,8 @@ public class Cmaera extends Activity implements OnClickListener {
 				e.getMessage();
 				e.printStackTrace();
 			}
+			Intent intentBackToMain = new Intent(arg0.getContext(), MainScreen.class);
+			startActivity(intentBackToMain);
 		} else {
 			Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 			File f = new File(Environment.getExternalStorageDirectory(),
@@ -138,6 +139,7 @@ public class Cmaera extends Activity implements OnClickListener {
 		} catch (Exception e) {
 			Log.e(e.getClass().getName(), e.getMessage());
 		}
+		
 	}
 
 	@Override
