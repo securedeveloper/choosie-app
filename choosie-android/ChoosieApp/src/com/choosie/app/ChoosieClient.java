@@ -117,8 +117,8 @@ public class ChoosieClient {
 			throws UnsupportedEncodingException {
 		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
 		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
-		data.photo1.compress(CompressFormat.PNG, 75, bos1);
-		data.photo2.compress(CompressFormat.PNG, 75, bos2);
+		data.image1.compress(CompressFormat.PNG, 75, bos1);
+		data.image2.compress(CompressFormat.PNG, 75, bos2);
 		byte[] data1 = bos1.toByteArray();
 		byte[] data2 = bos2.toByteArray();
 

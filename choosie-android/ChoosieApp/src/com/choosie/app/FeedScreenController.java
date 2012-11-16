@@ -3,19 +3,32 @@ package com.choosie.app;
 import java.util.List;
 
 import com.choosie.app.ChoosieClient.ChoosiePostData;
+import com.choosie.app.R.layout;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 public class FeedScreenController extends ScreenController {
 
-	public FeedScreenController(View layout) {
-		super(layout);
+	public FeedScreenController(View layout, Activity activity) {
+		super(layout, activity);
+		
 	}
 
+
+	@Override
+	protected void onCreate() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 	@Override
 	protected void onShow() {
 		Log.i(ChoosieConstants.LOG_TAG, "Feed.onShow()");
@@ -30,6 +43,7 @@ public class FeedScreenController extends ScreenController {
 				loadPosts(param);
 			}
 		});
+
 	}
 
 	protected void loadPosts(List<ChoosiePostData> param) {
@@ -60,5 +74,12 @@ public class FeedScreenController extends ScreenController {
 		// TODO Auto-generated method stub
 
 	}
+
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 
 }

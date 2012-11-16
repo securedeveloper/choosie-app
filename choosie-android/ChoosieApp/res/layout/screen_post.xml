@@ -15,14 +15,16 @@
             android:layout_width="fill_parent"
             android:layout_height="180dp"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_crop" />
+            android:src="@android:drawable/ic_menu_crop" 
+            android:onClick="takePhoto"/>
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/image_photo2"
             android:layout_width="fill_parent"
             android:layout_height="180dp"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_crop" />
+            android:src="@android:drawable/ic_menu_crop"
+            android:onClick="takePhoto" />
     </LinearLayout>
 
     <Button
