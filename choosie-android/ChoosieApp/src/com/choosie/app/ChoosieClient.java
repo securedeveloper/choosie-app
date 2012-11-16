@@ -32,12 +32,14 @@ import android.os.Message;
 public class ChoosieClient {
 
 	/**
-	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the server.
+	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the
+	 * server.
+	 * 
 	 * @param data
 	 */
 	public void sendChoosiePostToServer(NewChoosiePostData data) {
 		final HttpClient httpClient = new DefaultHttpClient();
-		
+
 		HttpPost postRequest = null;
 		try {
 			// Creates the POST request
@@ -49,13 +51,13 @@ public class ChoosieClient {
 		if (postRequest == null) {
 			return;
 		}
-		
+
 		// Executes the POST request, async
-		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = getExecuteHttpPostTask(httpClient);
+		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = createExecuteHttpPostTask(httpClient);
 
 		executeHttpPostTask.execute(postRequest);
 	}
-	
+
 	/**
 	 * Represents the data that is returned from the server.
 	 */
@@ -66,8 +68,7 @@ public class ChoosieClient {
 	}
 
 	/**
-	 * Gets the feed from the server.
-	 * Calls the callback when the feed is back.
+	 * Gets the feed from the server. Calls the callback when the feed is back.
 	 */
 	void getFeedFromServer(Callback<List<ChoosiePostData>> callback) {
 		final HttpClient client = new DefaultHttpClient();
@@ -77,12 +78,79 @@ public class ChoosieClient {
 				"http://choosieapp.appspot.com/feed");
 
 		// Executes the GET request async
-		AsyncTask<HttpGet, Void, String> getStreamTask = createGetStreamTask(client, callback);
+		AsyncTask<HttpGet, Void, String> getStreamTask = createGetFeedTask(
+				client, callback);
 		getStreamTask.execute(request);
 	}
 
-	private AsyncTask<HttpGet, Void, String> createGetStreamTask(
-			final HttpClient client, final Callback<List<ChoosiePostData>> callback) {
+	void getPictureFromServer() {
+
+	}
+
+	/**
+	 * Gets a NewChoosiePostData object, and creates an HTML POST request
+	 * with the data.
+	 * @param data
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	private HttpPost createHttpPostRequest(NewChoosiePostData data)
+			throws UnsupportedEncodingException {
+		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
+		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
+		data.photo1.compress(CompressFormat.PNG, 75, bos1);
+		data.photo2.compress(CompressFormat.PNG, 75, bos2);
+		byte[] data1 = bos1.toByteArray();
+		byte[] data2 = bos2.toByteArray();
+
+		HttpPost postRequest = new HttpPost(
+				"http://choosieapp.appspot.com/upload");
+		ByteArrayBody bab1 = new ByteArrayBody(data1, "photo1.png");
+		ByteArrayBody bab2 = new ByteArrayBody(data2, "photo2.png");
+
+		MultipartEntity reqEntity = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		reqEntity.addPart("photo1", bab1);
+		reqEntity.addPart("photo2", bab2);
+		reqEntity.addPart("question", new StringBody(data.question));
+
+		postRequest.setEntity(reqEntity);
+		return postRequest;
+	}
+
+	private AsyncTask<HttpPost, Void, HttpResponse> createExecuteHttpPostTask(
+			final HttpClient httpClient) {
+		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = new AsyncTask<HttpPost, Void, HttpResponse>() {
+
+			@Override
+			protected HttpResponse doInBackground(HttpPost... arg0) {
+				try {
+					return httpClient.execute(arg0[0]);
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+		};
+		return executeHttpPostTask;
+	}
+
+	/**
+	 * Creates an AsyncTask that takes care of getting the feed from the server.
+	 * 
+	 * @param client
+	 * @param callback
+	 * @return
+	 */
+	private AsyncTask<HttpGet, Void, String> createGetFeedTask(
+			final HttpClient client,
+			final Callback<List<ChoosiePostData>> callback) {
 		AsyncTask<HttpGet, Void, String> getStreamTask = new AsyncTask<HttpGet, Void, String>() {
 
 			@Override
@@ -121,32 +189,6 @@ public class ChoosieClient {
 		return getStreamTask;
 	}
 
-	void getPictureFromServer() {
-
-	}
-
-	private AsyncTask<HttpPost, Void, HttpResponse> getExecuteHttpPostTask(
-			final HttpClient httpClient) {
-		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = new AsyncTask<HttpPost, Void, HttpResponse>() {
-
-			@Override
-			protected HttpResponse doInBackground(HttpPost... arg0) {
-				try {
-					return httpClient.execute(arg0[0]);
-				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			}
-
-		};
-		return executeHttpPostTask;
-	}
-
 	/**
 	 * Takes a JSON string, and builds ChoosiePostData objet from it.
 	 * 
@@ -173,31 +215,6 @@ public class ChoosieClient {
 			}
 		}
 		return choosiePostsFromFeed;
-	}
-
-	private HttpPost createHttpPostRequest(NewChoosiePostData data)
-			throws UnsupportedEncodingException {
-		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
-		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
-		data.photo1.compress(CompressFormat.PNG, 75, bos1);
-		data.photo2.compress(CompressFormat.PNG, 75, bos2);
-		byte[] data1 = bos1.toByteArray();
-		byte[] data2 = bos2.toByteArray();
-
-		HttpPost postRequest = new HttpPost(
-				"http://choosieapp.appspot.com/upload");
-		ByteArrayBody bab1 = new ByteArrayBody(data1, "photo1.png");
-		ByteArrayBody bab2 = new ByteArrayBody(data2, "photo2.png");
-
-		MultipartEntity reqEntity = new MultipartEntity(
-				HttpMultipartMode.BROWSER_COMPATIBLE);
-
-		reqEntity.addPart("photo1", bab1);
-		reqEntity.addPart("photo2", bab2);
-		reqEntity.addPart("question", new StringBody(data.question));
-
-		postRequest.setEntity(reqEntity);
-		return postRequest;
 	}
 
 }
