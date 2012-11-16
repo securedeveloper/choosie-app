@@ -24,15 +24,20 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onCreate() {
-		// TODO Auto-generated method stub
-		
+		Log.i(ChoosieConstants.LOG_TAG, "Feed.onShow()");
+		refreshFeed();
 	}
-	
 	
 	@Override
 	protected void onShow() {
 		Log.i(ChoosieConstants.LOG_TAG, "Feed.onShow()");
 		refreshFeed();
+	}
+
+	@Override
+	protected void onHide() {
+		// TODO Auto-generated method stub
+
 	}
 
 	private void refreshFeed() {
@@ -51,10 +56,13 @@ public class FeedScreenController extends ScreenController {
 		if (param.size() == 0) {
 			Log.i(ChoosieConstants.LOG_TAG, "No images in feed.");
 		}
-		ChoosiePostData post = param.get(0);
+		loadPost(param.get(0));
+	}
+
+	private void loadPost(ChoosiePostData post) {
 		loadImageToView(post.photo1URL, (ImageView)view.findViewById(R.id.feedimage1));
 		loadImageToView(post.photo2URL, (ImageView)view.findViewById(R.id.feedimage2));
-		((TextView)view.findViewById(R.id.textView1)).setText(post.question);
+		((TextView)view.findViewById(R.id.feedtext)).setText(post.question);
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView) {
@@ -67,12 +75,6 @@ public class FeedScreenController extends ScreenController {
 				imageView.setImageBitmap(param);
 			}
 		});
-	}
-
-	@Override
-	protected void onHide() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onClick(View v) {
