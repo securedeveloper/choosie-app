@@ -71,14 +71,14 @@ public class ChoosieClient {
 		String photo2URL;
 		String question;
 	}
-	
+
 	void getFeedFromServer() {
 		final HttpClient client = new DefaultHttpClient();
-		final HttpGet request = new HttpGet("http://choosieapp.appspot.com/feed");
-		
-		AsyncTask<Context, Void, String> getStreamTask =
-				new AsyncTask<Context, Void, String>() {
-			
+		final HttpGet request = new HttpGet(
+				"http://choosieapp.appspot.com/feed");
+
+		AsyncTask<Context, Void, String> getStreamTask = new AsyncTask<Context, Void, String>() {
+
 			@Override
 			protected String doInBackground(Context... params) {
 				HttpResponse response;
@@ -94,7 +94,7 @@ public class ChoosieClient {
 				}
 				return null;
 			}
-			
+
 			@Override
 			protected void onPostExecute(String jsonString) {
 				if (jsonString == null) {
@@ -102,9 +102,8 @@ public class ChoosieClient {
 					return;
 				}
 				try {
-					List<ChoosiePostData> choosiePostsFromFeed =
-							convertJsonToChoosiePosts(jsonString);
-					
+					List<ChoosiePostData> choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);
+
 					choosiePostsFromFeed = choosiePostsFromFeed;
 				} catch (JSONException e1) {
 					// TODO Auto-generated catch block
@@ -114,23 +113,27 @@ public class ChoosieClient {
 
 			/**
 			 * Takes a JSON string, and builds ChoosiePostData objet from it.
+			 * 
 			 * @param jsonString
 			 * @return
 			 * @throws JSONException
 			 */
-			private List<ChoosiePostData> convertJsonToChoosiePosts(String jsonString)
-					throws JSONException {
+			private List<ChoosiePostData> convertJsonToChoosiePosts(
+					String jsonString) throws JSONException {
 				JSONObject jsonObject = new JSONObject(jsonString);
 				JSONArray jsonArray = jsonObject.getJSONArray("feed");
-				List<ChoosiePostData> choosiePostsFromFeed = 
-						new ArrayList<ChoosieClient.ChoosiePostData>();
+				List<ChoosiePostData> choosiePostsFromFeed = new ArrayList<ChoosieClient.ChoosiePostData>();
 				for (int i = 0; i < jsonArray.length(); i++) {
 					try {
-						JSONObject singleItemJsonObject = jsonArray.getJSONObject(i);
+						JSONObject singleItemJsonObject = jsonArray
+								.getJSONObject(i);
 						ChoosiePostData postData = new ChoosiePostData();
-						postData.photo1URL = singleItemJsonObject.getString("photo1"); 
-						postData.photo2URL = singleItemJsonObject.getString("photo2");
-						postData.question = singleItemJsonObject.getString("question");
+						postData.photo1URL = singleItemJsonObject
+								.getString("photo1");
+						postData.photo2URL = singleItemJsonObject
+								.getString("photo2");
+						postData.question = singleItemJsonObject
+								.getString("question");
 						choosiePostsFromFeed.add(postData);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
@@ -147,7 +150,6 @@ public class ChoosieClient {
 
 	}
 
-	
 	private HttpPost createHttpPostRequest(NewChoosiePostData data)
 			throws UnsupportedEncodingException {
 		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
@@ -172,6 +174,5 @@ public class ChoosieClient {
 		postRequest.setEntity(reqEntity);
 		return postRequest;
 	}
-
 
 }
