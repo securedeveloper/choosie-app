@@ -11,16 +11,18 @@ import android.widget.ImageView;
 
 public class FeedScreenController extends ScreenController {
 
-	ChoosieClient client = new ChoosieClient();
- 
 	public FeedScreenController(View layout) {
 		super(layout);
 	}
 
 	@Override
 	protected void onShow() {
-		Log.i("", "Feed.onShow()");
-		client.getFeedFromServer(new Callback<List<ChoosiePostData>>() {
+		Log.i(ChoosieConstants.LOG_TAG, "Feed.onShow()");
+		refreshFeed();
+	}
+
+	private void refreshFeed() {
+		this.client.getFeedFromServer(new Callback<List<ChoosiePostData>>() {
 			
 			@Override
 			void handleOperationFinished(List<ChoosiePostData> param) {
@@ -35,7 +37,7 @@ public class FeedScreenController extends ScreenController {
 			Log.i(ChoosieConstants.LOG_TAG, "No images in feed.");
 		}
 		String urlToLoad = param.get(param.size() - 1).photo1URL;
-		client.getPictureFromServer(urlToLoad, new Callback<Bitmap>() {
+		this.client.getPictureFromServer(urlToLoad, new Callback<Bitmap>() {
 			
 			@Override
 			void handleOperationFinished(Bitmap param) {

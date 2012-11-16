@@ -3,6 +3,7 @@ package com.choosie.app;
 import android.view.View;
 
 public abstract class ScreenController {
+	protected ChoosieClient client = new ChoosieClient();
 	protected View view;
 	
 	public ScreenController(View layout) {
