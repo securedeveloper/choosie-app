@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class FeedScreenController extends ScreenController {
 
@@ -23,7 +24,7 @@ public class FeedScreenController extends ScreenController {
 
 	private void refreshFeed() {
 		this.client.getFeedFromServer(new Callback<List<ChoosiePostData>>() {
-			
+
 			@Override
 			void handleOperationFinished(List<ChoosiePostData> param) {
 				loadPosts(param);
@@ -36,13 +37,19 @@ public class FeedScreenController extends ScreenController {
 		if (param.size() == 0) {
 			Log.i(ChoosieConstants.LOG_TAG, "No images in feed.");
 		}
-		String urlToLoad = param.get(param.size() - 1).photo1URL;
+		ChoosiePostData post = param.get(0);
+		loadImageToView(post.photo1URL, (ImageView)view.findViewById(R.id.feedimage1));
+		loadImageToView(post.photo2URL, (ImageView)view.findViewById(R.id.feedimage2));
+		((TextView)view.findViewById(R.id.textView1)).setText(post.question);
+	}
+
+	private void loadImageToView(String urlToLoad, final ImageView imageView) {
 		this.client.getPictureFromServer(urlToLoad, new Callback<Bitmap>() {
-			
+
 			@Override
 			void handleOperationFinished(Bitmap param) {
-				Log.i(ChoosieConstants.LOG_TAG, "Feed after getPictureFromServer");
-				ImageView imageView = (ImageView)view.findViewById(R.id.feedimage);
+				Log.i(ChoosieConstants.LOG_TAG,
+						"Feed after getPictureFromServer");
 				imageView.setImageBitmap(param);
 			}
 		});
@@ -51,7 +58,7 @@ public class FeedScreenController extends ScreenController {
 	@Override
 	protected void onHide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
