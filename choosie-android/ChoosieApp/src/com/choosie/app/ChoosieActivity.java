@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -25,7 +26,7 @@ public class ChoosieActivity extends Activity {
 		screenToController.put(Screen.ME, new MeScreenController(findViewById(R.id.layout_me)));
 
 		LayoutInflater layoutInflater = (LayoutInflater) this
-				.getSystemService(this.LAYOUT_INFLATER_SERVICE);
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		// Inflate FEED xml and add it to layout_feed
 		RelativeLayout layoutFeed = (RelativeLayout) findViewById(R.id.layout_feed);

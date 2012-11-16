@@ -2,12 +2,13 @@ package com.choosie.app;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -24,10 +25,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Message;
+import android.util.Log;
 
 public class ChoosieClient {
 
@@ -82,9 +84,26 @@ public class ChoosieClient {
 				client, callback);
 		getStreamTask.execute(request);
 	}
-
-	void getPictureFromServer() {
-
+    static final String ROOT_URL = "http://choosieapp.appspot.com";
+	void getPictureFromServer(String pictureUrl, Callback<Bitmap> callback) {
+		try {
+			String urlToLoad = ROOT_URL + pictureUrl;
+			Log.i(ChoosieConstants.LOG_TAG, "Loading URL: " + urlToLoad);
+			URL url = new URL(urlToLoad);
+			HttpURLConnection connection = (HttpURLConnection) url
+					.openConnection();
+			connection.setDoInput(true);
+			connection.connect();
+			InputStream input = connection.getInputStream();
+			Bitmap myBitmap = BitmapFactory.decodeStream(input);
+			callback.handleOperationFinished(myBitmap);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
