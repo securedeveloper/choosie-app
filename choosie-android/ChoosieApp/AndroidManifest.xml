@@ -4,12 +4,14 @@
     android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.CAMERA" />
- 	<uses-feature android:name="android.hardware.camera" />
- 	<uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    
+
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="15" />
@@ -20,7 +22,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".ChoosieActivity"
-            android:label="@string/title_activity_choosie" >
+            android:configChanges="orientation"
+            android:label="@string/title_activity_choosie"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +33,9 @@
         </activity>
         <activity
             android:name=".FeedActivity"
-            android:label="@string/title_activity_feed" >
+            android:configChanges="orientation"
+            android:label="@string/title_activity_feed"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +44,9 @@
         </activity>
         <activity
             android:name=".PostActivity"
-            android:label="@string/title_activity_post" >
+            android:configChanges="orientation"
+            android:label="@string/title_activity_post"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,7 +55,9 @@
         </activity>
         <activity
             android:name=".MeActivity"
-            android:label="@string/title_activity_me" >
+            android:configChanges="orientation"
+            android:label="@string/title_activity_me"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

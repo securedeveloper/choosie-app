@@ -75,7 +75,7 @@ public class PostScreenController extends ScreenController {
 			EditText questionText = (EditText) view
 					.findViewById(R.id.editText_question);
 			mQuestion = questionText.getText().toString();
-			client.sendChoosiePostToServer(new NewChoosiePostData(mImage1, mImage2, mQuestion));
+			client.sendChoosiePostToServer(new NewChoosiePostData(mImage1, mImage2, mQuestion)); 
 		} else {
 			TakePhoto(arg0);
 		}

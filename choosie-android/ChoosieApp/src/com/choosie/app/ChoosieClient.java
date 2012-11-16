@@ -117,15 +117,15 @@ public class ChoosieClient {
 			throws UnsupportedEncodingException {
 		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
 		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
-		data.image1.compress(CompressFormat.PNG, 75, bos1);
-		data.image2.compress(CompressFormat.PNG, 75, bos2);
+		data.image1.compress(CompressFormat.JPEG, 75, bos1);
+		data.image2.compress(CompressFormat.JPEG, 75, bos2);
 		byte[] data1 = bos1.toByteArray();
 		byte[] data2 = bos2.toByteArray();
 
 		HttpPost postRequest = new HttpPost(
 				"http://choosieapp.appspot.com/upload");
-		ByteArrayBody bab1 = new ByteArrayBody(data1, "photo1.png");
-		ByteArrayBody bab2 = new ByteArrayBody(data2, "photo2.png");
+		ByteArrayBody bab1 = new ByteArrayBody(data1, "photo1.jpg");
+		ByteArrayBody bab2 = new ByteArrayBody(data2, "photo2.jpg");
 
 		MultipartEntity reqEntity = new MultipartEntity(
 				HttpMultipartMode.BROWSER_COMPATIBLE);
