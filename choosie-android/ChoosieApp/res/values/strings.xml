@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">ChoosieApp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_choosie">ChoosieActivity</string>
+    <string name="buttonFeed">Feed</string>
+    <string name="buttonPost">Post</string>
+    <string name="buttonMe">Me</string>
+    <string name="title_activity_feed">FeedActivity</string>
+    <string name="title_activity_post">PostActivity</string>
+    <string name="title_activity_me">MeActivity</string>
+
+</resources>

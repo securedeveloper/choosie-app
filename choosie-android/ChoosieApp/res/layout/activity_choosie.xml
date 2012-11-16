@@ -1,0 +1,96 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/bottom_nav_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_feed"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:text="@string/buttonFeed"
+            android:onClick="onBottomNavBarButtonClick" />
+
+        <Button
+            android:id="@+id/button_post"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:text="@string/buttonPost"
+            android:onClick="onBottomNavBarButtonClick" />
+
+        <Button
+            android:id="@+id/button_me"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:text="@string/buttonMe"
+            android:onClick="onBottomNavBarButtonClick" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_feed"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottom_nav_bar"
+        android:visibility="visible" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="17dp"
+            android:text="feed" />
+
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/layout_post"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottom_nav_bar"
+        android:visibility="gone" >
+        
+         <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="61dp"
+            android:layout_marginTop="64dp"
+            android:text="post" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_me"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottom_nav_bar"
+        android:visibility="gone" >
+         
+         <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="61dp"
+            android:layout_marginTop="64dp"
+            android:text="me" />
+    </RelativeLayout>
+
+</RelativeLayout>
