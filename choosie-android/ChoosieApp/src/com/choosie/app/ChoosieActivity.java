@@ -5,11 +5,11 @@ import java.util.Map;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 public class ChoosieActivity extends Activity {
@@ -22,7 +22,7 @@ public class ChoosieActivity extends Activity {
 		setContentView(R.layout.activity_choosie);
 
 		LayoutInflater layoutInflater = (LayoutInflater) this
-				.getSystemService(this.LAYOUT_INFLATER_SERVICE);
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		// Inflate FEED xml and add it to layout_feed
 		RelativeLayout layoutFeed = (RelativeLayout) findViewById(R.id.layout_feed);

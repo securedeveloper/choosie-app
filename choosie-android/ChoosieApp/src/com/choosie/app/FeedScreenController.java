@@ -3,13 +3,11 @@ package com.choosie.app;
 import java.util.List;
 
 import com.choosie.app.ChoosieClient.ChoosiePostData;
-import com.choosie.app.R.layout;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
