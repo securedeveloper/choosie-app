@@ -1,5 +1,5 @@
 import webapp2
-from modules import ChoosiePost
+from module_choosie_post import ChoosiePost
 from google.appengine.ext import db
 
 class VoteHandler(webapp2.RequestHandler):
@@ -16,5 +16,6 @@ class VoteHandler(webapp2.RequestHandler):
     if save_vote:
       choosie_post.put()
     self.redirect('/')
+    
   def post(self):
     get(self)

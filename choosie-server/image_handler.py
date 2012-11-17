@@ -1,5 +1,5 @@
 import webapp2
-from modules import ChoosiePost
+from module_choosie_post import ChoosiePost
 from google.appengine.ext import db
 
 class ImageHandler(webapp2.RequestHandler):

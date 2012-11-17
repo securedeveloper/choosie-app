@@ -1,4 +1,4 @@
-from modules import ChoosiePost
+from module_choosie_post import ChoosiePost
 from google.appengine.ext import db
 import webapp2
 import json

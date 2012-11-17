@@ -1,5 +1,5 @@
 import webapp2
-from modules import ChoosiePost
+from module_choosie_post import ChoosiePost
 from google.appengine.ext import db
 import jinja2
 import os
