@@ -7,7 +7,6 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.util.Pair;
-import android.view.View;
 
 public class SuperController {
 
