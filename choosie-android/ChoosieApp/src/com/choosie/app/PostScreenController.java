@@ -103,6 +103,8 @@ public class PostScreenController extends ScreenController {
 											.get(Screen.FEED).activity,
 									"Loaded!!", Toast.LENGTH_SHORT);
 							toast.show();
+							superController.screenToController.get(Screen.FEED)
+									.refresh();
 						}
 
 						@Override
