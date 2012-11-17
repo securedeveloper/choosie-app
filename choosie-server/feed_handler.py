@@ -1,16 +1,16 @@
 from module_choosie_post import ChoosiePost
+from module_user import User
 from google.appengine.ext import db
 import webapp2
 import json
+import logging
 
 class FeedHandler(webapp2.RequestHandler):
   def get(self):
-    choosie_posts = db.GqlQuery('SELECT * '
-                                'FROM ChoosiePost '
-                                'ORDER BY date DESC LIMIT 10')
+    logging.info("esh")
+    choosie_posts = db.GqlQuery("SELECT * FROM ChoosiePost ORDER BY created_at DESC LIMIT 10")
+    logging.info(choosie_posts)
+    self.response.out.write(json.dumps({"feed" : ChoosiePost.posts_to_json(choosie_posts)}))
 
-    feed = []
-    for choosie_post in choosie_posts:
-      feed.append(choosie_post.to_json())
-
-    self.response.out.write(json.dumps({"feed" : feed}))
+  def feed_by_user(self, user):
+    choosie_posts = db.GqlQuery("SELECT * FROM ChoosiePost ORDER BY created_at DESC LIMIT 10")

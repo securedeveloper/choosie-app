@@ -11,9 +11,7 @@ class HomepageHandler(webapp2.RequestHandler):
   def get(self):
     self.response.headers['Content-Type'] = 'text/html'
 
-    choosie_posts = db.GqlQuery('SELECT * '
-                                'FROM ChoosiePost '
-                                'ORDER BY date DESC LIMIT 10')
+    choosie_posts = db.GqlQuery("SELECT * FROM ChoosiePost ORDER BY created_at DESC LIMIT 10")
     template_values = {
       'choosie_posts': choosie_posts
     }

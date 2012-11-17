@@ -30,14 +30,4 @@ class UploadHandler(webapp2.RequestHandler):
                                photo2 = db.Blob(self.shrinkImage(self.request.get('photo2'))))
 
     choosie_post.put()
-
-    # choosie_post.question = self.request.get('question')
-    # choosie_post.votes1 = 0
-    # choosie_post.votes2 = 0
-    # choosie_post.user = user
-    # if self.request.get('photo1') and self.request.get('photo2'):
-    #   choosie_post.photo1 = db.Blob(self.shrinkImage(self.request.get('photo1')))
-    #   choosie_post.photo2 = db.Blob(self.shrinkImage(self.request.get('photo2')))
-
-    # choosie_post.put()
     self.redirect('/')
