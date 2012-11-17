@@ -1,7 +1,5 @@
 package com.choosie.app;
 
-
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -36,7 +34,6 @@ public class ChoosieActivity extends Activity {
 		layoutMe.addView(layoutInflater.inflate(R.layout.screen_me, null));
 
 		superController = new SuperController(this);
-		
 
 	}
 

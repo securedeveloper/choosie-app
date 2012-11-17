@@ -65,7 +65,7 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView) {
-		this.superController.getClient().getPictureFromServer(urlToLoad,
+		this.superController.getCaches().getPictureFromServer(urlToLoad,
 				new Callback<Void, Bitmap>() {
 
 					@Override

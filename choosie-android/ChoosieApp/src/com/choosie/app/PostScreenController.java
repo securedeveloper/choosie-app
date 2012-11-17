@@ -92,26 +92,29 @@ public class PostScreenController extends ScreenController {
 		} else {
 			mQuestion = questionText.getText().toString();
 
-			superController.getClient().sendChoosiePostToServer(new NewChoosiePostData(mImage1,
-					mImage2, mQuestion), new Callback<Void, Void>() {
+			superController.getClient().sendChoosiePostToServer(
+					new NewChoosiePostData(mImage1, mImage2, mQuestion),
+					new Callback<Void, Void>() {
 
-				@Override
-				void onOperationFinished(Void param) {
-					Toast toast = Toast.makeText(
-							superController.screenToController.get(Screen.FEED).activity,
-							"Loaded!!", Toast.LENGTH_SHORT);
-					toast.show();
-				}
+						@Override
+						void onOperationFinished(Void param) {
+							Toast toast = Toast.makeText(
+									superController.screenToController
+											.get(Screen.FEED).activity,
+									"Loaded!!", Toast.LENGTH_SHORT);
+							toast.show();
+						}
 
-				@Override
-				public void onProgress(Void Param) {
-					Toast toast = Toast.makeText(
-							superController.screenToController.get(Screen.FEED).activity,
-							"Loading!!", Toast.LENGTH_SHORT);
-					toast.show();
-				}
+						@Override
+						public void onProgress(Void Param) {
+							Toast toast = Toast.makeText(
+									superController.screenToController
+											.get(Screen.FEED).activity,
+									"Loading!!", Toast.LENGTH_SHORT);
+							toast.show();
+						}
 
-			});
+					});
 
 			// clear images and text
 			resetPost();

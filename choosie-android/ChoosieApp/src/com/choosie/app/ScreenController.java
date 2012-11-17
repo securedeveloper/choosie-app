@@ -9,12 +9,13 @@ public abstract class ScreenController {
 	Activity activity;
 	SuperController superController;
 
-	public ScreenController(View layout, Activity activity, SuperController superController) {
+	public ScreenController(View layout, Activity activity,
+			SuperController superController) {
 		this.view = layout;
 		this.activity = activity;
 		this.superController = superController;
 	}
-	
+
 	protected abstract void onCreate();
 
 	protected abstract void onShow();
@@ -32,10 +33,10 @@ public abstract class ScreenController {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
+
 	}
 
 	public void refresh() {
-		
+
 	}
 }

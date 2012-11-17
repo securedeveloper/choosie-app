@@ -39,8 +39,6 @@ import android.util.Log;
 
 public class ChoosieClient {
 
-	private Cache cache = new Cache();
-
 	/**
 	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the
 	 * server.
@@ -80,12 +78,12 @@ public class ChoosieClient {
 		String photo1URL;
 		String photo2URL;
 		String question;
-		
 
 		public String getKey() {
 			// HACK: Get post key from photo1URL
 			String url = photo1URL;
-			String key = url.substring(url.indexOf("post_key=") + "post_key=".length());
+			String key = url.substring(url.indexOf("post_key=")
+					+ "post_key=".length());
 			return key;
 		}
 
@@ -111,64 +109,33 @@ public class ChoosieClient {
 
 	Set<String> picturesCurrentlyLoaded = new HashSet<String>();
 
-	void getPictureFromServer(final String pictureUrl,
-			final Callback<Void, Bitmap> callback) {
-		Bitmap result = cache.getPicture(pictureUrl);
-		if (result != null) {
-			callback.onOperationFinished(result);
-			return;
+	public Bitmap getPictureFromServerSync(final String pictureUrl) {
+		String urlToLoad;
+		urlToLoad = ROOT_URL + pictureUrl;
+		Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Loading URL: "
+				+ urlToLoad);
+		URL url;
+		try {
+			url = new URL(urlToLoad);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
 		}
-
-		if (picturesCurrentlyLoaded.contains(pictureUrl)) {
-			Log.e(ChoosieConstants.LOG_TAG, "Trying to add twice.");
-			return;
+		try {
+			HttpURLConnection connection;
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoInput(true);
+			connection.connect();
+			InputStream input = connection.getInputStream();
+			picturesCurrentlyLoaded.remove(pictureUrl);
+			Bitmap bitmap = BitmapFactory.decodeStream(input);
+			return bitmap;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
 		}
-
-		picturesCurrentlyLoaded.add(pictureUrl);
-
-		AsyncTask<Void, Void, Bitmap> getPictureTask = new AsyncTask<Void, Void, Bitmap>() {
-			String urlToLoad;
-
-			@Override
-			protected Bitmap doInBackground(Void... params) {
-				try {
-					urlToLoad = ROOT_URL + pictureUrl;
-					Log.i(ChoosieConstants.LOG_TAG,
-							"getPictureFromServer: Loading URL: " + urlToLoad);
-					URL url = new URL(urlToLoad);
-					HttpURLConnection connection = (HttpURLConnection) url
-							.openConnection();
-					connection.setDoInput(true);
-					connection.connect();
-					InputStream input = connection.getInputStream();
-					picturesCurrentlyLoaded.remove(pictureUrl);
-					Bitmap bitmap = BitmapFactory.decodeStream(input);
-					cache.putPicture(pictureUrl, bitmap);
-					return bitmap;
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(Bitmap bitmap) {
-				if (bitmap == null) {
-					Log.w(ChoosieConstants.LOG_TAG,
-							"getPictureFromServer: Couldn't load bitmap from: "
-									+ urlToLoad);
-					return;
-				}
-				Log.i(ChoosieConstants.LOG_TAG,
-						"getPictureFromServer: Finished loading: " + urlToLoad);
-				callback.onOperationFinished(bitmap);
-			}
-		};
-		getPictureTask.execute();
 	}
 
 	/**
@@ -317,16 +284,20 @@ public class ChoosieClient {
 		return choosiePostsFromFeed;
 	}
 
-	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto, final Callback<Void, Boolean> callback) {
+	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto,
+			final Callback<Void, Boolean> callback) {
 		final HttpUriRequest postRequest;
-//		try {
-			postRequest = new HttpGet("http://choosieapp.appspot.com/vote?which_photo=" + Integer.toString(whichPhoto) + "&post_key=" + choosiePost.getKey());
-			//postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);
-//		} catch (UnsupportedEncodingException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//			return;
-//		}
+		// try {
+		postRequest = new HttpGet(
+				"http://choosieapp.appspot.com/vote?which_photo="
+						+ Integer.toString(whichPhoto) + "&post_key="
+						+ choosiePost.getKey());
+		// postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);
+		// } catch (UnsupportedEncodingException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// return;
+		// }
 		final HttpClient httpClient = new DefaultHttpClient();
 		AsyncTask<Void, Void, Boolean> postVoteTask = new AsyncTask<Void, Void, Boolean>() {
 
@@ -345,26 +316,27 @@ public class ChoosieClient {
 				}
 				return true;
 			}
-			
+
 			@Override
 			protected void onPostExecute(Boolean result) {
 				callback.onOperationFinished(result);
 			}
 		};
-		
+
 		postVoteTask.execute();
-		
+
 	}
 
-	private HttpPost createVoteHttpPostRequest(ChoosiePostData choosiePost, int whichPhoto)
-			throws UnsupportedEncodingException {
+	private HttpPost createVoteHttpPostRequest(ChoosiePostData choosiePost,
+			int whichPhoto) throws UnsupportedEncodingException {
 		HttpPost postRequest;
 		postRequest = new HttpPost("http://choosieapp.appspot.com/vote");
 
 		MultipartEntity reqEntity = new MultipartEntity(
 				HttpMultipartMode.BROWSER_COMPATIBLE);
 
-		reqEntity.addPart("which_photo", new StringBody(Integer.toString(whichPhoto)));
+		reqEntity.addPart("which_photo",
+				new StringBody(Integer.toString(whichPhoto)));
 		reqEntity.addPart("post_key", new StringBody(choosiePost.getKey()));
 
 		postRequest.setEntity(reqEntity);
