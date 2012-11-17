@@ -8,10 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.http.HttpRequest;
@@ -48,8 +46,10 @@ public class ChoosieClient {
 	 * server.
 	 * 
 	 * @param data
+	 * @param progressCallback
 	 */
-	public void sendChoosiePostToServer(NewChoosiePostData data) {
+	public void sendChoosiePostToServer(NewChoosiePostData data,
+			Callback<Void, Void> progressCallback) {
 		final HttpClient httpClient = new DefaultHttpClient();
 
 		HttpPost postRequest = null;
@@ -65,7 +65,8 @@ public class ChoosieClient {
 		}
 
 		// Executes the POST request, async
-		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = createExecuteHttpPostTask(httpClient);
+		AsyncTask<HttpPost, Integer, HttpResponse> executeHttpPostTask = createExecuteHttpPostTask(
+				httpClient, progressCallback);
 
 		executeHttpPostTask.execute(postRequest);
 	}
@@ -93,7 +94,7 @@ public class ChoosieClient {
 	/**
 	 * Gets the feed from the server. Calls the callback when the feed is back.
 	 */
-	void getFeedFromServer(Callback<List<ChoosiePostData>> callback) {
+	void getFeedFromServer(Callback<Void, List<ChoosiePostData>> callback) {
 		final HttpClient client = new DefaultHttpClient();
 
 		// Creates the GET HTTP request
@@ -105,33 +106,35 @@ public class ChoosieClient {
 				client, callback);
 		getStreamTask.execute(request);
 	}
-	
-	
-    static final String ROOT_URL = "http://choosieapp.appspot.com";
-    
-    Set<String> picturesCurrentlyLoaded = new HashSet<String>();
-    
-	void getPictureFromServer(final String pictureUrl, final Callback<Bitmap> callback) {
+
+	static final String ROOT_URL = "http://choosieapp.appspot.com";
+
+	Set<String> picturesCurrentlyLoaded = new HashSet<String>();
+
+	void getPictureFromServer(final String pictureUrl,
+			final Callback<Void, Bitmap> callback) {
 		Bitmap result = cache.getPicture(pictureUrl);
 		if (result != null) {
 			callback.onOperationFinished(result);
 			return;
 		}
-		
+
 		if (picturesCurrentlyLoaded.contains(pictureUrl)) {
 			Log.e(ChoosieConstants.LOG_TAG, "Trying to add twice.");
 			return;
 		}
-		
+
 		picturesCurrentlyLoaded.add(pictureUrl);
-		
+
 		AsyncTask<Void, Void, Bitmap> getPictureTask = new AsyncTask<Void, Void, Bitmap>() {
 			String urlToLoad;
+
 			@Override
 			protected Bitmap doInBackground(Void... params) {
 				try {
 					urlToLoad = ROOT_URL + pictureUrl;
-					Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Loading URL: " + urlToLoad);
+					Log.i(ChoosieConstants.LOG_TAG,
+							"getPictureFromServer: Loading URL: " + urlToLoad);
 					URL url = new URL(urlToLoad);
 					HttpURLConnection connection = (HttpURLConnection) url
 							.openConnection();
@@ -139,7 +142,7 @@ public class ChoosieClient {
 					connection.connect();
 					InputStream input = connection.getInputStream();
 					picturesCurrentlyLoaded.remove(pictureUrl);
-					Bitmap bitmap = BitmapFactory.decodeStream(input); 
+					Bitmap bitmap = BitmapFactory.decodeStream(input);
 					cache.putPicture(pictureUrl, bitmap);
 					return bitmap;
 				} catch (MalformedURLException e) {
@@ -151,14 +154,17 @@ public class ChoosieClient {
 				}
 				return null;
 			}
-			
+
 			@Override
 			protected void onPostExecute(Bitmap bitmap) {
 				if (bitmap == null) {
-					Log.w(ChoosieConstants.LOG_TAG, "getPictureFromServer: Couldn't load bitmap from: " + urlToLoad);
+					Log.w(ChoosieConstants.LOG_TAG,
+							"getPictureFromServer: Couldn't load bitmap from: "
+									+ urlToLoad);
 					return;
 				}
-				Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Finished loading: " + urlToLoad);
+				Log.i(ChoosieConstants.LOG_TAG,
+						"getPictureFromServer: Finished loading: " + urlToLoad);
 				callback.onOperationFinished(bitmap);
 			}
 		};
@@ -166,8 +172,9 @@ public class ChoosieClient {
 	}
 
 	/**
-	 * Gets a NewChoosiePostData object, and creates an HTML POST request
-	 * with the data.
+	 * Gets a NewChoosiePostData object, and creates an HTML POST request with
+	 * the data.
+	 * 
 	 * @param data
 	 * @return
 	 * @throws UnsupportedEncodingException
@@ -197,13 +204,15 @@ public class ChoosieClient {
 		return postRequest;
 	}
 
-	private AsyncTask<HttpPost, Void, HttpResponse> createExecuteHttpPostTask(
-			final HttpClient httpClient) {
-		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = new AsyncTask<HttpPost, Void, HttpResponse>() {
+	private AsyncTask<HttpPost, Integer, HttpResponse> createExecuteHttpPostTask(
+			final HttpClient httpClient,
+			final Callback<Void, Void> progressCallback) {
+		AsyncTask<HttpPost, Integer, HttpResponse> executeHttpPostTask = new AsyncTask<HttpPost, Integer, HttpResponse>() {
 
 			@Override
 			protected HttpResponse doInBackground(HttpPost... arg0) {
 				try {
+					publishProgress();
 					return httpClient.execute(arg0[0]);
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
@@ -213,6 +222,17 @@ public class ChoosieClient {
 					e.printStackTrace();
 				}
 				return null;
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... progress) {
+				progressCallback.onProgress(null);
+			}
+
+			@Override
+			protected void onPostExecute(HttpResponse httpResponse) {
+				progressCallback.onOperationFinished(null);
+
 			}
 
 		};
@@ -228,7 +248,7 @@ public class ChoosieClient {
 	 */
 	private AsyncTask<HttpGet, Void, String> createGetFeedTask(
 			final HttpClient client,
-			final Callback<List<ChoosiePostData>> callback) {
+			final Callback<Void, List<ChoosiePostData>> callback) {
 		AsyncTask<HttpGet, Void, String> getStreamTask = new AsyncTask<HttpGet, Void, String>() {
 
 			@Override
@@ -251,7 +271,7 @@ public class ChoosieClient {
 			protected void onPostExecute(String jsonString) {
 				if (jsonString == null) {
 					// TODO Handle error
-					return; 
+					return;
 				}
 				try {
 					List<ChoosiePostData> choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);
@@ -297,7 +317,7 @@ public class ChoosieClient {
 		return choosiePostsFromFeed;
 	}
 
-	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto, final Callback<Boolean> callback) {
+	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto, final Callback<Void, Boolean> callback) {
 		final HttpUriRequest postRequest;
 //		try {
 			postRequest = new HttpGet("http://choosieapp.appspot.com/vote?which_photo=" + Integer.toString(whichPhoto) + "&post_key=" + choosiePost.getKey());

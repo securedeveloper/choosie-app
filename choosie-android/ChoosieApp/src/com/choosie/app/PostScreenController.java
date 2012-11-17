@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class PostScreenController extends ScreenController {
 	private Bitmap mPhotoTemp;
@@ -37,9 +38,8 @@ public class PostScreenController extends ScreenController {
 		image1 = (ImageView) view.findViewById(R.id.image_photo1);
 		image2 = (ImageView) view.findViewById(R.id.image_photo2);
 		Button buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-		questionText = (EditText) view
-				.findViewById(R.id.editText_question);
-		
+		questionText = (EditText) view.findViewById(R.id.editText_question);
+
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
 				onItemClick(arg0);
@@ -78,17 +78,58 @@ public class PostScreenController extends ScreenController {
 
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
-			mQuestion = questionText.getText().toString();
-			this.superController.getClient().sendChoosiePostToServer(new NewChoosiePostData(mImage1, mImage2, mQuestion)); 
-			image1.setImageResource(android.R.drawable.ic_menu_crop);
-			image2.setImageResource(android.R.drawable.ic_menu_crop);
-			questionText.setText("");
-			superController.screenToController.get(Screen.FEED).showScreen();
-			superController.screenToController.get(Screen.POST).hideScreen();
-			
+			submitChoosiePost();
 		} else {
 			TakePhoto(arg0);
 		}
+	}
+
+	private void submitChoosiePost() {
+		if ((mImage1 == null) || (mImage2 == null)) {
+			Toast toast = Toast.makeText(activity, "Please add two photos",
+					Toast.LENGTH_SHORT);
+			toast.show();
+		} else {
+			mQuestion = questionText.getText().toString();
+
+			superController.getClient().sendChoosiePostToServer(new NewChoosiePostData(mImage1,
+					mImage2, mQuestion), new Callback<Void, Void>() {
+
+				@Override
+				void onOperationFinished(Void param) {
+					Toast toast = Toast.makeText(
+							superController.screenToController.get(Screen.FEED).activity,
+							"Loaded!!", Toast.LENGTH_SHORT);
+					toast.show();
+				}
+
+				@Override
+				public void onProgress(Void Param) {
+					Toast toast = Toast.makeText(
+							superController.screenToController.get(Screen.FEED).activity,
+							"Loading!!", Toast.LENGTH_SHORT);
+					toast.show();
+				}
+
+			});
+
+			// clear images and text
+			resetPost();
+
+			// switch back to feed screen
+			superController.screenToController.get(Screen.FEED).showScreen();
+			superController.screenToController.get(Screen.POST).hideScreen();
+		}
+	}
+
+	private void resetPost() {
+		mImage1 = null;
+		mImage2 = null;
+		mQuestion = null;
+		image1.setImageResource(android.R.drawable.ic_menu_crop);
+		image2.setImageResource(android.R.drawable.ic_menu_crop);
+		questionText.setText("");
+
 	}
 
 	// when the camera returns

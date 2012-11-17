@@ -1,5 +1,9 @@
 package com.choosie.app;
 
-public abstract class Callback<T> {
-	abstract void onOperationFinished(T param);
+public abstract class Callback<Progress, Result> {
+	abstract void onOperationFinished(Result param);
+	
+	public void onProgress(Progress param) {
+		
+	}
 }
