@@ -25,8 +25,8 @@ public class PostScreenController extends ScreenController {
 	private final int TAKE_FIRST_PICTURE = 1;
 	private final int TAKE_SECOND_PICTURE = 2;
 
-	public PostScreenController(View layout, Activity activity) {
-		super(layout, activity);
+	public PostScreenController(View layout, Activity activity, SuperController superController) {
+		super(layout, activity, superController);
 	}
 
 	@Override
@@ -76,6 +76,9 @@ public class PostScreenController extends ScreenController {
 					.findViewById(R.id.editText_question);
 			mQuestion = questionText.getText().toString();
 			client.sendChoosiePostToServer(new NewChoosiePostData(mImage1, mImage2, mQuestion)); 
+			superController.screenToController.get(Screen.FEED).showScreen();
+			superController.screenToController.get(Screen.POST).hideScreen();
+			
 		} else {
 			TakePhoto(arg0);
 		}
@@ -83,7 +86,7 @@ public class PostScreenController extends ScreenController {
 
 	// when the camera returns
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) { 
 		if (resultCode == Activity.RESULT_OK) { 
 			activity.getContentResolver().notifyChange(outputFileUri, null);
 			ContentResolver cr = activity.getContentResolver();

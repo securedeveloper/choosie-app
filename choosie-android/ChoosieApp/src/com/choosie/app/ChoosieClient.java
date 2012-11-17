@@ -192,7 +192,7 @@ public class ChoosieClient {
 			protected void onPostExecute(String jsonString) {
 				if (jsonString == null) {
 					// TODO Handle error
-					return;
+					return; 
 				}
 				try {
 					List<ChoosiePostData> choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);

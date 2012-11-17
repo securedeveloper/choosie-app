@@ -8,10 +8,12 @@ public abstract class ScreenController {
 	protected ChoosieClient client = new ChoosieClient();
 	protected View view;
 	Activity activity;
+	SuperController superController;
 
-	public ScreenController(View layout, Activity activity) {
+	public ScreenController(View layout, Activity activity, SuperController superController) {
 		this.view = layout;
 		this.activity = activity;
+		this.superController = superController;
 	}
 	
 	protected abstract void onCreate();

@@ -5,8 +5,8 @@ import android.view.View;
 
 public class MeScreenController extends ScreenController {
  
-	public MeScreenController(View layout, Activity activity) {
-		super(layout, activity);
+	public MeScreenController(View layout, Activity activity, SuperController superController) {
+		super(layout, activity, superController);
 	}
 	
 	@Override

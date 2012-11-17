@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 public class FeedScreenController extends ScreenController {
 
-	public FeedScreenController(View layout, Activity activity) {
-		super(layout, activity);
+	public FeedScreenController(View layout, Activity activity, SuperController superController) {
+		super(layout, activity, superController);
 		
 	}
 
@@ -70,7 +70,7 @@ public class FeedScreenController extends ScreenController {
 			void handleOperationFinished(Bitmap param) {
 				Log.i(ChoosieConstants.LOG_TAG,
 						"Feed after getPictureFromServer");
-				imageView.setImageBitmap(param);
+				imageView.setImageBitmap(param); 
 			}
 		});
 	}
