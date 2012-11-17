@@ -10,15 +10,15 @@ public class Caches {
 				new ResultCallback<Bitmap, String>() {
 
 					@Override
-					Bitmap getData(String param) {
+					Bitmap getData(String param,
+							Callback<Object, Void> progressCallback) {
 						return controller.getClient().getPictureFromServerSync(
-								param);
+								param, progressCallback);
 					}
 				});
 	}
 
-	public void getPictureFromServer(String urlToLoad,
-			Callback<?, Bitmap> callback) {
-		picturesCache.getValue(urlToLoad, callback);
+	public Cache<String, Bitmap> getPictureCache() {
+		return picturesCache;
 	}
 }

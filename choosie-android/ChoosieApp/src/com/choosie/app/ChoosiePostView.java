@@ -42,10 +42,6 @@ public class ChoosiePostView extends RelativeLayout {
 				});
 	}
 
-	public ChoosiePostData getChoosiePost() {
-		return choosiePost;
-	}
-
 	public void loadChoosiePost(ChoosiePostData post) {
 		this.choosiePost = post;
 		((TextView) findViewById(R.id.votes1)).setText(post.votes1 + " votes");
@@ -59,20 +55,33 @@ public class ChoosiePostView extends RelativeLayout {
 						.getResources(), R.drawable.ic_launcher));
 
 		loadImageToView(post.photo1URL,
-				(ImageView) findViewById(R.id.feedimage1));
+				(ImageView) findViewById(R.id.feedimage1),
+				(TextView) findViewById(R.id.votes1), post.votes1);
 		loadImageToView(post.photo2URL,
-				(ImageView) findViewById(R.id.feedimage2));
+				(ImageView) findViewById(R.id.feedimage2),
+				(TextView) findViewById(R.id.votes2), post.votes2);
 	}
 
-	private void loadImageToView(String urlToLoad, final ImageView imageView) {
-		this.superController.getCaches().getPictureFromServer(urlToLoad,
-				new Callback<Void, Bitmap>() {
-
+	private void loadImageToView(String urlToLoad, final ImageView imageView,
+			final TextView textView, final int votes) {
+		this.superController.getCaches().getPictureCache()
+				.getValue(urlToLoad, new Callback<Object, Bitmap>() {
 					@Override
 					void onOperationFinished(Bitmap param) {
 						Log.i(ChoosieConstants.LOG_TAG,
 								"Feed after getPictureFromServer");
 						imageView.setImageBitmap(param);
+						textView.setText(votes + " votes");
+					}
+
+					@Override
+					void onProgress(Object progress) {
+						if (!(progress instanceof Integer)) {
+							Log.e(ChoosieConstants.LOG_TAG, "Y u no integer???");
+							return;
+						}
+						textView.setText(Integer.toString((Integer) progress)
+								+ "%");
 					}
 				});
 	}

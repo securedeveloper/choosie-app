@@ -102,9 +102,9 @@ public class ChoosieClient {
 
 	static final String ROOT_URL = "http://choosieapp.appspot.com";
 
-	public Bitmap getPictureFromServerSync(final String pictureUrl) {
-		String urlToLoad;
-		urlToLoad = ROOT_URL + pictureUrl;
+	public Bitmap getPictureFromServerSync(final String pictureUrl,
+			Callback<Object, Void> progressCallback) {
+		String urlToLoad = ROOT_URL + pictureUrl;
 		Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Loading URL: "
 				+ urlToLoad);
 		URL url;
@@ -115,12 +115,15 @@ public class ChoosieClient {
 			e.printStackTrace();
 			return null;
 		}
+		progressCallback.onProgress(Integer.valueOf(50));
 		try {
 			HttpURLConnection connection;
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoInput(true);
 			connection.connect();
+			progressCallback.onProgress(Integer.valueOf(75));
 			InputStream input = connection.getInputStream();
+			progressCallback.onProgress(Integer.valueOf(95));
 			Bitmap bitmap = BitmapFactory.decodeStream(input);
 			return bitmap;
 		} catch (IOException e) {
@@ -320,7 +323,7 @@ public class ChoosieClient {
 
 	}
 
-	// TODO currently we're doing 'GET' requests to do voting. Not good. 
+	// TODO currently we're doing 'GET' requests to do voting. Not good.
 	private HttpPost createVoteHttpPostRequest(ChoosiePostData choosiePost,
 			int whichPhoto) throws UnsupportedEncodingException {
 		HttpPost postRequest;
