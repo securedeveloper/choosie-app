@@ -79,7 +79,7 @@ public class PostScreenController extends ScreenController {
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
 			mQuestion = questionText.getText().toString();
-			client.sendChoosiePostToServer(new NewChoosiePostData(mImage1, mImage2, mQuestion)); 
+			this.superController.getClient().sendChoosiePostToServer(new NewChoosiePostData(mImage1, mImage2, mQuestion)); 
 			image1.setImageResource(android.R.drawable.ic_menu_crop);
 			image2.setImageResource(android.R.drawable.ic_menu_crop);
 			questionText.setText("");

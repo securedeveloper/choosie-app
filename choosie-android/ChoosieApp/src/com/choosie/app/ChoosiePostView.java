@@ -5,29 +5,23 @@ import com.choosie.app.ChoosieClient.ChoosiePostData;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.SyncStateContract.Constants;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
+	private SuperController superController;
 
-	public ChoosiePostView(Context context) {
+	public ChoosiePostView(Context context, SuperController superController) {
 		super(context);
 		inflateLayout();
-	}
-
-	public ChoosiePostView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		inflateLayout();
-	}
-
-	public ChoosiePostView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		inflateLayout();
+		this.superController = superController;
 	}
 
 	private void inflateLayout() {
@@ -35,13 +29,24 @@ public class ChoosiePostView extends RelativeLayout {
 		LayoutInflater inflater = (LayoutInflater) this.getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_choosie_post, this);
+		
+		this.findViewById(R.id.votes1).setOnClickListener(new OnClickListener() {	
+			public void onClick(View arg0) {
+				superController.voteFor(choosiePost, 1);	
+			}
+		});
+		this.findViewById(R.id.votes2).setOnClickListener(new OnClickListener() {	
+			public void onClick(View arg0) {
+				superController.voteFor(choosiePost, 2);	
+			}
+		});
 	}
 
 	public ChoosiePostData getChoosiePost() {
 		return choosiePost;
 	}
 
-	public void loadChoosiePost(ChoosieClient client, ChoosiePostData post) {
+	public void loadChoosiePost(ChoosiePostData post) {
 		this.choosiePost = post;
 		((TextView)findViewById(R.id.votes1)).setText(post.votes1 + " votes");
 		((TextView)findViewById(R.id.votes2)).setText(post.votes2 + " votes");
@@ -54,12 +59,12 @@ public class ChoosiePostView extends RelativeLayout {
 				getContext().getResources(), R.drawable.ic_launcher));
 		
 		
-		loadImageToView(client, post.photo1URL, (ImageView)findViewById(R.id.feedimage1));
-		loadImageToView(client, post.photo2URL, (ImageView)findViewById(R.id.feedimage2));
+		loadImageToView(post.photo1URL, (ImageView)findViewById(R.id.feedimage1));
+		loadImageToView(post.photo2URL, (ImageView)findViewById(R.id.feedimage2));
 	}
 	
-	private void loadImageToView(ChoosieClient client, String urlToLoad, final ImageView imageView) {
-		client.getPictureFromServer(urlToLoad, new Callback<Bitmap>() {
+	private void loadImageToView(String urlToLoad, final ImageView imageView) {
+		this.superController.getClient().getPictureFromServer(urlToLoad, new Callback<Bitmap>() {
 
 			@Override
 			void onOperationFinished(Bitmap param) {
@@ -69,6 +74,4 @@ public class ChoosiePostView extends RelativeLayout {
 			}
 		});
 	}
-
-
 }

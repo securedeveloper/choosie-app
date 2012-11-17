@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 public class ChoosiePostsItemAdapter extends ArrayAdapter<ChoosiePostData> {
-	ChoosieClient client;
-	public ChoosiePostsItemAdapter(Context context, int textViewResourceId, ChoosieClient client) {
+	public ChoosiePostsItemAdapter(Context context, int textViewResourceId, SuperController superController) {
 		super(context, textViewResourceId);
-		this.client = client;
+		this.superController = superController;
 	}
 	int count = 0;
+	private SuperController superController;
 	synchronized int getCountAndIncrement() {
 		return ++count;
 	}
@@ -23,10 +23,10 @@ public class ChoosiePostsItemAdapter extends ArrayAdapter<ChoosiePostData> {
 		Log.i(ChoosieConstants.LOG_TAG, "ChoosiePostsItemAdapter: creating view for item. Times called: " + getCountAndIncrement());
 		
 		ChoosiePostData item = getItem(position);
-		ChoosiePostView itemView = new ChoosiePostView(this.getContext());
+		ChoosiePostView itemView = new ChoosiePostView(this.getContext(), this.superController);
 		
 		
-		itemView.loadChoosiePost(this.client, item);
+		itemView.loadChoosiePost(item);
 		
 		return itemView;
 	}

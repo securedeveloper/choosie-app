@@ -5,11 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.choosie.app.ChoosieClient.ChoosiePostData;
+
 import android.app.Activity;
+import android.util.Log;
 import android.util.Pair;
 
 public class SuperController {
-
+    private ChoosieClient client = new ChoosieClient();
 	Map<Screen, ScreenController> screenToController;
 
 	public SuperController(Activity choosieActivity) {
@@ -44,5 +47,24 @@ public class SuperController {
 			}
 		}
 	}
+	
+	
+	public void voteFor(ChoosiePostData post, int whichPhoto) {
+		Log.i(ChoosieConstants.LOG_TAG, "Issuing vote for: " + post.getKey());
+		this.client.sendVoteToServer(post, whichPhoto, new Callback<Boolean>() {
+			
+			@Override
+			void onOperationFinished(Boolean param) {
+				if (param) {
+					screenToController.get(Screen.FEED).refresh();
+				}
+			}
+		});
+	}
+
+	public ChoosieClient getClient() {
+		return client;
+	}
+
 
 }

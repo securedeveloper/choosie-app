@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -28,6 +30,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.choosie.app.ChoosieClient.ChoosiePostData;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -75,6 +79,15 @@ public class ChoosieClient {
 		String photo1URL;
 		String photo2URL;
 		String question;
+		
+
+		public String getKey() {
+			// HACK: Get post key from photo1URL
+			String url = photo1URL;
+			String key = url.substring(url.indexOf("post_key=") + "post_key=".length());
+			return key;
+		}
+
 	}
 
 	/**
@@ -282,6 +295,60 @@ public class ChoosieClient {
 			}
 		}
 		return choosiePostsFromFeed;
+	}
+
+	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto, final Callback<Boolean> callback) {
+		final HttpUriRequest postRequest;
+//		try {
+			postRequest = new HttpGet("http://choosieapp.appspot.com/vote?which_photo=" + Integer.toString(whichPhoto) + "&post_key=" + choosiePost.getKey());
+			//postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);
+//		} catch (UnsupportedEncodingException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//			return;
+//		}
+		final HttpClient httpClient = new DefaultHttpClient();
+		AsyncTask<Void, Void, Boolean> postVoteTask = new AsyncTask<Void, Void, Boolean>() {
+
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				try {
+					httpClient.execute(postRequest);
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+				return true;
+			}
+			
+			@Override
+			protected void onPostExecute(Boolean result) {
+				callback.onOperationFinished(result);
+			}
+		};
+		
+		postVoteTask.execute();
+		
+	}
+
+	private HttpPost createVoteHttpPostRequest(ChoosiePostData choosiePost, int whichPhoto)
+			throws UnsupportedEncodingException {
+		HttpPost postRequest;
+		postRequest = new HttpPost("http://choosieapp.appspot.com/vote");
+
+		MultipartEntity reqEntity = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		reqEntity.addPart("which_photo", new StringBody(Integer.toString(whichPhoto)));
+		reqEntity.addPart("post_key", new StringBody(choosiePost.getKey()));
+
+		postRequest.setEntity(reqEntity);
+		return postRequest;
 	}
 
 }

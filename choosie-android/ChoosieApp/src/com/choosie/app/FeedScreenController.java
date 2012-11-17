@@ -37,7 +37,7 @@ public class FeedScreenController extends ScreenController {
         // Must add the progress bar to the root of the layout
         ViewGroup root = (ViewGroup) view.findViewById(R.id.layout_feed);
         root.addView(progressBar);
-        choosiePostsItemAdapter = new ChoosiePostsItemAdapter(activity, R.id.layout_me, this.client);
+        choosiePostsItemAdapter = new ChoosiePostsItemAdapter(activity, R.id.layout_me, this.superController);
 		listView.setAdapter(choosiePostsItemAdapter);
 		refreshFeed();
 	}
@@ -53,9 +53,14 @@ public class FeedScreenController extends ScreenController {
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	public void refresh() {
+		refreshFeed();
+	}
 
 	private void refreshFeed() {
-		this.client.getFeedFromServer(new Callback<List<ChoosiePostData>>() {
+		this.superController.getClient().getFeedFromServer(new Callback<List<ChoosiePostData>>() {
 
 			@Override
 			void onOperationFinished(List<ChoosiePostData> param) {

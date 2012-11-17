@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.View;
 
 public abstract class ScreenController {
-	protected ChoosieClient client = new ChoosieClient();
 	protected View view;
 	Activity activity;
 	SuperController superController;
@@ -33,6 +32,10 @@ public abstract class ScreenController {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+	}
+
+	public void refresh() {
 		
 	}
 }
