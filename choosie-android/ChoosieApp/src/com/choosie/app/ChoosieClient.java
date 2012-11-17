@@ -8,7 +8,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -32,6 +36,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class ChoosieClient {
+
+	private Cache cache = new Cache();
 
 	/**
 	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the
@@ -64,6 +70,8 @@ public class ChoosieClient {
 	 * Represents the data that is returned from the server.
 	 */
 	public class ChoosiePostData {
+		int votes1;
+		int votes2;
 		String photo1URL;
 		String photo2URL;
 		String question;
@@ -84,26 +92,64 @@ public class ChoosieClient {
 				client, callback);
 		getStreamTask.execute(request);
 	}
+	
+	
     static final String ROOT_URL = "http://choosieapp.appspot.com";
-	void getPictureFromServer(String pictureUrl, Callback<Bitmap> callback) {
-		try {
-			String urlToLoad = ROOT_URL + pictureUrl;
-			Log.i(ChoosieConstants.LOG_TAG, "Loading URL: " + urlToLoad);
-			URL url = new URL(urlToLoad);
-			HttpURLConnection connection = (HttpURLConnection) url
-					.openConnection();
-			connection.setDoInput(true);
-			connection.connect();
-			InputStream input = connection.getInputStream();
-			Bitmap myBitmap = BitmapFactory.decodeStream(input);
-			callback.handleOperationFinished(myBitmap);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+    
+    Set<String> picturesCurrentlyLoaded = new HashSet<String>();
+    
+	void getPictureFromServer(final String pictureUrl, final Callback<Bitmap> callback) {
+		Bitmap result = cache.getPicture(pictureUrl);
+		if (result != null) {
+			callback.onOperationFinished(result);
+			return;
 		}
+		
+		if (picturesCurrentlyLoaded.contains(pictureUrl)) {
+			Log.e(ChoosieConstants.LOG_TAG, "Trying to add twice.");
+			return;
+		}
+		
+		picturesCurrentlyLoaded.add(pictureUrl);
+		
+		AsyncTask<Void, Void, Bitmap> getPictureTask = new AsyncTask<Void, Void, Bitmap>() {
+			String urlToLoad;
+			@Override
+			protected Bitmap doInBackground(Void... params) {
+				try {
+					urlToLoad = ROOT_URL + pictureUrl;
+					Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Loading URL: " + urlToLoad);
+					URL url = new URL(urlToLoad);
+					HttpURLConnection connection = (HttpURLConnection) url
+							.openConnection();
+					connection.setDoInput(true);
+					connection.connect();
+					InputStream input = connection.getInputStream();
+					picturesCurrentlyLoaded.remove(pictureUrl);
+					Bitmap bitmap = BitmapFactory.decodeStream(input); 
+					cache.putPicture(pictureUrl, bitmap);
+					return bitmap;
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Bitmap bitmap) {
+				if (bitmap == null) {
+					Log.w(ChoosieConstants.LOG_TAG, "getPictureFromServer: Couldn't load bitmap from: " + urlToLoad);
+					return;
+				}
+				Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Finished loading: " + urlToLoad);
+				callback.onOperationFinished(bitmap);
+			}
+		};
+		getPictureTask.execute();
 	}
 
 	/**
@@ -197,7 +243,7 @@ public class ChoosieClient {
 				try {
 					List<ChoosiePostData> choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);
 
-					callback.handleOperationFinished(choosiePostsFromFeed);
+					callback.onOperationFinished(choosiePostsFromFeed);
 				} catch (JSONException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -227,6 +273,8 @@ public class ChoosieClient {
 				postData.photo1URL = singleItemJsonObject.getString("photo1");
 				postData.photo2URL = singleItemJsonObject.getString("photo2");
 				postData.question = singleItemJsonObject.getString("question");
+				postData.votes1 = singleItemJsonObject.getInt("votes1");
+				postData.votes2 = singleItemJsonObject.getInt("votes2");
 				choosiePostsFromFeed.add(postData);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
