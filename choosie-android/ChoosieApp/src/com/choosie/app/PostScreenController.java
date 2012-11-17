@@ -2,7 +2,6 @@ package com.choosie.app;
 
 import java.io.File;
 
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -24,19 +23,26 @@ public class PostScreenController extends ScreenController {
 	private Uri outputFileUri;
 	private final int TAKE_FIRST_PICTURE = 1;
 	private final int TAKE_SECOND_PICTURE = 2;
+	private ImageView image1;
+	private ImageView image2;
+	private EditText questionText;
 
-	public PostScreenController(View layout, Activity activity, SuperController superController) {
+	public PostScreenController(View layout, Activity activity,
+			SuperController superController) {
 		super(layout, activity, superController);
 	}
 
 	@Override
 	protected void onCreate() {
-		ImageView image1 = (ImageView) view.findViewById(R.id.image_photo1);
-		ImageView image2 = (ImageView) view.findViewById(R.id.image_photo2);
+		image1 = (ImageView) view.findViewById(R.id.image_photo1);
+		image2 = (ImageView) view.findViewById(R.id.image_photo2);
 		Button buttonSubmit = (Button) view.findViewById(R.id.button_submit);
+		questionText = (EditText) view
+				.findViewById(R.id.editText_question);
+		
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
-				onImageClick(arg0);
+				onItemClick(arg0);
 			}
 		};
 		image1.setOnClickListener(listener);
@@ -70,12 +76,13 @@ public class PostScreenController extends ScreenController {
 		}
 	}
 
-	private void onImageClick(View arg0) {
+	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
-			EditText questionText = (EditText) view
-					.findViewById(R.id.editText_question);
 			mQuestion = questionText.getText().toString();
 			client.sendChoosiePostToServer(new NewChoosiePostData(mImage1, mImage2, mQuestion)); 
+			image1.setImageResource(android.R.drawable.ic_menu_crop);
+			image2.setImageResource(android.R.drawable.ic_menu_crop);
+			questionText.setText("");
 			superController.screenToController.get(Screen.FEED).showScreen();
 			superController.screenToController.get(Screen.POST).hideScreen();
 			
@@ -86,8 +93,8 @@ public class PostScreenController extends ScreenController {
 
 	// when the camera returns
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) { 
-		if (resultCode == Activity.RESULT_OK) { 
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == Activity.RESULT_OK) {
 			activity.getContentResolver().notifyChange(outputFileUri, null);
 			ContentResolver cr = activity.getContentResolver();
 			try {
