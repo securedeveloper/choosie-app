@@ -1,26 +1,44 @@
 package com.choosie.myfaceapp;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.facebook.Session;
+import com.facebook.android.AsyncFacebookRunner;
 import com.facebook.android.DialogError;
 import com.facebook.android.Facebook;
 import com.facebook.android.FacebookError;
 import com.facebook.android.Facebook.DialogListener;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap.CompressFormat;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity<MultipartEntity> extends Activity implements OnClickListener {
 	
 	Facebook fb;
 	ImageView button, pic;
@@ -33,7 +51,7 @@ public class MainActivity extends Activity implements OnClickListener {
         
         String APP_ID = getString(R.string.APP_ID);
         fb = new Facebook(APP_ID);
-        
+                
         sp = getPreferences(MODE_PRIVATE);
         String access_token = sp.getString("access_token", null);
         long expires = sp.getLong("access_exipres", 0);
@@ -52,6 +70,33 @@ public class MainActivity extends Activity implements OnClickListener {
         
         updateButtonImage();
     }
+	
+	private String getUserId()
+	{
+		JSONObject me = null;
+		try {
+			me = new JSONObject(fb.request("me"));
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String id = null;
+		try {
+			id = me.getString("id");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return id;
+	}
 
 	private void updateButtonImage() {
 		// TODO Auto-generated method stub
@@ -108,6 +153,9 @@ public class MainActivity extends Activity implements OnClickListener {
 					editor.putLong("access_exipres", fb.getAccessExpires());
 					editor.commit();
 					
+					
+					sendDetailsToServer(getUserId(), fb.getAccessToken(), fb.getAccessExpires());
+					
 					updateButtonImage(); 
 				}
 				
@@ -118,6 +166,60 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 			});
 		}
+	}
+	
+	private void sendDetailsToServer(String fb_uid, String access_token, long access_token_expdate)
+	{
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost postRequest = null;
+		
+		postRequest = createDetailsPost(fb_uid, access_token, access_token_expdate);
+
+		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = createExecuteHttpPostTask(httpClient);
+		executeHttpPostTask.execute(postRequest);
+	}
+	
+	private HttpPost createDetailsPost(String fb_uid, String access_token, long access_token_expdate) {
+		
+		HttpPost postRequest = new HttpPost(
+				"http://choosieapp.appspot.com/login");
+
+		org.apache.http.entity.mime.MultipartEntity reqEntity = new org.apache.http.entity.mime.MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		try {
+			reqEntity.addPart("fb_uid", new StringBody(fb_uid));
+			reqEntity.addPart("fb_access_token", new StringBody(access_token));
+			reqEntity.addPart("fb_access_token_expdate", new StringBody(String.valueOf(access_token_expdate)));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		postRequest.setEntity(reqEntity);
+		return postRequest;
+	}
+
+	private AsyncTask<HttpPost, Void, HttpResponse> createExecuteHttpPostTask(
+			final HttpClient httpClient) {
+		AsyncTask<HttpPost, Void, HttpResponse> executeHttpPostTask = new AsyncTask<HttpPost, Void, HttpResponse>() {
+
+			@Override
+			protected HttpResponse doInBackground(HttpPost... arg0) {
+				try {
+					return httpClient.execute(arg0[0]);
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+		};
+		return executeHttpPostTask;
 	}
 	
 	@Override
