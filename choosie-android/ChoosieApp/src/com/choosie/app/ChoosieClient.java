@@ -8,11 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -28,8 +25,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.choosie.app.ChoosieClient.ChoosiePostData;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -107,8 +102,6 @@ public class ChoosieClient {
 
 	static final String ROOT_URL = "http://choosieapp.appspot.com";
 
-	Set<String> picturesCurrentlyLoaded = new HashSet<String>();
-
 	public Bitmap getPictureFromServerSync(final String pictureUrl) {
 		String urlToLoad;
 		urlToLoad = ROOT_URL + pictureUrl;
@@ -128,7 +121,6 @@ public class ChoosieClient {
 			connection.setDoInput(true);
 			connection.connect();
 			InputStream input = connection.getInputStream();
-			picturesCurrentlyLoaded.remove(pictureUrl);
 			Bitmap bitmap = BitmapFactory.decodeStream(input);
 			return bitmap;
 		} catch (IOException e) {
@@ -327,6 +319,7 @@ public class ChoosieClient {
 
 	}
 
+	// TODO currently we're doing 'GET' requests to do voting. Not good. 
 	private HttpPost createVoteHttpPostRequest(ChoosiePostData choosiePost,
 			int whichPhoto) throws UnsupportedEncodingException {
 		HttpPost postRequest;
