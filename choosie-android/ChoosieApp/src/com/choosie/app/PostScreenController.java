@@ -97,7 +97,7 @@ public class PostScreenController extends ScreenController {
 					new Callback<Void, Void>() {
 
 						@Override
-						void onOperationFinished(Void param) {
+						void onFinish(Void param) {
 							Toast toast = Toast.makeText(
 									superController.screenToController
 											.get(Screen.FEED).activity,

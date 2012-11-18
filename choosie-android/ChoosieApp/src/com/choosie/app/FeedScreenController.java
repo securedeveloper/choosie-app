@@ -65,7 +65,7 @@ public class FeedScreenController extends ScreenController {
 				new Callback<Void, List<ChoosiePostData>>() {
 
 					@Override
-					void onOperationFinished(List<ChoosiePostData> param) {
+					void onFinish(List<ChoosiePostData> param) {
 						updateAdapterWithPosts(param);
 					}
 				});

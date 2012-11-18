@@ -115,22 +115,43 @@ public class ChoosieClient {
 			e.printStackTrace();
 			return null;
 		}
-		progressCallback.onProgress(Integer.valueOf(50));
+		progressCallback.onProgress(Integer.valueOf(1));
 		try {
 			HttpURLConnection connection;
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoInput(true);
 			connection.connect();
-			progressCallback.onProgress(Integer.valueOf(75));
-			InputStream input = connection.getInputStream();
-			progressCallback.onProgress(Integer.valueOf(95));
-			Bitmap bitmap = BitmapFactory.decodeStream(input);
+			byte[] buffer = downloadFile(progressCallback, connection);
+			progressCallback.onProgress(Integer.valueOf(99));
+			Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0,
+					buffer.length);
 			return bitmap;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private byte[] downloadFile(Callback<Object, Void> progressCallback,
+			HttpURLConnection connection) throws IOException {
+		int imageSize = connection.getContentLength();
+		progressCallback.onProgress(Integer.valueOf(2));
+		InputStream input = connection.getInputStream();
+		final int kBufferSize = 1024;
+		byte[] buffer = new byte[imageSize];
+		int downloaded = 0;
+		int bytesRead = 0;
+		while (bytesRead > -1) {
+			int remaining = imageSize - downloaded;
+			int toReadThisIteration = Math.min(remaining, kBufferSize);
+			bytesRead = input.read(buffer, downloaded, toReadThisIteration);
+			if (bytesRead >= 0) {
+				downloaded += bytesRead;
+				progressCallback.onProgress(100 * downloaded / imageSize);
+			}
+		}
+		return buffer;
 	}
 
 	/**
@@ -194,7 +215,7 @@ public class ChoosieClient {
 
 			@Override
 			protected void onPostExecute(HttpResponse httpResponse) {
-				progressCallback.onOperationFinished(null);
+				progressCallback.onFinish(null);
 
 			}
 
@@ -239,7 +260,7 @@ public class ChoosieClient {
 				try {
 					List<ChoosiePostData> choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);
 
-					callback.onOperationFinished(choosiePostsFromFeed);
+					callback.onFinish(choosiePostsFromFeed);
 				} catch (JSONException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -315,7 +336,7 @@ public class ChoosieClient {
 
 			@Override
 			protected void onPostExecute(Boolean result) {
-				callback.onOperationFinished(result);
+				callback.onFinish(result);
 			}
 		};
 

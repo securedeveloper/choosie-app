@@ -67,7 +67,7 @@ public class ChoosiePostView extends RelativeLayout {
 		this.superController.getCaches().getPictureCache()
 				.getValue(urlToLoad, new Callback<Object, Bitmap>() {
 					@Override
-					void onOperationFinished(Bitmap param) {
+					void onFinish(Bitmap param) {
 						Log.i(ChoosieConstants.LOG_TAG,
 								"Feed after getPictureFromServer");
 						imageView.setImageBitmap(param);

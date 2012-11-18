@@ -33,7 +33,7 @@ public class Cache<Key, Value> {
 				return;
 			}
 		}
-		callback.onOperationFinished(fromMemoryCache);
+		callback.onFinish(fromMemoryCache);
 	}
 
 	private boolean isCurrentlyDownloading(Key key) {
@@ -52,10 +52,6 @@ public class Cache<Key, Value> {
 			@Override
 			protected Value doInBackground(Void... params) {
 				return downloader.getData(key, new Callback<Object, Void>() {
-					@Override
-					void onOperationFinished(Void param) {
-					}
-
 					@Override
 					public void onProgress(Object progress) {
 						publishProgress(progress);
@@ -96,7 +92,7 @@ public class Cache<Key, Value> {
 			callbacksForKey.remove(key);
 		}
 		for (Callback<?, Value> callback : callbacks) {
-			callback.onOperationFinished(result);
+			callback.onFinish(result);
 		}
 	}
 

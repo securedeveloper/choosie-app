@@ -62,7 +62,7 @@ public class SuperController {
 				new Callback<Void, Boolean>() {
 
 					@Override
-					void onOperationFinished(Boolean param) {
+					void onFinish(Boolean param) {
 						if (param) {
 							screenToController.get(Screen.FEED).refresh();
 						}
