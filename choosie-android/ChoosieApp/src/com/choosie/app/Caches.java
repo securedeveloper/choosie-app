@@ -3,10 +3,18 @@ package com.choosie.app;
 import android.graphics.Bitmap;
 
 public class Caches {
-	Cache<String, Bitmap> picturesCache;
+	Cache<String, Bitmap> photosCache;
 
 	public Caches(final SuperController controller) {
-		picturesCache = new Cache<String, Bitmap>(
+		initializePhotosCache(controller);
+	}
+
+	public Cache<String, Bitmap> getPhotosCache() {
+		return photosCache;
+	}
+
+	private void initializePhotosCache(final SuperController controller) {
+		photosCache = new Cache<String, Bitmap>(
 				new ResultCallback<Bitmap, String>() {
 
 					@Override
@@ -18,7 +26,4 @@ public class Caches {
 				});
 	}
 
-	public Cache<String, Bitmap> getPictureCache() {
-		return picturesCache;
-	}
 }

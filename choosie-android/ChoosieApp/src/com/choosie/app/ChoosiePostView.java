@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,31 +48,28 @@ public class ChoosiePostView extends RelativeLayout {
 		((TextView) findViewById(R.id.votes1)).setText(post.votes1 + " votes");
 		((TextView) findViewById(R.id.votes2)).setText(post.votes2 + " votes");
 		((TextView) findViewById(R.id.feedtext)).setText(post.question);
-		((ImageView) findViewById(R.id.feedimage1))
-				.setImageBitmap(BitmapFactory.decodeResource(getContext()
-						.getResources(), R.drawable.ic_launcher));
-		((ImageView) findViewById(R.id.feedimage2))
-				.setImageBitmap(BitmapFactory.decodeResource(getContext()
-						.getResources(), R.drawable.ic_launcher));
+		((ImageView) findViewById(R.id.feedimage1)).setVisibility(View.GONE);
+		((ImageView) findViewById(R.id.feedimage2)).setVisibility(View.GONE);
 
 		loadImageToView(post.photo1URL,
 				(ImageView) findViewById(R.id.feedimage1),
-				(TextView) findViewById(R.id.votes1), post.votes1);
+				(ProgressBar) findViewById(R.id.progressBar1));
 		loadImageToView(post.photo2URL,
 				(ImageView) findViewById(R.id.feedimage2),
-				(TextView) findViewById(R.id.votes2), post.votes2);
+				(ProgressBar) findViewById(R.id.progressBar2));
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
-			final TextView textView, final int votes) {
-		this.superController.getCaches().getPictureCache()
+			final ProgressBar progressBar) {
+		this.superController.getCaches().getPhotosCache()
 				.getValue(urlToLoad, new Callback<Object, Bitmap>() {
 					@Override
 					void onFinish(Bitmap param) {
 						Log.i(ChoosieConstants.LOG_TAG,
 								"Feed after getPictureFromServer");
 						imageView.setImageBitmap(param);
-						textView.setText(votes + " votes");
+						imageView.setVisibility(View.VISIBLE);
+						progressBar.setVisibility(View.GONE);
 					}
 
 					@Override
@@ -80,8 +78,8 @@ public class ChoosiePostView extends RelativeLayout {
 							Log.e(ChoosieConstants.LOG_TAG, "Y u no integer???");
 							return;
 						}
-						textView.setText(Integer.toString((Integer) progress)
-								+ "%");
+						progressBar.setProgress((Integer) progress);
+						progressBar.setMax(100);
 					}
 				});
 	}
