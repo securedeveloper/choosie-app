@@ -6,5 +6,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="FacebookAppID">515799855110300</string>
     <string name="title_activity_success">SuccessActivity</string>
+    <string name="welcome">Welcome to Choosie!</string>
 
 </resources>
