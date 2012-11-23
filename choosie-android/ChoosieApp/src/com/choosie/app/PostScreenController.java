@@ -1,11 +1,14 @@
 package com.choosie.app;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class PostScreenController extends ScreenController {
@@ -91,31 +95,32 @@ public class PostScreenController extends ScreenController {
 			toast.show();
 		} else {
 			mQuestion = questionText.getText().toString();
+			final ProgressBar progressBar = (ProgressBar) activity
+					.findViewById(R.id.progressBarPost);
 
 			superController.getClient().sendChoosiePostToServer(
 					new NewChoosiePostData(mImage1, mImage2, mQuestion),
-					new Callback<Void, Void>() {
+					new Callback<Void, Integer, Void>() {
+
+						@Override
+						void onPre(Void param) {
+							progressBar.setProgress(0);
+							progressBar.setMax(100);
+							progressBar.setVisibility(View.VISIBLE);
+							progressBar.bringToFront();
+						}
+
+						@Override
+						void onProgress(Integer param) {
+							progressBar.setProgress(param);
+						}
 
 						@Override
 						void onFinish(Void param) {
-							Toast toast = Toast.makeText(
-									superController.screenToController
-											.get(Screen.FEED).activity,
-									"Loaded!!", Toast.LENGTH_SHORT);
-							toast.show();
+							progressBar.setVisibility(View.GONE);
 							superController.screenToController.get(Screen.FEED)
 									.refresh();
 						}
-
-						@Override
-						public void onProgress(Void Param) {
-							Toast toast = Toast.makeText(
-									superController.screenToController
-											.get(Screen.FEED).activity,
-									"Loading!!", Toast.LENGTH_SHORT);
-							toast.show();
-						}
-
 					});
 
 			// clear images and text
@@ -147,21 +152,87 @@ public class PostScreenController extends ScreenController {
 				mPhotoTemp = android.provider.MediaStore.Images.Media
 						.getBitmap(cr, outputFileUri);
 			} catch (Exception e) {
-				// Toast.makeText(this, e.getMessage(),
-				// Toast.LENGTH_SHORT).show();
+				Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT)
+						.show();
 			}
 
 			if (requestCode == TAKE_FIRST_PICTURE) {
+
+				// mImage1 = rotateBitmap(mPhotoTemp, outputFileUri); - enale
+				// when fix of memoryleaking
 				((ImageView) view.findViewById(R.id.image_photo1))
 						.setImageBitmap(mPhotoTemp);
 				mImage1 = mPhotoTemp;
 			}
 			if (requestCode == TAKE_SECOND_PICTURE) {
+				// mImage2 = rotateBitmap(mPhotoTemp, outputFileUri); - enale
+				// when fix of memoryleaking
 				((ImageView) view.findViewById(R.id.image_photo2))
 						.setImageBitmap(mPhotoTemp);
 				mImage2 = mPhotoTemp;
 			}
 		}
+	}
+
+	//for later use
+	private Bitmap rotateBitmap(Bitmap sour, Uri uriOutputFile) {
+
+		Bitmap source = sour;
+
+		ExifInterface exif;
+		int orientation = 0;
+		try {
+			exif = new ExifInterface(uriOutputFile.getPath());
+			orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+					ExifInterface.ORIENTATION_NORMAL);
+		} catch (IOException e1) {
+			Toast.makeText(activity, e1.getMessage(), Toast.LENGTH_SHORT)
+					.show();
+			e1.printStackTrace();
+		} // Since API Level 5
+
+		int rotate = 0;
+		switch (orientation) {
+		case ExifInterface.ORIENTATION_ROTATE_270:
+			rotate += 90;
+		case ExifInterface.ORIENTATION_ROTATE_180:
+			rotate += 90;
+		case ExifInterface.ORIENTATION_ROTATE_90:
+			rotate += 90;
+		}
+
+		/*
+		 * Display d = activity.getWindowManager().getDefaultDisplay(); int x =
+		 * source.getWidth(); int y = source.getHeight(); Bitmap scaledBitmap =
+		 * Bitmap.createScaledBitmap(source, x, y, true);
+		 * 
+		 * // create a matrix object Matrix matrix = new Matrix();
+		 * matrix.postRotate(rotate); // anti-clockwise by 90 degrees
+		 * 
+		 * // create a new bitmap from the original using the matrix to
+		 * transform // the result Bitmap rotatedBitmap = Bitmap
+		 * .createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(),
+		 * scaledBitmap.getHeight(), matrix, true);
+		 * 
+		 * //return rotatedBitmap;
+		 * 
+		 * return source;
+		 */
+
+		int width = source.getWidth();
+
+		int height = source.getHeight();
+
+		Matrix matrix = new Matrix();
+
+		// matrix.postScale(scaleWidth, scaleHeight);
+		matrix.postRotate(rotate);
+
+		Bitmap resizedBitmap = Bitmap.createBitmap(source, 0, 0, width, height,
+				matrix, true);
+
+		return resizedBitmap;
+
 	}
 
 }

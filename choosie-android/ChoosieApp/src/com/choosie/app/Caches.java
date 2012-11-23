@@ -19,7 +19,7 @@ public class Caches {
 
 					@Override
 					Bitmap getData(String param,
-							Callback<Object, Void> progressCallback) {
+							Callback<Void, Object, Void> progressCallback) {
 						return controller.getClient().getPictureFromServerSync(
 								param, progressCallback);
 					}

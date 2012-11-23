@@ -62,7 +62,7 @@ public class FeedScreenController extends ScreenController {
 	private void refreshFeed() {
 
 		this.superController.getClient().getFeedFromServer(
-				new Callback<Void, List<ChoosiePostData>>() {
+				new Callback<Void, Void, List<ChoosiePostData>>() {
 
 					@Override
 					void onFinish(List<ChoosiePostData> param) {

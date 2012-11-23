@@ -4,7 +4,6 @@ import com.choosie.app.ChoosieClient.ChoosiePostData;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +61,7 @@ public class ChoosiePostView extends RelativeLayout {
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
 			final ProgressBar progressBar) {
 		this.superController.getCaches().getPhotosCache()
-				.getValue(urlToLoad, new Callback<Object, Bitmap>() {
+				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
 					@Override
 					void onFinish(Bitmap param) {
 						Log.i(ChoosieConstants.LOG_TAG,

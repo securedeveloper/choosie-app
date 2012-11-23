@@ -26,6 +26,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+//import com.choosie.app.CustomMultiPartEntity.ProgressListener;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -42,26 +44,13 @@ public class ChoosieClient {
 	 * @param progressCallback
 	 */
 	public void sendChoosiePostToServer(NewChoosiePostData data,
-			Callback<Void, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 		final HttpClient httpClient = new DefaultHttpClient();
 
-		HttpPost postRequest = null;
-		try {
-			// Creates the POST request
-			postRequest = createHttpPostRequest(data);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (postRequest == null) {
-			return;
-		}
+		AsyncTask<HttpPost, Integer, HttpResponse> executePostTask = createExecuteHttpPostTask(
+				data, httpClient, progressCallback);
 
-		// Executes the POST request, async
-		AsyncTask<HttpPost, Integer, HttpResponse> executeHttpPostTask = createExecuteHttpPostTask(
-				httpClient, progressCallback);
-
-		executeHttpPostTask.execute(postRequest);
+		executePostTask.execute((HttpPost) null);
 	}
 
 	/**
@@ -87,7 +76,7 @@ public class ChoosieClient {
 	/**
 	 * Gets the feed from the server. Calls the callback when the feed is back.
 	 */
-	void getFeedFromServer(Callback<Void, List<ChoosiePostData>> callback) {
+	void getFeedFromServer(Callback<Void, Void, List<ChoosiePostData>> callback) {
 		final HttpClient client = new DefaultHttpClient();
 
 		// Creates the GET HTTP request
@@ -103,7 +92,7 @@ public class ChoosieClient {
 	static final String ROOT_URL = "http://choosieapp.appspot.com";
 
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
-			Callback<Object, Void> progressCallback) {
+			Callback<Void, Object, Void> progressCallback) {
 		String urlToLoad = ROOT_URL + pictureUrl;
 		Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Loading URL: "
 				+ urlToLoad);
@@ -133,7 +122,7 @@ public class ChoosieClient {
 		}
 	}
 
-	private byte[] downloadFile(Callback<Object, Void> progressCallback,
+	private byte[] downloadFile(Callback<Void, Object, Void> progressCallback,
 			HttpURLConnection connection) throws IOException {
 		int imageSize = connection.getContentLength();
 		progressCallback.onProgress(Integer.valueOf(2));
@@ -162,42 +151,69 @@ public class ChoosieClient {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
-	private HttpPost createHttpPostRequest(NewChoosiePostData data)
+	public CustomMultiPartEntity createMultipartContent(
+			NewChoosiePostData data,
+			final Callback<Void, Integer, Void> progressCallback)
 			throws UnsupportedEncodingException {
 		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
 		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
 
-		data.image1.compress(CompressFormat.JPEG, 40, bos1);
-		data.image2.compress(CompressFormat.JPEG, 40, bos2);
+		data.image1.compress(CompressFormat.JPEG, 20, bos1);
+		data.image2.compress(CompressFormat.JPEG, 20, bos2);
 		byte[] data1 = bos1.toByteArray();
 		byte[] data2 = bos2.toByteArray();
 
-		HttpPost postRequest = new HttpPost(
-				"http://choosieapp.appspot.com/upload");
 		ByteArrayBody bab1 = new ByteArrayBody(data1, "photo1.jpg");
 		ByteArrayBody bab2 = new ByteArrayBody(data2, "photo2.jpg");
 
-		MultipartEntity reqEntity = new MultipartEntity(
-				HttpMultipartMode.BROWSER_COMPATIBLE);
+		CustomMultiPartEntity multipartContent = new CustomMultiPartEntity(
+				new Callback<Void, Integer, Void>() {
+					@Override
+					void onProgress(Integer param) {
+						progressCallback.onProgress(param);
+					}
+				});
+		// new ProgressListener() {
+		// public void transferred(long param) {
+		// progressCallback
+		// .onProgress((int)param);//(int) (param / (float) 100) * 100);
+		// }
+		// });
+		multipartContent.addPart("photo1", bab1);
+		multipartContent.addPart("photo2", bab2);
+		multipartContent.addPart("question", new StringBody(data.question));
 
-		reqEntity.addPart("photo1", bab1);
-		reqEntity.addPart("photo2", bab2);
-		reqEntity.addPart("question", new StringBody(data.question));
-
-		postRequest.setEntity(reqEntity);
-		return postRequest;
+		return multipartContent;
 	}
 
 	private AsyncTask<HttpPost, Integer, HttpResponse> createExecuteHttpPostTask(
-			final HttpClient httpClient,
-			final Callback<Void, Void> progressCallback) {
+			final NewChoosiePostData data, final HttpClient httpClient,
+			final Callback<Void, Integer, Void> callback) {
 		AsyncTask<HttpPost, Integer, HttpResponse> executeHttpPostTask = new AsyncTask<HttpPost, Integer, HttpResponse>() {
+			Long totalSize;
+
+			@Override
+			protected void onPreExecute() {
+				callback.onPre(null);
+			}
 
 			@Override
 			protected HttpResponse doInBackground(HttpPost... arg0) {
+				CustomMultiPartEntity multipartContent = null;
+				HttpPost httpPost = new HttpPost(
+						"http://choosieapp.appspot.com/upload");
 				try {
-					publishProgress();
-					return httpClient.execute(arg0[0]);
+
+					multipartContent = createMultipartContent(data,
+							new Callback<Void, Integer, Void>() {
+								@Override
+								void onProgress(Integer param) {
+									publishProgress((int) ((param / (float) totalSize) * 100));
+								}
+							});
+					totalSize = multipartContent.getContentLength();
+					httpPost.setEntity(multipartContent);
+					return httpClient.execute(httpPost);
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -210,13 +226,13 @@ public class ChoosieClient {
 
 			@Override
 			protected void onProgressUpdate(Integer... progress) {
-				progressCallback.onProgress(null);
+				callback.onProgress(progress[0]);
 			}
 
 			@Override
 			protected void onPostExecute(HttpResponse httpResponse) {
-				progressCallback.onFinish(null);
-
+				// TODO: check response
+				callback.onFinish(null);
 			}
 
 		};
@@ -232,7 +248,7 @@ public class ChoosieClient {
 	 */
 	private AsyncTask<HttpGet, Void, String> createGetFeedTask(
 			final HttpClient client,
-			final Callback<Void, List<ChoosiePostData>> callback) {
+			final Callback<Void, Void, List<ChoosiePostData>> callback) {
 		AsyncTask<HttpGet, Void, String> getStreamTask = new AsyncTask<HttpGet, Void, String>() {
 
 			@Override
@@ -302,7 +318,7 @@ public class ChoosieClient {
 	}
 
 	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto,
-			final Callback<Void, Boolean> callback) {
+			final Callback<Void, Void, Boolean> callback) {
 		final HttpUriRequest postRequest;
 		// try {
 		postRequest = new HttpGet(

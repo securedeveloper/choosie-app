@@ -59,7 +59,7 @@ public class SuperController {
 	public void voteFor(ChoosiePostData post, int whichPhoto) {
 		Log.i(ChoosieConstants.LOG_TAG, "Issuing vote for: " + post.getKey());
 		this.client.sendVoteToServer(post, whichPhoto,
-				new Callback<Void, Boolean>() {
+				new Callback<Void, Void, Boolean>() {
 
 					@Override
 					void onFinish(Boolean param) {
