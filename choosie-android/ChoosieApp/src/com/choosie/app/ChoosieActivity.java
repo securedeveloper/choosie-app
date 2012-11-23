@@ -1,5 +1,7 @@
 package com.choosie.app;
 
+import com.facebook.FacebookActivity;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-public class ChoosieActivity extends Activity {
+public class ChoosieActivity extends FacebookActivity {
 
 	SuperController superController;
 
@@ -35,6 +37,7 @@ public class ChoosieActivity extends Activity {
 
 		superController = new SuperController(this);
 
+		this.openSession();
 	}
 
 	@Override
@@ -57,10 +60,11 @@ public class ChoosieActivity extends Activity {
 		}
 	}
 
-	// think to change it!
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		superController.screenToController.get(Screen.POST).onActivityResult(
-				requestCode, resultCode, data);
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (false) {
+			superController.screenToController.get(Screen.POST).onActivityResult(
+					requestCode, resultCode, data);
+		}
 	}
 
 }
