@@ -14,7 +14,6 @@ class User(db.Model):
     username = db.StringProperty()
     created_at = db.DateTimeProperty(auto_now_add=True)
     last_login = db.DateTimeProperty(auto_now_add=True,required=True)
-    # email = db.EmailProperty()
     gender = db.StringProperty()
     fb_access_token = db.StringProperty(required=True)
     fb_access_token_expdate = db.DateTimeProperty(required=True)

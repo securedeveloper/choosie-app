@@ -7,16 +7,17 @@ from image_handler import ImageHandler
 from vote_handler import VoteHandler
 from homepage_handler import HomepageHandler
 from login_handler import LoginHandler
-
+from comments_handler import CommentsHandler
 
 from google.appengine.ext import db
 from google.appengine.api import images
 
 app = webapp2.WSGIApplication([('/', HomepageHandler),
-                               ('/upload', UploadHandler),
+                               ('/posts/new', UploadHandler),
                                ('/photo', ImageHandler),
-                               ('/vote', VoteHandler),
+                               ('/votes/new', VoteHandler),
                                ('/feed', FeedHandler),
-                               ('/login', LoginHandler)
+                               ('/login', LoginHandler),
+                               ('/comments/new', CommentsHandler)
                                ],
                               debug=True)

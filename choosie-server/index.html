@@ -17,9 +17,13 @@
       .chs-img {
     	max-width: 375px;
       }
+      .chs-img{
+        float:right;
+      }
       .chs-or {
-    	width: 40px;
+    	  width: 40px;
         font-weight: bold;
+        margin-left:30px;
       }
       .chs-post {
 	    border-style: solid;
@@ -27,6 +31,11 @@
 	    margin-bottom: -1px;
 	    border-color: black;
 		padding: 10px;
+      }
+      .comments {
+        display: block;
+        /*float: right;*/
+        /*padding-top: 30px;*/
       }
       .chs-votes {
 		margin: 10px;
@@ -79,31 +88,39 @@
 	<div class="chs-stream">
     <h1>Choosie Public Feed</h1>
       <div class="chs-feed">
-      {% for choosie_post in choosie_posts %}
-        <div class="chs-post">
-          <div>
-            <img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key() }}"></img>
-            <span class="chs-or">or</span>
-            <img class="chs-img" src="/photo?which_photo=2&post_key={{ choosie_post.key() }}"></img>
+        {% for choosie_post in choosie_posts %}
+          <div class="chs-post">
+            <div class="images">
+             <img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key() }}"></img>
+              <img class="chs-img-right" src="/photo?which_photo=2&post_key={{ choosie_post.key() }}"></img>
+            </div>
+          <div class="chs-votes">
+        	 <a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=1&post_key={{ choosie_post.key() }}">
+  	       {{ choosie_post.votes1 }} votes
+  	       <span class="vote">Vote!!</span>
+  	       </a>
+        	 <a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=2&post_key={{ choosie_post.key() }}">
+  	         {{ choosie_post.votes2 }} votes
+  	           <span class="vote">Vote!!</span>
+  	       </a>
           </div>
-      <div class="chs-votes">
-      	<a class="chs-vote" href="/vote?which_photo=1&post_key={{ choosie_post.key() }}">
-	       {{ choosie_post.votes1 }} votes
-	      <span class="vote">Vote!!</span>
-	    </a>
-      	<a class="chs-vote" href="/vote?which_photo=2&post_key={{ choosie_post.key() }}">
-	      {{ choosie_post.votes2 }} votes
-	    <span class="vote">Vote!!</span>
-	    </a>
-      	</div>
           <div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
+          <div class="comments">
+          <form action="/comments/new" enctype="multipart/form-data" method="post">
+            Comment:<input type="text" name="text"/>
+            <input type="hidden" value="624205547" name="fb_uid"/>
+            <br>
+            <input type="hidden" name="post_key" value="{{choosie_post.key()}}"/>
+            <input type="submit" value="Add">
+          </form>
         </div>
-      {% endfor %}
-      </div>
+        </div>
+        {% endfor %}
+    </div>
 	</div>
     <div class="chs-form">
       <h1>Upload your dilemma</h1>
-      <form action="/upload" enctype="multipart/form-data" method="post">
+      <form action="/posts/new" enctype="multipart/form-data" method="post">
         <div>Photo 1: <input type="file" name="photo1" /></div>
         <div>Photo 2: <input type="file" name="photo2" /></div>
         <div>Question: <input type="text" name="question" value="yo-app!"/></div>

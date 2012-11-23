@@ -1,6 +1,9 @@
 from google.appengine.ext import db
 from google.appengine.api import images
 from module_user import User
+from module_vote import Vote
+from module_comment import Comment
+from utils import Utils
 import logging
 
 class ChoosiePost(db.Model):
@@ -14,6 +17,8 @@ class ChoosiePost(db.Model):
 
   def to_json(self):
     return {"user": self.user.to_short_json(),
+            "votes": Utils.items_to_json(self.votes()),
+            "comments": Utils.items_to_json(self.comments()),
             "photo1": self.photo_path(1),
             "photo2": self.photo_path(2),
             "votes1": int(self.votes1),
@@ -22,12 +27,11 @@ class ChoosiePost(db.Model):
             "created_at": str(self.created_at)
            }
 
+  def votes(self):
+    return Vote.all().ancestor(self)
+
+  def comments(self):
+    return Comment.all().ancestor(self)
+
   def photo_path(self, which_photo):
     return '/photo?which_photo=%s&post_key=%s' % (which_photo, self.key()) 
-
-  @staticmethod
-  def posts_to_json(choosie_posts):
-    feed = []
-    for choosie_post in choosie_posts:
-      feed.append(choosie_post.to_json())
-    return feed;
