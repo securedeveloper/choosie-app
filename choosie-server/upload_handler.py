@@ -23,8 +23,6 @@ class UploadHandler(webapp2.RequestHandler):
 
     logging.info("user found!")
     choosie_post = ChoosiePost(question = self.request.get('question'),
-                               votes1 = 0,
-                               votes2 = 0,
                                user = user,
                                photo1 = db.Blob(self.shrinkImage(self.request.get('photo1'))),
                                photo2 = db.Blob(self.shrinkImage(self.request.get('photo2'))))

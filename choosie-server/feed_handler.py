@@ -7,9 +7,7 @@ import logging
 
 class FeedHandler(webapp2.RequestHandler):
   def get(self):
-    logging.info("esh")
     choosie_posts = db.GqlQuery("SELECT * FROM ChoosiePost ORDER BY created_at DESC LIMIT 10")
-    logging.info(choosie_posts)
     self.response.out.write(json.dumps({"feed" : ChoosiePost.posts_to_json(choosie_posts)}))
 
   def feed_by_user(self, user):

@@ -29,11 +29,9 @@ class User(db.Model):
         user.put()
 
     @staticmethod
+    #returns choosie_user from fb_user
     def fb_user_to_choosie_user(fb_user_json, fb_access_token, fb_access_token_expdate):
       data = json.loads(fb_user_json)
-      fb_uid = data["id"]
-      # email = data.get("email")
-      # email = email if (email is not None) else None
      
       user = User(fb_uid = data["id"],
                   first_name = data["first_name"],
@@ -51,4 +49,11 @@ class User(db.Model):
 
     def avatar(self):
       return 'http://graph.facebook.com/%s/picture' % self.username
+
+    def to_short_json(self):
+      return {"fb_uid": self.fb_uid,
+              "first_name": self.first_name,
+              "last_name": self.last_name,
+              "avatar": self.avatar()}
+    
 
