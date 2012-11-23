@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +70,8 @@ public class ChoosieClient {
 		String photo1URL;
 		String photo2URL;
 		String question;
+		public String userName;
+		public String userPhotoURL;
 
 		public String getKey() {
 			// HACK: Get post key from photo1URL
@@ -99,7 +103,7 @@ public class ChoosieClient {
 
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
 			Callback<Void, Object, Void> progressCallback) {
-		String urlToLoad = ROOT_URL + pictureUrl;
+		String urlToLoad = pictureUrl;
 		Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Loading URL: "
 				+ urlToLoad);
 		URL url;
@@ -115,6 +119,7 @@ public class ChoosieClient {
 			HttpURLConnection connection;
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoInput(true);
+			connection.setInstanceFollowRedirects(true);
 			connection.connect();
 			byte[] buffer = downloadFile(progressCallback, connection);
 			progressCallback.onProgress(Integer.valueOf(99));
@@ -155,7 +160,7 @@ public class ChoosieClient {
 				}
 				return null;
 			}
-			
+
 			@Override
 			protected void onPostExecute(Void result) {
 				onLoginComplete.onFinish(null);
@@ -182,6 +187,16 @@ public class ChoosieClient {
 	private byte[] downloadFile(Callback<Void, Object, Void> progressCallback,
 			HttpURLConnection connection) throws IOException {
 		int imageSize = connection.getContentLength();
+		// Sometimes the size isn't known: just read the stream.
+		if (imageSize <= 0) {
+			ByteArrayBuffer buf = new ByteArrayBuffer(1024);
+			int b;
+			while ((b = connection.getInputStream().read()) > -1) {
+				buf.append(b);
+			}
+			return buf.toByteArray();
+		}
+		// When it is known, read the stream and public progress.
 		progressCallback.onProgress(Integer.valueOf(2));
 		InputStream input = connection.getInputStream();
 		final int kBufferSize = 1024;
@@ -355,18 +370,26 @@ public class ChoosieClient {
 	 */
 	private List<ChoosiePostData> convertJsonToChoosiePosts(String jsonString)
 			throws JSONException {
-		JSONObject jsonObject = new JSONObject(jsonString);
-		JSONArray jsonArray = jsonObject.getJSONArray("feed");
+		JSONObject feedJsonObject = new JSONObject(jsonString);
+		JSONArray jsonPostsArray = feedJsonObject.getJSONArray("feed");
 		List<ChoosiePostData> choosiePostsFromFeed = new ArrayList<ChoosieClient.ChoosiePostData>();
-		for (int i = 0; i < jsonArray.length(); i++) {
+		for (int i = 0; i < jsonPostsArray.length(); i++) {
 			try {
-				JSONObject singleItemJsonObject = jsonArray.getJSONObject(i);
+				JSONObject singleItemJsonObject = jsonPostsArray
+						.getJSONObject(i);
 				ChoosiePostData postData = new ChoosiePostData();
-				postData.photo1URL = singleItemJsonObject.getString("photo1");
-				postData.photo2URL = singleItemJsonObject.getString("photo2");
+				postData.photo1URL = ROOT_URL
+						+ singleItemJsonObject.getString("photo1");
+				postData.photo2URL = ROOT_URL
+						+ singleItemJsonObject.getString("photo2");
 				postData.question = singleItemJsonObject.getString("question");
 				postData.votes1 = singleItemJsonObject.getInt("votes1");
 				postData.votes2 = singleItemJsonObject.getInt("votes2");
+				JSONObject userJsonObject = singleItemJsonObject
+						.getJSONObject("user");
+				postData.userName = userJsonObject.getString("first_name")
+						+ " " + userJsonObject.getString("last_name");
+				postData.userPhotoURL = userJsonObject.getString("avatar");
 				choosiePostsFromFeed.add(postData);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

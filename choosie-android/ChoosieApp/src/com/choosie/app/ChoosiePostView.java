@@ -47,8 +47,11 @@ public class ChoosiePostView extends RelativeLayout {
 		((TextView) findViewById(R.id.votes1)).setText(post.votes1 + " votes");
 		((TextView) findViewById(R.id.votes2)).setText(post.votes2 + " votes");
 		((TextView) findViewById(R.id.feedtext)).setText(post.question);
+		((TextView) findViewById(R.id.feed_name)).setText(post.userName);
 		((ImageView) findViewById(R.id.feedimage1)).setVisibility(View.GONE);
 		((ImageView) findViewById(R.id.feedimage2)).setVisibility(View.GONE);
+		((ImageView) findViewById(R.id.feed_userimage))
+				.setVisibility(View.GONE);
 
 		loadImageToView(post.photo1URL,
 				(ImageView) findViewById(R.id.feedimage1),
@@ -56,6 +59,8 @@ public class ChoosiePostView extends RelativeLayout {
 		loadImageToView(post.photo2URL,
 				(ImageView) findViewById(R.id.feedimage2),
 				(ProgressBar) findViewById(R.id.progressBar2));
+		loadImageToView(post.userPhotoURL,
+				(ImageView) findViewById(R.id.feed_userimage), null);
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
@@ -68,7 +73,9 @@ public class ChoosiePostView extends RelativeLayout {
 								"Feed after getPictureFromServer");
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
-						progressBar.setVisibility(View.GONE);
+						if (progressBar != null) {
+							progressBar.setVisibility(View.GONE);
+						} 
 					}
 
 					@Override
@@ -77,8 +84,10 @@ public class ChoosiePostView extends RelativeLayout {
 							Log.e(ChoosieConstants.LOG_TAG, "Y u no integer???");
 							return;
 						}
-						progressBar.setProgress((Integer) progress);
-						progressBar.setMax(100);
+						if (progressBar != null) {
+							progressBar.setProgress((Integer) progress);
+							progressBar.setMax(100);
+						}
 					}
 				});
 	}
