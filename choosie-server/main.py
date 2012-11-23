@@ -2,7 +2,7 @@ import webapp2
 
 # Handlers
 from feed_handler import FeedHandler
-from upload_handler import UploadHandler
+from posts_handler import PostsHandler
 from image_handler import ImageHandler
 from vote_handler import VoteHandler
 from homepage_handler import HomepageHandler
@@ -13,7 +13,7 @@ from google.appengine.ext import db
 from google.appengine.api import images
 
 app = webapp2.WSGIApplication([('/', HomepageHandler),
-                               ('/posts/new', UploadHandler),
+                               ('/posts/new', PostsHandler),
                                ('/photo', ImageHandler),
                                ('/votes/new', VoteHandler),
                                ('/feed', FeedHandler),

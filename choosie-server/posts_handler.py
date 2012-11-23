@@ -5,7 +5,7 @@ from google.appengine.ext import db
 from module_user import User
 import logging
 
-class UploadHandler(webapp2.RequestHandler):
+class PostsHandler(webapp2.RequestHandler):
   def shrinkImage(self, data):
     img = images.Image(data)
     img.resize(width=200, height=200)
