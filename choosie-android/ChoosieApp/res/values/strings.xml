@@ -13,7 +13,8 @@
     <string name="button_submit">submit</string>
     <string name="editTextQuestion">Enter a question</string>
     <string name="title_activity_login">LoginActivity</string>
-    <string name="welcome">Welcome to Choosie!</string>
+    <string name="welcome">Welcome to </string>
     <string name="app_id">515799855110300</string>
+    <string name="title_activity_start">StartActivity</string>
 
 </resources>
