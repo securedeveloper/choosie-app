@@ -12,12 +12,13 @@ import android.util.Log;
 import android.util.Pair;
 
 public class SuperController {
-	private ChoosieClient client = new ChoosieClient();
+	private ChoosieClient client;
 	private final Caches caches = new Caches(this);
 	Map<Screen, ScreenController> screenToController;
 
-	public SuperController(Activity choosieActivity) {
-
+	public SuperController(Activity choosieActivity, FacebookDetails fbDetails) {
+		client = new ChoosieClient(fbDetails);
+		
 		List<Pair<Screen, ScreenController>> screenControllerPairs = new ArrayList<Pair<Screen, ScreenController>>();
 
 		screenControllerPairs
@@ -43,6 +44,13 @@ public class SuperController {
 		for (ScreenController screen : screenToController.values()) {
 			screen.onCreate();
 		}
+		
+		client.login(new Callback<Void, Void, Void>() {
+			@Override
+			void onFinish(Void param) {
+				screenToController.get(Screen.FEED).refresh();
+			}
+		});
 	}
 
 	public void switchToScreen(Screen screenToShow) {

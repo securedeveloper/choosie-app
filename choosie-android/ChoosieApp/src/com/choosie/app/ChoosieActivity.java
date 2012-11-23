@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-public class ChoosieActivity extends FacebookActivity {
+public class ChoosieActivity extends Activity {
 
 	SuperController superController;
 
@@ -35,9 +35,10 @@ public class ChoosieActivity extends FacebookActivity {
 		RelativeLayout layoutMe = (RelativeLayout) findViewById(R.id.layout_me);
 		layoutMe.addView(layoutInflater.inflate(R.layout.screen_me, null));
 
-		superController = new SuperController(this);
+		FacebookDetails fbDetails = (FacebookDetails) getIntent()
+				.getSerializableExtra("fb_details");
 
-		this.openSession();
+		superController = new SuperController(this, fbDetails);
 	}
 
 	@Override
@@ -61,10 +62,8 @@ public class ChoosieActivity extends FacebookActivity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (false) {
-			superController.screenToController.get(Screen.POST).onActivityResult(
-					requestCode, resultCode, data);
-		}
+		superController.screenToController.get(Screen.POST).onActivityResult(
+				requestCode, resultCode, data);
 	}
 
 }

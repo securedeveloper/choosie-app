@@ -49,8 +49,14 @@ public class StartActivity extends FacebookActivity {
 							if (user != null) {
 								TextView welcome = (TextView) findViewById(R.id.welcome);
 								welcome.setText("Hello " + user.getName() + "!");
-								
-								Intent intent = new Intent(StartActivity.this, ChoosieActivity.class);
+
+								Intent intent = new Intent(StartActivity.this,
+										ChoosieActivity.class);
+								FacebookDetails details = new FacebookDetails(
+										user.getId(), getSession()
+												.getAccessToken(), getSession()
+												.getExpirationDate().getTime());
+								intent.putExtra("fb_details", details);
 								startActivity(intent);
 							}
 						}

@@ -36,6 +36,12 @@ import android.util.Log;
 
 public class ChoosieClient {
 
+	private FacebookDetails fbDetails;
+
+	public ChoosieClient(FacebookDetails fbDetails) {
+		this.fbDetails = fbDetails;
+	}
+
 	/**
 	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the
 	 * server.
@@ -122,6 +128,57 @@ public class ChoosieClient {
 		}
 	}
 
+	public void login(final Callback<Void, Void, Void> onLoginComplete) {
+		final HttpClient httpClient = new DefaultHttpClient();
+		final HttpPost postRequest = new HttpPost(ROOT_URL + "/login");
+
+		try {
+			createLoginPostRequest(postRequest);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+
+		AsyncTask<Void, Void, Void> loginTask = new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				try {
+					httpClient.execute(postRequest);
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+			
+			@Override
+			protected void onPostExecute(Void result) {
+				onLoginComplete.onFinish(null);
+			}
+		};
+		loginTask.execute();
+	}
+
+	private void createLoginPostRequest(HttpPost postRequest)
+			throws UnsupportedEncodingException {
+		MultipartEntity reqEntity = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		reqEntity.addPart("fb_uid", new StringBody(this.fbDetails.getFb_uid()));
+		reqEntity.addPart("fb_access_token",
+				new StringBody(this.fbDetails.getAccess_token()));
+		reqEntity.addPart(
+				"fb_access_token_expdate",
+				new StringBody(String.valueOf(this.fbDetails
+						.getAccess_token_expdate())));
+		postRequest.setEntity(reqEntity);
+	}
+
 	private byte[] downloadFile(Callback<Void, Object, Void> progressCallback,
 			HttpURLConnection connection) throws IOException {
 		int imageSize = connection.getContentLength();
@@ -182,6 +239,8 @@ public class ChoosieClient {
 		multipartContent.addPart("photo1", bab1);
 		multipartContent.addPart("photo2", bab2);
 		multipartContent.addPart("question", new StringBody(data.question));
+		multipartContent.addPart("fb_uid",
+				new StringBody(this.fbDetails.getFb_uid()));
 
 		return multipartContent;
 	}

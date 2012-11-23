@@ -31,30 +31,11 @@
 <!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
 <!--             </intent-filter> -->
         </activity>
-        <activity
-            android:name=".FeedActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_feed"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".PostActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_post"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
-            android:name=".MeActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_me"
-            android:screenOrientation="portrait" >
-        </activity>
 		<activity
             android:name=".StartActivity"
             android:label="@string/title_activity_start" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
