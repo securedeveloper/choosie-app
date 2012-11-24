@@ -17,11 +17,17 @@ class VoteHandler(webapp2.RequestHandler):
                user=user,
                vote_for=int(vote_for))
     
-    if vote.is_exist():
-      self.write_error("already voted!")
+    prev_vote = vote.prev_vote_for_user_for_post()
+    #if the user voted to the same post but for different item, updating the vote
+    if (prev_vote != None and prev_vote.vote_for != vote_for):
+      prev_vote.vote_for = vote_for
+      prev_vote.put()
+      self.redirect('/')
+    #if voted to same pic - error
+    elif(prev_vote != None):
+       self.write_error("already voted!")
     else:
       vote.put()
-      vote.set_votes()
       self.redirect('/')
     
   def post(self):

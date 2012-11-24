@@ -7,22 +7,13 @@ class Vote(db.Model):
   created_at = db.DateTimeProperty(auto_now_add=True)
   vote_for= db.IntegerProperty(required=True,choices=set([1, 2]))
 
-  def set_votes(self):
-    if self.vote_for == 1:
-      self.parent().votes1 += 1
-    elif self.vote_for == 2:
-      self.parent().votes2 += 1
-    self.parent().put()
-
-  #Checks if vote with the same user and post already exists
-
-  def is_exist(self):
-    q = Vote.all().filter("user =", self.user).ancestor(self.parent())
-    return q.get() != None
+  #Returns previous vote for the same user for the same post
+  def prev_vote_for_user_for_post(self):
+    return Vote.all().filter("user =", self.user).ancestor(self.parent()).get()
 
   def to_json(self):
     return {
-              "fb_uid": self.user.fb_uid,
-              "vote_for":self.vote_for,
-              "created_at": str(self.created_at)
+            "fb_uid": self.user.fb_uid,
+            "vote_for":self.vote_for,
+            "created_at": str(self.created_at.replace(microsecond=0))
            }

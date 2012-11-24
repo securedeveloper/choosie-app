@@ -10,4 +10,4 @@ class Comment(db.Model):
   def to_json(self):
     return {"fb_uid": self.user.fb_uid,
             "text": self.text,
-            "created_at": str(self.created_at)}
+            "created_at": str(self.created_at.replace(microsecond=0))}
