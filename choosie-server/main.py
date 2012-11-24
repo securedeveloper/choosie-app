@@ -8,7 +8,6 @@ from vote_handler import VoteHandler
 from homepage_handler import HomepageHandler
 from login_handler import LoginHandler
 from comments_handler import CommentsHandler
-
 from google.appengine.ext import db
 from google.appengine.api import images
 

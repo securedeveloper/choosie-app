@@ -16,7 +16,8 @@ class ChoosiePost(db.Model):
   user = db.ReferenceProperty(User,required=True)
 
   def to_json(self):
-    return {"user": self.user.to_short_json(),
+    return {"key": str(self.key()),
+            "user": self.user.to_short_json(),
             "votes": Utils.items_to_json(self.votes()),
             "comments": Utils.items_to_json(self.comments()),
             "photo1": self.photo_path(1),
