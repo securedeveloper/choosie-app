@@ -5,19 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.choosie.app.ChoosieClient.ChoosiePostData;
+import com.choosie.app.Client.ChoosiePostData;
 
 import android.app.Activity;
 import android.util.Log;
 import android.util.Pair;
 
 public class SuperController {
-	private ChoosieClient client;
+	private Client client;
 	private final Caches caches = new Caches(this);
 	Map<Screen, ScreenController> screenToController;
 
 	public SuperController(Activity choosieActivity, FacebookDetails fbDetails) {
-		client = new ChoosieClient(fbDetails);
+		client = new Client(fbDetails);
 		
 		List<Pair<Screen, ScreenController>> screenControllerPairs = new ArrayList<Pair<Screen, ScreenController>>();
 
@@ -65,7 +65,7 @@ public class SuperController {
 	}
 
 	public void voteFor(ChoosiePostData post, int whichPhoto) {
-		Log.i(ChoosieConstants.LOG_TAG, "Issuing vote for: " + post.getKey());
+		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post.getKey());
 		this.client.sendVoteToServer(post, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 
@@ -78,7 +78,7 @@ public class SuperController {
 				});
 	}
 
-	public ChoosieClient getClient() {
+	public Client getClient() {
 		return client;
 	}
 

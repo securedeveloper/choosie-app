@@ -39,6 +39,4 @@ public class FacebookDetails implements Serializable{
 	public void setAccess_token_expdate(long access_token_expdate) {
 		this.access_token_expdate = access_token_expdate;
 	}
-	
-	
 }

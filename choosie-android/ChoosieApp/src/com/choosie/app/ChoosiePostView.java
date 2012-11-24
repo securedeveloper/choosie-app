@@ -1,6 +1,6 @@
 package com.choosie.app;
 
-import com.choosie.app.ChoosieClient.ChoosiePostData;
+import com.choosie.app.Client.ChoosiePostData;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -23,7 +23,7 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void inflateLayout() {
-		Log.i(ChoosieConstants.LOG_TAG, "ChoosiePostView: inflateLayout");
+		Log.i(Constants.LOG_TAG, "ChoosiePostView: inflateLayout");
 		LayoutInflater inflater = (LayoutInflater) this.getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_choosie_post, this);
@@ -69,7 +69,7 @@ public class ChoosiePostView extends RelativeLayout {
 				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
 					@Override
 					void onFinish(Bitmap param) {
-						Log.i(ChoosieConstants.LOG_TAG,
+						Log.i(Constants.LOG_TAG,
 								"Feed after getPictureFromServer");
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
@@ -81,7 +81,7 @@ public class ChoosiePostView extends RelativeLayout {
 					@Override
 					void onProgress(Object progress) {
 						if (!(progress instanceof Integer)) {
-							Log.e(ChoosieConstants.LOG_TAG, "Y u no integer???");
+							Log.e(Constants.LOG_TAG, "Y u no integer???");
 							return;
 						}
 						if (progressBar != null) {

@@ -2,7 +2,7 @@ package com.choosie.app;
 
 import java.util.List;
 
-import com.choosie.app.ChoosieClient.ChoosiePostData;
+import com.choosie.app.Client.ChoosiePostData;
 
 import android.app.Activity;
 import android.util.Log;
@@ -23,7 +23,7 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onCreate() {
-		Log.i(ChoosieConstants.LOG_TAG, "Feed.onShow()");
+		Log.i(Constants.LOG_TAG, "Feed.onShow()");
 		// Create a progress bar to display while the list loads
 		ProgressBar progressBar = new ProgressBar(this.activity);
 		progressBar.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -44,7 +44,7 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
-		Log.i(ChoosieConstants.LOG_TAG, "Feed.onShow()");
+		Log.i(Constants.LOG_TAG, "Feed.onShow()");
 		refreshFeed();
 	}
 
@@ -73,10 +73,10 @@ public class FeedScreenController extends ScreenController {
 	}
 
 	protected void updateAdapterWithPosts(List<ChoosiePostData> param) {
-		Log.i(ChoosieConstants.LOG_TAG, "Feed: loadPosts. Posts count: "
+		Log.i(Constants.LOG_TAG, "Feed: loadPosts. Posts count: "
 				+ param.size());
 		if (param.size() == 0) {
-			Log.i(ChoosieConstants.LOG_TAG, "No images in feed.");
+			Log.i(Constants.LOG_TAG, "No images in feed.");
 		}
 		choosiePostsItemAdapter.clear();
 		for (ChoosiePostData item : param) {

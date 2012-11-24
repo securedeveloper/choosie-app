@@ -1,6 +1,6 @@
 package com.choosie.app;
 
-import com.choosie.app.ChoosieClient.ChoosiePostData;
+import com.choosie.app.Client.ChoosiePostData;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,7 +24,7 @@ public class ChoosiePostsItemAdapter extends ArrayAdapter<ChoosiePostData> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.i(ChoosieConstants.LOG_TAG,
+		Log.i(Constants.LOG_TAG,
 				"ChoosiePostsItemAdapter: creating view for item. Times called: "
 						+ getCountAndIncrement());
 

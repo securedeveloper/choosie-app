@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,20 +26,17 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-//import com.choosie.app.CustomMultiPartEntity.ProgressListener;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class ChoosieClient {
+public class Client {
 
 	private FacebookDetails fbDetails;
 
-	public ChoosieClient(FacebookDetails fbDetails) {
+	public Client(FacebookDetails fbDetails) {
 		this.fbDetails = fbDetails;
 	}
 
@@ -90,8 +86,7 @@ public class ChoosieClient {
 		final HttpClient client = new DefaultHttpClient();
 
 		// Creates the GET HTTP request
-		final HttpGet request = new HttpGet(
-				"http://choosieapp.appspot.com/feed");
+		final HttpGet request = new HttpGet(Constants.URIs.FEED_URI);
 
 		// Executes the GET request async
 		AsyncTask<HttpGet, Void, String> getStreamTask = createGetFeedTask(
@@ -99,12 +94,10 @@ public class ChoosieClient {
 		getStreamTask.execute(request);
 	}
 
-	static final String ROOT_URL = "http://choosieapp.appspot.com";
-
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
 			Callback<Void, Object, Void> progressCallback) {
 		String urlToLoad = pictureUrl;
-		Log.i(ChoosieConstants.LOG_TAG, "getPictureFromServer: Loading URL: "
+		Log.i(Constants.LOG_TAG, "getPictureFromServer: Loading URL: "
 				+ urlToLoad);
 		URL url;
 		try {
@@ -135,7 +128,8 @@ public class ChoosieClient {
 
 	public void login(final Callback<Void, Void, Void> onLoginComplete) {
 		final HttpClient httpClient = new DefaultHttpClient();
-		final HttpPost postRequest = new HttpPost(ROOT_URL + "/login");
+		final HttpPost postRequest = new HttpPost(
+				Constants.URIs.ROOT_URL + "/login");
 
 		try {
 			createLoginPostRequest(postRequest);
@@ -275,9 +269,8 @@ public class ChoosieClient {
 			protected HttpResponse doInBackground(HttpPost... arg0) {
 				CustomMultiPartEntity multipartContent = null;
 				HttpPost httpPost = new HttpPost(
-						"http://choosieapp.appspot.com/upload");
+						Constants.URIs.NEW_POSTS_URI);
 				try {
-
 					multipartContent = createMultipartContent(data,
 							new Callback<Void, Integer, Void>() {
 								@Override
@@ -372,15 +365,15 @@ public class ChoosieClient {
 			throws JSONException {
 		JSONObject feedJsonObject = new JSONObject(jsonString);
 		JSONArray jsonPostsArray = feedJsonObject.getJSONArray("feed");
-		List<ChoosiePostData> choosiePostsFromFeed = new ArrayList<ChoosieClient.ChoosiePostData>();
+		List<ChoosiePostData> choosiePostsFromFeed = new ArrayList<Client.ChoosiePostData>();
 		for (int i = 0; i < jsonPostsArray.length(); i++) {
 			try {
 				JSONObject singleItemJsonObject = jsonPostsArray
 						.getJSONObject(i);
 				ChoosiePostData postData = new ChoosiePostData();
-				postData.photo1URL = ROOT_URL
+				postData.photo1URL = Constants.URIs.ROOT_URL
 						+ singleItemJsonObject.getString("photo1");
-				postData.photo2URL = ROOT_URL
+				postData.photo2URL = Constants.URIs.ROOT_URL
 						+ singleItemJsonObject.getString("photo2");
 				postData.question = singleItemJsonObject.getString("question");
 				postData.votes1 = singleItemJsonObject.getInt("votes1");
@@ -403,10 +396,10 @@ public class ChoosieClient {
 			final Callback<Void, Void, Boolean> callback) {
 		final HttpUriRequest postRequest;
 		// try {
-		postRequest = new HttpGet(
-				"http://choosieapp.appspot.com/vote?which_photo="
-						+ Integer.toString(whichPhoto) + "&post_key="
-						+ choosiePost.getKey());
+		postRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI
+				+ "?which_photo=" + Integer.toString(whichPhoto) + "&post_key="
+				+ choosiePost.getKey() + "&fb_uid="
+				+ this.fbDetails.getFb_uid());
 		// postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);
 		// } catch (UnsupportedEncodingException e1) {
 		// // TODO Auto-generated catch block
@@ -446,7 +439,7 @@ public class ChoosieClient {
 	private HttpPost createVoteHttpPostRequest(ChoosiePostData choosiePost,
 			int whichPhoto) throws UnsupportedEncodingException {
 		HttpPost postRequest;
-		postRequest = new HttpPost("http://choosieapp.appspot.com/vote");
+		postRequest = new HttpPost(Constants.URIs.NEW_VOTE_URI);
 
 		MultipartEntity reqEntity = new MultipartEntity(
 				HttpMultipartMode.BROWSER_COMPATIBLE);
