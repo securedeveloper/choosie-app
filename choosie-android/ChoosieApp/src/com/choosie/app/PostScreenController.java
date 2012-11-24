@@ -174,7 +174,7 @@ public class PostScreenController extends ScreenController {
 		}
 	}
 
-	//for later use
+	// for later use
 	private Bitmap rotateBitmap(Bitmap sour, Uri uriOutputFile) {
 
 		Bitmap source = sour;

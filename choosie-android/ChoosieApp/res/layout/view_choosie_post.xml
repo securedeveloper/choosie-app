@@ -109,6 +109,31 @@
                     android:text="1,000,000 votes" />
             </RelativeLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/button_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentBottom="true"
+                android:text="Comment!" />
+
+            <EditText
+                android:id="@+id/editText_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="write comment"
+                android:ems="10" >
+
+                <requestFocus />
+            </EditText>
+
+        </LinearLayout>
     </LinearLayout>
 
 </merge>

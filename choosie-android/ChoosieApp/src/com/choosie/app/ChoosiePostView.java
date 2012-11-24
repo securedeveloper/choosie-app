@@ -3,9 +3,13 @@ package com.choosie.app;
 import com.choosie.app.Models.*;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -27,6 +31,14 @@ public class ChoosiePostView extends RelativeLayout {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_choosie_post, this);
 
+		this.findViewById(R.id.button_comment).setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View arg0) {
+						String text = ((EditText) findViewById(R.id.editText_comment))
+								.getText().toString();
+						superController.CommentFor(choosiePost, text);
+					}
+				});
 	}
 
 	public void loadChoosiePost(ChoosiePostData post) {
@@ -50,7 +62,7 @@ public class ChoosiePostView extends RelativeLayout {
 				(ProgressBar) findViewById(R.id.progressBar2));
 		loadImageToView(post.getUserPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
-		
+
 		if (!choosiePost.isVotedAlready()) {
 			this.findViewById(R.id.votes1).setOnClickListener(
 					new OnClickListener() {
@@ -95,4 +107,5 @@ public class ChoosiePostView extends RelativeLayout {
 					}
 				});
 	}
+
 }

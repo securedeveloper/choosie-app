@@ -61,7 +61,7 @@ public class Client {
 		executePostTask.execute((HttpPost) null);
 	}
 
-
+	public String commentText;
 
 	/**
 	 * Gets the feed from the server. Calls the callback when the feed is back.
@@ -361,29 +361,30 @@ public class Client {
 				postData.setQuestion(singleItemJsonObject.getString("question"));
 				postData.setVotes1(singleItemJsonObject.getInt("votes1"));
 				postData.setVotes2(singleItemJsonObject.getInt("votes2"));
-				
+
 				JSONObject userJsonObject = singleItemJsonObject
 						.getJSONObject("user");
 				postData.setUserName(userJsonObject.getString("first_name")
 						+ " " + userJsonObject.getString("last_name"));
 				postData.setUserPhotoURL(userJsonObject.getString("avatar"));
 				postData.setUser_fb_uid(userJsonObject.getString("fb_uid"));
-				
+
 				JSONArray allVotes = singleItemJsonObject.getJSONArray("votes");
-				for (int j=0; j < allVotes.length(); j++)
-				{
+				for (int j = 0; j < allVotes.length(); j++) {
 					JSONObject jsonVoteObject = allVotes.getJSONObject(j);
-					
+
 					String fb_uid = jsonVoteObject.getString("fb_uid");
 					String date = jsonVoteObject.getString("created_at");
-					Date created_at = Utils.getInstance().ConvertStringToDate(date);
+					Date created_at = Utils.getInstance().ConvertStringToDate(
+							date);
 					int vote_for = jsonVoteObject.getInt("vote_for");
-					
+
 					Vote vote = new Vote(fb_uid, created_at, vote_for);
 					postData.getLstVotes().add(vote);
 				}
-				
+
 				choosiePostsFromFeed.add(postData);
+
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -396,7 +397,6 @@ public class Client {
 			final Callback<Void, Void, Boolean> callback) {
 		final HttpUriRequest postRequest;
 		// try {
-
 		postRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI + "?which_photo="
 				+ Integer.toString(whichPhoto) + "&post_key="
 				+ choosiePost.getKey() + "&fb_uid="
@@ -453,4 +453,61 @@ public class Client {
 		return postRequest;
 	}
 
+	public void sendCommentToServer(ChoosiePostData post, String text,
+			final Callback<Void, Void, Boolean> callback) {
+
+		Comment commentToSend = new Comment(this.fbDetails.getFb_uid(), null,
+				text, post.getKey());
+		final HttpPost postRequest;
+		postRequest = createNewCommentPostRequest(commentToSend);
+
+		final HttpClient httpClient = new DefaultHttpClient();
+		AsyncTask<Void, Void, Boolean> postVoteTask = new AsyncTask<Void, Void, Boolean>() {
+
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				try {
+					httpClient.execute(postRequest);
+				} catch (ClientProtocolException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return false;
+				}
+				return true;
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				callback.onFinish(result);
+			}
+		};
+
+		postVoteTask.execute();
+	}
+
+	private HttpPost createNewCommentPostRequest(Comment comment) {
+		HttpPost commentPostRequest = new HttpPost(
+				Constants.URIs.NEW_COMMENT_URI);
+
+		MultipartEntity multipartContent = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		try {
+			multipartContent.addPart("fb_uid",
+					new StringBody(this.fbDetails.getFb_uid()));
+			multipartContent.addPart("text", new StringBody(comment.text));
+			multipartContent.addPart("post_key", new StringBody(
+					comment.post_key));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		commentPostRequest.setEntity(multipartContent);
+
+		return commentPostRequest;
+	}
 }

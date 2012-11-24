@@ -18,7 +18,7 @@ public class SuperController {
 
 	public SuperController(Activity choosieActivity, FacebookDetails fbDetails) {
 		client = new Client(fbDetails);
-		
+
 		List<Pair<Screen, ScreenController>> screenControllerPairs = new ArrayList<Pair<Screen, ScreenController>>();
 
 		screenControllerPairs
@@ -44,7 +44,7 @@ public class SuperController {
 		for (ScreenController screen : screenToController.values()) {
 			screen.onCreate();
 		}
-		
+
 		client.login(new Callback<Void, Void, Void>() {
 			@Override
 			void onFinish(Void param) {
@@ -67,6 +67,20 @@ public class SuperController {
 	public void voteFor(ChoosiePostData post, int whichPhoto) {
 		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post.getKey());
 		this.client.sendVoteToServer(post, whichPhoto,
+				new Callback<Void, Void, Boolean>() {
+
+					@Override
+					void onFinish(Boolean param) {
+						if (param) {
+							screenToController.get(Screen.FEED).refresh();
+						}
+					}
+				});
+	}
+
+	public void CommentFor(ChoosiePostData post, String text) {
+		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post.getKey());
+		this.client.sendCommentToServer(post, text,
 				new Callback<Void, Void, Boolean>() {
 
 					@Override

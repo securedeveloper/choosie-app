@@ -9,6 +9,7 @@ public class Constants {
 		public static final String FEED_URI = "http://choosieapp.appspot.com/feed";
 		public static final String NEW_VOTE_URI = "http://choosieapp.appspot.com/votes/new";
 		public static final String NEW_POSTS_URI = "http://choosieapp.appspot.com/posts/new";
+		public static final String NEW_COMMENT_URI = "http://choosieapp.appspot.com/comments/new";
 
 	}
 }
