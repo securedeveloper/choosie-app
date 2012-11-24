@@ -1,6 +1,5 @@
 package com.choosie.app;
 
-//import com.choosie.app.Client.ChoosiePostData;
 import com.choosie.app.Models.*;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,24 +27,14 @@ public class ChoosiePostView extends RelativeLayout {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_choosie_post, this);
 
-		this.findViewById(R.id.votes1).setOnClickListener(
-				new OnClickListener() {
-					public void onClick(View arg0) {
-						superController.voteFor(choosiePost, 1);
-					}
-				});
-		this.findViewById(R.id.votes2).setOnClickListener(
-				new OnClickListener() {
-					public void onClick(View arg0) {
-						superController.voteFor(choosiePost, 2);
-					}
-				});
 	}
 
 	public void loadChoosiePost(ChoosiePostData post) {
 		this.choosiePost = post;
-		((TextView) findViewById(R.id.votes1)).setText(post.getVotes1() + " votes");
-		((TextView) findViewById(R.id.votes2)).setText(post.getVotes2() + " votes");
+		((TextView) findViewById(R.id.votes1)).setText(post.getVotes1()
+				+ " votes");
+		((TextView) findViewById(R.id.votes2)).setText(post.getVotes2()
+				+ " votes");
 		((TextView) findViewById(R.id.feedtext)).setText(post.getQuestion());
 		((TextView) findViewById(R.id.feed_name)).setText(post.getUserName());
 		((ImageView) findViewById(R.id.feedimage1)).setVisibility(View.GONE);
@@ -61,6 +50,21 @@ public class ChoosiePostView extends RelativeLayout {
 				(ProgressBar) findViewById(R.id.progressBar2));
 		loadImageToView(post.getUserPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
+		
+		if (!choosiePost.isVotedAlready()) {
+			this.findViewById(R.id.votes1).setOnClickListener(
+					new OnClickListener() {
+						public void onClick(View arg0) {
+							superController.voteFor(choosiePost, 1);
+						}
+					});
+			this.findViewById(R.id.votes2).setOnClickListener(
+					new OnClickListener() {
+						public void onClick(View arg0) {
+							superController.voteFor(choosiePost, 2);
+						}
+					});
+		}
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
@@ -75,7 +79,7 @@ public class ChoosiePostView extends RelativeLayout {
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
 							progressBar.setVisibility(View.GONE);
-						} 
+						}
 					}
 
 					@Override
