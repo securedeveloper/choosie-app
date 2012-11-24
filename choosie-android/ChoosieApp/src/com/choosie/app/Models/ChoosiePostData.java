@@ -3,6 +3,7 @@ package com.choosie.app.Models;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.choosie.app.Comment;
 import com.choosie.app.FacebookDetails;
 import com.choosie.app.Vote;
 
@@ -20,12 +21,15 @@ public class ChoosiePostData {
 	private String userPhotoURL;
 	private String user_fb_uid;
 	private List<Vote> lstVotes;
+	private List<Comment> lstComments;
 
 	private FacebookDetails fbDetails;
 
 	public ChoosiePostData(FacebookDetails fbDetails) {
+		this.lstComments = new ArrayList<Comment>();
 		this.lstVotes = new ArrayList<Vote>();
 		this.fbDetails = fbDetails;
+		
 	}
 
 	public String getKey() {
@@ -108,7 +112,15 @@ public class ChoosiePostData {
 	public void setUserPhotoURL(String userPhotoURL) {
 		this.userPhotoURL = userPhotoURL;
 	}
+	
+	public List<Comment> getLstComment() {
+		return lstComments;
+	}
 
+	public void setLstComments(List<Comment> lstComments) {
+		this.lstComments = lstComments;
+	}
+	
 	public List<Vote> getLstVotes() {
 		return lstVotes;
 	}

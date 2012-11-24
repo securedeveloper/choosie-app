@@ -1,16 +1,24 @@
 package com.choosie.app;
 
+import java.util.List;
+
 import com.choosie.app.Models.*;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,7 +42,7 @@ public class ChoosiePostView extends RelativeLayout {
 		this.findViewById(R.id.button_to_comment).setOnClickListener(
 				new OnClickListener() {
 					public void onClick(View arg0) {
-						superController.switchToCommentScreen(choosiePost);						
+						superController.switchToCommentScreen(choosiePost);
 					}
 				});
 	}
@@ -60,12 +68,13 @@ public class ChoosiePostView extends RelativeLayout {
 				(ProgressBar) findViewById(R.id.progressBar2));
 		loadImageToView(post.getUserPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
+		loadCommentsToView(post);
 
 		if (choosiePost.isPostByMe()) {
-			//TODO:show results
+			// TODO:show results
 			return;
 		}
-		
+
 		if (!choosiePost.isVotedAlready(1)) {
 			this.findViewById(R.id.votes1).setOnClickListener(
 					new OnClickListener() {
@@ -81,6 +90,33 @@ public class ChoosiePostView extends RelativeLayout {
 							superController.voteFor(choosiePost, 2);
 						}
 					});
+		}
+	}
+
+	private void loadCommentsToView(ChoosiePostData post) {
+		LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
+		List<Comment> lstComment = post.getLstComment();
+		for (Comment comment : lstComment) {
+			TextView tv = new TextView(
+					superController.screenToController.get(Screen.FEED).activity);
+			// tv.setText("Bar Refaeli: " + comment.getText());
+			final SpannableStringBuilder sb = new SpannableStringBuilder(
+					"Bar Refaeli: " + comment.getText());
+			final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(
+					0, 0, 255));
+
+			 // Span to make text bold
+			   sb.setSpan(fcs, 0, 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE); 
+			
+			// Span to set text color to some RGB value
+			final StyleSpan bss = new StyleSpan(android.graphics.Typeface.ITALIC);
+
+			// Set the text color for first 4 characters
+			sb.setSpan(bss, 0, 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+			tv.setText(sb);
+			
+			commentLayout.addView(tv);
 		}
 	}
 

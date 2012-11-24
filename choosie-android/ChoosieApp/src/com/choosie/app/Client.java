@@ -387,6 +387,20 @@ public class Client {
 					Vote vote = new Vote(fb_uid, created_at, vote_for);
 					postData.getLstVotes().add(vote);
 				}
+				
+				JSONArray allComments = singleItemJsonObject.getJSONArray("comments");
+				for (int j = 0; j < allComments.length(); j++) {
+					JSONObject jsonCommentObject = allComments.getJSONObject(j);
+
+					String fb_uid = jsonCommentObject.getString("fb_uid");
+					String date = jsonCommentObject.getString("created_at");
+					Date created_at = Utils.getInstance().ConvertStringToDate(
+							date);
+					String text = jsonCommentObject.getString("text");
+
+					Comment comment = new Comment(fb_uid, created_at, text, postData.getKey());
+					postData.getLstComment().add(comment);
+				}
 
 				choosiePostsFromFeed.add(postData);
 
