@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -26,6 +27,9 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.choosie.app.Models.ChoosiePostData;
+
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -57,27 +61,7 @@ public class Client {
 		executePostTask.execute((HttpPost) null);
 	}
 
-	/**
-	 * Represents the data that is returned from the server.
-	 */
-	public class ChoosiePostData {
-		int votes1;
-		int votes2;
-		String photo1URL;
-		String photo2URL;
-		String question;
-		public String userName;
-		public String userPhotoURL;
 
-		public String getKey() {
-			// HACK: Get post key from photo1URL
-			String url = photo1URL;
-			String key = url.substring(url.indexOf("post_key=")
-					+ "post_key=".length());
-			return key;
-		}
-
-	}
 
 	/**
 	 * Gets the feed from the server. Calls the callback when the feed is back.
@@ -128,8 +112,8 @@ public class Client {
 
 	public void login(final Callback<Void, Void, Void> onLoginComplete) {
 		final HttpClient httpClient = new DefaultHttpClient();
-		final HttpPost postRequest = new HttpPost(
-				Constants.URIs.ROOT_URL + "/login");
+		final HttpPost postRequest = new HttpPost(Constants.URIs.ROOT_URL
+				+ "/login");
 
 		try {
 			createLoginPostRequest(postRequest);
@@ -268,8 +252,7 @@ public class Client {
 			@Override
 			protected HttpResponse doInBackground(HttpPost... arg0) {
 				CustomMultiPartEntity multipartContent = null;
-				HttpPost httpPost = new HttpPost(
-						Constants.URIs.NEW_POSTS_URI);
+				HttpPost httpPost = new HttpPost(Constants.URIs.NEW_POSTS_URI);
 				try {
 					multipartContent = createMultipartContent(data,
 							new Callback<Void, Integer, Void>() {
@@ -355,7 +338,7 @@ public class Client {
 	}
 
 	/**
-	 * Takes a JSON string, and builds ChoosiePostData objet from it.
+	 * Takes a JSON string, and builds ChoosiePostData object from it.
 	 * 
 	 * @param jsonString
 	 * @return
@@ -365,24 +348,41 @@ public class Client {
 			throws JSONException {
 		JSONObject feedJsonObject = new JSONObject(jsonString);
 		JSONArray jsonPostsArray = feedJsonObject.getJSONArray("feed");
-		List<ChoosiePostData> choosiePostsFromFeed = new ArrayList<Client.ChoosiePostData>();
+		List<ChoosiePostData> choosiePostsFromFeed = new ArrayList<ChoosiePostData>();
 		for (int i = 0; i < jsonPostsArray.length(); i++) {
 			try {
 				JSONObject singleItemJsonObject = jsonPostsArray
 						.getJSONObject(i);
 				ChoosiePostData postData = new ChoosiePostData();
-				postData.photo1URL = Constants.URIs.ROOT_URL
-						+ singleItemJsonObject.getString("photo1");
-				postData.photo2URL = Constants.URIs.ROOT_URL
-						+ singleItemJsonObject.getString("photo2");
-				postData.question = singleItemJsonObject.getString("question");
-				postData.votes1 = singleItemJsonObject.getInt("votes1");
-				postData.votes2 = singleItemJsonObject.getInt("votes2");
+				postData.setPhoto1URL(Constants.URIs.ROOT_URL
+						+ singleItemJsonObject.getString("photo1"));
+				postData.setPhoto2URL(Constants.URIs.ROOT_URL
+						+ singleItemJsonObject.getString("photo2"));
+				postData.setQuestion(singleItemJsonObject.getString("question"));
+				postData.setVotes1(singleItemJsonObject.getInt("votes1"));
+				postData.setVotes2(singleItemJsonObject.getInt("votes2"));
+				
 				JSONObject userJsonObject = singleItemJsonObject
 						.getJSONObject("user");
-				postData.userName = userJsonObject.getString("first_name")
-						+ " " + userJsonObject.getString("last_name");
-				postData.userPhotoURL = userJsonObject.getString("avatar");
+				postData.setUserName(userJsonObject.getString("first_name")
+						+ " " + userJsonObject.getString("last_name"));
+				postData.setUserPhotoURL(userJsonObject.getString("avatar"));
+				postData.setUser_fb_uid(userJsonObject.getString("fb_uid"));
+				
+				JSONArray allVotes = singleItemJsonObject.getJSONArray("votes");
+				for (int j=0; j < allVotes.length(); j++)
+				{
+					JSONObject jsonVoteObject = allVotes.getJSONObject(j);
+					
+					String fb_uid = jsonVoteObject.getString("fb_uid");
+					String date = jsonVoteObject.getString("created_at");
+					Date created_at = Utils.getInstance().ConvertStringToDate(date);
+					int vote_for = jsonVoteObject.getInt("vote_for");
+					
+					Vote vote = new Vote(fb_uid, created_at, vote_for);
+					postData.getLstVotes().add(vote);
+				}
+				
 				choosiePostsFromFeed.add(postData);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -396,8 +396,9 @@ public class Client {
 			final Callback<Void, Void, Boolean> callback) {
 		final HttpUriRequest postRequest;
 		// try {
-		postRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI
-				+ "?which_photo=" + Integer.toString(whichPhoto) + "&post_key="
+
+		postRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI + "?which_photo="
+				+ Integer.toString(whichPhoto) + "&post_key="
 				+ choosiePost.getKey() + "&fb_uid="
 				+ this.fbDetails.getFb_uid());
 		// postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);

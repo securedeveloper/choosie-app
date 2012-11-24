@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.choosie.app.Client.ChoosiePostData;
+import com.choosie.app.Models.ChoosiePostData;
 
 import android.app.Activity;
 import android.util.Log;

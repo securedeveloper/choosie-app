@@ -1,7 +1,7 @@
 package com.choosie.app;
 
-import com.choosie.app.Client.ChoosiePostData;
-
+//import com.choosie.app.Client.ChoosiePostData;
+import com.choosie.app.Models.*;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
@@ -44,22 +44,22 @@ public class ChoosiePostView extends RelativeLayout {
 
 	public void loadChoosiePost(ChoosiePostData post) {
 		this.choosiePost = post;
-		((TextView) findViewById(R.id.votes1)).setText(post.votes1 + " votes");
-		((TextView) findViewById(R.id.votes2)).setText(post.votes2 + " votes");
-		((TextView) findViewById(R.id.feedtext)).setText(post.question);
-		((TextView) findViewById(R.id.feed_name)).setText(post.userName);
+		((TextView) findViewById(R.id.votes1)).setText(post.getVotes1() + " votes");
+		((TextView) findViewById(R.id.votes2)).setText(post.getVotes2() + " votes");
+		((TextView) findViewById(R.id.feedtext)).setText(post.getQuestion());
+		((TextView) findViewById(R.id.feed_name)).setText(post.getUserName());
 		((ImageView) findViewById(R.id.feedimage1)).setVisibility(View.GONE);
 		((ImageView) findViewById(R.id.feedimage2)).setVisibility(View.GONE);
 		((ImageView) findViewById(R.id.feed_userimage))
 				.setVisibility(View.GONE);
 
-		loadImageToView(post.photo1URL,
+		loadImageToView(post.getPhoto1URL(),
 				(ImageView) findViewById(R.id.feedimage1),
 				(ProgressBar) findViewById(R.id.progressBar1));
-		loadImageToView(post.photo2URL,
+		loadImageToView(post.getPhoto2URL(),
 				(ImageView) findViewById(R.id.feedimage2),
 				(ProgressBar) findViewById(R.id.progressBar2));
-		loadImageToView(post.userPhotoURL,
+		loadImageToView(post.getUserPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
 	}
 

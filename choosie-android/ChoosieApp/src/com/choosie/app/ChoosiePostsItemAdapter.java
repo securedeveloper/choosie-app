@@ -1,6 +1,6 @@
 package com.choosie.app;
 
-import com.choosie.app.Client.ChoosiePostData;
+import com.choosie.app.Models.ChoosiePostData;
 
 import android.content.Context;
 import android.util.Log;

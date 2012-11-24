@@ -2,7 +2,7 @@ package com.choosie.app;
 
 import java.util.List;
 
-import com.choosie.app.Client.ChoosiePostData;
+import com.choosie.app.Models.*;
 
 import android.app.Activity;
 import android.util.Log;
