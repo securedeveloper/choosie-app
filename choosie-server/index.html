@@ -1,90 +1,90 @@
 <html>
 <head>
-	<style>
-	.chs-stream {
-		border-style: solid;
-		border-width: 1px;
-		float: left;
-		margin: 5px;
-		margin-top: 0px;
-		padding: 10px;
-		position: absolute;
-		top: 8px;
-		left: 5px;
-		bottom: 5px;
-		overflow: auto;
-	}
-	.chs-img {
-		max-width: 200px;
-		max-height:200px;
-	}
-	.chs-img-right{
-		float:right;
-		max-width: 200px;
-		max-height:200px;
-	}
-	.chs-or {
-		width: 40px;
-		font-weight: bold;
-		margin-left:30px;
-	}
-	.chs-post {
-		border-style: solid;
-		border-width: 1px;
-		margin-bottom: -1px;
-		border-color: black;
-		padding: 10px;
-	}
-	.comments {
-		display: block;
-		/*float: right;*/
-		/*padding-top: 30px;*/
-	}
-	.chs-votes {
-		margin: 10px;
-	}
-	.chs-vote:hover {
-		background: #eee;
-		color: #11a;
-	}
-	.chs-vote {
-		margin: 36px;
-		padding: 10px;
-	}
-	.chs-vote:link {
-		color: black;
-		text-decoration: none;
-	}
-	.vote {
-		color: transparent;
-		margin: 20px;
-	}
-	.chs-vote:hover {
-		text-decoration: underline;
-	}
-	.chs-vote:hover .vote {
-		color: blue;
-	}
-	.chs-questcont {
-		margin: 20px;
-	}
-	.chs-question {
-		border-style: solid;
-		padding: 10px;
-		margin: 10px;
-		border-width: 1px;
-	}
-	.chs-form {
-		border-style: solid;
-		padding: 10px;
-		border-width: 1px;
-		margin: 5px;
-		margin-left: 550px;
-	}
-	.new_user {
-		margin-left: 550px;
-	}
-	</style>
+<style>
+.chs-stream {
+	border-style: solid;
+	border-width: 1px;
+	float: left;
+	margin: 5px;
+	margin-top: 0px;
+	padding: 10px;
+	position: absolute;
+	top: 8px;
+	left: 5px;
+	bottom: 5px;
+	overflow: auto;
+}
+.chs-img {
+	max-width: 200px;
+	max-height:200px;
+}
+.chs-img-right{
+	float:right;
+	max-width: 200px;
+	max-height:200px;
+}
+.chs-or {
+	width: 40px;
+	font-weight: bold;
+	margin-left:30px;
+}
+.chs-post {
+	border-style: solid;
+	border-width: 1px;
+	margin-bottom: -1px;
+	border-color: black;
+	padding: 10px;
+}
+.comments {
+	display: block;
+	/*float: right;*/
+	/*padding-top: 30px;*/
+}
+.chs-votes {
+	margin: 10px;
+}
+.chs-vote:hover {
+	background: #eee;
+	color: #11a;
+}
+.chs-vote {
+	margin: 36px;
+	padding: 10px;
+}
+.chs-vote:link {
+	color: black;
+	text-decoration: none;
+}
+.vote {
+	color: transparent;
+	margin: 20px;
+}
+.chs-vote:hover {
+	text-decoration: underline;
+}
+.chs-vote:hover .vote {
+	color: blue;
+}
+.chs-questcont {
+	margin: 20px;
+}
+.chs-question {
+	border-style: solid;
+	padding: 10px;
+	margin: 10px;
+	border-width: 1px;
+}
+.chs-form {
+	border-style: solid;
+	padding: 10px;
+	border-width: 1px;
+	margin: 5px;
+	margin-left: 550px;
+}
+.new_user {
+	margin-left: 550px;
+}
+</style>
 </head>
 <body>
 	<div class="chs-stream">
@@ -121,6 +121,13 @@
 				</div>
 			</div>
 			{% endfor %}
+		</div>
+		<div class="more_button">
+			<form action="/" method="get">
+				<input type="hidden" name="cursor" value="{{cursor}}"/>
+				<input type="hidden" name="limit" value="{{limit}}"/>
+				<input type="submit" value="Get more posts">
+			</form>
 		</div>
 	</div>
 	<div class="chs-form">
