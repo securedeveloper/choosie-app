@@ -33,7 +33,7 @@ public abstract class ScreenController {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+		
 	}
 
 	public void refresh() {

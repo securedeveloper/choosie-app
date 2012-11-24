@@ -17,5 +17,6 @@
     <string name="app_id">515799855110300</string>
     <string name="title_activity_start">StartActivity</string>
     <string name="login">Login</string>
+    <string name="title_activity_comment_screen">CommentScreen</string>
 
 </resources>

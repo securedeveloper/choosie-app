@@ -31,12 +31,10 @@ public class ChoosiePostView extends RelativeLayout {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_choosie_post, this);
 
-		this.findViewById(R.id.button_comment).setOnClickListener(
+		this.findViewById(R.id.button_to_comment).setOnClickListener(
 				new OnClickListener() {
 					public void onClick(View arg0) {
-						String text = ((EditText) findViewById(R.id.editText_comment))
-								.getText().toString();
-						superController.CommentFor(choosiePost, text);
+						superController.switchToCommentScreen(choosiePost);						
 					}
 				});
 	}

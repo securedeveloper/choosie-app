@@ -62,8 +62,14 @@ public class ChoosieActivity extends Activity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		superController.screenToController.get(Screen.POST).onActivityResult(
-				requestCode, resultCode, data);
+		if ((requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE)
+				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE) {
+			superController.screenToController.get(Screen.POST)
+					.onActivityResult(requestCode, resultCode, data);
+		}
+		if (requestCode == Constants.RequestCodes.COMMENT) {
+			superController.onActivityResult(resultCode, data);
+		}
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.choosie.app.Models.ChoosiePostData;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.Log;
 import android.util.Pair;
 
@@ -78,9 +79,9 @@ public class SuperController {
 				});
 	}
 
-	public void CommentFor(ChoosiePostData post, String text) {
-		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post.getKey());
-		this.client.sendCommentToServer(post, text,
+	public void CommentFor(String post_key, String text) {
+		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post_key);
+		this.client.sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
 
 					@Override
@@ -100,4 +101,21 @@ public class SuperController {
 		return caches;
 	}
 
+	public void switchToCommentScreen(ChoosiePostData choosiePost) {
+		Intent intent = new Intent(
+				screenToController.get(Screen.FEED).activity
+						.getApplicationContext(),
+				CommentScreen.class);
+		intent.putExtra("post_key", choosiePost.getKey());
+		screenToController.get(Screen.FEED).activity.startActivityForResult(
+				intent, Constants.RequestCodes.COMMENT);
+	}
+
+	protected void onActivityResult(int resultCode, Intent data) {
+		if (resultCode == ChoosieActivity.RESULT_OK) {
+			String text = data.getStringExtra("text");
+			String post_key = data.getStringExtra("post_key");
+			CommentFor(post_key, text);
+		}
+	}
 }

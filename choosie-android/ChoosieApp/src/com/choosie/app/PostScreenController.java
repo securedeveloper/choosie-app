@@ -26,8 +26,6 @@ public class PostScreenController extends ScreenController {
 	private Bitmap mImage2;
 	private String mQuestion;
 	private Uri outputFileUri;
-	private final int TAKE_FIRST_PICTURE = 1;
-	private final int TAKE_SECOND_PICTURE = 2;
 	private ImageView image1;
 	private ImageView image2;
 	private EditText questionText;
@@ -73,10 +71,10 @@ public class PostScreenController extends ScreenController {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 		outputFileUri = Uri.fromFile(f);
 		if (arg0.getId() == R.id.image_photo1) {
-			activity.startActivityForResult(intent, TAKE_FIRST_PICTURE);
+			activity.startActivityForResult(intent, Constants.RequestCodes.TAKE_FIRST_PICTURE);
 		}
 		if (arg0.getId() == R.id.image_photo2) {
-			activity.startActivityForResult(intent, TAKE_SECOND_PICTURE);
+			activity.startActivityForResult(intent, Constants.RequestCodes.TAKE_SECOND_PICTURE);
 		}
 	}
 
@@ -156,7 +154,7 @@ public class PostScreenController extends ScreenController {
 						.show();
 			}
 
-			if (requestCode == TAKE_FIRST_PICTURE) {
+			if (requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE) {
 
 				// mImage1 = rotateBitmap(mPhotoTemp, outputFileUri); - enale
 				// when fix of memoryleaking
@@ -164,7 +162,7 @@ public class PostScreenController extends ScreenController {
 						.setImageBitmap(mPhotoTemp);
 				mImage1 = mPhotoTemp;
 			}
-			if (requestCode == TAKE_SECOND_PICTURE) {
+			if (requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE) {
 				// mImage2 = rotateBitmap(mPhotoTemp, outputFileUri); - enale
 				// when fix of memoryleaking
 				((ImageView) view.findViewById(R.id.image_photo2))

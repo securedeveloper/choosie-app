@@ -458,11 +458,11 @@ public class Client {
 		return postRequest;
 	}
 
-	public void sendCommentToServer(ChoosiePostData post, String text,
+	public void sendCommentToServer(String post_key, String text,
 			final Callback<Void, Void, Boolean> callback) {
 
 		Comment commentToSend = new Comment(this.fbDetails.getFb_uid(), null,
-				text, post.getKey());
+				text, post_key);
 		final HttpPost postRequest;
 		postRequest = createNewCommentPostRequest(commentToSend);
 
