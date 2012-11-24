@@ -108,6 +108,9 @@
 				</div>
 				<div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
 				<div class="comments">
+					{% for comment in choosie_post.to_json()['comments'] %}
+					<div class="single_comment"> {{ comment.text }} </div>
+					{% endfor %}
 					<form action="/comments/new" enctype="multipart/form-data" method="post">
 						Comment:<input type="text" name="text"/>
 						<input type="hidden" value="624205547" name="fb_uid"/>
