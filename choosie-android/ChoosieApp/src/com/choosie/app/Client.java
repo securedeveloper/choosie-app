@@ -43,6 +43,11 @@ public class Client {
 	public Client(FacebookDetails fbDetails) {
 		this.fbDetails = fbDetails;
 	}
+	
+	public FacebookDetails getFacebookDetails()
+	{
+		return this.fbDetails;
+	}
 
 	/**
 	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the
@@ -353,7 +358,7 @@ public class Client {
 			try {
 				JSONObject singleItemJsonObject = jsonPostsArray
 						.getJSONObject(i);
-				ChoosiePostData postData = new ChoosiePostData();
+				ChoosiePostData postData = new ChoosiePostData(this.fbDetails);
 				postData.setPhoto1URL(Constants.URIs.ROOT_URL
 						+ singleItemJsonObject.getString("photo1"));
 				postData.setPhoto2URL(Constants.URIs.ROOT_URL

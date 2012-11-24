@@ -2,13 +2,15 @@ package com.choosie.app.Models;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.choosie.app.FacebookDetails;
 import com.choosie.app.Vote;
 
 /**
  * Represents the data that is returned from the server.
  */
 public class ChoosiePostData {
-	
+
 	private int votes1;
 	private int votes2;
 	private String photo1URL;
@@ -17,13 +19,14 @@ public class ChoosiePostData {
 	private String userName;
 	private String userPhotoURL;
 	private String user_fb_uid;
-	
 	private List<Vote> lstVotes;
-	
-	public  ChoosiePostData() {
-		lstVotes = new ArrayList<Vote>();
+
+	private FacebookDetails fbDetails;
+
+	public ChoosiePostData(FacebookDetails fbDetails) {
+		this.lstVotes = new ArrayList<Vote>();
+		this.fbDetails = fbDetails;
 	}
-	
 
 	public String getKey() {
 		// HACK: Get post key from photo1URL
@@ -32,19 +35,21 @@ public class ChoosiePostData {
 				+ "post_key=".length());
 		return key;
 	}
-	
-	public boolean isVotedAlready()
-	{
-		for (Vote vote : this.lstVotes)
-		{
-			if (vote.getFb_uid().equals(this.user_fb_uid))
+
+	public boolean isVotedAlready(int vote_for) {
+		for (Vote vote : this.lstVotes) {
+			if (vote.getFb_uid().equals(this.user_fb_uid) &&
+					vote.getVote_for() == vote_for)
 				return true;
 		}
 		return false;
 	}
-	
-	public boolean isPostByMe()
-	{
+
+	public boolean isPostByMe() {
+		if (fbDetails.getFb_uid().equals(this.user_fb_uid)) {
+			return true;
+		}
+
 		return false;
 	}
 

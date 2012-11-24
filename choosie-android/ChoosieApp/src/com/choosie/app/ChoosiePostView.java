@@ -63,13 +63,20 @@ public class ChoosiePostView extends RelativeLayout {
 		loadImageToView(post.getUserPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
 
-		if (!choosiePost.isVotedAlready()) {
+		if (choosiePost.isPostByMe()) {
+			//TODO:show results
+			return;
+		}
+		
+		if (!choosiePost.isVotedAlready(1)) {
 			this.findViewById(R.id.votes1).setOnClickListener(
 					new OnClickListener() {
 						public void onClick(View arg0) {
 							superController.voteFor(choosiePost, 1);
 						}
 					});
+		}
+		if (!choosiePost.isVotedAlready(1)) {
 			this.findViewById(R.id.votes2).setOnClickListener(
 					new OnClickListener() {
 						public void onClick(View arg0) {
