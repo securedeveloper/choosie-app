@@ -35,13 +35,12 @@ public class StartActivity extends FacebookActivity {
 			
 			public void onClick(View v) {
 				Log.i(Constants.LOG_TAG, "on click open session");
-				closeSession();
 				openSession();
 				
 			}
 		});
 		
-		this.openSession();
+		openSession();
 	}
 
 	@Override
