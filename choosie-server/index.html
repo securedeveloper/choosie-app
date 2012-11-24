@@ -1,144 +1,143 @@
 <html>
-  <head>
-    <style>
-      .chs-stream {
-	    border-style: solid;
-	    border-width: 1px;
-        float: left;
-        margin: 5px;
-        margin-top: 0px;
+<head>
+	<style>
+	.chs-stream {
+		border-style: solid;
+		border-width: 1px;
+		float: left;
+		margin: 5px;
+		margin-top: 0px;
 		padding: 10px;
 		position: absolute;
-		    top: 8px;
-		    left: 5px;
-		    bottom: 5px;
-		    overflow: auto;
-      }
-      .chs-img {
-     max-width: 200px;
-        max-height:200px;
-      }
-      .chs-img-right{
-        float:right;
-        max-width: 200px;
-        max-height:200px;
-      }
-      .chs-or {
-    	  width: 40px;
-        font-weight: bold;
-        margin-left:30px;
-      }
-      .chs-post {
-	    border-style: solid;
-	    border-width: 1px;
-	    margin-bottom: -1px;
-	    border-color: black;
+		top: 8px;
+		left: 5px;
+		bottom: 5px;
+		overflow: auto;
+	}
+	.chs-img {
+		max-width: 200px;
+		max-height:200px;
+	}
+	.chs-img-right{
+		float:right;
+		max-width: 200px;
+		max-height:200px;
+	}
+	.chs-or {
+		width: 40px;
+		font-weight: bold;
+		margin-left:30px;
+	}
+	.chs-post {
+		border-style: solid;
+		border-width: 1px;
+		margin-bottom: -1px;
+		border-color: black;
 		padding: 10px;
-      }
-      .comments {
-        display: block;
-        /*float: right;*/
-        /*padding-top: 30px;*/
-      }
-      .chs-votes {
+	}
+	.comments {
+		display: block;
+		/*float: right;*/
+		/*padding-top: 30px;*/
+	}
+	.chs-votes {
 		margin: 10px;
-	  }
-      .chs-vote:hover {
-	    background: #eee;
-	    color: #11a;
-      }
-      .chs-vote {
+	}
+	.chs-vote:hover {
+		background: #eee;
+		color: #11a;
+	}
+	.chs-vote {
 		margin: 36px;
 		padding: 10px;
-      }
-      .chs-vote:link {
-	    color: black;
-	    text-decoration: none;
-      }
-     .vote {
-    	color: transparent;
-	  	margin: 20px;
-	  }
- 	  .chs-vote:hover {
-		text-decoration: underline;
-	  }
-	  .chs-vote:hover .vote {
-		color: blue;
 	}
-      .chs-questcont {
+	.chs-vote:link {
+		color: black;
+		text-decoration: none;
+	}
+	.vote {
+		color: transparent;
 		margin: 20px;
 	}
-      .chs-question {
-	    border-style: solid;
+	.chs-vote:hover {
+		text-decoration: underline;
+	}
+	.chs-vote:hover .vote {
+		color: blue;
+	}
+	.chs-questcont {
+		margin: 20px;
+	}
+	.chs-question {
+		border-style: solid;
 		padding: 10px;
 		margin: 10px;
-	    border-width: 1px;
-      }
-      .chs-form {
-	    border-style: solid;
+		border-width: 1px;
+	}
+	.chs-form {
+		border-style: solid;
 		padding: 10px;
-	    border-width: 1px;
-        margin: 5px;
-        margin-left: 550px;
-      }
-      .new_user {
-        margin-left: 550px;
-      }
-    </style>
-  </head>
-  <body>
-  
+		border-width: 1px;
+		margin: 5px;
+		margin-left: 550px;
+	}
+	.new_user {
+		margin-left: 550px;
+	}
+	</style>
+</head>
+<body>
 	<div class="chs-stream">
-    <h1>Choosie Public Feed</h1>
-      <div class="chs-feed">
-        {% for choosie_post in choosie_posts %}
-          <div class="chs-post">
-            <div class="images">
-             <img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key() }}"></img>
-              <img class="chs-img-right" src="/photo?which_photo=2&post_key={{ choosie_post.key() }}"></img>
-            </div>
-          <div class="chs-votes">
-        	 <a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=1&post_key={{ choosie_post.key() }}">
-  	       {{ choosie_post.votes1 }} votes
-  	       <span class="vote">Vote!!</span>
-  	       </a>
-        	 <a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=2&post_key={{ choosie_post.key() }}">
-  	         {{ choosie_post.votes2 }} votes
-  	           <span class="vote">Vote!!</span>
-  	       </a>
-          </div>
-          <div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
-          <div class="comments">
-          <form action="/comments/new" enctype="multipart/form-data" method="post">
-            Comment:<input type="text" name="text"/>
-            <input type="hidden" value="624205547" name="fb_uid"/>
-            <br>
-            <input type="hidden" name="post_key" value="{{choosie_post.key()}}"/>
-            <input type="submit" value="Add">
-          </form>
-        </div>
-        </div>
-        {% endfor %}
-    </div>
+		<h1>Choosie Public Feed</h1>
+		<div class="chs-feed">
+			{% for choosie_post in choosie_posts %}
+			<div class="chs-post">
+				<div class="images">
+					<img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key() }}"></img>
+					<img class="chs-img-right" src="/photo?which_photo=2&post_key={{ choosie_post.key() }}"></img>
+				</div>
+				<div class="chs-votes">
+					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=1&post_key={{ choosie_post.key() }}">
+						{{ choosie_post.votes1 }} votes
+						<span class="vote">Vote!!</span>
+					</a>
+					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=2&post_key={{ choosie_post.key() }}">
+						{{ choosie_post.votes2 }} votes
+						<span class="vote">Vote!!</span>
+					</a>
+				</div>
+				<div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
+				<div class="comments">
+					<form action="/comments/new" enctype="multipart/form-data" method="post">
+						Comment:<input type="text" name="text"/>
+						<input type="hidden" value="624205547" name="fb_uid"/>
+						<br>
+						<input type="hidden" name="post_key" value="{{choosie_post.key()}}"/>
+						<input type="submit" value="Add">
+					</form>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
 	</div>
-    <div class="chs-form">
-      <h1>Upload your dilemma</h1>
-      <form action="/posts/new" enctype="multipart/form-data" method="post">
-        <div>Photo 1: <input type="file" name="photo1" /></div>
-        <div>Photo 2: <input type="file" name="photo2" /></div>
-        <div>Question: <input type="text" name="question" value="yo-app!"/></div>
-        <div>UID: <input type="text" name="fb_uid" value="624205547"/> </div>
-        <div><input type="submit" value="Post!"></div>
-      </form>
-    </div>
-    <div class="new_user">
-    <H1>Add user</H1>
-     <form action="/login" enctype="multipart/form-data" method="post">
-        <div>Access Token:<input type="text" name="fb_access_token" value="AAAHVHgMjmJwBAFNgeAsRZCwSg2YYrBwI2cEd8zqbMobGR9lQI3galVWLKUd9VT8XoZAPPT3tZC0WTNQIBTOeupJSDOPBH4dBODVRjymhAZDZD" size="100"/></div>
-        <div>Access Token Expdate: <input type="text" name="fb_access_token_expdate" value="1358319035143"/></div>
-        <div>Uid:<Input type = "text" name ="fb_uid" value="624205547"/></div>
-        <div><input type="submit" value="Login"></div>
-     </form>
-    </div>
-  </body>
+	<div class="chs-form">
+		<h1>Upload your dilemma</h1>
+		<form action="/posts/new" enctype="multipart/form-data" method="post">
+			<div>Photo 1: <input type="file" name="photo1" /></div>
+			<div>Photo 2: <input type="file" name="photo2" /></div>
+			<div>Question: <input type="text" name="question" value="yo-app!"/></div>
+			<div>UID: <input type="text" name="fb_uid" value="624205547"/> </div>
+			<div><input type="submit" value="Post!"></div>
+		</form>
+	</div>
+	<div class="new_user">
+		<H1>Add user</H1>
+		<form action="/login" enctype="multipart/form-data" method="post">
+			<div>Access Token:<input type="text" name="fb_access_token" value="AAAHVHgMjmJwBAFNgeAsRZCwSg2YYrBwI2cEd8zqbMobGR9lQI3galVWLKUd9VT8XoZAPPT3tZC0WTNQIBTOeupJSDOPBH4dBODVRjymhAZDZD" size="100"/></div>
+			<div>Access Token Expdate: <input type="text" name="fb_access_token_expdate" value="1358319035143"/></div>
+			<div>Uid:<Input type = "text" name ="fb_uid" value="624205547"/></div>
+			<div><input type="submit" value="Login"></div>
+		</form>
+	</div>
+</body>
 </html>

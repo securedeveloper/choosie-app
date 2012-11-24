@@ -15,7 +15,6 @@ class LoginHandler(webapp2.RequestHandler):
     user = User.get_user_by_fb_uid(fb_uid)
     if not user:
       User.create(fb_access_token, fb_access_token_expdate)
-      self.write_success()
     else:
       #updating access token fields
       user.fb_access_token = fb_access_token
