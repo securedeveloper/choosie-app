@@ -14,7 +14,10 @@ class PostsHandler(webapp2.RequestHandler):
     max_width = 800
     max_height = 800;
     ratio = min(max_width/img.width, max_height/img.height)
-    img.resize(width=ratio*img.width, height=ratio*img.height)
+    if ratio < 1.0:
+      # Only shrink the image: if it is already smaller than 800px on both axes
+      # do nothing.
+      img.resize(width=ratio*img.width, height=ratio*img.height)
     img.im_feeling_lucky()
     return img.execute_transforms(output_encoding=images.PNG)
   
