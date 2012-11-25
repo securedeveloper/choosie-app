@@ -1,7 +1,16 @@
-package com.choosie.app;
+package com.choosie.app.controllers;
 
 import java.io.File;
 import java.io.IOException;
+
+import com.choosie.app.Callback;
+import com.choosie.app.Constants;
+import com.choosie.app.NewChoosiePostData;
+import com.choosie.app.R;
+import com.choosie.app.Screen;
+import com.choosie.app.Constants.RequestCodes;
+import com.choosie.app.R.id;
+
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -71,10 +80,10 @@ public class PostScreenController extends ScreenController {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 		outputFileUri = Uri.fromFile(f);
 		if (arg0.getId() == R.id.image_photo1) {
-			activity.startActivityForResult(intent, Constants.RequestCodes.TAKE_FIRST_PICTURE);
+			getActivity().startActivityForResult(intent, Constants.RequestCodes.TAKE_FIRST_PICTURE);
 		}
 		if (arg0.getId() == R.id.image_photo2) {
-			activity.startActivityForResult(intent, Constants.RequestCodes.TAKE_SECOND_PICTURE);
+			getActivity().startActivityForResult(intent, Constants.RequestCodes.TAKE_SECOND_PICTURE);
 		}
 	}
 
@@ -88,12 +97,12 @@ public class PostScreenController extends ScreenController {
 
 	private void submitChoosiePost() {
 		if ((mImage1 == null) || (mImage2 == null)) {
-			Toast toast = Toast.makeText(activity, "Please add two photos",
+			Toast toast = Toast.makeText(getActivity(), "Please add two photos",
 					Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
 			mQuestion = questionText.getText().toString();
-			final ProgressBar progressBar = (ProgressBar) activity
+			final ProgressBar progressBar = (ProgressBar) getActivity()
 					.findViewById(R.id.progressBarPost);
 
 			superController.getClient().sendChoosiePostToServer(
@@ -101,7 +110,7 @@ public class PostScreenController extends ScreenController {
 					new Callback<Void, Integer, Void>() {
 
 						@Override
-						void onPre(Void param) {
+						public void onPre(Void param) {
 							progressBar.setProgress(0);
 							progressBar.setMax(100);
 							progressBar.setVisibility(View.VISIBLE);
@@ -109,12 +118,12 @@ public class PostScreenController extends ScreenController {
 						}
 
 						@Override
-						void onProgress(Integer param) {
+						public void onProgress(Integer param) {
 							progressBar.setProgress(param);
 						}
 
 						@Override
-						void onFinish(Void param) {
+						public void onFinish(Void param) {
 							progressBar.setVisibility(View.GONE);
 							superController.screenToController.get(Screen.FEED)
 									.refresh();
@@ -144,13 +153,13 @@ public class PostScreenController extends ScreenController {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK) {
-			activity.getContentResolver().notifyChange(outputFileUri, null);
-			ContentResolver cr = activity.getContentResolver();
+			getActivity().getContentResolver().notifyChange(outputFileUri, null);
+			ContentResolver cr = getActivity().getContentResolver();
 			try {
 				mPhotoTemp = android.provider.MediaStore.Images.Media
 						.getBitmap(cr, outputFileUri);
 			} catch (Exception e) {
-				Toast.makeText(activity, e.getMessage(), Toast.LENGTH_SHORT)
+				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
 						.show();
 			}
 
@@ -184,7 +193,7 @@ public class PostScreenController extends ScreenController {
 			orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
 					ExifInterface.ORIENTATION_NORMAL);
 		} catch (IOException e1) {
-			Toast.makeText(activity, e1.getMessage(), Toast.LENGTH_SHORT)
+			Toast.makeText(getActivity(), e1.getMessage(), Toast.LENGTH_SHORT)
 					.show();
 			e1.printStackTrace();
 		} // Since API Level 5

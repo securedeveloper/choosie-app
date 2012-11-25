@@ -2,12 +2,12 @@ package com.choosie.app;
 
 public abstract class Callback<Pre, Progress, Result> {
 
-	void onPre(Pre param) {
+	public void onPre(Pre param) {
 	}
 
-	void onFinish(Result param) {
+	public void onFinish(Result param) {
 	}
 
-	void onProgress(Progress param) {
+	public void onProgress(Progress param) {
 	}
 }

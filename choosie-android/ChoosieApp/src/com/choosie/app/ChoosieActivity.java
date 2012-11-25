@@ -1,6 +1,6 @@
 package com.choosie.app;
 
-import com.facebook.FacebookActivity;
+import com.choosie.app.controllers.SuperController;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -64,7 +64,7 @@ public class ChoosieActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if ((requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE)
 				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE) {
-			superController.screenToController.get(Screen.POST)
+			superController.getControllerForScreen(Screen.POST)
 					.onActivityResult(requestCode, resultCode, data);
 		}
 		if (requestCode == Constants.RequestCodes.COMMENT) {

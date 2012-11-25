@@ -1,5 +1,10 @@
 package com.choosie.app;
 
+import com.choosie.app.R;
+import com.choosie.app.R.id;
+import com.choosie.app.R.layout;
+import com.choosie.app.R.menu;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;

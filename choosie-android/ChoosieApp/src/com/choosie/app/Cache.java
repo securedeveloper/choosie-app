@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+
 import android.os.AsyncTask;
 
 public class Cache<Key, Value> {
@@ -46,17 +48,24 @@ public class Cache<Key, Value> {
 
 	private void startDownload(final Key key) {
 		// This marks that this key is currently being downloaded.
-		callbacksForKey.put(key, new ArrayList<Callback<Void, Object, Value>>());
+		callbacksForKey
+				.put(key, new ArrayList<Callback<Void, Object, Value>>());
 
 		AsyncTask<Void, ?, Value> task = new AsyncTask<Void, Object, Value>() {
 			@Override
 			protected Value doInBackground(Void... params) {
-				return downloader.getData(key, new Callback<Void, Object, Void>() {
-					@Override
-					public void onProgress(Object progress) {
-						publishProgress(progress);
-					}
-				});
+				return downloader.getData(key,
+						new Callback<Void, Object, Void>() {
+							@Override
+							public void onProgress(Object progress) {
+								publishProgress(progress);
+							}
+						});
+			}
+
+			@Override
+			protected void onPreExecute() {
+				runOnPreCallbacks(key);
 			}
 
 			@Override
@@ -73,6 +82,17 @@ public class Cache<Key, Value> {
 		task.execute();
 	}
 
+	protected void runOnPreCallbacks(Key key) {
+		List<Callback<Void, Object, Value>> callbacks;
+		synchronized (cacheLock) {
+			callbacks = callbacksForKey.get(key);
+			// TODO think about moving this out of the synchornized block
+			for (Callback<Void, Object, Value> callback : callbacks) {
+				callback.onPre(null);
+			}
+		}
+	}
+
 	protected void runProgressCallbacks(Key key, Object progress) {
 		List<Callback<Void, Object, Value>> callbacks;
 		synchronized (cacheLock) {
@@ -87,7 +107,9 @@ public class Cache<Key, Value> {
 	private void runCallbacks(final Key key, Value result) {
 		List<Callback<Void, Object, Value>> callbacks;
 		synchronized (cacheLock) {
-			memoryCache.put(key, result);
+			if (result != null) {
+				memoryCache.put(key, result);
+			}
 			callbacks = callbacksForKey.get(key);
 			callbacksForKey.remove(key);
 		}

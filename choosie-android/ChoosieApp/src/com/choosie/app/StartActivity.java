@@ -1,6 +1,5 @@
 package com.choosie.app;
 
-import com.choosie.app.R.string;
 import com.facebook.FacebookActivity;
 import com.facebook.GraphUser;
 import com.facebook.Request;
@@ -8,15 +7,12 @@ import com.facebook.SessionState;
 import com.facebook.Response;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
-import android.sax.TextElementListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class StartActivity extends FacebookActivity {

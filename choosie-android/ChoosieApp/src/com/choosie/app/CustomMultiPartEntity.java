@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 
+
 public class CustomMultiPartEntity extends MultipartEntity {
 
 	Callback<Void, Integer, Void> progressCallback;

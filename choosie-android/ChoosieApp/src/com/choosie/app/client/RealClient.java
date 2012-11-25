@@ -1,4 +1,4 @@
-package com.choosie.app;
+package com.choosie.app.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -28,7 +29,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.choosie.app.Callback;
+import com.choosie.app.Comment;
+import com.choosie.app.Constants;
+import com.choosie.app.CustomMultiPartEntity;
+import com.choosie.app.FacebookDetails;
+import com.choosie.app.NewChoosiePostData;
+import com.choosie.app.Utils;
+import com.choosie.app.Vote;
+import com.choosie.app.Constants.URIs;
 import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.controllers.FeedCacheKey;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -36,17 +47,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class Client {
+public class RealClient extends ClientBase {
 
-	private FacebookDetails fbDetails;
-
-	public Client(FacebookDetails fbDetails) {
-		this.fbDetails = fbDetails;
-	}
-	
-	public FacebookDetails getFacebookDetails()
-	{
-		return this.fbDetails;
+	public RealClient(FacebookDetails fbDetails) {
+		super(fbDetails);
 	}
 
 	/**
@@ -56,6 +60,7 @@ public class Client {
 	 * @param data
 	 * @param progressCallback
 	 */
+	@Override
 	public void sendChoosiePostToServer(NewChoosiePostData data,
 			Callback<Void, Integer, Void> progressCallback) {
 		final HttpClient httpClient = new DefaultHttpClient();
@@ -66,55 +71,58 @@ public class Client {
 		executePostTask.execute((HttpPost) null);
 	}
 
-	public String commentText;
-
-	/**
-	 * Gets the feed from the server. Calls the callback when the feed is back.
-	 */
-	void getFeedFromServer(Callback<Void, Void, List<ChoosiePostData>> callback) {
-		final HttpClient client = new DefaultHttpClient();
-
-		// Creates the GET HTTP request
-		final HttpGet request = new HttpGet(Constants.URIs.FEED_URI);
-
-		// Executes the GET request async
-		AsyncTask<HttpGet, Void, String> getStreamTask = createGetFeedTask(
-				client, callback);
-		getStreamTask.execute(request);
-	}
-
-	public Bitmap getPictureFromServerSync(final String pictureUrl,
+	@Override
+	public FeedResponse getFeedByCursor(FeedCacheKey feedRequest,
 			Callback<Void, Object, Void> progressCallback) {
-		String urlToLoad = pictureUrl;
-		Log.i(Constants.LOG_TAG, "getPictureFromServer: Loading URL: "
-				+ urlToLoad);
-		URL url;
+		// Creates the GET HTTP request
+		String feedUri = Constants.URIs.FEED_URI + "?limit=8";
+		if (feedRequest.getCursor() != null && feedRequest.isAppend()) {
+			feedUri += "&cursor=" + feedRequest.getCursor();
+		}
+
+		Log.i(Constants.LOG_TAG, "Getting feed from URI: " + feedUri);
+		final HttpClient client = new DefaultHttpClient();
+		final HttpGet request = new HttpGet(feedUri);
+		HttpResponse response;
 		try {
-			url = new URL(urlToLoad);
-		} catch (MalformedURLException e) {
+			response = client.execute(request);
+		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}
-		progressCallback.onProgress(Integer.valueOf(1));
-		try {
-			HttpURLConnection connection;
-			connection = (HttpURLConnection) url.openConnection();
-			connection.setDoInput(true);
-			connection.setInstanceFollowRedirects(true);
-			connection.connect();
-			byte[] buffer = downloadFile(progressCallback, connection);
-			progressCallback.onProgress(Integer.valueOf(99));
-			Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0,
-					buffer.length);
-			return bitmap;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
+		String jsonString;
+		try {
+			jsonString = EntityUtils.toString(response.getEntity());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+		FeedResponse choosiePostsFromFeed;
+		try {
+			choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+		Log.i(Constants.LOG_TAG, "Feed converted to posts, and got cursor.");
+		choosiePostsFromFeed.setAppend(feedRequest.isAppend());
+		return choosiePostsFromFeed;
 	}
 
+		@Override
 	public void login(final Callback<Void, Void, Void> onLoginComplete) {
 		final HttpClient httpClient = new DefaultHttpClient();
 		final HttpPost postRequest = new HttpPost(Constants.URIs.ROOT_URL
@@ -167,37 +175,6 @@ public class Client {
 		postRequest.setEntity(reqEntity);
 	}
 
-	private byte[] downloadFile(Callback<Void, Object, Void> progressCallback,
-			HttpURLConnection connection) throws IOException {
-		int imageSize = connection.getContentLength();
-		// Sometimes the size isn't known: just read the stream.
-		if (imageSize <= 0) {
-			ByteArrayBuffer buf = new ByteArrayBuffer(1024);
-			int b;
-			while ((b = connection.getInputStream().read()) > -1) {
-				buf.append(b);
-			}
-			return buf.toByteArray();
-		}
-		// When it is known, read the stream and public progress.
-		progressCallback.onProgress(Integer.valueOf(2));
-		InputStream input = connection.getInputStream();
-		final int kBufferSize = 1024;
-		byte[] buffer = new byte[imageSize];
-		int downloaded = 0;
-		int bytesRead = 0;
-		while (bytesRead > -1) {
-			int remaining = imageSize - downloaded;
-			int toReadThisIteration = Math.min(remaining, kBufferSize);
-			bytesRead = input.read(buffer, downloaded, toReadThisIteration);
-			if (bytesRead >= 0) {
-				downloaded += bytesRead;
-				progressCallback.onProgress(100 * downloaded / imageSize);
-			}
-		}
-		return buffer;
-	}
-
 	/**
 	 * Gets a NewChoosiePostData object, and creates an HTML POST request with
 	 * the data.
@@ -213,8 +190,8 @@ public class Client {
 		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
 		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
 
-		data.image1.compress(CompressFormat.JPEG, 20, bos1);
-		data.image2.compress(CompressFormat.JPEG, 20, bos2);
+		data.getImage1().compress(CompressFormat.JPEG, 20, bos1);
+		data.getImage2().compress(CompressFormat.JPEG, 20, bos2);
 		byte[] data1 = bos1.toByteArray();
 		byte[] data2 = bos2.toByteArray();
 
@@ -223,20 +200,14 @@ public class Client {
 
 		CustomMultiPartEntity multipartContent = new CustomMultiPartEntity(
 				new Callback<Void, Integer, Void>() {
-					@Override
-					void onProgress(Integer param) {
+					public void onProgress(Integer param) {
 						progressCallback.onProgress(param);
 					}
 				});
-		// new ProgressListener() {
-		// public void transferred(long param) {
-		// progressCallback
-		// .onProgress((int)param);//(int) (param / (float) 100) * 100);
-		// }
-		// });
 		multipartContent.addPart("photo1", bab1);
 		multipartContent.addPart("photo2", bab2);
-		multipartContent.addPart("question", new StringBody(data.question));
+		multipartContent
+				.addPart("question", new StringBody(data.getQuestion()));
 		multipartContent.addPart("fb_uid",
 				new StringBody(this.fbDetails.getFb_uid()));
 
@@ -262,7 +233,7 @@ public class Client {
 					multipartContent = createMultipartContent(data,
 							new Callback<Void, Integer, Void>() {
 								@Override
-								void onProgress(Integer param) {
+								public void onProgress(Integer param) {
 									publishProgress((int) ((param / (float) totalSize) * 100));
 								}
 							});
@@ -295,64 +266,17 @@ public class Client {
 	}
 
 	/**
-	 * Creates an AsyncTask that takes care of getting the feed from the server.
-	 * 
-	 * @param client
-	 * @param callback
-	 * @return
-	 */
-	private AsyncTask<HttpGet, Void, String> createGetFeedTask(
-			final HttpClient client,
-			final Callback<Void, Void, List<ChoosiePostData>> callback) {
-		AsyncTask<HttpGet, Void, String> getStreamTask = new AsyncTask<HttpGet, Void, String>() {
-
-			@Override
-			protected String doInBackground(HttpGet... params) {
-				HttpResponse response;
-				try {
-					response = client.execute(params[0]);
-					return EntityUtils.toString(response.getEntity());
-				} catch (ClientProtocolException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(String jsonString) {
-				if (jsonString == null) {
-					// TODO Handle error
-					return;
-				}
-				try {
-					List<ChoosiePostData> choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);
-
-					callback.onFinish(choosiePostsFromFeed);
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-
-		};
-		return getStreamTask;
-	}
-
-	/**
 	 * Takes a JSON string, and builds ChoosiePostData object from it.
 	 * 
 	 * @param jsonString
 	 * @return
 	 * @throws JSONException
 	 */
-	private List<ChoosiePostData> convertJsonToChoosiePosts(String jsonString)
+	private FeedResponse convertJsonToChoosiePosts(String jsonString)
 			throws JSONException {
 		JSONObject feedJsonObject = new JSONObject(jsonString);
 		JSONArray jsonPostsArray = feedJsonObject.getJSONArray("feed");
+		String cursor = (feedJsonObject.getString("cursor"));
 		List<ChoosiePostData> choosiePostsFromFeed = new ArrayList<ChoosiePostData>();
 		for (int i = 0; i < jsonPostsArray.length(); i++) {
 			try {
@@ -402,6 +326,7 @@ public class Client {
 					postData.getLstComment().add(comment);
 				}
 
+
 				choosiePostsFromFeed.add(postData);
 
 			} catch (JSONException e) {
@@ -409,9 +334,11 @@ public class Client {
 				e.printStackTrace();
 			}
 		}
-		return choosiePostsFromFeed;
+		FeedResponse result = new FeedResponse(true, cursor, choosiePostsFromFeed);
+		return result;
 	}
 
+	@Override
 	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto,
 			final Callback<Void, Void, Boolean> callback) {
 		final HttpUriRequest postRequest;
@@ -472,6 +399,7 @@ public class Client {
 		return postRequest;
 	}
 
+	@Override
 	public void sendCommentToServer(String post_key, String text,
 			final Callback<Void, Void, Boolean> callback) {
 
@@ -518,9 +446,9 @@ public class Client {
 		try {
 			multipartContent.addPart("fb_uid",
 					new StringBody(this.fbDetails.getFb_uid()));
-			multipartContent.addPart("text", new StringBody(comment.text));
-			multipartContent.addPart("post_key", new StringBody(
-					comment.post_key));
+			multipartContent.addPart("text", new StringBody(comment.getText().toString()));
+			multipartContent.addPart("post_key",
+					new StringBody(comment.getPost_key()));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

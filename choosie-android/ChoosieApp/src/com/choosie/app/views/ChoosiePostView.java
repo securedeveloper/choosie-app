@@ -1,22 +1,27 @@
-package com.choosie.app;
+package com.choosie.app.views;
 
 import java.util.List;
 
+import com.choosie.app.Callback;
+import com.choosie.app.Comment;
+import com.choosie.app.Constants;
+import com.choosie.app.R;
+import com.choosie.app.Screen;
 import com.choosie.app.Models.*;
+import com.choosie.app.R.id;
+import com.choosie.app.R.layout;
+import com.choosie.app.controllers.SuperController;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,7 +39,6 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void inflateLayout() {
-		Log.i(Constants.LOG_TAG, "ChoosiePostView: inflateLayout");
 		LayoutInflater inflater = (LayoutInflater) this.getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_choosie_post, this);
@@ -69,7 +73,7 @@ public class ChoosiePostView extends RelativeLayout {
 		loadImageToView(post.getUserPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
 		loadCommentsToView(post);
-
+		
 		if (choosiePost.isPostByMe()) {
 			// TODO:show results
 			return;
@@ -92,13 +96,13 @@ public class ChoosiePostView extends RelativeLayout {
 					});
 		}
 	}
-
+	
 	private void loadCommentsToView(ChoosiePostData post) {
 		LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		List<Comment> lstComment = post.getLstComment();
 		for (Comment comment : lstComment) {
 			TextView tv = new TextView(
-					superController.screenToController.get(Screen.FEED).activity);
+					superController.getControllerForScreen(Screen.FEED).getActivity());
 			// tv.setText("Bar Refaeli: " + comment.getText());
 			final SpannableStringBuilder sb = new SpannableStringBuilder(
 					"Bar Refaeli: " + comment.getText());
@@ -120,14 +124,13 @@ public class ChoosiePostView extends RelativeLayout {
 		}
 	}
 
+
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
 			final ProgressBar progressBar) {
 		this.superController.getCaches().getPhotosCache()
 				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
 					@Override
-					void onFinish(Bitmap param) {
-						Log.i(Constants.LOG_TAG,
-								"Feed after getPictureFromServer");
+					public void onFinish(Bitmap param) {
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
@@ -136,7 +139,7 @@ public class ChoosiePostView extends RelativeLayout {
 					}
 
 					@Override
-					void onProgress(Object progress) {
+					public void onProgress(Object progress) {
 						if (!(progress instanceof Integer)) {
 							Log.e(Constants.LOG_TAG, "Y u no integer???");
 							return;

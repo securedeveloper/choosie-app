@@ -34,7 +34,10 @@ public class ChoosiePostData {
 
 	public String getKey() {
 		// HACK: Get post key from photo1URL
-		String url = getPhoto1URL();
+		String url = photo1URL;
+		if (url == null) {
+			return "RandomKekkeyy";
+		}
 		String key = url.substring(url.indexOf("post_key=")
 				+ "post_key=".length());
 		return key;

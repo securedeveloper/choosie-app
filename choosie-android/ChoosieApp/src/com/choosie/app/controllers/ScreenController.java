@@ -1,4 +1,5 @@
-package com.choosie.app;
+package com.choosie.app.controllers;
+
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,13 +7,13 @@ import android.view.View;
 
 public abstract class ScreenController {
 	protected View view;
-	Activity activity;
+	private Activity activity;
 	SuperController superController;
 
 	public ScreenController(View layout, Activity activity,
 			SuperController superController) {
 		this.view = layout;
-		this.activity = activity;
+		this.setActivity(activity);
 		this.superController = superController;
 	}
 
@@ -38,5 +39,13 @@ public abstract class ScreenController {
 
 	public void refresh() {
 
+	}
+
+	public Activity getActivity() {
+		return activity;
+	}
+
+	public void setActivity(Activity activity) {
+		this.activity = activity;
 	}
 }
