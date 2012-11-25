@@ -13,4 +13,5 @@ class ImageHandler(webapp2.RequestHandler):
     }[which_photo]
       
     self.response.headers['Content-Type'] = 'image/png'
+    self.response.headers['Cache-Control'] = 'max-age=290304000, private'
     self.response.out.write(result)
