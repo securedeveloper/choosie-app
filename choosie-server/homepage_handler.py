@@ -1,7 +1,8 @@
 import webapp2
-from module_choosie_post import ChoosiePost
+
 from feed_handler import FeedHandler
-from google.appengine.ext import db
+from module_choosie_post import ChoosiePost
+
 import jinja2
 import os
 
@@ -14,7 +15,7 @@ class HomepageHandler(webapp2.RequestHandler):
     limit = self.request.get('limit')
     if limit:
       limit = int(limit)
-    choosie_posts, cursor = FeedHandler.GetFeedAndCursor(self.request.get('cursor'), limit)
+    choosie_posts, cursor = FeedHandler.get_feed_and_cursor(self.request.get('cursor'), limit)
     template_values = {
       'choosie_posts': choosie_posts,
       'cursor': cursor,

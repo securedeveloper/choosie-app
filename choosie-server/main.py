@@ -10,9 +10,6 @@ from login_handler import LoginHandler
 from comments_handler import CommentsHandler
 from post_item_handler import PostItemHandler
 
-from google.appengine.ext import db
-from google.appengine.api import images
-
 app = webapp2.WSGIApplication([('/', HomepageHandler),
                                ('/posts/new', PostsHandler),
                                ('/photo', ImageHandler),

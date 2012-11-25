@@ -7,11 +7,12 @@ from utils import Utils
 import logging
 
 class ChoosiePost(db.Model):
-  photo1 = db.BlobProperty(required=True)
-  photo2 = db.BlobProperty(required=True)
-  question = db.StringProperty(required=True)
+  photo1 = db.BlobProperty(required = True)
+  photo2 = db.BlobProperty(required = True)
+  question = db.StringProperty(required = True)
   created_at = db.DateTimeProperty(auto_now_add = True)
-  user = db.ReferenceProperty(User,required=True)
+  user = db.ReferenceProperty(User, required = True)
+  updated_at = db.DateTimeProperty(auto_now = True)
 
   def to_json(self):
     votes = self.votes()
@@ -24,7 +25,8 @@ class ChoosiePost(db.Model):
             "votes1": self.votes_for_count(votes, 1),
             "votes2": self.votes_for_count(votes, 2),
             "question": str(self.question),
-            "created_at": str(self.created_at)
+            "created_at": str(self.created_at),
+            "updated_at": str(self.updated_at)
            }
 
   def votes1(self):

@@ -1,10 +1,11 @@
 import webapp2
+
+from cache_controller import CacheController
 from module_choosie_post import ChoosiePost
-from google.appengine.ext import db
 
 class ImageHandler(webapp2.RequestHandler):
   def get(self):
-    choosie_post = db.get(self.request.get('post_key'))
+    choosie_post = CacheController.get_model(self.request.get('post_key'))
     which_photo = int(self.request.get('which_photo'))
     result = {
     1 : choosie_post.photo1,

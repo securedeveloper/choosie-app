@@ -1,9 +1,12 @@
+import logging
 import webapp2
-from module_choosie_post import ChoosiePost
+
 from google.appengine.api import images
 from google.appengine.ext import db
+
+from cache_controller import CacheController
+from module_choosie_post import ChoosiePost
 from module_user import User
-import logging
 
 class PostsHandler(webapp2.RequestHandler):
   def shrinkImage(self, data):
@@ -16,7 +19,6 @@ class PostsHandler(webapp2.RequestHandler):
     return img.execute_transforms(output_encoding=images.PNG)
   
   def post(self):
-    
     user = User.get_user_by_fb_uid(self.request.get('fb_uid'))
     logging.info(self.request.get('fb_uid'))
     if user is None:
@@ -30,5 +32,7 @@ class PostsHandler(webapp2.RequestHandler):
                                photo1 = db.Blob(self.shrinkImage(self.request.get('photo1'))),
                                photo2 = db.Blob(self.shrinkImage(self.request.get('photo2'))))
 
+    # Save this post in the datastore, and also in the memcache.
     choosie_post.put()
+    CacheController.set_model(choosie_post)
     self.redirect('/')
