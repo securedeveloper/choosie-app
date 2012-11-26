@@ -3,7 +3,6 @@ package com.choosie.app.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.choosie.app.Callback;

@@ -2,7 +2,6 @@ package com.choosie.app.controllers;
 
 import com.choosie.app.Constants;
 import com.choosie.app.R;
-import com.choosie.app.R.id;
 
 import android.app.Activity;
 import android.util.Log;
@@ -12,7 +11,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class FeedScreenController extends ScreenController {

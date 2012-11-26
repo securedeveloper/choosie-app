@@ -1,26 +1,38 @@
 package com.choosie.app;
 
 import com.choosie.app.R;
-import com.choosie.app.R.id;
-import com.choosie.app.R.layout;
-import com.choosie.app.R.menu;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 public class CommentScreen extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.i(Constants.LOG_TAG, "in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
+
+		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
+		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
+
+		// get the images Strings from the intent
+		final Intent i = getIntent();
+		String photo1String = i.getStringExtra("photo1");
+		String photo2String = i.getStringExtra("photo2");
+
+		parseToUriAndSetInImageView(photo1String, imageViewPhoto1);
+		parseToUriAndSetInImageView(photo2String, imageViewPhoto2);
 
 		Button buttonSendComment = (Button) findViewById(R.id.button_send_comment);
 
@@ -30,18 +42,32 @@ public class CommentScreen extends Activity {
 				String text = ((EditText) findViewById(R.id.editText_comment))
 						.getText().toString();
 
-				Intent i = getIntent();
+				imageViewPhoto1.setImageDrawable(getResources().getDrawable(
+						R.drawable.ic_action_search));
+				imageViewPhoto2.setImageDrawable(getResources().getDrawable(
+						R.drawable.ic_action_search));
+
+				// get the intent and add the comment
 				i.putExtra("text", text);
 
+				// activate the 'onActivityResult'
 				setResult(RESULT_OK, i);
 
 				finish();
-
-				// superController.CommentFor(choosiePost, text);
 			}
 		});
 	}
 
+	private void parseToUriAndSetInImageView(String photoString,
+			ImageView imageViewPhoto) {
+		if (photoString != null) {
+			Uri photo1Uri = Uri.parse(photoString);
+			imageViewPhoto.setImageURI(photo1Uri);
+		}
+
+	}
+
+	// TODO: check if can delete this function
 	@Override
 	public void onBackPressed() {
 		setResult(RESULT_CANCELED, null);
@@ -49,6 +75,7 @@ public class CommentScreen extends Activity {
 		return;
 	}
 
+	// setting the backKey to cancel the commentizatzia
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {

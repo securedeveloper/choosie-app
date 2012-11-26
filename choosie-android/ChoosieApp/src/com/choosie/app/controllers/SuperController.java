@@ -13,10 +13,7 @@ import com.choosie.app.Constants;
 import com.choosie.app.FacebookDetails;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
-import com.choosie.app.Constants.RequestCodes;
 import com.choosie.app.Models.ChoosiePostData;
-import com.choosie.app.R.id;
-import com.choosie.app.client.MockClient;
 import com.choosie.app.client.RealClient;
 import com.choosie.app.client.ClientBase;
 
@@ -26,6 +23,7 @@ import android.util.Log;
 import android.util.Pair;
 
 public class SuperController {
+
 	private ClientBase client;
 	private final Caches caches = new Caches(this);
 	Map<Screen, ScreenController> screenToController;
@@ -115,13 +113,20 @@ public class SuperController {
 	}
 
 	public void switchToCommentScreen(ChoosiePostData choosiePost) {
-		Intent intent = new Intent(
-				screenToController.get(Screen.FEED).getActivity()
-						.getApplicationContext(),
-				CommentScreen.class);
+		Intent intent = new Intent(screenToController.get(Screen.FEED)
+				.getActivity().getApplicationContext(), CommentScreen.class);
+
+		String photo1Url = choosiePost.getPhoto1URL();
+		String photo2Url = choosiePost.getPhoto2URL();
+
 		intent.putExtra("post_key", choosiePost.getKey());
-		screenToController.get(Screen.FEED).getActivity().startActivityForResult(
-				intent, Constants.RequestCodes.COMMENT);
+
+		getCaches().insertPhotoUriToIntent(photo1Url, intent, "photo1");
+		getCaches().insertPhotoUriToIntent(photo2Url, intent, "photo2");
+
+		screenToController.get(Screen.FEED).getActivity()
+				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);
+
 	}
 
 	public void onActivityResult(int resultCode, Intent data) {

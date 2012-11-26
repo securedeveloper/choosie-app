@@ -8,8 +8,6 @@ import com.choosie.app.Constants;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
-import com.choosie.app.Constants.RequestCodes;
-import com.choosie.app.R.id;
 
 
 import android.app.Activity;

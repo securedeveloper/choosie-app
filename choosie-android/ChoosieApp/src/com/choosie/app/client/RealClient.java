@@ -2,11 +2,7 @@ package com.choosie.app.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +19,6 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,13 +32,10 @@ import com.choosie.app.FacebookDetails;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.Utils;
 import com.choosie.app.Vote;
-import com.choosie.app.Constants.URIs;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
 
-import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
