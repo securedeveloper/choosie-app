@@ -3,7 +3,10 @@ package com.choosie.app.Models;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 import com.choosie.app.Comment;
+import com.choosie.app.Constants;
 import com.choosie.app.FacebookDetails;
 import com.choosie.app.Vote;
 
@@ -29,7 +32,7 @@ public class ChoosiePostData {
 		this.lstComments = new ArrayList<Comment>();
 		this.lstVotes = new ArrayList<Vote>();
 		this.fbDetails = fbDetails;
-		
+
 	}
 
 	public String getKey() {
@@ -43,13 +46,27 @@ public class ChoosiePostData {
 		return key;
 	}
 
+	/**
+	 * function checks if the logged in user voted for the selected picture (one
+	 * / two)
+	 */
 	public boolean isVotedAlready(int vote_for) {
 		for (Vote vote : this.lstVotes) {
-			if (vote.getFb_uid().equals(this.user_fb_uid) &&
-					vote.getVote_for() == vote_for)
+			if (vote.getFb_uid().equals(this.fbDetails.getFb_uid())
+					&& vote.getVote_for() == vote_for) {
+
 				return true;
+			}
 		}
 		return false;
+	}
+
+	/**
+	 * function checks if the logged in user voted for either one of the
+	 * pictures
+	 */
+	public boolean isVotedAlready() {
+		return (isVotedAlready(1) || isVotedAlready(2));
 	}
 
 	public boolean isPostByMe() {
@@ -115,7 +132,7 @@ public class ChoosiePostData {
 	public void setUserPhotoURL(String userPhotoURL) {
 		this.userPhotoURL = userPhotoURL;
 	}
-	
+
 	public List<Comment> getLstComment() {
 		return lstComments;
 	}
@@ -123,7 +140,7 @@ public class ChoosiePostData {
 	public void setLstComments(List<Comment> lstComments) {
 		this.lstComments = lstComments;
 	}
-	
+
 	public List<Vote> getLstVotes() {
 		return lstVotes;
 	}
@@ -138,6 +155,15 @@ public class ChoosiePostData {
 
 	public void setUser_fb_uid(String user_fb_uid) {
 		this.user_fb_uid = user_fb_uid;
+	}
+
+	public int CountVotes(int vote_for) {
+		int nVotes = 0;
+		for (Vote vote : this.lstVotes) {
+			if (vote.getVote_for() == vote_for)
+				nVotes++;
+		}
+		return nVotes;
 	}
 
 }

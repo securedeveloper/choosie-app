@@ -26,16 +26,17 @@ public class StartActivity extends FacebookActivity {
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
 
-		Button fbLoginButton = (Button)findViewById(R.id.fbLoginButton);
+		Button fbLoginButton = (Button) findViewById(R.id.fbLoginButton);
 		fbLoginButton.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View v) {
 				Log.i(Constants.LOG_TAG, "on click open session");
+				closeSession();
 				openSession();
-				
+
 			}
 		});
-		
+
 		openSession();
 	}
 
@@ -61,7 +62,8 @@ public class StartActivity extends FacebookActivity {
 								TextView welcome = (TextView) findViewById(R.id.welcome);
 								welcome.setText("Hello " + user.getName() + "!");
 
-								Log.i(Constants.LOG_TAG, "creating intent for ChoosieActivity");	
+								Log.i(Constants.LOG_TAG,
+										"creating intent for ChoosieActivity");
 								Intent intent = new Intent(StartActivity.this,
 										ChoosieActivity.class);
 								FacebookDetails details = new FacebookDetails(
@@ -69,8 +71,9 @@ public class StartActivity extends FacebookActivity {
 												.getAccessToken(), getSession()
 												.getExpirationDate().getTime());
 								intent.putExtra("fb_details", details);
-								
-								Log.i(Constants.LOG_TAG, "Starting ChoosieActivity");
+
+								Log.i(Constants.LOG_TAG,
+										"Starting ChoosieActivity");
 								startActivity(intent);
 							}
 						}

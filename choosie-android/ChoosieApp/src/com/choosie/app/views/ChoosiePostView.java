@@ -7,6 +7,7 @@ import com.choosie.app.Comment;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
+import com.choosie.app.Vote;
 import com.choosie.app.Models.*;
 import com.choosie.app.R.id;
 import com.choosie.app.R.layout;
@@ -21,12 +22,12 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.view.View;
 
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
@@ -53,77 +54,121 @@ public class ChoosiePostView extends RelativeLayout {
 
 	public void loadChoosiePost(ChoosiePostData post) {
 		this.choosiePost = post;
-		((TextView) findViewById(R.id.votes1)).setText(post.getVotes1()
-				+ " votes");
-		((TextView) findViewById(R.id.votes2)).setText(post.getVotes2()
-				+ " votes");
+
+		final TextView votes1 = (TextView) findViewById(R.id.votes1);
+		final TextView votes2 = (TextView) findViewById(R.id.votes2);
+
 		((TextView) findViewById(R.id.feedtext)).setText(post.getQuestion());
 		((TextView) findViewById(R.id.feed_name)).setText(post.getUserName());
-		((ImageView) findViewById(R.id.feedimage1)).setVisibility(View.GONE);
-		((ImageView) findViewById(R.id.feedimage2)).setVisibility(View.GONE);
+
+		ImageView imgView1 = (ImageView) findViewById(R.id.feedimage1);
+		ImageView imgView2 = (ImageView) findViewById(R.id.feedimage2);
+
+		imgView1.setVisibility(View.GONE);
+		imgView2.setVisibility(View.GONE);
+
 		((ImageView) findViewById(R.id.feed_userimage))
 				.setVisibility(View.GONE);
 
-		loadImageToView(post.getPhoto1URL(),
-				(ImageView) findViewById(R.id.feedimage1),
+		loadImageToView(post.getPhoto1URL(), imgView1,
 				(ProgressBar) findViewById(R.id.progressBar1));
-		loadImageToView(post.getPhoto2URL(),
-				(ImageView) findViewById(R.id.feedimage2),
+		loadImageToView(post.getPhoto2URL(), imgView2,
 				(ProgressBar) findViewById(R.id.progressBar2));
 		loadImageToView(post.getUserPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
 		loadCommentsToView(post);
-		
-		if (choosiePost.isPostByMe()) {
-			// TODO:show results
-			return;
+
+		// DECIDE IF SHOW RESUTLS OR NOT
+		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
+			ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
+		} else {
+			ChangeVotingResultsVisability(votes1, votes2, View.INVISIBLE);
 		}
 
-		if (!choosiePost.isVotedAlready(1)) {
-			this.findViewById(R.id.votes1).setOnClickListener(
-					new OnClickListener() {
-						public void onClick(View arg0) {
-							superController.voteFor(choosiePost, 1);
-						}
-					});
-		}
-		if (!choosiePost.isVotedAlready(1)) {
-			this.findViewById(R.id.votes2).setOnClickListener(
-					new OnClickListener() {
-						public void onClick(View arg0) {
-							superController.voteFor(choosiePost, 2);
-						}
-					});
-		}
+		imgView1.setOnLongClickListener(new OnLongClickListener() {
+
+			public boolean onLongClick(View v) {
+				Log.i(Constants.LOG_TAG, "onLongClick signaled for voting 1");
+
+				if (!choosiePost.isVotedAlready(1)) {
+					Log.i(Constants.LOG_TAG, "voting 1 (Not voted 1 yet)");
+					superController.voteFor(choosiePost, 1);
+
+					// SHOW VOTES RESULTS
+					ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
+					return true;
+				}
+				Log.i(Constants.LOG_TAG, "Already voted for 1. vote not sent");
+				return false;
+			}
+		});
+
+		imgView2.setOnLongClickListener(new OnLongClickListener() {
+
+			public boolean onLongClick(View v) {
+				Log.i(Constants.LOG_TAG, "onLongClick signaled for voting 2");
+
+				if (!choosiePost.isVotedAlready(2)) {
+					Log.i(Constants.LOG_TAG, "voting 2 (Not voted 2 yet)");
+					superController.voteFor(choosiePost, 2);
+
+					// SHOW VOTES RESULTS
+					ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
+					return true;
+				}
+				Log.i(Constants.LOG_TAG, "Already voted for 2. vote not sent");
+				return false;
+			}
+		});
 	}
-	
+
+	private void ChangeVotingResultsVisability(TextView votes1,
+			TextView votes2, int visability) {
+
+		// If Visablity=true then count votes and display them
+		if (visability == View.VISIBLE) {
+
+			int voteCount1 = choosiePost.CountVotes(1);
+			int voteCount2 = choosiePost.CountVotes(2);
+
+			votes1.setText(voteCount1 + " Votes");
+			votes2.setText(voteCount2 + " Votes");
+
+			choosiePost.setVotes1(voteCount1);
+			choosiePost.setVotes2(voteCount2);
+		}
+		votes1.setVisibility(visability);
+		votes2.setVisibility(visability);
+
+	}
+
 	private void loadCommentsToView(ChoosiePostData post) {
 		LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		List<Comment> lstComment = post.getLstComment();
 		for (Comment comment : lstComment) {
-			TextView tv = new TextView(
-					superController.getControllerForScreen(Screen.FEED).getActivity());
+			TextView tv = new TextView(superController.getControllerForScreen(
+					Screen.FEED).getActivity());
 			// tv.setText("Bar Refaeli: " + comment.getText());
 			final SpannableStringBuilder sb = new SpannableStringBuilder(
 					"Bar Refaeli: " + comment.getText());
 			final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(
 					0, 0, 255));
 
-			 // Span to make text bold
-			   sb.setSpan(fcs, 0, 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE); 
-			
+			// Span to make text bold
+			sb.setSpan(fcs, 0, 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
 			// Span to set text color to some RGB value
-			final StyleSpan bss = new StyleSpan(android.graphics.Typeface.ITALIC);
+			final StyleSpan bss = new StyleSpan(
+					android.graphics.Typeface.ITALIC);
 
 			// Set the text color for first 4 characters
 			sb.setSpan(bss, 0, 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 			tv.setText(sb);
-			
+
 			commentLayout.addView(tv);
 		}
 	}
-
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
 			final ProgressBar progressBar) {
