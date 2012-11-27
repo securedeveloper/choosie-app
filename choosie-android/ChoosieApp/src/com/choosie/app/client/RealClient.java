@@ -182,8 +182,8 @@ public class RealClient extends ClientBase {
 		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
 		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
 
-		data.getImage1().compress(CompressFormat.JPEG, 20, bos1);
-		data.getImage2().compress(CompressFormat.JPEG, 20, bos2);
+		data.getImage1().compress(CompressFormat.JPEG, 80, bos1);
+		data.getImage2().compress(CompressFormat.JPEG, 80, bos2);
 		byte[] data1 = bos1.toByteArray();
 		byte[] data2 = bos2.toByteArray();
 

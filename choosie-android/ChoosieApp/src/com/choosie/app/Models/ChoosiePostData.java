@@ -3,10 +3,8 @@ package com.choosie.app.Models;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
 
 import com.choosie.app.Comment;
-import com.choosie.app.Constants;
 import com.choosie.app.FacebookDetails;
 import com.choosie.app.Vote;
 

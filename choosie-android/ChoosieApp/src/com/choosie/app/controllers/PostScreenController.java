@@ -9,7 +9,6 @@ import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -28,7 +27,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class PostScreenController extends ScreenController {
-	private Bitmap mPhotoTemp;
 	private Bitmap mImage1;
 	private Bitmap mImage2;
 	private String mQuestion;
@@ -78,10 +76,12 @@ public class PostScreenController extends ScreenController {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
 		outputFileUri = Uri.fromFile(f);
 		if (arg0.getId() == R.id.image_photo1) {
-			getActivity().startActivityForResult(intent, Constants.RequestCodes.TAKE_FIRST_PICTURE);
+			getActivity().startActivityForResult(intent,
+					Constants.RequestCodes.TAKE_FIRST_PICTURE);
 		}
 		if (arg0.getId() == R.id.image_photo2) {
-			getActivity().startActivityForResult(intent, Constants.RequestCodes.TAKE_SECOND_PICTURE);
+			getActivity().startActivityForResult(intent,
+					Constants.RequestCodes.TAKE_SECOND_PICTURE);
 		}
 	}
 
@@ -95,8 +95,8 @@ public class PostScreenController extends ScreenController {
 
 	private void submitChoosiePost() {
 		if ((mImage1 == null) || (mImage2 == null)) {
-			Toast toast = Toast.makeText(getActivity(), "Please add two photos",
-					Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(getActivity(),
+					"Please add two photos", Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
 			mQuestion = questionText.getText().toString();
@@ -125,11 +125,11 @@ public class PostScreenController extends ScreenController {
 							progressBar.setVisibility(View.GONE);
 							superController.screenToController.get(Screen.FEED)
 									.refresh();
+							resetPost();
 						}
 					});
 
 			// clear images and text
-			resetPost();
 
 			// switch back to feed screen
 			superController.screenToController.get(Screen.FEED).showScreen();
@@ -138,11 +138,18 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void resetPost() {
+		image1.setImageResource(android.R.drawable.ic_menu_crop);
+		image2.setImageResource(android.R.drawable.ic_menu_crop);
+		if (mImage1 != null) {
+			mImage1.recycle();
+		}
+		if (mImage2 != null) {
+			mImage2.recycle();
+		}
 		mImage1 = null;
 		mImage2 = null;
 		mQuestion = null;
-		image1.setImageResource(android.R.drawable.ic_menu_crop);
-		image2.setImageResource(android.R.drawable.ic_menu_crop);
+
 		questionText.setText("");
 
 	}
@@ -150,33 +157,50 @@ public class PostScreenController extends ScreenController {
 	// when the camera returns
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Bitmap photoTemp = null;
+		Bitmap resizedPhoto = null;
+
 		if (resultCode == Activity.RESULT_OK) {
-			getActivity().getContentResolver().notifyChange(outputFileUri, null);
+			getActivity().getContentResolver()
+					.notifyChange(outputFileUri, null);
 			ContentResolver cr = getActivity().getContentResolver();
 			try {
-				mPhotoTemp = android.provider.MediaStore.Images.Media
-						.getBitmap(cr, outputFileUri);
+				photoTemp = android.provider.MediaStore.Images.Media.getBitmap(
+						cr, outputFileUri);
+				int w = photoTemp.getWidth();
+				int h = photoTemp.getHeight();
+				resizedPhoto = Bitmap.createScaledBitmap(photoTemp, w / 10,
+						h / 10, true);
+				photoTemp.recycle();
+				photoTemp = null;
 			} catch (Exception e) {
-				Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(getActivity(), e.getMessage(),
+						Toast.LENGTH_SHORT).show();
 			}
 
 			if (requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE) {
-
-				// mImage1 = rotateBitmap(mPhotoTemp, outputFileUri); - enale
-				// when fix of memoryleaking
-				((ImageView) view.findViewById(R.id.image_photo1))
-						.setImageBitmap(mPhotoTemp);
-				mImage1 = mPhotoTemp;
+				mImage1 = null;
+				mImage1 = rotateBitmap(resizedPhoto, outputFileUri);
+				resizedPhoto = rotateAndSetImage(image1, mImage1, resizedPhoto,
+						R.id.image_photo1);
 			}
 			if (requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE) {
-				// mImage2 = rotateBitmap(mPhotoTemp, outputFileUri); - enale
-				// when fix of memoryleaking
-				((ImageView) view.findViewById(R.id.image_photo2))
-						.setImageBitmap(mPhotoTemp);
-				mImage2 = mPhotoTemp;
+				mImage2 = null;
+				mImage2 = rotateBitmap(resizedPhoto, outputFileUri);
+				resizedPhoto = rotateAndSetImage(image2, mImage2, resizedPhoto,
+						R.id.image_photo2);
+
 			}
 		}
+	}
+
+	private Bitmap rotateAndSetImage(ImageView imageView, Bitmap image,
+			Bitmap resizedPhoto, int id) {
+		imageView.setImageResource(android.R.drawable.ic_menu_crop);
+		((ImageView) view.findViewById(id)).setImageBitmap(image);
+		resizedPhoto.recycle();
+		resizedPhoto = null;
+		return resizedPhoto;
 	}
 
 	// for later use

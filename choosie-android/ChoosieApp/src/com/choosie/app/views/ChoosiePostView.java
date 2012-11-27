@@ -7,10 +7,7 @@ import com.choosie.app.Comment;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
-import com.choosie.app.Vote;
 import com.choosie.app.Models.*;
-import com.choosie.app.R.id;
-import com.choosie.app.R.layout;
 import com.choosie.app.controllers.SuperController;
 
 import android.content.Context;
