@@ -58,8 +58,8 @@ public class ChoosiePostView extends RelativeLayout {
 		((TextView) findViewById(R.id.feedtext)).setText(post.getQuestion());
 		((TextView) findViewById(R.id.feed_name)).setText(post.getUserName());
 
-		ImageView imgView1 = (ImageView) findViewById(R.id.feedimage1);
-		ImageView imgView2 = (ImageView) findViewById(R.id.feedimage2);
+		final ImageView imgView1 = (ImageView) findViewById(R.id.feedimage1);
+		final ImageView imgView2 = (ImageView) findViewById(R.id.feedimage2);
 
 		imgView1.setVisibility(View.GONE);
 		imgView2.setVisibility(View.GONE);
@@ -93,6 +93,11 @@ public class ChoosiePostView extends RelativeLayout {
 
 					// SHOW VOTES RESULTS
 					ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
+					
+					// Set border for relevant image
+					Log.i(Constants.LOG_TAG, "Setting border for image 1");
+					SetImageBorder(imgView1 , true);
+					SetImageBorder(imgView2, false);
 					return true;
 				}
 				Log.i(Constants.LOG_TAG, "Already voted for 1. vote not sent");
@@ -111,12 +116,26 @@ public class ChoosiePostView extends RelativeLayout {
 
 					// SHOW VOTES RESULTS
 					ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
+					
+					// Set border for relevant image
+					Log.i(Constants.LOG_TAG, "Setting border for image 2");
+					SetImageBorder(imgView2 , true);
+					SetImageBorder(imgView1, false);
 					return true;
 				}
 				Log.i(Constants.LOG_TAG, "Already voted for 2. vote not sent");
 				return false;
 			}
 		});
+	}
+	
+	private void SetImageBorder(ImageView imgView, boolean isBorderVisable) {
+
+		if (isBorderVisable) {
+			imgView.setBackgroundResource(R.drawable.image_selected);
+		} else {
+			imgView.setBackgroundResource(R.drawable.image_not_selected);
+		}
 	}
 
 	private void ChangeVotingResultsVisability(TextView votes1,
