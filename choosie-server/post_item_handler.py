@@ -1,3 +1,4 @@
+import json
 import logging
 import webapp2
 
@@ -10,4 +11,4 @@ class PostItemHandler(webapp2.RequestHandler):
     # dynamic data (votes, comments) is retrieved from the datastore during
     # choosie_post.to_json().
     choosie_post = CacheController.get_model(key)
-    self.response.out.write(choosie_post.to_json())
+    self.response.out.write(json.dumps(choosie_post.to_json()))
