@@ -136,11 +136,16 @@
             android:orientation="vertical" >
         </LinearLayout>
 
-        <Button
+        <ImageButton
             android:id="@+id/button_to_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comment!" />
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="fitXY"
+            android:maxWidth="40dp"
+            android:maxHeight="40dp"
+            
+            android:src="@drawable/comment_bubble" />
     </LinearLayout>
 
 </merge>
