@@ -6,13 +6,14 @@ import java.util.List;
 import android.util.Log;
 
 import com.choosie.app.Callback;
-import com.choosie.app.Comment;
 import com.choosie.app.Constants;
-import com.choosie.app.FacebookDetails;
 import com.choosie.app.NewChoosiePostData;
-import com.choosie.app.Vote;
-import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
+import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.Models.Comment;
+import com.choosie.app.Models.FacebookDetails;
+import com.choosie.app.Models.User;
+import com.choosie.app.Models.Vote;
 
 public class MockClient extends ClientBase {
 
@@ -78,8 +79,9 @@ public class MockClient extends ClientBase {
 		String userPhotoUrl = "http://graph.facebook.com/jonathan.erez/picture";
 
 		ChoosiePostData mockPost = new ChoosiePostData(fbDetails, postKey,
-				photo1URL, photo2URL, question, userName, userPhotoUrl, fbUID,
-				new ArrayList<Vote>(), new ArrayList<Comment>());
+				photo1URL, photo2URL, question, new User(userName,
+						userPhotoUrl, fbUID), new ArrayList<Vote>(),
+				new ArrayList<Comment>());
 		return mockPost;
 	}
 

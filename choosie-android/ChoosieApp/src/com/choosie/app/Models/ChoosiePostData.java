@@ -1,16 +1,15 @@
 package com.choosie.app.Models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
-import com.choosie.app.Comment;
-import com.choosie.app.FacebookDetails;
-import com.choosie.app.Vote;
 
 /**
- * Represents the data that is returned from the server.
+ * Represents the data that is returned from the server. This class is all
+ * read-only.
  */
 public class ChoosiePostData {
 
@@ -18,9 +17,7 @@ public class ChoosiePostData {
 	private String photo1URL;
 	private String photo2URL;
 	private String question;
-	private String userName;
-	private String userPhotoURL;
-	private String user_fb_uid;
+	private User author;
 	private List<Vote> votes;
 	private List<Comment> comments;
 
@@ -30,17 +27,14 @@ public class ChoosiePostData {
 	private SparseBooleanArray votedAlready;
 
 	public ChoosiePostData(FacebookDetails loggedInUser, String postKey,
-			String photo1URL, String photo2URL, String question,
-			String authorName, String authorPhotoURL, String authorFB_uid,
+			String photo1URL, String photo2URL, String question, User author,
 			List<Vote> votes, List<Comment> comments) {
 		this.loggedInUser = loggedInUser;
 		this.postKey = postKey;
 		this.photo1URL = photo1URL;
 		this.photo2URL = photo2URL;
 		this.question = question;
-		this.userName = authorName;
-		this.userPhotoURL = authorPhotoURL;
-		this.user_fb_uid = authorFB_uid;
+		this.author = author;
 		initVotes(votes);
 		initComments(comments);
 	}
@@ -125,19 +119,11 @@ public class ChoosiePostData {
 		return question;
 	}
 
-	public String getUserName() {
-		return userName;
-	}
-
-	public String getUserPhotoURL() {
-		return userPhotoURL;
+	public User getAuthor() {
+		return author;
 	}
 
 	public List<Comment> getComments() {
-		return comments;
-	}
-
-	public String getUser_fb_uid() {
-		return user_fb_uid;
+		return Collections.unmodifiableList(comments);
 	}
 }

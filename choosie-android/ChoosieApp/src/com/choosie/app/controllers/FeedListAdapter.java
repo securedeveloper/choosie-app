@@ -2,8 +2,8 @@ package com.choosie.app.controllers;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
-import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.client.FeedResponse;
+import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.views.ChoosiePostView;
 
 import android.content.Context;
@@ -166,7 +166,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		if (loadingItem == null) {
 			// TODO: This is really a bad hack.
 			loadingItem = new ChoosiePostData(null, null, null, null,
-					LOADING_ITEM_TEXT, null, null, null, null, null);
+					LOADING_ITEM_TEXT, null, null, null);
 		}
 		Log.i(Constants.LOG_TAG, "Showing I AM LOADING ITEM!!!");
 		this.add(loadingItem);

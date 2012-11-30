@@ -10,13 +10,13 @@ import com.choosie.app.Callback;
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
-import com.choosie.app.FacebookDetails;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
-import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.client.MockClient;
 import com.choosie.app.client.RealClient;
 import com.choosie.app.client.ClientBase;
+import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.Models.FacebookDetails;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -110,7 +110,7 @@ public class SuperController {
 
 	}
 
-	public void CommentFor(String post_key, String text) {
+	public void CommentFor(final String post_key, String text) {
 		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post_key);
 		this.client.sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
@@ -118,7 +118,7 @@ public class SuperController {
 					@Override
 					public void onFinish(Boolean param) {
 						if (param) {
-							screenToController.get(Screen.FEED).refresh();
+							refreshPost(post_key);
 						}
 					}
 				});

@@ -25,15 +25,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.choosie.app.Callback;
-import com.choosie.app.Comment;
 import com.choosie.app.Constants;
 import com.choosie.app.CustomMultiPartEntity;
-import com.choosie.app.FacebookDetails;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.Utils;
-import com.choosie.app.Vote;
-import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
+import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.Models.Comment;
+import com.choosie.app.Models.FacebookDetails;
+import com.choosie.app.Models.User;
+import com.choosie.app.Models.Vote;
 
 import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
@@ -352,10 +353,7 @@ public class RealClient extends ClientBase {
 		String postKey = jsonObject.getString("key");
 
 		JSONObject userJsonObject = jsonObject.getJSONObject("user");
-		String authorName = userJsonObject.getString("first_name") + " "
-				+ userJsonObject.getString("last_name");
-		String authorPhotoURL = userJsonObject.getString("avatar");
-		String authorFBUid = userJsonObject.getString("fb_uid");
+		User author = buildUserFromJson(userJsonObject);
 
 		JSONArray jsonVotes = jsonObject.getJSONArray("votes");
 		List<Vote> votes = buildVotesFromJson(jsonVotes);
@@ -364,8 +362,17 @@ public class RealClient extends ClientBase {
 		List<Comment> comments = buildCommentsFromJson(postKey, allComments);
 
 		return new ChoosiePostData(fbDetails, postKey, photo1URL, photo2URL,
-				question, authorName, authorPhotoURL, authorFBUid, votes,
-				comments);
+				question, author, votes, comments);
+	}
+
+	private User buildUserFromJson(JSONObject userJsonObject)
+			throws JSONException {
+		String authorName = userJsonObject.getString("first_name") + " "
+				+ userJsonObject.getString("last_name");
+		String authorPhotoURL = userJsonObject.getString("avatar");
+		String authorFBUid = userJsonObject.getString("fb_uid");
+		User author = new User(authorName, authorPhotoURL, authorFBUid);
+		return author;
 	}
 
 	private List<Comment> buildCommentsFromJson(String postKey,
@@ -379,7 +386,11 @@ public class RealClient extends ClientBase {
 			Date created_at = Utils.getInstance().ConvertStringToDate(date);
 			String text = jsonCommentObject.getString("text");
 
-			Comment comment = new Comment(fb_uid, created_at, text, postKey);
+			JSONObject userJsonObject = jsonCommentObject.getJSONObject("user");
+			User user = buildUserFromJson(userJsonObject);
+
+			Comment comment = new Comment(fb_uid, created_at, text, postKey,
+					user);
 			comments.add(comment);
 		}
 		return comments;
@@ -469,7 +480,7 @@ public class RealClient extends ClientBase {
 			final Callback<Void, Void, Boolean> callback) {
 
 		Comment commentToSend = new Comment(this.fbDetails.getFb_uid(), null,
-				text, post_key);
+				text, post_key, null);
 		final HttpPost postRequest;
 		postRequest = createNewCommentPostRequest(commentToSend);
 

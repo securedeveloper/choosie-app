@@ -1,6 +1,7 @@
 package com.choosie.app;
 
 import com.choosie.app.controllers.SuperController;
+import com.choosie.app.Models.FacebookDetails;
 
 import android.os.Bundle;
 import android.app.Activity;

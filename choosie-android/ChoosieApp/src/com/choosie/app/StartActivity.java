@@ -1,5 +1,6 @@
 package com.choosie.app;
 
+import com.choosie.app.Models.FacebookDetails;
 import com.facebook.FacebookActivity;
 import com.facebook.GraphUser;
 import com.facebook.Request;

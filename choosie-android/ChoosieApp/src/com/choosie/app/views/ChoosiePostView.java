@@ -3,12 +3,11 @@ package com.choosie.app.views;
 import java.util.List;
 
 import com.choosie.app.Callback;
-import com.choosie.app.Comment;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
-import com.choosie.app.Models.*;
 import com.choosie.app.controllers.SuperController;
+import com.choosie.app.Models.*;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -56,7 +55,8 @@ public class ChoosiePostView extends RelativeLayout {
 		final TextView votes2 = (TextView) findViewById(R.id.votes2);
 
 		((TextView) findViewById(R.id.feedtext)).setText(post.getQuestion());
-		((TextView) findViewById(R.id.feed_name)).setText(post.getUserName());
+		((TextView) findViewById(R.id.feed_name)).setText(post.getAuthor()
+				.getUserName());
 
 		final ImageView imgView1 = (ImageView) findViewById(R.id.feedimage1);
 		final ImageView imgView2 = (ImageView) findViewById(R.id.feedimage2);
@@ -71,7 +71,7 @@ public class ChoosiePostView extends RelativeLayout {
 				(ProgressBar) findViewById(R.id.progressBar1));
 		loadImageToView(post.getPhoto2URL(), imgView2,
 				(ProgressBar) findViewById(R.id.progressBar2));
-		loadImageToView(post.getUserPhotoURL(),
+		loadImageToView(post.getAuthor().getPhotoURL(),
 				(ImageView) findViewById(R.id.feed_userimage), null);
 		loadCommentsToView(post);
 
@@ -82,7 +82,7 @@ public class ChoosiePostView extends RelativeLayout {
 		} else {
 			ChangeVotingResultsVisability(votes1, votes2, View.INVISIBLE);
 		}
-		
+
 		// Set border for voted image
 		setImageBorder(imgView1, choosiePost.isVotedAlready(1));
 		setImageBorder(imgView2, choosiePost.isVotedAlready(2));
@@ -156,7 +156,7 @@ public class ChoosiePostView extends RelativeLayout {
 			votes2.setText(voteCount2 + " Votes");
 		}
 		votes1.setVisibility(visability);
-		votes2.setVisibility(visability); 
+		votes2.setVisibility(visability);
 
 	}
 
@@ -166,21 +166,24 @@ public class ChoosiePostView extends RelativeLayout {
 		for (Comment comment : lstComment) {
 			TextView tv = new TextView(superController.getControllerForScreen(
 					Screen.FEED).getActivity());
-			// tv.setText("Bar Refaeli: " + comment.getText());
+
 			final SpannableStringBuilder sb = new SpannableStringBuilder(
-					"Bar Refaeli: " + comment.getText());
-			final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(
-					0, 0, 255));
+					comment.getUser().getUserName() + " " + comment.getText());
+
+			final ForegroundColorSpan blueLinkColor = new ForegroundColorSpan(
+					Color.rgb(42, 30, 176));
 
 			// Span to make text bold
-			sb.setSpan(fcs, 0, 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+			int charsToBoldify = comment.getUser().getUserName().length();
+			sb.setSpan(blueLinkColor, 0, charsToBoldify,
+					Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 			// Span to set text color to some RGB value
-			final StyleSpan bss = new StyleSpan(
-					android.graphics.Typeface.ITALIC);
+			final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
 
 			// Set the text color for first 4 characters
-			sb.setSpan(bss, 0, 12, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+			sb.setSpan(bss, 0, charsToBoldify,
+					Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
 			tv.setText(sb);
 

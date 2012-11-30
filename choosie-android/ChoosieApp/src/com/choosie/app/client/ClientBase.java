@@ -14,10 +14,10 @@ import android.util.Log;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
-import com.choosie.app.FacebookDetails;
 import com.choosie.app.NewChoosiePostData;
-import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
+import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.Models.FacebookDetails;
 
 public abstract class ClientBase {
 
