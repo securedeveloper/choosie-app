@@ -17,13 +17,14 @@ class FeedHandler(webapp2.RequestHandler):
     def get_feed_and_cursor(cursor, limit = 10):
         if not limit:
             limit = 10
+        limit = int(limit)
         logging.info('Retrieving %d posts from db' % limit)
         posts = ChoosiePost.all()
         if cursor:
             posts.with_cursor(cursor)
         posts.order("-created_at")
         posts_result = []
-        for post in posts.run(limit=int(limit)):
+        for post in posts.run(limit=limit):
             posts_result.append(post)
         new_cursor = posts.cursor()
         CacheController.set_multi_models(posts_result)
