@@ -56,9 +56,7 @@ public class ChoosieActivity extends Activity {
 		case R.id.button_post:
 			superController.switchToScreen(Screen.POST);
 			break;
-		case R.id.button_me:
-			superController.switchToScreen(Screen.ME);
-			break;
+
 		}
 	}
 

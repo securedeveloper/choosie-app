@@ -58,12 +58,12 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
-
+		((ImageView)getActivity().findViewById(R.id.button_post)).setImageDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post_pressed));
 	}
 
 	@Override
 	protected void onHide() {
-		// TODO Auto-generated method stub
+		((ImageView)getActivity().findViewById(R.id.button_post)).setImageDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post));
 
 	}
 
