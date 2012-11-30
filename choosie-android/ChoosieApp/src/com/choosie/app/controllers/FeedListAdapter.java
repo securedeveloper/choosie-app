@@ -16,12 +16,12 @@ import android.widget.Toast;
 
 public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	enum State {
-		REFRESHING_FEED, APPENDING_TO_FEED, FEED_UPDATED, ERROR
+		REFRESHING_FEED, APPENDING_TO_FEED, FEED_UPDATED, FEED_COMPLETE, ERROR,
 	}
 
 	State state;
 
-	private static final String LOADING_ITEM_TEXT = "I AM LOADING ITEM!!!!";
+	private static final String LOADING_ITEM_TEXT = "LOADING_ITEM";
 	private String feedCursor;
 	private SuperController superController;
 
@@ -36,7 +36,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		ChoosiePostData item = getItem(position);
 
 		if (item.getQuestion() == LOADING_ITEM_TEXT) {
-			Log.i(Constants.LOG_TAG, "Showing view for I AM LOADING ITEM!!!");
+			Log.i(Constants.LOG_TAG, "Showing view for 'Loading items...'");
 			TextView progressBar = new TextView(this.getContext());
 			progressBar.setText("Loading items...");
 			return progressBar;
@@ -97,21 +97,29 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private void changeState(State newState) {
 		State oldState = this.state;
 		if (oldState == newState
-				|| (newState == State.APPENDING_TO_FEED && oldState == State.REFRESHING_FEED)) {
+				|| (newState == State.APPENDING_TO_FEED && oldState == State.REFRESHING_FEED)
+				|| (newState == State.APPENDING_TO_FEED && oldState == State.FEED_COMPLETE)) {
 			return;
 		}
 		this.state = newState;
 		Log.i(Constants.LOG_TAG, "Changing to state " + this.state);
 		switch (this.state) {
 		case APPENDING_TO_FEED:
-		case REFRESHING_FEED:
-			addItemsToList();
 			showLoadingItem();
+			addItemsToList();
+			break;
+		case REFRESHING_FEED:
+			showLoadingItem();
+			addItemsToList();
 			break;
 		case FEED_UPDATED:
 			hideLoadingItem();
 			break;
+		case FEED_COMPLETE:
+			hideLoadingItem();
+			break;
 		case ERROR:
+			hideLoadingItem();
 			showErrorToast();
 			break;
 		}
@@ -135,26 +143,22 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		this.superController.getCaches().getFeedCache()
 				.getValue(request, new AdapterUpdater());
 
-		showLoadingItem();
 	}
 
 	private class AdapterUpdater extends Callback<Void, Object, FeedResponse> {
 		@Override
-		public void onPre(Void param) {
-			Log.i(Constants.LOG_TAG, "onPRE!!!");
-			showLoadingItem();
-		}
-
-		@Override
 		public void onFinish(FeedResponse param) {
 			Log.i(Constants.LOG_TAG, "onFINISH!!!");
-			hideLoadingItem();
 			if (param == null) {
 				changeState(State.ERROR);
 			} else {
 				feedCursor = param.getCursor();
 				update(param);
-				changeState(State.FEED_UPDATED);
+				if (param.isAppend() && param.getPosts().size() == 0) {
+					changeState(State.FEED_COMPLETE);
+				} else {
+					changeState(State.FEED_UPDATED);
+				}
 			}
 		}
 	}
@@ -168,7 +172,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			loadingItem = new ChoosiePostData(null, null, null, null,
 					LOADING_ITEM_TEXT, null, null, null);
 		}
-		Log.i(Constants.LOG_TAG, "Showing I AM LOADING ITEM!!!");
+		Log.i(Constants.LOG_TAG, "Showing 'Loading items...'");
 		this.add(loadingItem);
 	}
 
@@ -179,10 +183,10 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private void hideLoadingItem() {
 		int i = 0;
 		while (loadingItemExists()) {
-			if (++i >= 3) {
+			if (++i > 3) {
 				break;
 			}
-			Log.i(Constants.LOG_TAG, "Hiding I AM LOADING ITEM!!!");
+			Log.i(Constants.LOG_TAG, "Hiding 'Loading items...'");
 			this.remove(loadingItem);
 		}
 	}
