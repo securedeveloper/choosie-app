@@ -45,6 +45,8 @@ public class PostScreenController extends ScreenController {
 		image2 = (ImageView) view.findViewById(R.id.image_photo2);
 		Button buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 		questionText = (EditText) view.findViewById(R.id.editText_question);
+		questionText.setFocusable(false);
+		
 
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
@@ -58,6 +60,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
+		questionText.setFocusableInTouchMode(true);
 		((ImageView)getActivity().findViewById(R.id.button_post)).setImageDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post_pressed));
 	}
 
