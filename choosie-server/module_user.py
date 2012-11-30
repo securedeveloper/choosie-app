@@ -45,7 +45,6 @@ class User(db.Model):
     def get_user_by_fb_uid(fb_uid):
       return db.GqlQuery("SELECT * from User where fb_uid = :1", fb_uid).get()
 
-
     def avatar(self):
       return 'http://graph.facebook.com/%s/picture' % self.username
 

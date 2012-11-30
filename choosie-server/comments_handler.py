@@ -19,5 +19,8 @@ class CommentsHandler(webapp2.RequestHandler):
                       text=text)
     
     comment.put()
+    # Make sure the ChoosiePost is invalidated in cache, so that next time it is asked
+    # for, the updated is retreived.
+    CacheController.invalidate(self.request.get('post_key'))
     self.redirect('/')
     

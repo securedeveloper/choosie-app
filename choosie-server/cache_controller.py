@@ -31,3 +31,7 @@ class CacheController(object):
     # same time.
     mapping = {str(model.key()): model for model in models}
     memcache.set_multi(mapping)
+
+  @staticmethod
+  def invalidate(key):
+    memcache.delete(key)

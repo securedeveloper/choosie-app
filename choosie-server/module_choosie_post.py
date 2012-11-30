@@ -13,6 +13,8 @@ class ChoosiePost(db.Model):
   created_at = db.DateTimeProperty(auto_now_add = True)
   user = db.ReferenceProperty(User, required = True)
   updated_at = db.DateTimeProperty(auto_now = True)
+  cached_comments = None
+  cached_votes = None
 
   def to_json(self):
     votes = self.votes()
@@ -37,10 +39,14 @@ class ChoosiePost(db.Model):
     return self.votes_for_count(self.votes(), 2)
 
   def votes(self):
-    return Vote.all().ancestor(self)
+    if not self.cached_votes:
+      self.cached_votes = Vote.all().ancestor(self)
+    return self.cached_votes
 
   def comments(self):
-    return Comment.all().ancestor(self)
+    if not self.cached_comments:
+      self.cached_comments = Comment.all().ancestor(self)
+    return self.cached_comments
 
   def votes_for_count(self, votes, vote_for):
     count = 0
