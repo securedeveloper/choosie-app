@@ -14,6 +14,7 @@ import com.choosie.app.FacebookDetails;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.client.MockClient;
 import com.choosie.app.client.RealClient;
 import com.choosie.app.client.ClientBase;
 
@@ -42,7 +43,7 @@ public class SuperController {
 				.add(new Pair<Screen, ScreenController>(Screen.POST,
 						new PostScreenController(choosieActivity
 								.findViewById(R.id.layout_post),
-								choosieActivity, this)));
+								choosieActivity, this))); 
 		screenControllerPairs.add(new Pair<Screen, ScreenController>(Screen.ME,
 				new MeScreenController(choosieActivity
 						.findViewById(R.id.layout_me), choosieActivity, this)));

@@ -114,7 +114,7 @@ public class RealClient extends ClientBase {
 		return choosiePostsFromFeed;
 	}
 
-		@Override
+	@Override
 	public void login(final Callback<Void, Void, Void> onLoginComplete) {
 		final HttpClient httpClient = new DefaultHttpClient();
 		final HttpPost postRequest = new HttpPost(Constants.URIs.ROOT_URL
@@ -274,50 +274,8 @@ public class RealClient extends ClientBase {
 			try {
 				JSONObject singleItemJsonObject = jsonPostsArray
 						.getJSONObject(i);
-				ChoosiePostData postData = new ChoosiePostData(this.fbDetails);
-				postData.setPhoto1URL(Constants.URIs.ROOT_URL
-						+ singleItemJsonObject.getString("photo1"));
-				postData.setPhoto2URL(Constants.URIs.ROOT_URL
-						+ singleItemJsonObject.getString("photo2"));
-				postData.setQuestion(singleItemJsonObject.getString("question"));
-				postData.setVotes1(singleItemJsonObject.getInt("votes1"));
-				postData.setVotes2(singleItemJsonObject.getInt("votes2"));
 
-				JSONObject userJsonObject = singleItemJsonObject
-						.getJSONObject("user");
-				postData.setUserName(userJsonObject.getString("first_name")
-						+ " " + userJsonObject.getString("last_name"));
-				postData.setUserPhotoURL(userJsonObject.getString("avatar"));
-				postData.setUser_fb_uid(userJsonObject.getString("fb_uid"));
-
-				JSONArray allVotes = singleItemJsonObject.getJSONArray("votes");
-				for (int j = 0; j < allVotes.length(); j++) {
-					JSONObject jsonVoteObject = allVotes.getJSONObject(j);
-
-					String fb_uid = jsonVoteObject.getString("fb_uid");
-					String date = jsonVoteObject.getString("created_at");
-					Date created_at = Utils.getInstance().ConvertStringToDate(
-							date);
-					int vote_for = jsonVoteObject.getInt("vote_for");
-
-					Vote vote = new Vote(fb_uid, created_at, vote_for);
-					postData.getLstVotes().add(vote);
-				}
-				
-				JSONArray allComments = singleItemJsonObject.getJSONArray("comments");
-				for (int j = 0; j < allComments.length(); j++) {
-					JSONObject jsonCommentObject = allComments.getJSONObject(j);
-
-					String fb_uid = jsonCommentObject.getString("fb_uid");
-					String date = jsonCommentObject.getString("created_at");
-					Date created_at = Utils.getInstance().ConvertStringToDate(
-							date);
-					String text = jsonCommentObject.getString("text");
-
-					Comment comment = new Comment(fb_uid, created_at, text, postData.getKey());
-					postData.getLstComment().add(comment);
-				}
-
+				ChoosiePostData postData = buildChoosiePostFromJsonObject(singleItemJsonObject);
 
 				choosiePostsFromFeed.add(postData);
 
@@ -326,8 +284,69 @@ public class RealClient extends ClientBase {
 				e.printStackTrace();
 			}
 		}
-		FeedResponse result = new FeedResponse(true, cursor, choosiePostsFromFeed);
+		FeedResponse result = new FeedResponse(true, cursor,
+				choosiePostsFromFeed);
 		return result;
+	}
+
+	private ChoosiePostData buildChoosiePostFromJsonObject(JSONObject jsonObject)
+			throws JSONException {
+		String photo1URL = Constants.URIs.ROOT_URL
+				+ jsonObject.getString("photo1");
+		String photo2URL = Constants.URIs.ROOT_URL
+				+ jsonObject.getString("photo2");
+		String question = jsonObject.getString("question");
+		String postKey = jsonObject.getString("key");
+
+		JSONObject userJsonObject = jsonObject.getJSONObject("user");
+		String authorName = userJsonObject.getString("first_name") + " "
+				+ userJsonObject.getString("last_name");
+		String authorPhotoURL = userJsonObject.getString("avatar");
+		String authorFBUid = userJsonObject.getString("fb_uid");
+
+		JSONArray jsonVotes = jsonObject.getJSONArray("votes");
+		List<Vote> votes = buildVotesFromJson(jsonVotes);
+
+		JSONArray allComments = jsonObject.getJSONArray("comments");
+		List<Comment> comments = buildCommentsFromJson(postKey, allComments);
+		
+		return new ChoosiePostData(fbDetails, postKey,
+				photo1URL, photo2URL, question, authorName, authorPhotoURL, authorFBUid,
+				votes, comments);
+	}
+
+	private List<Comment> buildCommentsFromJson(String postKey, JSONArray allComments)
+			throws JSONException {
+		List<Comment> comments = new ArrayList<Comment>();
+		for (int j = 0; j < allComments.length(); j++) {
+			JSONObject jsonCommentObject = allComments.getJSONObject(j);
+
+			String fb_uid = jsonCommentObject.getString("fb_uid");
+			String date = jsonCommentObject.getString("created_at");
+			Date created_at = Utils.getInstance().ConvertStringToDate(date);
+			String text = jsonCommentObject.getString("text");
+
+			Comment comment = new Comment(fb_uid, created_at, text, postKey);
+			comments.add(comment);
+		}
+		return comments;
+	}
+
+	private List<Vote> buildVotesFromJson(JSONArray jsonVotes)
+			throws JSONException {
+		List<Vote> votes = new ArrayList<Vote>();
+		for (int j = 0; j < jsonVotes.length(); j++) {
+			JSONObject jsonVoteObject = jsonVotes.getJSONObject(j);
+
+			String fb_uid = jsonVoteObject.getString("fb_uid");
+			String date = jsonVoteObject.getString("created_at");
+			Date created_at = Utils.getInstance().ConvertStringToDate(date);
+			int vote_for = jsonVoteObject.getInt("vote_for");
+
+			Vote vote = new Vote(fb_uid, created_at, vote_for);
+			votes.add(vote);
+		}
+		return votes;
 	}
 
 	@Override
@@ -438,7 +457,8 @@ public class RealClient extends ClientBase {
 		try {
 			multipartContent.addPart("fb_uid",
 					new StringBody(this.fbDetails.getFb_uid()));
-			multipartContent.addPart("text", new StringBody(comment.getText().toString()));
+			multipartContent.addPart("text", new StringBody(comment.getText()
+					.toString()));
 			multipartContent.addPart("post_key",
 					new StringBody(comment.getPost_key()));
 		} catch (UnsupportedEncodingException e) {

@@ -82,7 +82,7 @@ public class ChoosiePostView extends RelativeLayout {
 		} else {
 			ChangeVotingResultsVisability(votes1, votes2, View.INVISIBLE);
 		}
-
+		
 		// Set border for voted image
 		setImageBorder(imgView1, choosiePost.isVotedAlready(1));
 		setImageBorder(imgView2, choosiePost.isVotedAlready(2));
@@ -149,23 +149,20 @@ public class ChoosiePostView extends RelativeLayout {
 		// If Visablity=true then count votes and display them
 		if (visability == View.VISIBLE) {
 
-			int voteCount1 = choosiePost.CountVotes(1);
-			int voteCount2 = choosiePost.CountVotes(2);
+			int voteCount1 = choosiePost.getVotes1();
+			int voteCount2 = choosiePost.getVotes2();
 
 			votes1.setText(voteCount1 + " Votes");
 			votes2.setText(voteCount2 + " Votes");
-
-			choosiePost.setVotes1(voteCount1);
-			choosiePost.setVotes2(voteCount2);
 		}
 		votes1.setVisibility(visability);
-		votes2.setVisibility(visability);
+		votes2.setVisibility(visability); 
 
 	}
 
 	private void loadCommentsToView(ChoosiePostData post) {
 		LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
-		List<Comment> lstComment = post.getLstComment();
+		List<Comment> lstComment = post.getComments();
 		for (Comment comment : lstComment) {
 			TextView tv = new TextView(superController.getControllerForScreen(
 					Screen.FEED).getActivity());

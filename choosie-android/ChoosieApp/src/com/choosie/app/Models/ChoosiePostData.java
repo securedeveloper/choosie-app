@@ -3,6 +3,8 @@ package com.choosie.app.Models;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import com.choosie.app.Comment;
 import com.choosie.app.FacebookDetails;
 import com.choosie.app.Vote;
@@ -12,35 +14,75 @@ import com.choosie.app.Vote;
  */
 public class ChoosiePostData {
 
-	private int votes1;
-	private int votes2;
+	private String postKey;
 	private String photo1URL;
 	private String photo2URL;
 	private String question;
 	private String userName;
 	private String userPhotoURL;
 	private String user_fb_uid;
-	private List<Vote> lstVotes;
-	private List<Comment> lstComments;
+	private List<Vote> votes;
+	private List<Comment> comments;
 
-	private FacebookDetails fbDetails;
+	private FacebookDetails loggedInUser;
+	private boolean isPostByMe;
+	private SparseIntArray votesCounter;
+	private SparseBooleanArray votedAlready;
 
-	public ChoosiePostData(FacebookDetails fbDetails) {
-		this.lstComments = new ArrayList<Comment>();
-		this.lstVotes = new ArrayList<Vote>();
-		this.fbDetails = fbDetails;
+	public ChoosiePostData(FacebookDetails loggedInUser, String postKey,
+			String photo1URL, String photo2URL, String question,
+			String authorName, String authorPhotoURL, String authorFB_uid,
+			List<Vote> votes, List<Comment> comments) {
+		this.loggedInUser = loggedInUser;
+		this.postKey = postKey;
+		this.photo1URL = photo1URL;
+		this.photo2URL = photo2URL;
+		this.question = question;
+		this.userName = authorName;
+		this.userPhotoURL = authorPhotoURL;
+		this.user_fb_uid = authorFB_uid;
+		initVotes(votes);
+		initComments(comments);
+	}
 
+	private void initVotes(List<Vote> votes) {
+		this.votes = new ArrayList<Vote>();
+		this.votesCounter = new SparseIntArray(2);
+		this.votesCounter.put(1, 0);
+		this.votesCounter.put(2, 0);
+		this.votedAlready = new SparseBooleanArray(2);
+		this.votedAlready.put(1, false);
+		this.votedAlready.put(2, false);
+		if (votes == null) {
+			return;
+		}
+		for (Vote vote : votes) {
+
+			// Check if post is by me
+			if (vote.getFb_uid() == loggedInUser.getFb_uid()) {
+				this.isPostByMe = true;
+			}
+
+			// Increment the relevant counter by 1
+			int vote_for = vote.getVote_for();
+			votesCounter.put(vote_for, votesCounter.get(vote_for) + 1);
+
+			// Remember what the logged in user already voted for
+			if (vote.getFb_uid().equals(this.loggedInUser.getFb_uid())) {
+				votedAlready.put(vote_for, true);
+			}
+
+			// Save a reference to the Vote object
+			this.votes.add(vote);
+		}
+	}
+
+	private void initComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	public String getKey() {
-		// HACK: Get post key from photo1URL
-		String url = photo1URL;
-		if (url == null) {
-			return "RandomKekkeyy";
-		}
-		String key = url.substring(url.indexOf("post_key=")
-				+ "post_key=".length());
-		return key;
+		return this.postKey;
 	}
 
 	/**
@@ -48,14 +90,7 @@ public class ChoosiePostData {
 	 * / two)
 	 */
 	public boolean isVotedAlready(int vote_for) {
-		for (Vote vote : this.lstVotes) {
-			if (vote.getFb_uid().equals(this.fbDetails.getFb_uid())
-					&& vote.getVote_for() == vote_for) {
-
-				return true;
-			}
-		}
-		return false;
+		return votedAlready.get(vote_for);
 	}
 
 	/**
@@ -67,100 +102,42 @@ public class ChoosiePostData {
 	}
 
 	public boolean isPostByMe() {
-		if (fbDetails.getFb_uid().equals(this.user_fb_uid)) {
-			return true;
-		}
-
-		return false;
+		return this.isPostByMe;
 	}
 
 	public int getVotes1() {
-		return votes1;
-	}
-
-	public void setVotes1(int votes1) {
-		this.votes1 = votes1;
+		return votesCounter.get(1);
 	}
 
 	public int getVotes2() {
-		return votes2;
-	}
-
-	public void setVotes2(int votes2) {
-		this.votes2 = votes2;
+		return votesCounter.get(2);
 	}
 
 	public String getPhoto1URL() {
 		return photo1URL;
 	}
 
-	public void setPhoto1URL(String photo1URL) {
-		this.photo1URL = photo1URL;
-	}
-
 	public String getPhoto2URL() {
 		return photo2URL;
-	}
-
-	public void setPhoto2URL(String photo2URL) {
-		this.photo2URL = photo2URL;
 	}
 
 	public String getQuestion() {
 		return question;
 	}
 
-	public void setQuestion(String question) {
-		this.question = question;
-	}
-
 	public String getUserName() {
 		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public String getUserPhotoURL() {
 		return userPhotoURL;
 	}
 
-	public void setUserPhotoURL(String userPhotoURL) {
-		this.userPhotoURL = userPhotoURL;
-	}
-
-	public List<Comment> getLstComment() {
-		return lstComments;
-	}
-
-	public void setLstComments(List<Comment> lstComments) {
-		this.lstComments = lstComments;
-	}
-
-	public List<Vote> getLstVotes() {
-		return lstVotes;
-	}
-
-	public void setLstVotes(List<Vote> lstVotes) {
-		this.lstVotes = lstVotes;
+	public List<Comment> getComments() {
+		return comments;
 	}
 
 	public String getUser_fb_uid() {
 		return user_fb_uid;
 	}
-
-	public void setUser_fb_uid(String user_fb_uid) {
-		this.user_fb_uid = user_fb_uid;
-	}
-
-	public int CountVotes(int vote_for) {
-		int nVotes = 0;
-		for (Vote vote : this.lstVotes) {
-			if (vote.getVote_for() == vote_for)
-				nVotes++;
-		}
-		return nVotes;
-	}
-
 }

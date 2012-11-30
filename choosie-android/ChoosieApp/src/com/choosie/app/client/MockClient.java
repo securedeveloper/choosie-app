@@ -6,6 +6,7 @@ import java.util.List;
 import android.util.Log;
 
 import com.choosie.app.Callback;
+import com.choosie.app.Comment;
 import com.choosie.app.Constants;
 import com.choosie.app.FacebookDetails;
 import com.choosie.app.NewChoosiePostData;
@@ -46,26 +47,30 @@ public class MockClient extends ClientBase {
 		if (cursor == null) {
 			cursor = "";
 		}
-		
+
 		Log.i(Constants.LOG_TAG, "Got feed request. Cursor = " + cursor);
-		
+
 		List<ChoosiePostData> mockPosts = new ArrayList<ChoosiePostData>();
 
 		for (int i = 0 + 1 * cursor.length(); i < 1 + 1 * cursor.length(); ++i) {
-			ChoosiePostData mockPost = new ChoosiePostData(fbDetails);
-			mockPost.setQuestion("Question number " + Integer.toString(i + 1));
-			mockPost.setPhoto1URL("http://wiki.eternal-wow.com/images/3/3b/Kitty-kitties-9109284-500-460.jpg");
-			mockPost.setPhoto2URL("http://www.pupmart.co.uk/wp-content/uploads/2011/10/puppies-rehoming.jpg");
-			mockPost.setUserName("Choosie McChoose");
-			mockPost.setUser_fb_uid("77345345");
-			mockPost.setUserPhotoURL("http://graph.facebook.com/jonathan.erez/picture");
-			mockPost.setLstVotes(new ArrayList<Vote>());
+			String postKey = Integer.toString(i);
+			String question = "Question number " + Integer.toString(i + 1);
+			String photo1URL = "http://wiki.eternal-wow.com/images/3/3b/Kitty-kitties-9109284-500-460.jpg";
+			String photo2URL = "http://www.pupmart.co.uk/wp-content/uploads/2011/10/puppies-rehoming.jpg";
+			String userName = "Choosie McChoose";
+			String fbUID = "77345345";
+			String userPhotoUrl = "http://graph.facebook.com/jonathan.erez/picture";
+
+			ChoosiePostData mockPost = new ChoosiePostData(fbDetails, postKey,
+					photo1URL, photo2URL, question, userName, userPhotoUrl,
+					fbUID, new ArrayList<Vote>(), new ArrayList<Comment>());
+
 			mockPosts.add(mockPost);
 		}
 
 		FeedResponse response = new FeedResponse(feedRequest.isAppend(), cursor
 				+ "a", mockPosts);
-		
+
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
