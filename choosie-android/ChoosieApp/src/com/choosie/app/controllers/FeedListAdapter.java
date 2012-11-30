@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,10 +38,8 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		ChoosiePostData item = getItem(position);
 
 		if (item.getQuestion() == LOADING_ITEM_TEXT) {
-			Log.i(Constants.LOG_TAG, "Showing view for 'Loading items...'");
-			TextView progressBar = new TextView(this.getContext());
-			progressBar.setText("Loading items...");
-			return progressBar;
+			// TODO: This is a hack.
+			return buildLoadingItemView();
 		}
 
 		ChoosiePostView itemView = new ChoosiePostView(this.getContext(),
@@ -47,6 +47,46 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 		itemView.loadChoosiePost(item);
 		return itemView;
+	}
+
+	private View buildLoadingItemView() {
+		RelativeLayout loadingItemLayout = new RelativeLayout(
+				this.getContext());
+
+		final int TEXT_VIEW_ID = 32555;
+		final int PROGRESS_BAR_ID = 32556;
+
+		String message = this.state == State.REFRESHING_FEED ? "Checking for new items..."
+				: "Loading items...";
+
+		ProgressBar progressBar = new ProgressBar(this.getContext());
+		progressBar.setId(PROGRESS_BAR_ID);
+		progressBar.setIndeterminate(true);
+
+		TextView textView = new TextView(this.getContext());
+		textView.setText(message);
+		textView.setId(TEXT_VIEW_ID);
+
+		RelativeLayout.LayoutParams progressBarLayoutParams = new RelativeLayout.LayoutParams(
+				40, 40);
+		progressBarLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL,
+				RelativeLayout.TRUE);
+
+		RelativeLayout.LayoutParams textViewLayoutParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		textViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL,
+				RelativeLayout.TRUE);
+		textViewLayoutParams.addRule(RelativeLayout.BELOW, PROGRESS_BAR_ID);
+
+		progressBar.setLayoutParams(progressBarLayoutParams);
+		textView.setLayoutParams(textViewLayoutParams);
+
+		loadingItemLayout.addView(progressBar);
+		loadingItemLayout.addView(textView);
+		loadingItemLayout.setPadding(0, 8, 0, 8);
+		
+		return loadingItemLayout;
 	}
 
 	String lastCursor;
@@ -135,11 +175,26 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	private void addItemsToList() {
-		boolean append = this.state == State.APPENDING_TO_FEED;
-		Log.i(Constants.LOG_TAG, "addItemsToList. append = " + append);
+		Log.i(Constants.LOG_TAG, "addItemsToList. state = " + state);
 
-		String cursor = append ? this.feedCursor : null;
-		FeedCacheKey request = new FeedCacheKey(cursor, append);
+		FeedCacheKey request = null;
+		if (this.state == State.REFRESHING_FEED) {
+			request = new FeedCacheKey(null, false);
+			// In case feed needs refreshing, make sure an actual request
+			// to the server is made.
+			// TODO: Don't cache that result in the first place.
+			this.superController.getCaches().getFeedCache()
+					.invalidateKey(request);
+		} else if (this.state == State.APPENDING_TO_FEED) {
+			request = new FeedCacheKey(this.feedCursor, true);
+		}
+
+		if (request == null) {
+			// Not supposed to get here
+			throw new NullPointerException(
+					"addItemsToList() was called in a forbidden state.");
+		}
+
 		this.superController.getCaches().getFeedCache()
 				.getValue(request, new AdapterUpdater());
 
@@ -173,7 +228,11 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 					LOADING_ITEM_TEXT, null, null, null);
 		}
 		Log.i(Constants.LOG_TAG, "Showing 'Loading items...'");
-		this.add(loadingItem);
+		if (this.state == state.APPENDING_TO_FEED) {
+			this.add(loadingItem);
+		} else if (this.state == state.REFRESHING_FEED) {
+			this.insert(loadingItem, 0);
+		}
 	}
 
 	private boolean loadingItemExists() {

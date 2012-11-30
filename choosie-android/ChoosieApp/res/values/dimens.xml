@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="view_choosie_post_text_margin">5dp</dimen>
+    <dimen name="view_choosie_post_margin">10dp</dimen>
+</resources>

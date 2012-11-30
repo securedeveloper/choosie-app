@@ -38,7 +38,7 @@ public class SuperController {
 
 		screenControllerPairs.add(new Pair<Screen, ScreenController>(
 				Screen.FEED, new FeedScreenController(activity
-						.findViewById(R.id.layout_feed), this)));
+						.findViewById(R.id.layout_feed), this))); 
 		screenControllerPairs.add(new Pair<Screen, ScreenController>(
 				Screen.POST, new PostScreenController(activity
 						.findViewById(R.id.layout_post), this)));
@@ -59,7 +59,6 @@ public class SuperController {
 		client.login(new Callback<Void, Void, Void>() {
 			@Override
 			public void onFinish(Void param) {
-				screenToController.get(Screen.FEED).refresh();
 			}
 		});
 	}
