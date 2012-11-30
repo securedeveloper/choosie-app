@@ -1,5 +1,6 @@
 import logging
 import webapp2
+import math
 
 from google.appengine.api import images
 from google.appengine.ext import db
@@ -13,8 +14,11 @@ class PostsHandler(webapp2.RequestHandler):
     img = images.Image(data)
     max_width = 800
     max_height = 800;
-    ratio = min(max_width/img.width, max_height/img.height)
+    logging.info("width-" + str(img.width))
+    logging.info("height-" + str(img.height))
+    ratio = math.ceil(min(float(max_width)/float(img.width), float(max_height)/float(img.height)))
     if ratio < 1.0:
+      logging.info("ratio:" + str(ratio))
       # Only shrink the image: if it is already smaller than 800px on both axes
       # do nothing.
       img.resize(width=ratio*img.width, height=ratio*img.height)
