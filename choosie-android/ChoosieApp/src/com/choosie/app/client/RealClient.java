@@ -115,6 +115,53 @@ public class RealClient extends ClientBase {
 	}
 
 	@Override
+	public ChoosiePostData getPostByKey(String postKey,
+			Callback<Void, Object, Void> progressCallback) {
+		// Creates the GET HTTP request
+		String postUri = Constants.URIs.POSTS_URI + "/" + postKey;
+
+		Log.i(Constants.LOG_TAG, "Getting post from URI: " + postUri);
+		final HttpClient client = new DefaultHttpClient();
+		final HttpGet request = new HttpGet(postUri);
+		HttpResponse response;
+		try {
+			response = client.execute(request);
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		String jsonString;
+		try {
+			jsonString = EntityUtils.toString(response.getEntity());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+		ChoosiePostData choosiePostFromResponse;
+		try {
+			choosiePostFromResponse = convertJsonToChoosiePost(jsonString);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+		Log.i(Constants.LOG_TAG, "Response converted to post.");
+		return choosiePostFromResponse;
+	}
+
+	@Override
 	public void login(final Callback<Void, Void, Void> onLoginComplete) {
 		final HttpClient httpClient = new DefaultHttpClient();
 		final HttpPost postRequest = new HttpPost(Constants.URIs.ROOT_URL
@@ -289,6 +336,12 @@ public class RealClient extends ClientBase {
 		return result;
 	}
 
+	private ChoosiePostData convertJsonToChoosiePost(String jsonString)
+			throws JSONException {
+		JSONObject postJsonObject = new JSONObject(jsonString);
+		return buildChoosiePostFromJsonObject(postJsonObject);
+	}
+
 	private ChoosiePostData buildChoosiePostFromJsonObject(JSONObject jsonObject)
 			throws JSONException {
 		String photo1URL = Constants.URIs.ROOT_URL
@@ -309,14 +362,14 @@ public class RealClient extends ClientBase {
 
 		JSONArray allComments = jsonObject.getJSONArray("comments");
 		List<Comment> comments = buildCommentsFromJson(postKey, allComments);
-		
-		return new ChoosiePostData(fbDetails, postKey,
-				photo1URL, photo2URL, question, authorName, authorPhotoURL, authorFBUid,
-				votes, comments);
+
+		return new ChoosiePostData(fbDetails, postKey, photo1URL, photo2URL,
+				question, authorName, authorPhotoURL, authorFBUid, votes,
+				comments);
 	}
 
-	private List<Comment> buildCommentsFromJson(String postKey, JSONArray allComments)
-			throws JSONException {
+	private List<Comment> buildCommentsFromJson(String postKey,
+			JSONArray allComments) throws JSONException {
 		List<Comment> comments = new ArrayList<Comment>();
 		for (int j = 0; j < allComments.length(); j++) {
 			JSONObject jsonCommentObject = allComments.getJSONObject(j);
@@ -352,11 +405,12 @@ public class RealClient extends ClientBase {
 	@Override
 	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto,
 			final Callback<Void, Void, Boolean> callback) {
-		final HttpUriRequest postRequest;
+		// TODO: Change to POST request
+		final HttpUriRequest getRequest;
 		// try {
-		postRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI + "?which_photo="
+		getRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI + "?which_photo="
 				+ Integer.toString(whichPhoto) + "&post_key="
-				+ choosiePost.getKey() + "&fb_uid="
+				+ choosiePost.getPostKey() + "&fb_uid="
 				+ this.fbDetails.getFb_uid());
 		// postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);
 		// } catch (UnsupportedEncodingException e1) {
@@ -370,7 +424,7 @@ public class RealClient extends ClientBase {
 			@Override
 			protected Boolean doInBackground(Void... params) {
 				try {
-					httpClient.execute(postRequest);
+					httpClient.execute(getRequest);
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -404,7 +458,7 @@ public class RealClient extends ClientBase {
 
 		reqEntity.addPart("which_photo",
 				new StringBody(Integer.toString(whichPhoto)));
-		reqEntity.addPart("post_key", new StringBody(choosiePost.getKey()));
+		reqEntity.addPart("post_key", new StringBody(choosiePost.getPostKey()));
 
 		postRequest.setEntity(reqEntity);
 		return postRequest;
@@ -469,4 +523,5 @@ public class RealClient extends ClientBase {
 
 		return commentPostRequest;
 	}
+
 }

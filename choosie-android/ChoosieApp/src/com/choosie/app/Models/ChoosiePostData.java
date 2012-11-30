@@ -81,7 +81,7 @@ public class ChoosiePostData {
 		this.comments = comments;
 	}
 
-	public String getKey() {
+	public String getPostKey() {
 		return this.postKey;
 	}
 

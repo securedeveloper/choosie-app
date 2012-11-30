@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import android.os.AsyncTask;
 
 public class Cache<Key, Value> {
-	ResultCallback<Value, Key> downloader;
-	Object cacheLock = new Object();
-	Map<Key, Value> memoryCache = new HashMap<Key, Value>();
-	Map<Key, List<Callback<Void, Object, Value>>> callbacksForKey = new HashMap<Key, List<Callback<Void, Object, Value>>>();
+	final ResultCallback<Value, Key> downloader;
+	final Object cacheLock = new Object();
+	final Map<Key, Value> memoryCache = new HashMap<Key, Value>();
+	final Map<Key, List<Callback<Void, Object, Value>>> callbacksForKey = new HashMap<Key, List<Callback<Void, Object, Value>>>();
 
 	public Cache(ResultCallback<Value, Key> downloader) {
 		this.downloader = downloader;
@@ -36,6 +35,23 @@ public class Cache<Key, Value> {
 			}
 		}
 		callback.onFinish(fromMemoryCache);
+	}
+
+	public void invalidateKey(Key key) {
+		synchronized (cacheLock) {
+			Value fromMemoryCache = memoryCache.get(key);
+			if (fromMemoryCache == null) {
+				// Not in memory cache. If it is currently downloading, restart
+				// the
+				// download. Otherwise do nothing.
+				if (isCurrentlyDownloading(key)) {
+					restartDownload(key);
+				}
+			} else {
+				// In memory cache: remove from cache
+				memoryCache.remove(key);
+			}
+		}
 	}
 
 	private boolean isCurrentlyDownloading(Key key) {
@@ -82,11 +98,16 @@ public class Cache<Key, Value> {
 		task.execute();
 	}
 
+	private void restartDownload(Key key) {
+		// TODO: Cancel running download
+		// Only then
+		// startDownload(key);
+	}
+
 	protected void runOnPreCallbacks(Key key) {
 		List<Callback<Void, Object, Value>> callbacks;
 		synchronized (cacheLock) {
 			callbacks = callbacksForKey.get(key);
-			// TODO think about moving this out of the synchornized block
 			for (Callback<Void, Object, Value> callback : callbacks) {
 				callback.onPre(null);
 			}
@@ -97,7 +118,7 @@ public class Cache<Key, Value> {
 		List<Callback<Void, Object, Value>> callbacks;
 		synchronized (cacheLock) {
 			callbacks = callbacksForKey.get(key);
-			// TODO think about moving this out of the synchornized block
+			assert (callbacks != null);
 			for (Callback<Void, Object, Value> callback : callbacks) {
 				callback.onProgress(progress);
 			}

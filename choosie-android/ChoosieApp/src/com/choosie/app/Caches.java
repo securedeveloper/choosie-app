@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.controllers.SuperController;
@@ -19,9 +20,10 @@ import android.util.Log;
 public class Caches {
 	Cache<String, Bitmap> photosCache;
 	private Cache<FeedCacheKey, FeedResponse> feedCache;
+	private Cache<String, ChoosiePostData> postsCache;
 
 	public Caches(final SuperController controller) {
-		initializePhotosCache(controller);
+		initializeCaches(controller);
 	}
 
 	public Cache<String, Bitmap> getPhotosCache() {
@@ -32,7 +34,7 @@ public class Caches {
 		return feedCache;
 	}
 
-	private void initializePhotosCache(final SuperController controller) {
+	private void initializeCaches(final SuperController controller) {
 		photosCache = new Cache<String, Bitmap>(
 				new ResultCallback<Bitmap, String>() {
 
@@ -54,16 +56,27 @@ public class Caches {
 								progressCallback);
 					}
 				}));
+
+		postsCache = new Cache<String, ChoosiePostData>(
+				new ResultCallback<ChoosiePostData, String>() {
+
+					@Override
+					ChoosiePostData getData(String param,
+							Callback<Void, Object, Void> progressCallback) {
+						return controller.getClient().getPostByKey(param,
+								progressCallback);
+					}
+				});
 	}
-	
+
 	/*
 	 * description - gets url of an image, convert it to string and insert it as
 	 * extra into the intent. input - photoUrl - url of a photo - intent - an
 	 * intent. dahhh
 	 */
 
-	public void insertPhotoUriToIntent(String photoUrl,
-			final Intent intent, final String key) {
+	public void insertPhotoUriToIntent(String photoUrl, final Intent intent,
+			final String key) {
 		Log.i(Constants.LOG_TAG, "in insertPhotoStringToIntent");
 		getPhotosCache().getValue(photoUrl,
 				new Callback<Void, Object, Bitmap>() {
@@ -92,6 +105,10 @@ public class Caches {
 						intent.putExtra(key, outputFileUri.toString());
 					}
 				});
+	}
+
+	public Cache<String, ChoosiePostData> getPostsCache() {
+		return this.postsCache;
 	}
 
 }

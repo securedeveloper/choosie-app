@@ -53,19 +53,7 @@ public class MockClient extends ClientBase {
 		List<ChoosiePostData> mockPosts = new ArrayList<ChoosiePostData>();
 
 		for (int i = 0 + 1 * cursor.length(); i < 1 + 1 * cursor.length(); ++i) {
-			String postKey = Integer.toString(i);
-			String question = "Question number " + Integer.toString(i + 1);
-			String photo1URL = "http://wiki.eternal-wow.com/images/3/3b/Kitty-kitties-9109284-500-460.jpg";
-			String photo2URL = "http://www.pupmart.co.uk/wp-content/uploads/2011/10/puppies-rehoming.jpg";
-			String userName = "Choosie McChoose";
-			String fbUID = "77345345";
-			String userPhotoUrl = "http://graph.facebook.com/jonathan.erez/picture";
-
-			ChoosiePostData mockPost = new ChoosiePostData(fbDetails, postKey,
-					photo1URL, photo2URL, question, userName, userPhotoUrl,
-					fbUID, new ArrayList<Vote>(), new ArrayList<Comment>());
-
-			mockPosts.add(mockPost);
+			mockPosts.add(getMockPost(i));
 		}
 
 		FeedResponse response = new FeedResponse(feedRequest.isAppend(), cursor
@@ -78,6 +66,27 @@ public class MockClient extends ClientBase {
 		}
 
 		return response;
+	}
+
+	private ChoosiePostData getMockPost(int i) {
+		String postKey = Integer.toString(i);
+		String question = "Question number " + Integer.toString(i + 1);
+		String photo1URL = "http://wiki.eternal-wow.com/images/3/3b/Kitty-kitties-9109284-500-460.jpg";
+		String photo2URL = "http://www.pupmart.co.uk/wp-content/uploads/2011/10/puppies-rehoming.jpg";
+		String userName = "Choosie McChoose";
+		String fbUID = "77345345";
+		String userPhotoUrl = "http://graph.facebook.com/jonathan.erez/picture";
+
+		ChoosiePostData mockPost = new ChoosiePostData(fbDetails, postKey,
+				photo1URL, photo2URL, question, userName, userPhotoUrl, fbUID,
+				new ArrayList<Vote>(), new ArrayList<Comment>());
+		return mockPost;
+	}
+
+	@Override
+	public ChoosiePostData getPostByKey(String param,
+			Callback<Void, Object, Void> progressCallback) {
+		return getMockPost(0);
 	}
 
 	@Override

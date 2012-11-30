@@ -187,4 +187,22 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		}
 	}
 
+	public void refreshItem(ChoosiePostData updatedPost) {
+		int existingPostPosition = findPositionByPostKey(updatedPost
+				.getPostKey());
+		if (existingPostPosition != -1) {
+			this.remove(this.getItem(existingPostPosition));
+			this.insert(updatedPost, existingPostPosition);
+		}
+	}
+
+	private int findPositionByPostKey(String postKey) {
+		for (int i = 0; i < this.getCount(); ++i) {
+			if (this.getItem(i).getPostKey().equals(postKey)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 }

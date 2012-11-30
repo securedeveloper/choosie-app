@@ -35,9 +35,8 @@ public class PostScreenController extends ScreenController {
 	private ImageView image2;
 	private EditText questionText;
 
-	public PostScreenController(View layout, Activity activity,
-			SuperController superController) {
-		super(layout, activity, superController);
+	public PostScreenController(View layout, SuperController superController) {
+		super(layout, superController);
 	}
 
 	@Override

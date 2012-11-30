@@ -1,19 +1,15 @@
 package com.choosie.app.controllers;
 
-
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
 public abstract class ScreenController {
 	protected View view;
-	private Activity activity;
 	SuperController superController;
 
-	public ScreenController(View layout, Activity activity,
-			SuperController superController) {
+	public ScreenController(View layout, SuperController superController) {
 		this.view = layout;
-		this.setActivity(activity);
 		this.superController = superController;
 	}
 
@@ -34,7 +30,7 @@ public abstract class ScreenController {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		
+
 	}
 
 	public void refresh() {
@@ -42,10 +38,6 @@ public abstract class ScreenController {
 	}
 
 	public Activity getActivity() {
-		return activity;
-	}
-
-	public void setActivity(Activity activity) {
-		this.activity = activity;
+		return superController.getActivity();
 	}
 }

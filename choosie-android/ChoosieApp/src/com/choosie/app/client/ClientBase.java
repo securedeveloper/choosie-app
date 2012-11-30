@@ -22,7 +22,7 @@ import com.choosie.app.controllers.FeedCacheKey;
 public abstract class ClientBase {
 
 	protected FacebookDetails fbDetails;
-	
+
 	public ClientBase(FacebookDetails fbDetails) {
 		this.fbDetails = fbDetails;
 	}
@@ -30,8 +30,8 @@ public abstract class ClientBase {
 	public abstract void sendCommentToServer(String post_key, String text,
 			final Callback<Void, Void, Boolean> callback);
 
-	public abstract void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto,
-			final Callback<Void, Void, Boolean> callback);
+	public abstract void sendVoteToServer(ChoosiePostData choosiePost,
+			int whichPhoto, final Callback<Void, Void, Boolean> callback);
 
 	public abstract void login(final Callback<Void, Void, Void> onLoginComplete);
 
@@ -67,10 +67,14 @@ public abstract class ClientBase {
 		}
 	}
 
+	public abstract FeedResponse getFeedByCursor(FeedCacheKey feedRequest,
+			Callback<Void, Object, Void> progressCallback);
 
-	public abstract FeedResponse getFeedByCursor(FeedCacheKey feedRequest, Callback<Void, Object, Void> progressCallback);
+	public abstract void sendChoosiePostToServer(NewChoosiePostData data,
+			Callback<Void, Integer, Void> progressCallback);
 
-	public abstract void sendChoosiePostToServer(NewChoosiePostData data, Callback<Void, Integer, Void> progressCallback);
+	public abstract ChoosiePostData getPostByKey(String param,
+			Callback<Void, Object, Void> progressCallback);
 
 	public ClientBase() {
 		super();

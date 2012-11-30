@@ -22,31 +22,29 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 public class SuperController {
-
+	private Activity activity;
 	private ClientBase client;
 	private final Caches caches = new Caches(this);
 	Map<Screen, ScreenController> screenToController;
 
-	public SuperController(Activity choosieActivity, FacebookDetails fbDetails) {
+	public SuperController(Activity activity, FacebookDetails fbDetails) {
+		this.activity = activity;
 		client = new RealClient(fbDetails);
 
 		List<Pair<Screen, ScreenController>> screenControllerPairs = new ArrayList<Pair<Screen, ScreenController>>();
 
-		screenControllerPairs
-				.add(new Pair<Screen, ScreenController>(Screen.FEED,
-						new FeedScreenController(choosieActivity
-								.findViewById(R.id.layout_feed),
-								choosieActivity, this)));
-		screenControllerPairs
-				.add(new Pair<Screen, ScreenController>(Screen.POST,
-						new PostScreenController(choosieActivity
-								.findViewById(R.id.layout_post),
-								choosieActivity, this))); 
+		screenControllerPairs.add(new Pair<Screen, ScreenController>(
+				Screen.FEED, new FeedScreenController(activity
+						.findViewById(R.id.layout_feed), this)));
+		screenControllerPairs.add(new Pair<Screen, ScreenController>(
+				Screen.POST, new PostScreenController(activity
+						.findViewById(R.id.layout_post), this)));
 		screenControllerPairs.add(new Pair<Screen, ScreenController>(Screen.ME,
-				new MeScreenController(choosieActivity
-						.findViewById(R.id.layout_me), choosieActivity, this)));
+				new MeScreenController(activity.findViewById(R.id.layout_me),
+						this)));
 
 		screenToController = new HashMap<Screen, ScreenController>();
 
@@ -77,18 +75,39 @@ public class SuperController {
 		}
 	}
 
-	public void voteFor(ChoosiePostData post, int whichPhoto) {
-		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post.getKey());
+	public void voteFor(final ChoosiePostData post, int whichPhoto) {
+		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post.getPostKey());
 		this.client.sendVoteToServer(post, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 
 					@Override
 					public void onFinish(Boolean param) {
 						if (param) {
-							screenToController.get(Screen.FEED).refresh();
+							refreshPost(post.getPostKey());
 						}
 					}
+
 				});
+	}
+
+	private void refreshPost(String postKey) {
+		this.caches.getPostsCache().invalidateKey(postKey);
+		this.caches.getPostsCache().getValue(postKey,
+				new Callback<Void, Object, ChoosiePostData>() {
+					@Override
+					public void onFinish(ChoosiePostData param) {
+						if (param == null) {
+							// TODO: Handle error
+							Toast.makeText(getActivity(),
+									"Failed to update post.",
+									Toast.LENGTH_SHORT).show();
+							return;
+						}
+						((FeedScreenController) screenToController
+								.get(Screen.FEED)).refreshPost(param);
+					}
+				});
+
 	}
 
 	public void CommentFor(String post_key, String text) {
@@ -120,7 +139,7 @@ public class SuperController {
 		String photo1Url = choosiePost.getPhoto1URL();
 		String photo2Url = choosiePost.getPhoto2URL();
 
-		intent.putExtra("post_key", choosiePost.getKey());
+		intent.putExtra("post_key", choosiePost.getPostKey());
 
 		getCaches().insertPhotoUriToIntent(photo1Url, intent, "photo1");
 		getCaches().insertPhotoUriToIntent(photo2Url, intent, "photo2");
@@ -140,5 +159,9 @@ public class SuperController {
 
 	public ScreenController getControllerForScreen(Screen screen) {
 		return screenToController.get(screen);
+	}
+
+	public Activity getActivity() {
+		return this.activity;
 	}
 }

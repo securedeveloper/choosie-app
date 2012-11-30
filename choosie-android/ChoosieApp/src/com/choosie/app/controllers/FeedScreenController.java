@@ -2,8 +2,8 @@ package com.choosie.app.controllers;
 
 import com.choosie.app.Constants;
 import com.choosie.app.R;
+import com.choosie.app.Models.ChoosiePostData;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +12,14 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class FeedScreenController extends ScreenController {
 
 	private FeedListAdapter choosiePostsItemAdapter;
 
-	public FeedScreenController(View layout, Activity activity,
-			SuperController superController) {
-		super(layout, activity, superController);
+	public FeedScreenController(View layout, SuperController superController) {
+		super(layout, superController);
 	}
 
 	@Override
@@ -37,8 +37,8 @@ public class FeedScreenController extends ScreenController {
 		// Must add the progress bar to the root of the layout
 		ViewGroup root = (ViewGroup) view.findViewById(R.id.layout_feed);
 		root.addView(textView);
-		choosiePostsItemAdapter = new FeedListAdapter(getActivity(), R.id.layout_me,
-				this.superController);
+		choosiePostsItemAdapter = new FeedListAdapter(getActivity(),
+				R.id.layout_me, this.superController);
 		listView.setAdapter(choosiePostsItemAdapter);
 
 		listView.setOnScrollListener(new OnScrollListener() {
@@ -72,6 +72,14 @@ public class FeedScreenController extends ScreenController {
 	public void refresh() {
 		// TODO Refresh if needed only.
 		choosiePostsItemAdapter.refreshFeed();
+	}
+
+	public void refreshPost(ChoosiePostData post) {
+		choosiePostsItemAdapter.refreshItem(post);
+		Toast toast = Toast.makeText(getActivity(), "Refreshing post...",
+				Toast.LENGTH_SHORT);
+		toast.show();
+
 	}
 
 }
