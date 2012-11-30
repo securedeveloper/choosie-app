@@ -4,6 +4,7 @@ import com.choosie.app.ChoosieActivity;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.client.RealClient;
 
 import android.app.Activity;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,13 +65,13 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
-		((ImageView)getActivity().findViewById(R.id.button_feed)).setImageDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_feed_pressed));
+		((RelativeLayout)getActivity().findViewById(R.id.layout_button_feed)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_feed_pressed));
 		refresh();
 	}
 
 	@Override
 	protected void onHide() {
-		((ImageView)getActivity().findViewById(R.id.button_feed)).setImageDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_feed));
+		((RelativeLayout)getActivity().findViewById(R.id.layout_button_feed)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_feed));
 	}
 
 	@Override

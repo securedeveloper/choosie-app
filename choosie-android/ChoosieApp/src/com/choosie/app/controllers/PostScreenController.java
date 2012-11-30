@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class PostScreenController extends ScreenController {
@@ -61,12 +62,13 @@ public class PostScreenController extends ScreenController {
 	@Override
 	protected void onShow() {
 		questionText.setFocusableInTouchMode(true);
-		((ImageView)getActivity().findViewById(R.id.button_post)).setImageDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post_pressed));
+		((RelativeLayout)getActivity().findViewById(R.id.layout_button_post)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post_pressed));
+		
 	}
 
 	@Override
 	protected void onHide() {
-		((ImageView)getActivity().findViewById(R.id.button_post)).setImageDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post));
+		((RelativeLayout)getActivity().findViewById(R.id.layout_button_post)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post));
 
 	}
 
