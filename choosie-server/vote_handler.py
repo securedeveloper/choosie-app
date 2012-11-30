@@ -35,7 +35,7 @@ class VoteHandler(webapp2.RequestHandler):
       vote.put()
       # Make sure the ChoosiePost is invalidated in cache, so that next time it is asked
       # for, the updated one is retreived.
-      CacheController.invalidate(self.request.get('post_key'))
+      CacheController.invalidate_votes(self.request.get('post_key'))
       self.redirect('/')
     
   def post(self):

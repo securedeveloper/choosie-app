@@ -1,5 +1,7 @@
 from google.appengine.ext import db
 from google.appengine.api import images
+
+from cache_controller import CacheController
 from module_user import User
 from module_vote import Vote
 from module_comment import Comment
@@ -39,14 +41,10 @@ class ChoosiePost(db.Model):
     return self.votes_for_count(self.votes(), 2)
 
   def votes(self):
-    if not self.cached_votes:
-      self.cached_votes = Vote.all().ancestor(self)
-    return self.cached_votes
+    return CacheController.get_votes_for_post(str(self.key()))
 
   def comments(self):
-    if not self.cached_comments:
-      self.cached_comments = Comment.all().ancestor(self)
-    return self.cached_comments
+    return CacheController.get_comments_for_post(str(self.key()))
 
   def votes_for_count(self, votes, vote_for):
     count = 0

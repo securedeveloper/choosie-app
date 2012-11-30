@@ -17,6 +17,7 @@ class FeedHandler(webapp2.RequestHandler):
     def get_feed_and_cursor(cursor, limit = 10):
         if not limit:
             limit = 10
+        logging.info('Retrieving %d posts from db' % limit)
         posts = ChoosiePost.all()
         if cursor:
             posts.with_cursor(cursor)
