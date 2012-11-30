@@ -6,11 +6,12 @@ public class Constants {
 	public static class URIs {
 
 		public static final String ROOT_URL = "http://choosieapp.appspot.com";
-		public static final String FEED_URI = "http://choosieapp.appspot.com/feed";
-		public static final String NEW_VOTE_URI = "http://choosieapp.appspot.com/votes/new";
-		public static final String NEW_POSTS_URI = "http://choosieapp.appspot.com/posts/new";
-		public static final String NEW_COMMENT_URI = "http://choosieapp.appspot.com/comments/new";
-		public static final String POSTS_URI = "http://choosieapp.appspot.com/posts";
+		// public static final String ROOT_URL = "http://choosie-dev.appspot.com";
+		public static final String FEED_URI = ROOT_URL + "/feed";
+		public static final String NEW_VOTE_URI = ROOT_URL + "/votes/new";
+		public static final String NEW_POSTS_URI = ROOT_URL + "/posts/new";
+		public static final String NEW_COMMENT_URI = ROOT_URL + "/comments/new";
+		public static final String POSTS_URI = ROOT_URL + "/posts";
 	}
 
 	public static class RequestCodes {
