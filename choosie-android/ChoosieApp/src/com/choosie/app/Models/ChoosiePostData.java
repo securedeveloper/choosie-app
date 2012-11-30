@@ -3,7 +3,6 @@ package com.choosie.app.Models;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.choosie.app.Comment;
 import com.choosie.app.FacebookDetails;
 import com.choosie.app.Vote;
