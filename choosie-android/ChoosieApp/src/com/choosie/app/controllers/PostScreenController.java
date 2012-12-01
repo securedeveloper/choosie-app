@@ -22,6 +22,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Images.Media;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,7 +50,8 @@ public class PostScreenController extends ScreenController {
 		image2 = (ImageView) view.findViewById(R.id.image_photo2);
 		Button buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 		questionText = (EditText) view.findViewById(R.id.editText_question);
-		questionText.setFocusable(false);
+		questionText.setInputType(EditorInfo.TYPE_NULL);
+//		questionText.setFocusable(false);
 
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
@@ -65,8 +67,9 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
-		questionText.setFocusableInTouchMode(true);
-		questionText.setFocusable(true);
+//		questionText.setFocusableInTouchMode(true);
+//		questionText.setFocusable(true);
+		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
@@ -74,6 +77,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
+		questionText.setInputType(EditorInfo.TYPE_NULL);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));

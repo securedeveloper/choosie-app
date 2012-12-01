@@ -351,7 +351,7 @@ public class RealClient extends ClientBase {
 				+ jsonObject.getString("photo2");
 		String question = jsonObject.getString("question");
 		String postKey = jsonObject.getString("key");
-		Date createdAt = Utils.getInstance().ConvertStringToDate(
+		Date createdAtUTC = Utils.getInstance().ConvertStringToDateUTC(
 				jsonObject.getString("created_at"));
 
 		JSONObject userJsonObject = jsonObject.getJSONObject("user");
@@ -364,7 +364,7 @@ public class RealClient extends ClientBase {
 		List<Comment> comments = buildCommentsFromJson(postKey, allComments);
 
 		return new ChoosiePostData(fbDetails, postKey, photo1URL, photo2URL,
-				question, author, createdAt, votes, comments);
+				question, author, createdAtUTC, votes, comments);
 	}
 
 	private User buildUserFromJson(JSONObject userJsonObject)
@@ -385,13 +385,13 @@ public class RealClient extends ClientBase {
 
 			String fb_uid = jsonCommentObject.getString("fb_uid");
 			String date = jsonCommentObject.getString("created_at");
-			Date created_at = Utils.getInstance().ConvertStringToDate(date);
+			Date createdAtUTC = Utils.getInstance().ConvertStringToDateUTC(date);
 			String text = jsonCommentObject.getString("text");
 
 			JSONObject userJsonObject = jsonCommentObject.getJSONObject("user");
 			User user = buildUserFromJson(userJsonObject);
 
-			Comment comment = new Comment(fb_uid, created_at, text, postKey,
+			Comment comment = new Comment(fb_uid, createdAtUTC, text, postKey,
 					user);
 			comments.add(comment);
 		}
@@ -406,10 +406,10 @@ public class RealClient extends ClientBase {
 
 			String fb_uid = jsonVoteObject.getString("fb_uid");
 			String date = jsonVoteObject.getString("created_at");
-			Date created_at = Utils.getInstance().ConvertStringToDate(date);
+			Date createdAtUTC = Utils.getInstance().ConvertStringToDateUTC(date);
 			int vote_for = jsonVoteObject.getInt("vote_for");
 
-			Vote vote = new Vote(fb_uid, created_at, vote_for);
+			Vote vote = new Vote(fb_uid, createdAtUTC, vote_for);
 			votes.add(vote);
 		}
 		return votes;

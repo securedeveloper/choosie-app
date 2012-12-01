@@ -5,12 +5,12 @@ import java.util.Date;
 public class Vote {
 
 	private final String fb_uid;
-	private final Date created_at;
+	private final Date createdAtUTC;
 	private final int vote_for;
 
-	public Vote(String fb_uid, Date created_at, int vote_for) {
+	public Vote(String fb_uid, Date createdAtUTC, int vote_for) {
 		this.fb_uid = fb_uid;
-		this.created_at = created_at;
+		this.createdAtUTC = createdAtUTC;
 		this.vote_for = vote_for;
 	}
 
@@ -19,7 +19,7 @@ public class Vote {
 	}
 
 	public Date getCreated_at() {
-		return created_at;
+		return createdAtUTC;
 	}
 
 	public String getFb_uid() {

@@ -19,7 +19,7 @@ public class ChoosiePostData {
 	private String photo2URL;
 	private String question;
 	private User author;
-	private Date createdAt;
+	private Date createdAtUTC;
 	private List<Vote> votes;
 	private List<Comment> comments;
 	private FacebookDetails loggedInUser;
@@ -29,14 +29,14 @@ public class ChoosiePostData {
 
 	public ChoosiePostData(FacebookDetails loggedInUser, String postKey,
 			String photo1URL, String photo2URL, String question, User author,
-			Date createdAt, List<Vote> votes, List<Comment> comments) {
+			Date createdAtUTC, List<Vote> votes, List<Comment> comments) {
 		this.loggedInUser = loggedInUser;
 		this.postKey = postKey;
 		this.photo1URL = photo1URL;
 		this.photo2URL = photo2URL;
 		this.question = question;
 		this.author = author;
-		this.createdAt = createdAt;
+		this.createdAtUTC = createdAtUTC;
 
 		initVotes(votes);
 		initComments(comments);
@@ -137,6 +137,6 @@ public class ChoosiePostData {
 	}
 
 	public Date getCreatedAt() {
-		return createdAt;
+		return createdAtUTC;
 	}
 }

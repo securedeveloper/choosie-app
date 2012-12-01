@@ -3,6 +3,7 @@ package com.choosie.app;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import android.util.Log;
 
@@ -19,8 +20,9 @@ public class Utils {
 		return s_instance;
 	}
 	
-	public Date ConvertStringToDate(String str_date) {
+	public Date ConvertStringToDateUTC(String str_date) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Date date = new Date();
 		
 		try {
