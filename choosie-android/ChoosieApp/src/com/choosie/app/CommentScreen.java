@@ -16,9 +16,13 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 public class CommentScreen extends Activity {
 
@@ -39,6 +43,10 @@ public class CommentScreen extends Activity {
 		parseToUriAndSetInImageView(photo1String, imageViewPhoto1);
 		parseToUriAndSetInImageView(photo2String, imageViewPhoto2);
 
+		// set the question
+		((TextView) findViewById(R.id.textImage_comment_question)).setText(i
+				.getStringExtra("question"));
+		
 		Button buttonSendComment = (Button) findViewById(R.id.button_send_comment);
 
 		buttonSendComment.setOnClickListener(new OnClickListener() {

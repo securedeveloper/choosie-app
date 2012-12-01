@@ -139,6 +139,7 @@ public class SuperController {
 		String photo2Url = choosiePost.getPhoto2URL();
 
 		intent.putExtra("post_key", choosiePost.getPostKey());
+		intent.putExtra("question", choosiePost.getQuestion());
 
 		getCaches().insertPhotoUriToIntent(photo1Url, intent, "photo1");
 		getCaches().insertPhotoUriToIntent(photo2Url, intent, "photo2");

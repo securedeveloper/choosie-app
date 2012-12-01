@@ -28,7 +28,8 @@
         </activity>
         <activity
             android:name=".StartActivity"
-            android:label="@string/title_activity_start" >
+            android:label="@string/title_activity_start"
+            android:screenOrientation="portrait" >
             <intent-filter android:label="@string/app_name">"
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,11 +43,13 @@
 
         <activity
             android:name="com.facebook.LoginActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".CommentScreen"
-            android:label="@string/title_activity_comment_screen" >
+            android:label="@string/title_activity_comment_screen"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 
