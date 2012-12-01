@@ -137,12 +137,14 @@ public class SuperController {
 
 		String photo1Url = choosiePost.getPhoto1URL();
 		String photo2Url = choosiePost.getPhoto2URL();
+		String userPhotoUrl = choosiePost.getAuthor().getPhotoURL();
 
 		intent.putExtra("post_key", choosiePost.getPostKey());
 		intent.putExtra("question", choosiePost.getQuestion());
 
 		getCaches().insertPhotoUriToIntent(photo1Url, intent, "photo1");
 		getCaches().insertPhotoUriToIntent(photo2Url, intent, "photo2");
+		getCaches().insertPhotoUriToIntent(userPhotoUrl, intent, "userPhotoUrl");
 
 		screenToController.get(Screen.FEED).getActivity()
 				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);

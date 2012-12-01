@@ -34,14 +34,17 @@ public class CommentScreen extends Activity {
 
 		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
 		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
+		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
 
 		// get the images Strings from the intent
 		final Intent i = getIntent();
 		String photo1String = i.getStringExtra("photo1");
 		String photo2String = i.getStringExtra("photo2");
+		String userPhotoUrl = i.getStringExtra("userPhotoUrl");
 
 		parseToUriAndSetInImageView(photo1String, imageViewPhoto1);
 		parseToUriAndSetInImageView(photo2String, imageViewPhoto2);
+		parseToUriAndSetInImageView(userPhotoUrl, imageViewUserPhoto);
 
 		// set the question
 		((TextView) findViewById(R.id.textImage_comment_question)).setText(i
