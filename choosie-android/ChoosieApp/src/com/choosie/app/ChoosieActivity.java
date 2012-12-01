@@ -61,8 +61,15 @@ public class ChoosieActivity extends Activity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if ((requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE)
-				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE) {
+		if (resultCode == Activity.RESULT_CANCELED) {
+			return;
+		}
+		if ((requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA)
+				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA
+				|| requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY
+				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY
+				|| requestCode == Constants.RequestCodes.CROP_FIRST
+				|| requestCode == Constants.RequestCodes.CROP_SECOND) {
 			superController.getControllerForScreen(Screen.POST)
 					.onActivityResult(requestCode, resultCode, data);
 		}
@@ -70,5 +77,4 @@ public class ChoosieActivity extends Activity {
 			superController.onActivityResult(resultCode, data);
 		}
 	}
-
 }

@@ -1,7 +1,6 @@
 package com.choosie.app.controllers;
 
 import java.io.File;
-import java.io.IOException;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
@@ -9,17 +8,18 @@ import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 
-import android.app.Activity;
-import android.content.ContentResolver;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,13 +47,14 @@ public class PostScreenController extends ScreenController {
 		Button buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 		questionText = (EditText) view.findViewById(R.id.editText_question);
 		questionText.setFocusable(false);
-		
 
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
 				onItemClick(arg0);
+
 			}
 		};
+
 		image1.setOnClickListener(listener);
 		image2.setOnClickListener(listener);
 		buttonSubmit.setOnClickListener(listener);
@@ -62,39 +63,172 @@ public class PostScreenController extends ScreenController {
 	@Override
 	protected void onShow() {
 		questionText.setFocusableInTouchMode(true);
-		((RelativeLayout)getActivity().findViewById(R.id.layout_button_post)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post_pressed));
-		
+		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
+				.setBackgroundDrawable(getActivity().getResources()
+						.getDrawable(R.drawable.image_button_post_pressed));
 	}
 
 	@Override
 	protected void onHide() {
-		((RelativeLayout)getActivity().findViewById(R.id.layout_button_post)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_post));
-
-	}
-
-	private void TakePhoto(View arg0) {
-		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-		File f = new File(Environment.getExternalStorageDirectory(),
-				"photo.jpg");
-
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-		outputFileUri = Uri.fromFile(f);
-		if (arg0.getId() == R.id.image_photo1) {
-			getActivity().startActivityForResult(intent,
-					Constants.RequestCodes.TAKE_FIRST_PICTURE);
-		}
-		if (arg0.getId() == R.id.image_photo2) {
-			getActivity().startActivityForResult(intent,
-					Constants.RequestCodes.TAKE_SECOND_PICTURE);
-		}
+		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
+				.setBackgroundDrawable(getActivity().getResources()
+						.getDrawable(R.drawable.image_button_post));
 	}
 
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
 			submitChoosiePost();
 		} else {
-			TakePhoto(arg0);
+			startDialog(arg0);
 		}
+	}
+
+	private void startDialog(final View arg0) {
+		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
+				getActivity());
+		myAlertDialog.setTitle("Upload Pictures Option");
+		myAlertDialog.setMessage("How do you want to set your picture?");
+
+		myAlertDialog.setPositiveButton("Camera",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg1, int arg3) {
+						TakePhoto(arg0);
+					}
+				});
+
+		myAlertDialog.setNegativeButton("Gallery",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg2, int arg1) {
+						takeImageFromGallery(arg0);
+					}
+				});
+
+		myAlertDialog.show();
+	}
+
+	private void TakePhoto(View arg0) {
+		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+		File f = new File(Environment.getExternalStorageDirectory(),
+				"photo.jpg");
+		outputFileUri = Uri.fromFile(f);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+		outputFileUri = Uri.fromFile(f);
+		if (arg0.getId() == R.id.image_photo1) {
+			getActivity().startActivityForResult(intent,
+					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA);
+		}
+		if (arg0.getId() == R.id.image_photo2) {
+			intent.putExtra("return-data", true);
+			getActivity().startActivityForResult(intent,
+					Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA);
+		}
+	}
+
+	private void takeImageFromGallery(View arg0) {
+		Intent intent = new Intent();
+		intent.setType("image/*");
+		intent.setAction(Intent.ACTION_GET_CONTENT);
+
+		if (arg0.getId() == R.id.image_photo1) {
+			getActivity().startActivityForResult(
+					Intent.createChooser(intent, "Select Picture"),
+					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY);
+		}
+
+		if (arg0.getId() == R.id.image_photo2) {
+			getActivity().startActivityForResult(
+					Intent.createChooser(intent, "Select Picture"),
+					Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY);
+		}
+	}
+
+	// when the camera or gallery return
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		switch (requestCode) {
+		case Constants.RequestCodes.CROP_FIRST:
+
+			// Wysie_Soh: After a picture is taken, it will go to
+			// PICK_FROM_CAMERA, which will then come here
+			// after the image is cropped.
+
+			if (mImage1 != null) {
+				mImage1.recycle();
+			}
+			mImage1 = setImageFromData(data, image1);
+			break;
+
+		case Constants.RequestCodes.CROP_SECOND:
+
+			// Wysie_Soh: After a picture is taken, it will go to
+			// PICK_FROM_CAMERA, which will then come here
+			// after the image is cropped.
+
+			if (mImage2 != null) {
+				mImage2.recycle();
+			}
+			mImage2 = setImageFromData(data, image2);
+			break;
+
+		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA:
+			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST);
+			break;
+
+		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA:
+			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND);
+			break;
+
+		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY:
+			outputFileUri = data.getData();
+			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST);
+			break;
+
+		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY:
+			outputFileUri = data.getData();
+			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND);
+			break;
+		}
+
+	}
+
+	private Bitmap setImageFromData(Intent data, ImageView imageView) {
+		final Bundle extras = data.getExtras();
+
+		Bitmap imageBitmapToReturn = null;
+
+		if (extras != null) {
+			imageView.setImageBitmap(null);
+			imageBitmapToReturn = extras.getParcelable("data");
+			imageView.setImageBitmap(imageBitmapToReturn);
+		}
+
+		// Wysie_Soh: Delete the temporary file
+		File f = new File(outputFileUri.getPath());
+		if (f.exists()) {
+			f.delete();
+		}
+
+		InputMethodManager mgr = (InputMethodManager) getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.showSoftInput(imageView, InputMethodManager.SHOW_IMPLICIT);
+		return imageBitmapToReturn;
+	}
+
+	private void setAndStartCropIntent(int code) {
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		// intent.setClassName("com.android.camera",
+		// "com.android.camera.CropImage");
+
+		intent.setDataAndType(outputFileUri, "image/*");
+		intent.putExtra("outputX", 300);
+		intent.putExtra("outputY", 300);
+		intent.putExtra("aspectX", 5);
+		intent.putExtra("aspectY", 6);
+		intent.putExtra("scale", true);
+		intent.putExtra("return-data", true);
+		getActivity().startActivityForResult(intent, code);
 	}
 
 	private void submitChoosiePost() {
@@ -133,8 +267,6 @@ public class PostScreenController extends ScreenController {
 						}
 					});
 
-			// clear images and text
-
 			// switch back to feed screen
 			superController.screenToController.get(Screen.FEED).showScreen();
 			superController.screenToController.get(Screen.POST).hideScreen();
@@ -157,115 +289,4 @@ public class PostScreenController extends ScreenController {
 		questionText.setText("");
 
 	}
-
-	// when the camera returns
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Bitmap photoTemp = null;
-		Bitmap resizedPhoto = null;
-
-		if (resultCode == Activity.RESULT_OK) {
-			getActivity().getContentResolver()
-					.notifyChange(outputFileUri, null);
-			ContentResolver cr = getActivity().getContentResolver();
-			try {
-				photoTemp = android.provider.MediaStore.Images.Media.getBitmap(
-						cr, outputFileUri);
-				int w = photoTemp.getWidth();
-				int h = photoTemp.getHeight();
-				resizedPhoto = Bitmap.createScaledBitmap(photoTemp, w / 10,
-						h / 10, true);
-				photoTemp.recycle();
-				photoTemp = null;
-			} catch (Exception e) {
-				Toast.makeText(getActivity(), e.getMessage(),
-						Toast.LENGTH_SHORT).show();
-			}
-
-			if (requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE) {
-				mImage1 = null;
-				mImage1 = rotateBitmap(resizedPhoto, outputFileUri);
-				resizedPhoto = rotateAndSetImage(image1, mImage1, resizedPhoto,
-						R.id.image_photo1);
-			}
-			if (requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE) {
-				mImage2 = null;
-				mImage2 = rotateBitmap(resizedPhoto, outputFileUri);
-				resizedPhoto = rotateAndSetImage(image2, mImage2, resizedPhoto,
-						R.id.image_photo2);
-
-			}
-		}
-	}
-
-	private Bitmap rotateAndSetImage(ImageView imageView, Bitmap image,
-			Bitmap resizedPhoto, int id) {
-		imageView.setImageResource(android.R.drawable.ic_menu_crop);
-		((ImageView) view.findViewById(id)).setImageBitmap(image);
-		resizedPhoto.recycle();
-		resizedPhoto = null;
-		return resizedPhoto;
-	}
-
-	// for later use
-	private Bitmap rotateBitmap(Bitmap sour, Uri uriOutputFile) {
-
-		Bitmap source = sour;
-
-		ExifInterface exif;
-		int orientation = 0;
-		try {
-			exif = new ExifInterface(uriOutputFile.getPath());
-			orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-					ExifInterface.ORIENTATION_NORMAL);
-		} catch (IOException e1) {
-			Toast.makeText(getActivity(), e1.getMessage(), Toast.LENGTH_SHORT)
-					.show();
-			e1.printStackTrace();
-		} // Since API Level 5
-
-		int rotate = 0;
-		switch (orientation) {
-		case ExifInterface.ORIENTATION_ROTATE_270:
-			rotate += 90;
-		case ExifInterface.ORIENTATION_ROTATE_180:
-			rotate += 90;
-		case ExifInterface.ORIENTATION_ROTATE_90:
-			rotate += 90;
-		}
-
-		/*
-		 * Display d = activity.getWindowManager().getDefaultDisplay(); int x =
-		 * source.getWidth(); int y = source.getHeight(); Bitmap scaledBitmap =
-		 * Bitmap.createScaledBitmap(source, x, y, true);
-		 * 
-		 * // create a matrix object Matrix matrix = new Matrix();
-		 * matrix.postRotate(rotate); // anti-clockwise by 90 degrees
-		 * 
-		 * // create a new bitmap from the original using the matrix to
-		 * transform // the result Bitmap rotatedBitmap = Bitmap
-		 * .createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(),
-		 * scaledBitmap.getHeight(), matrix, true);
-		 * 
-		 * //return rotatedBitmap;
-		 * 
-		 * return source;
-		 */
-
-		int width = source.getWidth();
-
-		int height = source.getHeight();
-
-		Matrix matrix = new Matrix();
-
-		// matrix.postScale(scaleWidth, scaleHeight);
-		matrix.postRotate(rotate);
-
-		Bitmap resizedBitmap = Bitmap.createBitmap(source, 0, 0, width, height,
-				matrix, true);
-
-		return resizedBitmap;
-
-	}
-
 }

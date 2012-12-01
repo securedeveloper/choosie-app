@@ -15,9 +15,16 @@ public class Constants {
 	}
 
 	public static class RequestCodes {
-		public static final int TAKE_FIRST_PICTURE = 1;
-		public static final int TAKE_SECOND_PICTURE = 2;
-		public static final int COMMENT = 3;
+		public static final int TAKE_FIRST_PICTURE_FROM_CAMERA = 1;
+		public static final int TAKE_SECOND_PICTURE_FROM_CAMERA = 2;
+		public static final int TAKE_FIRST_PICTURE_FROM_GALLERY = 3;
+		public static final int TAKE_SECOND_PICTURE_FROM_GALLERY = 4;
+		public static final int CROP_FIRST = 5;
+		public static final int CROP_SECOND = 6;
+		public static final int COMMENT =7;
+		public static final int GALLERY = 8;
+		
+		
 
 	}
 }
