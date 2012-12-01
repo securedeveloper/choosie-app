@@ -3,32 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-    
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="100dp" >
 
-      
         <ImageView
             android:id="@+id/image_photo1"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/image_frame_post"
             android:onClick="takePhoto"
             android:src="@android:drawable/ic_menu_crop" />
 
         <ImageView
             android:id="@+id/image_photo2"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/image_frame_post"
             android:src="@android:drawable/ic_menu_crop" />
     </LinearLayout>
-    
 
     <Button
         android:id="@+id/button_submit"

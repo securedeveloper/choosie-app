@@ -9,7 +9,7 @@
     <string name="buttonFeed">Feed</string>
     <string name="buttonPost">Post</string>
     <string name="buttonMe">Me</string>
-    <string name="button_submit">submit</string>
+    <string name="button_submit">Share</string>
     <string name="editTextQuestion">Enter a question</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="welcome">Welcome to </string>

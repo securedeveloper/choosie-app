@@ -210,6 +210,8 @@ public class PostScreenController extends ScreenController {
 			// imageView.getLayoutParams().height = w;
 			// imageView.getLayoutParams().width = h;
 			imageView.setImageBitmap(imageBitmapToReturn);
+			imageView.setBackgroundDrawable(getActivity().getResources()
+					.getDrawable(R.drawable.image_frame_post_filled));
 		}
 
 		// Wysie_Soh: Delete the temporary file
@@ -291,6 +293,10 @@ public class PostScreenController extends ScreenController {
 	private void resetPost() {
 		image1.setImageResource(android.R.drawable.ic_menu_crop);
 		image2.setImageResource(android.R.drawable.ic_menu_crop);
+		image1.setBackgroundDrawable(getActivity().getResources().getDrawable(
+				R.drawable.image_frame_post));
+		image2.setBackgroundDrawable(getActivity().getResources().getDrawable(
+				R.drawable.image_frame_post));
 		if (mImage1 != null) {
 			mImage1.recycle();
 		}
