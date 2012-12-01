@@ -351,6 +351,8 @@ public class RealClient extends ClientBase {
 				+ jsonObject.getString("photo2");
 		String question = jsonObject.getString("question");
 		String postKey = jsonObject.getString("key");
+		Date createdAt = Utils.getInstance().ConvertStringToDate(
+				jsonObject.getString("created_at"));
 
 		JSONObject userJsonObject = jsonObject.getJSONObject("user");
 		User author = buildUserFromJson(userJsonObject);
@@ -362,7 +364,7 @@ public class RealClient extends ClientBase {
 		List<Comment> comments = buildCommentsFromJson(postKey, allComments);
 
 		return new ChoosiePostData(fbDetails, postKey, photo1URL, photo2URL,
-				question, author, votes, comments);
+				question, author, createdAt, votes, comments);
 	}
 
 	private User buildUserFromJson(JSONObject userJsonObject)

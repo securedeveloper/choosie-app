@@ -16,5 +16,6 @@
     <string name="app_id">515799855110300</string>
     <string name="login">Login</string>
     <string name="load_more">Load more</string>
+    <string name="how_long_ago_was_it_taken">How long ago was it taken</string>
 
 </resources>

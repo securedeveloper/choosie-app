@@ -1,11 +1,13 @@
 package com.choosie.app.views;
 
+import java.util.Date;
 import java.util.List;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
+import com.choosie.app.Utils;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.*;
 
@@ -53,42 +55,46 @@ public class ChoosiePostView extends RelativeLayout {
 
 		final TextView votes1 = (TextView) findViewById(R.id.votes1);
 		final TextView votes2 = (TextView) findViewById(R.id.votes2);
-
-		((TextView) findViewById(R.id.feedtext)).setText(post.getQuestion());
-		((TextView) findViewById(R.id.feed_name)).setText(post.getAuthor()
-				.getUserName());
-
+		final TextView feedtext = (TextView) findViewById(R.id.feedtext);
+		final TextView feed_name = (TextView) findViewById(R.id.feed_name);
+		final TextView time_text = (TextView) findViewById(R.id.time_text);
+		final ImageView feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
 		final ImageView imgView1 = (ImageView) findViewById(R.id.feedimage1);
 		final ImageView imgView2 = (ImageView) findViewById(R.id.feedimage2);
+		final ProgressBar progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
+		final ProgressBar progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+
+		feedtext.setText(post.getQuestion());
+		feed_name.setText(post.getAuthor().getUserName());
+		// Utils.getTimeDifferenceTextFromNow formats the text as '13d', '2h',
+		// etc
+		time_text.setText(Utils.getTimeDifferenceTextFromNow(post
+				.getCreatedAt()));
 
 		imgView1.setVisibility(View.GONE);
 		imgView2.setVisibility(View.GONE);
 
-		((ImageView) findViewById(R.id.feed_userimage))
-				.setVisibility(View.GONE);
+		feed_userimage.setVisibility(View.GONE);
 
-		loadImageToView(post.getPhoto1URL(), imgView1,
-				(ProgressBar) findViewById(R.id.progressBar1));
-		loadImageToView(post.getPhoto2URL(), imgView2,
-				(ProgressBar) findViewById(R.id.progressBar2));
-		loadImageToView(post.getAuthor().getPhotoURL(),
-				(ImageView) findViewById(R.id.feed_userimage), null);
+		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1);
+		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2);
+		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null);
 		loadCommentsToView(post);
 
 		// DECIDE IF SHOW RESUTLS OR NOT
 		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
-			ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
-
+			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 		} else {
-			ChangeVotingResultsVisability(votes1, votes2, View.INVISIBLE);
+			ChangeVotingResultsVisibility(votes1, votes2, View.INVISIBLE);
 		}
 
 		// Set border for voted image
 		setImageBorder(imgView1, choosiePost.isVotedAlready(1));
 		setImageBorder(imgView2, choosiePost.isVotedAlready(2));
 
+		// TODO: Merge both listeners below to a single one that accepts an
+		// argument.
 		imgView1.setOnLongClickListener(new OnLongClickListener() {
-
 			public boolean onLongClick(View v) {
 				Log.i(Constants.LOG_TAG, "onLongClick signaled for voting 1");
 
@@ -97,7 +103,7 @@ public class ChoosiePostView extends RelativeLayout {
 					superController.voteFor(choosiePost, 1);
 
 					// SHOW VOTES RESULTS
-					ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
+					ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 
 					// Set border for relevant image
 					Log.i(Constants.LOG_TAG, "Setting border for image 1");
@@ -120,7 +126,7 @@ public class ChoosiePostView extends RelativeLayout {
 					superController.voteFor(choosiePost, 2);
 
 					// SHOW VOTES RESULTS
-					ChangeVotingResultsVisability(votes1, votes2, View.VISIBLE);
+					ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 
 					// Set border for relevant image
 					Log.i(Constants.LOG_TAG, "Setting border for image 2");
@@ -135,7 +141,6 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void setImageBorder(ImageView imgView, boolean isBorderVisable) {
-
 		if (isBorderVisable) {
 			imgView.setBackgroundResource(R.drawable.image_selected);
 		} else {
@@ -143,11 +148,11 @@ public class ChoosiePostView extends RelativeLayout {
 		}
 	}
 
-	private void ChangeVotingResultsVisability(TextView votes1,
-			TextView votes2, int visability) {
+	private void ChangeVotingResultsVisibility(TextView votes1,
+			TextView votes2, int visibility) {
 
-		// If Visablity=true then count votes and display them
-		if (visability == View.VISIBLE) {
+		// If visibility==true then show vote count
+		if (visibility == View.VISIBLE) {
 
 			int voteCount1 = choosiePost.getVotes1();
 			int voteCount2 = choosiePost.getVotes2();
@@ -155,40 +160,46 @@ public class ChoosiePostView extends RelativeLayout {
 			votes1.setText(voteCount1 + " Votes");
 			votes2.setText(voteCount2 + " Votes");
 		}
-		votes1.setVisibility(visability);
-		votes2.setVisibility(visability);
+		votes1.setVisibility(visibility);
+		votes2.setVisibility(visibility);
 
 	}
 
 	private void loadCommentsToView(ChoosiePostData post) {
-		LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
+		final LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		List<Comment> lstComment = post.getComments();
 		for (Comment comment : lstComment) {
-			TextView tv = new TextView(superController.getControllerForScreen(
-					Screen.FEED).getActivity());
+			View commentView = buildViewForComment(comment);
 
-			final SpannableStringBuilder sb = new SpannableStringBuilder(
-					comment.getUser().getUserName() + " " + comment.getText());
-
-			final ForegroundColorSpan blueLinkColor = new ForegroundColorSpan(
-					Color.rgb(42, 30, 176));
-
-			// Span to make text bold
-			int charsToBoldify = comment.getUser().getUserName().length();
-			sb.setSpan(blueLinkColor, 0, charsToBoldify,
-					Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-			// Span to set text color to some RGB value
-			final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
-
-			// Set the text color for first 4 characters
-			sb.setSpan(bss, 0, charsToBoldify,
-					Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-
-			tv.setText(sb);
-
-			commentLayout.addView(tv);
+			commentLayout.addView(commentView);
 		}
+	}
+
+	private TextView buildViewForComment(Comment comment) {
+		TextView tv = new TextView(superController.getControllerForScreen(
+				Screen.FEED).getActivity());
+
+		final SpannableStringBuilder sb = new SpannableStringBuilder(comment
+				.getUser().getUserName() + " " + comment.getText());
+
+		// Same as the User textColor in the XML.
+		// TODO: Make it a resource that both use
+		final ForegroundColorSpan blueLinkColor = new ForegroundColorSpan(
+				Color.rgb(42, 30, 176));
+
+		// Span to make text bold
+		int charsToBoldify = comment.getUser().getUserName().length();
+		sb.setSpan(blueLinkColor, 0, charsToBoldify,
+				Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+		// Span to set text color to some RGB value
+		final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+
+		// Set the text color for first 4 characters
+		sb.setSpan(bss, 0, charsToBoldify, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+		tv.setText(sb);
+		return tv;
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,

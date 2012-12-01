@@ -10,31 +10,63 @@
         android:background="#FFFFFFFF"
         android:orientation="vertical"
         android:paddingBottom="8dp"
-        android:paddingLeft="4dp" >
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_height="match_parent" >
 
-            <ImageView
-                android:id="@+id/feed_userimage"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="4dp"
-                android:adjustViewBounds="true"
-                android:scaleType="matrix"
-                android:src="@drawable/ic_action_search" />
+                android:layout_alignParentLeft="true"
+                android:orientation="horizontal" >
 
-            <TextView
-                android:id="@+id/feed_name"
+                <ImageView
+                    android:id="@+id/feed_userimage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="matrix"
+                    android:src="@drawable/ic_action_search" />
+
+                <TextView
+                    android:id="@+id/feed_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="Name"
+                    android:textColor="#2A1EB0"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="Name"
-                android:textColor="#2A1EB0"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:paddingLeft="3dp" >
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/how_long_ago_was_it_taken"
+                    android:src="@drawable/simple_icon_time_120px"
+                    android:tint="#88888888" />
+
+                <TextView
+                    android:id="@+id/time_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="25s"
+                    android:textColor="#FF888888" />
+            </LinearLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/feedtext"
@@ -135,10 +167,9 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:scaleType="fitXY"
-            android:maxWidth="40dp"
             android:maxHeight="40dp"
-            
+            android:maxWidth="40dp"
+            android:scaleType="fitXY"
             android:src="@drawable/comment_bubble" />
     </LinearLayout>
 

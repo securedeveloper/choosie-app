@@ -1,8 +1,10 @@
 package com.choosie.app.client;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import android.text.format.Time;
 import android.util.Log;
 
 import com.choosie.app.Callback;
@@ -80,7 +82,7 @@ public class MockClient extends ClientBase {
 
 		ChoosiePostData mockPost = new ChoosiePostData(fbDetails, postKey,
 				photo1URL, photo2URL, question, new User(userName,
-						userPhotoUrl, fbUID), new ArrayList<Vote>(),
+						userPhotoUrl, fbUID), new Date(), new ArrayList<Vote>(),
 				new ArrayList<Comment>());
 		return mockPost;
 	}

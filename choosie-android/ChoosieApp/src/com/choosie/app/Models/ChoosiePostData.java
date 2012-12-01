@@ -2,6 +2,7 @@ package com.choosie.app.Models;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import android.util.SparseBooleanArray;
@@ -18,9 +19,9 @@ public class ChoosiePostData {
 	private String photo2URL;
 	private String question;
 	private User author;
+	private Date createdAt;
 	private List<Vote> votes;
 	private List<Comment> comments;
-
 	private FacebookDetails loggedInUser;
 	private boolean isPostByMe;
 	private SparseIntArray votesCounter;
@@ -28,22 +29,21 @@ public class ChoosiePostData {
 
 	public ChoosiePostData(FacebookDetails loggedInUser, String postKey,
 			String photo1URL, String photo2URL, String question, User author,
-			List<Vote> votes, List<Comment> comments) {
+			Date createdAt, List<Vote> votes, List<Comment> comments) {
 		this.loggedInUser = loggedInUser;
 		this.postKey = postKey;
 		this.photo1URL = photo1URL;
 		this.photo2URL = photo2URL;
 		this.question = question;
 		this.author = author;
-		
+		this.createdAt = createdAt;
+
 		initVotes(votes);
 		initComments(comments);
-		try{
-			this.isPostByMe = (loggedInUser.getFb_uid().equals(author.getFbUid()));	
-		}
-		catch (Exception ex){
-			this.isPostByMe = false;
-		}
+		// TODO: Remove this null check after fixing the 'Loading item' hack
+		// from FeedListAdapter
+		this.isPostByMe = author != null
+				&& (loggedInUser.getFb_uid().equals(author.getFbUid()));
 	}
 
 	private void initVotes(List<Vote> votes) {
@@ -54,6 +54,8 @@ public class ChoosiePostData {
 		this.votedAlready = new SparseBooleanArray(2);
 		this.votedAlready.put(1, false);
 		this.votedAlready.put(2, false);
+		// TODO: Remove this null check after fixing the 'Loading item' hack
+		// from FeedListAdapter
 		if (votes == null) {
 			return;
 		}
@@ -132,5 +134,9 @@ public class ChoosiePostData {
 
 	public List<Comment> getComments() {
 		return Collections.unmodifiableList(comments);
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
 	}
 }

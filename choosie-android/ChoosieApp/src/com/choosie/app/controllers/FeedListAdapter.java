@@ -225,7 +225,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		if (loadingItem == null) {
 			// TODO: This is really a bad hack.
 			loadingItem = new ChoosiePostData(null, null, null, null,
-					LOADING_ITEM_TEXT, null, null, null);
+					LOADING_ITEM_TEXT, null, null, null, null);
 		}
 		Log.i(Constants.LOG_TAG, "Showing 'Loading items...'");
 		if (this.state == state.APPENDING_TO_FEED) {
