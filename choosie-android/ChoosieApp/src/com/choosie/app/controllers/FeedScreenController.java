@@ -65,13 +65,17 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
-		((RelativeLayout)getActivity().findViewById(R.id.layout_button_feed)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_feed_pressed));
+		((RelativeLayout) getActivity().findViewById(R.id.layout_button_feed))
+				.setBackgroundDrawable(getActivity().getResources()
+						.getDrawable(R.drawable.selected_button));
 		refresh();
 	}
 
 	@Override
 	protected void onHide() {
-		((RelativeLayout)getActivity().findViewById(R.id.layout_button_feed)).setBackgroundDrawable(getActivity().getResources().getDrawable(R.drawable.image_button_feed));
+		((RelativeLayout) getActivity().findViewById(R.id.layout_button_feed))
+				.setBackgroundDrawable(getActivity().getResources()
+						.getDrawable(R.drawable.unselected_button));
 	}
 
 	@Override

@@ -69,14 +69,14 @@ public class PostScreenController extends ScreenController {
 		questionText.setFocusable(true);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
-						.getDrawable(R.drawable.image_button_post_pressed));
+						.getDrawable(R.drawable.selected_button));
 	}
 
 	@Override
 	protected void onHide() {
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
-						.getDrawable(R.drawable.image_button_post));
+						.getDrawable(R.drawable.unselected_button));
 	}
 
 	private void onItemClick(View arg0) {
@@ -199,7 +199,6 @@ public class PostScreenController extends ScreenController {
 
 	private Bitmap setImageFromData(Intent data, ImageView imageView) {
 		final Bundle extras = data.getExtras();
-		
 
 		Bitmap imageBitmapToReturn = null;
 
@@ -208,8 +207,8 @@ public class PostScreenController extends ScreenController {
 			imageBitmapToReturn = extras.getParcelable("data");
 			int w = imageBitmapToReturn.getHeight();
 			int h = imageBitmapToReturn.getWidth();
-			//imageView.getLayoutParams().height = w;
-			//imageView.getLayoutParams().width = h;
+			// imageView.getLayoutParams().height = w;
+			// imageView.getLayoutParams().width = h;
 			imageView.setImageBitmap(imageBitmapToReturn);
 		}
 
@@ -229,16 +228,13 @@ public class PostScreenController extends ScreenController {
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		// intent.setClassName("com.android.camera",
 		// "com.android.camera.CropImage");
-		/*Bitmap im= null;
-		try {
-			im = Media.getBitmap(getActivity().getContentResolver(), outputFileUri);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		/*
+		 * Bitmap im= null; try { im =
+		 * Media.getBitmap(getActivity().getContentResolver(), outputFileUri); }
+		 * catch (FileNotFoundException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated
+		 * catch block e.printStackTrace(); }
+		 */
 
 		intent.setDataAndType(outputFileUri, "image/*");
 		intent.putExtra("outputX", 200);

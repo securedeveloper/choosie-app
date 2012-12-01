@@ -51,9 +51,11 @@ public class ChoosieActivity extends Activity {
 	public void onBottomNavBarButtonClick(View view) {
 		switch (view.getId()) {
 		case R.id.layout_button_feed:
+		case R.id.layout_button_image_feed:
 			superController.switchToScreen(Screen.FEED);
 			break;
 		case R.id.layout_button_post:
+		case R.id.layout_button_image_post:
 			superController.switchToScreen(Screen.POST);
 			break;
 
