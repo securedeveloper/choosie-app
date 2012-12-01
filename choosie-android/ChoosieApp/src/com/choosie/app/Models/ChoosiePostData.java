@@ -35,8 +35,15 @@ public class ChoosiePostData {
 		this.photo2URL = photo2URL;
 		this.question = question;
 		this.author = author;
+		
 		initVotes(votes);
 		initComments(comments);
+		try{
+			this.isPostByMe = (loggedInUser.getFb_uid().equals(author.getFbUid()));	
+		}
+		catch (Exception ex){
+			this.isPostByMe = false;
+		}
 	}
 
 	private void initVotes(List<Vote> votes) {
