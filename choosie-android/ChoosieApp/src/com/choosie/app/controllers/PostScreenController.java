@@ -1,6 +1,8 @@
 package com.choosie.app.controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
@@ -17,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -63,6 +66,7 @@ public class PostScreenController extends ScreenController {
 	@Override
 	protected void onShow() {
 		questionText.setFocusableInTouchMode(true);
+		questionText.setFocusable(true);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.image_button_post_pressed));
@@ -204,8 +208,8 @@ public class PostScreenController extends ScreenController {
 			imageBitmapToReturn = extras.getParcelable("data");
 			int w = imageBitmapToReturn.getHeight();
 			int h = imageBitmapToReturn.getWidth();
-			imageView.getLayoutParams().height = w;
-			imageView.getLayoutParams().width = h;
+			//imageView.getLayoutParams().height = w;
+			//imageView.getLayoutParams().width = h;
 			imageView.setImageBitmap(imageBitmapToReturn);
 		}
 
@@ -225,10 +229,20 @@ public class PostScreenController extends ScreenController {
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		// intent.setClassName("com.android.camera",
 		// "com.android.camera.CropImage");
+		/*Bitmap im= null;
+		try {
+			im = Media.getBitmap(getActivity().getContentResolver(), outputFileUri);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 
 		intent.setDataAndType(outputFileUri, "image/*");
-		intent.putExtra("outputX", 300);
-		intent.putExtra("outputY", 300 * 6 / 5);
+		intent.putExtra("outputX", 200);
+		intent.putExtra("outputY", 200 * 6 / 5);
 		intent.putExtra("aspectX", 5);
 		intent.putExtra("aspectY", 6);
 		intent.putExtra("scale", true);

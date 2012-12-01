@@ -1,11 +1,16 @@
 package com.choosie.app;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import com.choosie.app.R;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore.Images.Media;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -60,9 +65,19 @@ public class CommentScreen extends Activity {
 
 	private void parseToUriAndSetInImageView(String photoString,
 			ImageView imageViewPhoto) {
+		Bitmap imageBitmap = null;
 		if (photoString != null) {
 			Uri photo1Uri = Uri.parse(photoString);
-			imageViewPhoto.setImageURI(photo1Uri);
+			try {
+				imageBitmap = Media.getBitmap(getContentResolver(), photo1Uri);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			imageViewPhoto.setImageBitmap(imageBitmap);
 		}
 
 	}
