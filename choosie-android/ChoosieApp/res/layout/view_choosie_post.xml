@@ -45,22 +45,21 @@
 
         <LinearLayout
             android:id="@+id/photos"
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:orientation="horizontal" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:orientation="vertical" >
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:layout_weight="0.5"
                     android:orientation="vertical" >
 
                     <ProgressBar
@@ -75,10 +74,8 @@
 
                     <ImageView
                         android:id="@+id/feedimage1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:scaleType="matrix"
+                        android:layout_width="fill_parent"
+                        android:layout_height="190dp"
                         android:src="@drawable/ic_action_search" />
                 </RelativeLayout>
 
@@ -92,14 +89,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:orientation="vertical" >
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:layout_weight="0.5"
                     android:orientation="vertical" >
 
                     <ProgressBar
@@ -114,10 +110,8 @@
 
                     <ImageView
                         android:id="@+id/feedimage2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:scaleType="matrix"
+                        android:layout_width="fill_parent"
+                        android:layout_height="190dp"
                         android:src="@drawable/ic_action_search" />
                 </RelativeLayout>
 

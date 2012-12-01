@@ -195,12 +195,17 @@ public class PostScreenController extends ScreenController {
 
 	private Bitmap setImageFromData(Intent data, ImageView imageView) {
 		final Bundle extras = data.getExtras();
+		
 
 		Bitmap imageBitmapToReturn = null;
 
 		if (extras != null) {
 			imageView.setImageBitmap(null);
 			imageBitmapToReturn = extras.getParcelable("data");
+			int w = imageBitmapToReturn.getHeight();
+			int h = imageBitmapToReturn.getWidth();
+			imageView.getLayoutParams().height = w;
+			imageView.getLayoutParams().width = h;
 			imageView.setImageBitmap(imageBitmapToReturn);
 		}
 
@@ -223,7 +228,7 @@ public class PostScreenController extends ScreenController {
 
 		intent.setDataAndType(outputFileUri, "image/*");
 		intent.putExtra("outputX", 300);
-		intent.putExtra("outputY", 300);
+		intent.putExtra("outputY", 300 * 6 / 5);
 		intent.putExtra("aspectX", 5);
 		intent.putExtra("aspectY", 6);
 		intent.putExtra("scale", true);
