@@ -16,10 +16,12 @@ import com.choosie.app.client.MockClient;
 import com.choosie.app.client.RealClient;
 import com.choosie.app.client.ClientBase;
 import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.Models.Comment;
 import com.choosie.app.Models.FacebookDetails;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
@@ -38,7 +40,7 @@ public class SuperController {
 
 		screenControllerPairs.add(new Pair<Screen, ScreenController>(
 				Screen.FEED, new FeedScreenController(activity
-						.findViewById(R.id.layout_feed), this))); 
+						.findViewById(R.id.layout_feed), this)));
 		screenControllerPairs.add(new Pair<Screen, ScreenController>(
 				Screen.POST, new PostScreenController(activity
 						.findViewById(R.id.layout_post), this)));
@@ -142,9 +144,24 @@ public class SuperController {
 		intent.putExtra("post_key", choosiePost.getPostKey());
 		intent.putExtra("question", choosiePost.getQuestion());
 
+		// create the comments list
+
+		ArrayList<String> nameList = new ArrayList<String>();
+		ArrayList<String> commentList = new ArrayList<String>();
+		
+
+		for (Comment comment : choosiePost.getComments()) {
+			nameList.add(comment.getUser().getUserName());
+			commentList.add(comment.getText());
+		}
+
+		intent.putStringArrayListExtra("nameList", nameList);
+		intent.putStringArrayListExtra("commentList", commentList);
+
 		getCaches().insertPhotoUriToIntent(photo1Url, intent, "photo1");
 		getCaches().insertPhotoUriToIntent(photo2Url, intent, "photo2");
-		getCaches().insertPhotoUriToIntent(userPhotoUrl, intent, "userPhotoUrl");
+		getCaches()
+				.insertPhotoUriToIntent(userPhotoUrl, intent, "userPhotoUrl");
 
 		screenToController.get(Screen.FEED).getActivity()
 				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);

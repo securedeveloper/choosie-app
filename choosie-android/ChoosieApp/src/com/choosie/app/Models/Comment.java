@@ -23,7 +23,7 @@ public class Comment {
 		return post_key;
 	}
 
-	public CharSequence getText() {
+	public String getText() {
 		return text;
 	}
 
