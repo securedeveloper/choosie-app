@@ -27,9 +27,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.facebook.Session;
+import com.facebook.Session.ReauthorizeRequest;
+import com.facebook.android.*;
 
 public class PostScreenController extends ScreenController {
 	private Bitmap mImage1;
@@ -53,6 +58,8 @@ public class PostScreenController extends ScreenController {
 		questionText.setInputType(EditorInfo.TYPE_NULL);
 //		questionText.setFocusable(false);
 
+		
+		
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
 				onItemClick(arg0);
@@ -63,6 +70,8 @@ public class PostScreenController extends ScreenController {
 		image1.setOnClickListener(listener);
 		image2.setOnClickListener(listener);
 		buttonSubmit.setOnClickListener(listener);
+		
+		
 	}
 
 	@Override
@@ -85,6 +94,16 @@ public class PostScreenController extends ScreenController {
 
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
+			android.widget.CheckBox ckb= (CheckBox) view.findViewById(R.id.ckb_share_fb);
+			if (ckb.isChecked()) {
+				Session session = Session.getActiveSession();
+				if (session != null)
+				{
+				ReauthorizeRequest reauthorizeRequest = new ReauthorizeRequest();
+				session.reauthorizeForPublish(reauthorizeRequest)
+				}
+			}
+			
 			submitChoosiePost();
 		} else {
 			startDialog(arg0);

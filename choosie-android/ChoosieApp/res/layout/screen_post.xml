@@ -49,4 +49,13 @@
         <requestFocus />
     </EditText>
 
+    <CheckBox
+        android:id="@+id/ckb_share_fb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="Share On Facebook"
+        android:checked="true"/>
+
 </RelativeLayout>
