@@ -38,6 +38,17 @@ public class Constants {
 		public static final int CROP_SECOND = 6;
 		public static final int COMMENT = 7;
 		public static final int GALLERY = 8;
+	}
+	
+	public static class IntentsCodes {
+		public static final String photo2Path = "photo2Path";
+		public static final String photo1Path = "photo1Path";
+		public static final String userPhotoPath = "userPhotoPath";
+		public static final String nameList = "nameList";
+		public static final String commentList = "commentList";
+		public static final String commentierPhotoUrlList = "commentierPhotoUrlList";
+		public static final String text = "text";
+		public static final String post_key = "post_key";
 
 	}
 }

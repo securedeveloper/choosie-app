@@ -41,34 +41,30 @@ import android.widget.TextView;
 
 public class CommentScreen extends Activity {
 
-	// TODO: make less ugly!!
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(Constants.LOG_TAG, "in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
-
-		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
-		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
-		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
-
-		// get the images Strings from the intent
 		final Intent intent = getIntent();
-		String photo1Path = intent.getStringExtra("photo1Path");
-		String photo2Path = intent.getStringExtra("photo2Path");
-		String userPhotoPath = intent.getStringExtra("userPhotoPath");
 
-		setImageFromPath(photo1Path, imageViewPhoto1);
-		setImageFromPath(photo2Path, imageViewPhoto2);
-		setImageFromPath(userPhotoPath, imageViewUserPhoto);
+		fillCommentView(intent);
 
-		// set the question
-		((TextView) findViewById(R.id.textImage_comment_question))
-				.setText(intent.getStringExtra("question"));
-
-		Button buttonSendComment = (Button) findViewById(R.id.button_send_comment);
+		ArrayAdapter<CommentData> commentScreenAdapter = makeCommentScreenAdapter(intent);
 
 		ListView listView = (ListView) findViewById(R.id.commentsListView);
+		listView.setAdapter(commentScreenAdapter);
+
+		Button buttonSendComment = (Button) findViewById(R.id.button_send_comment);
+		buttonSendComment.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				activateSendButton(intent);
+			}
+		});
+	}
+
+	private ArrayAdapter<CommentData> makeCommentScreenAdapter(
+			final Intent intent) {
 		ArrayAdapter<CommentData> adi = new ArrayAdapter<CommentData>(this,
 				R.layout.view_comment) {
 
@@ -85,23 +81,45 @@ public class CommentScreen extends Activity {
 
 		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<String> commentList = new ArrayList<String>();
+		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
 
-		nameList = intent.getStringArrayListExtra("nameList");
-		commentList = intent.getStringArrayListExtra("commentList");
+		nameList = intent
+				.getStringArrayListExtra(Constants.IntentsCodes.nameList);
+		commentList = intent
+				.getStringArrayListExtra(Constants.IntentsCodes.commentList);
+		commentierPhotoUrlList = intent
+				.getStringArrayListExtra(Constants.IntentsCodes.commentierPhotoUrlList);
 
 		for (int i = 0; i < nameList.size(); i++) {
 			CommentData newCommentData = new CommentData(nameList.get(i),
-					commentList.get(i));
+					commentList.get(i), commentierPhotoUrlList.get(i));
 			adi.add(newCommentData);
 		}
+		return adi;
+	}
 
-		listView.setAdapter(adi);
+	private void fillCommentView(Intent intent) {
 
-		buttonSendComment.setOnClickListener(new OnClickListener() {
-			public void onClick(View arg0) {
-				activateSendButton(imageViewPhoto1, imageViewPhoto2, intent);
-			}
-		});
+		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
+		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
+		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
+
+		// get the images Strings from the intent
+
+		String photo1Path = intent
+				.getStringExtra(Constants.IntentsCodes.photo1Path);
+		String photo2Path = intent
+				.getStringExtra(Constants.IntentsCodes.photo2Path);
+		String userPhotoPath = intent
+				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
+
+		setImageFromPath(photo1Path, imageViewPhoto1);
+		setImageFromPath(photo2Path, imageViewPhoto2);
+		setImageFromPath(userPhotoPath, imageViewUserPhoto);
+
+		// set the question
+		((TextView) findViewById(R.id.textImage_comment_question))
+				.setText(intent.getStringExtra("question"));
 	}
 
 	private View createViewComment(CommentData item) {
@@ -117,25 +135,23 @@ public class CommentScreen extends Activity {
 				.findViewById(R.id.view_comment_comment);
 		setTextOntv(item, tv);
 
+		ImageView commentierPhotoImageView = (ImageView) itemView
+				.findViewById(R.id.commentScreen_commentierPhoto);
+		commentierPhotoImageView.setImageBitmap(BitmapFactory.decodeFile(item
+				.getcommentierPhotoPath()));
 		return itemView;
 	}
 
-	private void activateSendButton(final ImageView imageViewPhoto1,
-			final ImageView imageViewPhoto2, final Intent intent) {
+	private void activateSendButton(final Intent intent) {
 		String text = ((EditText) findViewById(R.id.editText_comment))
 				.getText().toString();
 
-		imageViewPhoto1.setImageDrawable(getResources().getDrawable(
-				R.drawable.ic_action_search));
-		imageViewPhoto2.setImageDrawable(getResources().getDrawable(
-				R.drawable.ic_action_search));
-
 		// get the intent and add the comment
-		intent.putExtra("text", text);
+		intent.putExtra(Constants.IntentsCodes.text, text);
 
 		// activate the 'onActivityResult'
 		setResult(RESULT_OK, intent);
-		resetCommetnScreen();
+		//resetCommetnScreen();
 		finish();
 	}
 
@@ -162,8 +178,7 @@ public class CommentScreen extends Activity {
 		tv.setText(sb);
 	}
 
-	private void setImageFromPath(String photoPath,
-			ImageView imageViewPhoto) {
+	private void setImageFromPath(String photoPath, ImageView imageViewPhoto) {
 		if (photoPath != null) {
 			imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
 		}
@@ -194,21 +209,24 @@ public class CommentScreen extends Activity {
 		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
 		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
 		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
-		
-		Bitmap image1Bitmap = ((BitmapDrawable) imageViewPhoto1.getDrawable()).getBitmap();
-		Bitmap image2Bitmap = ((BitmapDrawable) imageViewPhoto2.getDrawable()).getBitmap();
-		Bitmap userPhotoBitmap = ((BitmapDrawable) imageViewUserPhoto.getDrawable()).getBitmap();
-		
-		if (image1Bitmap != null){
+
+		Bitmap image1Bitmap = ((BitmapDrawable) imageViewPhoto1.getDrawable())
+				.getBitmap();
+		Bitmap image2Bitmap = ((BitmapDrawable) imageViewPhoto2.getDrawable())
+				.getBitmap();
+		Bitmap userPhotoBitmap = ((BitmapDrawable) imageViewUserPhoto
+				.getDrawable()).getBitmap();
+
+		if (image1Bitmap != null) {
 			image1Bitmap.recycle();
 		}
-		if (image2Bitmap != null){
+		if (image2Bitmap != null) {
 			image2Bitmap.recycle();
 		}
-		if (userPhotoBitmap != null){
+		if (userPhotoBitmap != null) {
 			userPhotoBitmap.recycle();
 		}
-		
+
 	}
 
 	@Override

@@ -90,9 +90,12 @@ public class Utils {
 		}
 	}
 
-	public void writeByteStreamOnSD(ByteArrayOutputStream bos, String fileName) {
-		String fullPath = Constants.URIs.mainDirectoryPath + fileName;
+	public void writeByteStreamOnSD(ByteArrayOutputStream bos, String HashedfileName) {
+		String fullPath = Constants.URIs.mainDirectoryPath + HashedfileName;
 		File f = new File(fullPath);
+		if (f.exists()){
+			return;
+		}
 		FileOutputStream fo = null;
 		try {
 			f.createNewFile();
@@ -114,5 +117,11 @@ public class Utils {
 	public Bitmap getBitmapFromURL(String param) {
 		return BitmapFactory.decodeFile(Utils.getInstance().getFileNameForURL(
 				param));
+	}
+
+	public void saveBitmapOnSd(String photoURL, Bitmap param) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		param.compress(CompressFormat.JPEG, 100, bos);
+		writeByteStreamOnSD(bos, Integer.toString(photoURL.hashCode()));				
 	}
 }

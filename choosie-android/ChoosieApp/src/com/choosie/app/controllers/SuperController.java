@@ -111,7 +111,7 @@ public class SuperController {
 	}
 
 	public void CommentFor(final String post_key, String text) {
-		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post_key);
+		Log.i(Constants.LOG_TAG, "commenting vote for: " + post_key);
 		this.client.sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
 
@@ -132,8 +132,6 @@ public class SuperController {
 		return caches;
 	}
 
-	
-	
 	public void switchToCommentScreen(ChoosiePostData choosiePost) {
 		Intent intent = new Intent(screenToController.get(Screen.FEED)
 				.getActivity().getApplicationContext(), CommentScreen.class);
@@ -141,43 +139,46 @@ public class SuperController {
 		intent.putExtra("post_key", choosiePost.getPostKey());
 		intent.putExtra("question", choosiePost.getQuestion());
 
-		String photo1Path = Utils.getInstance().getFileNameForURL(choosiePost.getPhoto1URL());
-		String photo2Path = Utils.getInstance().getFileNameForURL(choosiePost.getPhoto2URL());
-		String userPhotoPath = Utils.getInstance().getFileNameForURL(choosiePost.getAuthor().getPhotoURL());
-		
-		intent.putExtra("photo1Path", photo1Path);
-		intent.putExtra("photo2Path", photo2Path);
-		intent.putExtra("userPhotoPath", userPhotoPath);
-		
-//		getCaches().insertPhotoUriToIntent(photo1Path, intent, "photo1");
-//		getCaches().insertPhotoUriToIntent(photo2Path, intent, "photo2");
-//		getCaches()
-//				.insertPhotoUriToIntent(userPhotoPath, intent, "userPhotoUrl");
+		String photo1Path = Utils.getInstance().getFileNameForURL(
+				choosiePost.getPhoto1URL());
+		String photo2Path = Utils.getInstance().getFileNameForURL(
+				choosiePost.getPhoto2URL());
+		String userPhotoPath = Utils.getInstance().getFileNameForURL(
+				choosiePost.getAuthor().getPhotoURL());
 
-		
+		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
+		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
+		intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
+
 		// create the comments list
-
 		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<String> commentList = new ArrayList<String>();
-		
+		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
 
 		for (Comment comment : choosiePost.getComments()) {
 			nameList.add(comment.getUser().getUserName());
 			commentList.add(comment.getText());
+			commentierPhotoUrlList.add(Utils.getInstance().getFileNameForURL(
+					comment.getUser().getPhotoURL()));
 		}
 
-		intent.putStringArrayListExtra("nameList", nameList);
-		intent.putStringArrayListExtra("commentList", commentList);
-		
+		intent.putStringArrayListExtra(Constants.IntentsCodes.nameList,
+				nameList);
+		intent.putStringArrayListExtra(Constants.IntentsCodes.commentList,
+				commentList);
+		intent.putStringArrayListExtra(
+				Constants.IntentsCodes.commentierPhotoUrlList,
+				commentierPhotoUrlList);
+
 		screenToController.get(Screen.FEED).getActivity()
 				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);
-
 	}
 
 	public void onActivityResult(int resultCode, Intent data) {
 		if (resultCode == ChoosieActivity.RESULT_OK) {
-			String text = data.getStringExtra("text");
-			String post_key = data.getStringExtra("post_key");
+			String text = data.getStringExtra(Constants.IntentsCodes.text);
+			String post_key = data
+					.getStringExtra(Constants.IntentsCodes.post_key);
 			CommentFor(post_key, text);
 		}
 	}

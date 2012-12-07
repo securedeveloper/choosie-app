@@ -73,7 +73,7 @@ public class ChoosiePostView extends RelativeLayout {
 		// etc
 		time_text.setText(Utils.getTimeDifferenceTextFromNow(post
 				.getCreatedAt()));
- 
+
 		imgView1.setVisibility(View.GONE);
 		imgView2.setVisibility(View.GONE);
 
@@ -172,10 +172,22 @@ public class ChoosiePostView extends RelativeLayout {
 		final LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		List<Comment> lstComment = post.getComments();
 		for (Comment comment : lstComment) {
+			// first, save commentier photo on sd
+			saveURLonSD(comment.getUser().getPhotoURL());
+			// build view for vurrent comment
 			View commentView = buildViewForComment(comment);
-
 			commentLayout.addView(commentView);
 		}
+	}
+
+	private void saveURLonSD(final String photoURL) {
+		this.superController.getCaches().getPhotosCache()
+				.getValue(photoURL, new Callback<Void, Object, Bitmap>() {
+					@Override
+					public void onFinish(Bitmap param) {
+						Utils.getInstance().saveBitmapOnSd(photoURL, param);
+					}
+				});
 	}
 
 	private TextView buildViewForComment(Comment comment) {
@@ -214,13 +226,13 @@ public class ChoosiePostView extends RelativeLayout {
 						Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
 						Debug.getMemoryInfo(memoryInfo);
 
-						String memMessage = String.format(
-						    "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
-						    memoryInfo.getTotalPss() / 1024.0,
-						    memoryInfo.getTotalPrivateDirty() / 1024.0,
-						    memoryInfo.getTotalSharedDirty() / 1024.0);
+						String memMessage = String
+								.format("Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
+										memoryInfo.getTotalPss() / 1024.0,
+										memoryInfo.getTotalPrivateDirty() / 1024.0,
+										memoryInfo.getTotalSharedDirty() / 1024.0);
 						Log.d("loadImageToView", memMessage);
-						
+
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
