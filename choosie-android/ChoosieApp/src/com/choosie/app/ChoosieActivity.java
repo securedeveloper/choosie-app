@@ -1,9 +1,12 @@
 package com.choosie.app;
 
+import java.io.File;
+
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.FacebookDetails;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +23,9 @@ public class ChoosieActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choosie);
-
+		
+		Utils.getInstance().makeMainDirectory();
+		
 		LayoutInflater layoutInflater = (LayoutInflater) this
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 

@@ -1,37 +1,46 @@
 package com.choosie.app;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 public class Utils {
-	
+
 	private static Utils s_instance;
-	
+
 	private Utils() {
 	}
-	
+
 	public static Utils getInstance() {
 		if (s_instance == null)
 			s_instance = new Utils();
 		return s_instance;
 	}
-	
+
 	public Date ConvertStringToDateUTC(String str_date) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Date date = new Date();
-		
+
 		try {
 			date = df.parse(str_date);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return date;
 	}
 
@@ -62,5 +71,48 @@ public class Utils {
 		}
 		long weeks = days / 7;
 		return weeks + "w";
+	}
+
+	public String getFileNameForURL(String param) {
+		String directory = Constants.URIs.mainDirectoryPath;
+
+		String fileName = Integer.toString(param.hashCode());
+		return directory + fileName;
+	}
+
+	public void makeMainDirectory() {
+		String directory = Constants.URIs.mainDirectoryPath;
+		// create a File object for the parent directory
+		File choosieDirectory = new File(directory);
+		// have the object build the directory structure, if needed.
+		if (choosieDirectory.exists() == false) {
+			choosieDirectory.mkdirs();
+		}
+	}
+
+	public void writeByteStreamOnSD(ByteArrayOutputStream bos, String fileName) {
+		String fullPath = Constants.URIs.mainDirectoryPath + fileName;
+		File f = new File(fullPath);
+		FileOutputStream fo = null;
+		try {
+			f.createNewFile();
+			fo = new FileOutputStream(f);
+			fo.write(bos.toByteArray());
+			fo.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public boolean isFileExists(String fileName) {
+		String fullPath = Constants.URIs.mainDirectoryPath + fileName;
+		File f = new File(fullPath);
+		return f.exists();
+	}
+
+	public Bitmap getBitmapFromURL(String param) {
+		return BitmapFactory.decodeFile(Utils.getInstance().getFileNameForURL(
+				param));
 	}
 }

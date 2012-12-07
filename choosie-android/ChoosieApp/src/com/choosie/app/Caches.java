@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.controllers.FeedCacheKey;
@@ -41,8 +42,33 @@ public class Caches {
 					@Override
 					Bitmap getData(String param,
 							Callback<Void, Object, Void> progressCallback) {
+						// String photoPath = Utils.getFileNameForURL(param);
+						// File f = new File(photoPath);
+						//
+						// if (!f.exists()) {
+						// Bitmap bitmap = controller.getClient()
+						// .getPictureFromServerSync(param, progressCallback);
+						// return Utils.saveBitmapToUri(f, bitmap);
+						// }
+						// return Uri.fromFile(f);
 						return controller.getClient().getPictureFromServerSync(
 								param, progressCallback);
+					}
+				}, new ResultCallback<ByteArrayOutputStream, Bitmap>() {
+
+					@Override
+					ByteArrayOutputStream getData(Bitmap param,
+							Callback<Void, Object, Void> progressCallback) {
+						ByteArrayOutputStream bos = new ByteArrayOutputStream();
+						param.compress(CompressFormat.JPEG, 100, bos);
+						return bos;
+					}
+				}, new ResultCallback<Bitmap, String>() {
+
+					@Override
+					Bitmap getData(String param,
+							Callback<Void, Object, Void> progressCallback) {
+						return Utils.getInstance().getBitmapFromURL(param);
 					}
 				});
 
@@ -65,44 +91,6 @@ public class Caches {
 							Callback<Void, Object, Void> progressCallback) {
 						return controller.getClient().getPostByKey(param,
 								progressCallback);
-					}
-				});
-	}
-
-	/*
-	 * description - gets url of an image, convert it to string and insert it as
-	 * extra into the intent. input - photoUrl - url of a photo - intent - an
-	 * intent. dahhh
-	 */
-
-	public void insertPhotoUriToIntent(String photoUrl, final Intent intent,
-			final String key) {
-		Log.i(Constants.LOG_TAG, "in insertPhotoStringToIntent");
-		getPhotosCache().getValue(photoUrl,
-				new Callback<Void, Object, Bitmap>() {
-
-					@Override
-					public void onFinish(Bitmap param) {
-						ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
-
-						param.compress(CompressFormat.JPEG, 100, bos1);
-
-						File f = new File(Environment
-								.getExternalStorageDirectory()
-								+ File.separator
-								+ key);
-						FileOutputStream fo = null;
-						try {
-							f.createNewFile();
-							fo = new FileOutputStream(f);
-							fo.write(bos1.toByteArray());
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						Uri outputFileUri = Uri.fromFile(f);
-
-						intent.putExtra(key, outputFileUri.toString());
 					}
 				});
 	}

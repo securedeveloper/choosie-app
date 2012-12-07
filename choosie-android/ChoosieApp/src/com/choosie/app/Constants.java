@@ -1,21 +1,32 @@
 package com.choosie.app;
 
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.os.Environment;
 
 public class Constants {
 	public static final String LOG_TAG = "Choosie";
 
 	public static class URIs {
 
+
 //		public static final String ROOT_URL = "http://choosieapp.appspot.com";
 		 public static final String ROOT_URL =
 		 "http://choosie-dev.appspot.com";
+
 		public static final String FEED_URI = ROOT_URL + "/feed";
 		public static final String NEW_VOTE_URI = ROOT_URL + "/votes/new";
 		public static final String NEW_POSTS_URI = ROOT_URL + "/posts/new";
 		public static final String NEW_COMMENT_URI = ROOT_URL + "/comments/new";
 		public static final String POSTS_URI = ROOT_URL + "/posts";
+		public static final String mainDirectoryPath = Environment
+				.getExternalStorageDirectory()
+				+ File.separator
+				+ "choosie"
+				+ File.separator;
 	}
 
 	public static class RequestCodes {

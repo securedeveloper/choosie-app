@@ -15,7 +15,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -39,7 +41,7 @@ import android.widget.TextView;
 
 public class CommentScreen extends Activity {
 
-	//TODO: make less ugly!!
+	// TODO: make less ugly!!
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(Constants.LOG_TAG, "in comment screen");
@@ -52,14 +54,13 @@ public class CommentScreen extends Activity {
 
 		// get the images Strings from the intent
 		final Intent intent = getIntent();
-		String photo1String = intent.getStringExtra("photo1");
-		String photo2String = intent.getStringExtra("photo2");
-		String userPhotoUrl = intent.getStringExtra("userPhotoUrl");
+		String photo1Path = intent.getStringExtra("photo1Path");
+		String photo2Path = intent.getStringExtra("photo2Path");
+		String userPhotoPath = intent.getStringExtra("userPhotoPath");
 
-		//set the images in the views
-		parseToUriAndSetInImageView(photo1String, imageViewPhoto1);
-		parseToUriAndSetInImageView(photo2String, imageViewPhoto2);
-		parseToUriAndSetInImageView(userPhotoUrl, imageViewUserPhoto);
+		setImageFromPath(photo1Path, imageViewPhoto1);
+		setImageFromPath(photo2Path, imageViewPhoto2);
+		setImageFromPath(userPhotoPath, imageViewUserPhoto);
 
 		// set the question
 		((TextView) findViewById(R.id.textImage_comment_question))
@@ -134,7 +135,7 @@ public class CommentScreen extends Activity {
 
 		// activate the 'onActivityResult'
 		setResult(RESULT_OK, intent);
-
+		resetCommetnScreen();
 		finish();
 	}
 
@@ -161,23 +162,11 @@ public class CommentScreen extends Activity {
 		tv.setText(sb);
 	}
 
-	private void parseToUriAndSetInImageView(String photoString,
+	private void setImageFromPath(String photoPath,
 			ImageView imageViewPhoto) {
-		Bitmap imageBitmap = null;
-		if (photoString != null) {
-			Uri photo1Uri = Uri.parse(photoString);
-			try {
-				imageBitmap = Media.getBitmap(getContentResolver(), photo1Uri);
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			imageViewPhoto.setImageBitmap(imageBitmap);
+		if (photoPath != null) {
+			imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
 		}
-
 	}
 
 	// TODO: check if can delete this function
@@ -193,11 +182,33 @@ public class CommentScreen extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			setResult(RESULT_CANCELED, null);
+			resetCommetnScreen();
 			finish();
 			return true;
 		}
 
 		return super.onKeyDown(keyCode, event);
+	}
+
+	private void resetCommetnScreen() {
+		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
+		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
+		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
+		
+		Bitmap image1Bitmap = ((BitmapDrawable) imageViewPhoto1.getDrawable()).getBitmap();
+		Bitmap image2Bitmap = ((BitmapDrawable) imageViewPhoto2.getDrawable()).getBitmap();
+		Bitmap userPhotoBitmap = ((BitmapDrawable) imageViewUserPhoto.getDrawable()).getBitmap();
+		
+		if (image1Bitmap != null){
+			image1Bitmap.recycle();
+		}
+		if (image2Bitmap != null){
+			image2Bitmap.recycle();
+		}
+		if (userPhotoBitmap != null){
+			userPhotoBitmap.recycle();
+		}
+		
 	}
 
 	@Override

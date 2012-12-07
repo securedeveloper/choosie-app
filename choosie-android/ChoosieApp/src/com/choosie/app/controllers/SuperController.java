@@ -12,7 +12,7 @@ import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
-import com.choosie.app.client.MockClient;
+import com.choosie.app.Utils;
 import com.choosie.app.client.RealClient;
 import com.choosie.app.client.ClientBase;
 import com.choosie.app.Models.ChoosiePostData;
@@ -21,7 +21,6 @@ import com.choosie.app.Models.FacebookDetails;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
@@ -133,17 +132,29 @@ public class SuperController {
 		return caches;
 	}
 
+	
+	
 	public void switchToCommentScreen(ChoosiePostData choosiePost) {
 		Intent intent = new Intent(screenToController.get(Screen.FEED)
 				.getActivity().getApplicationContext(), CommentScreen.class);
 
-		String photo1Url = choosiePost.getPhoto1URL();
-		String photo2Url = choosiePost.getPhoto2URL();
-		String userPhotoUrl = choosiePost.getAuthor().getPhotoURL();
-
 		intent.putExtra("post_key", choosiePost.getPostKey());
 		intent.putExtra("question", choosiePost.getQuestion());
 
+		String photo1Path = Utils.getInstance().getFileNameForURL(choosiePost.getPhoto1URL());
+		String photo2Path = Utils.getInstance().getFileNameForURL(choosiePost.getPhoto2URL());
+		String userPhotoPath = Utils.getInstance().getFileNameForURL(choosiePost.getAuthor().getPhotoURL());
+		
+		intent.putExtra("photo1Path", photo1Path);
+		intent.putExtra("photo2Path", photo2Path);
+		intent.putExtra("userPhotoPath", userPhotoPath);
+		
+//		getCaches().insertPhotoUriToIntent(photo1Path, intent, "photo1");
+//		getCaches().insertPhotoUriToIntent(photo2Path, intent, "photo2");
+//		getCaches()
+//				.insertPhotoUriToIntent(userPhotoPath, intent, "userPhotoUrl");
+
+		
 		// create the comments list
 
 		ArrayList<String> nameList = new ArrayList<String>();
@@ -157,12 +168,7 @@ public class SuperController {
 
 		intent.putStringArrayListExtra("nameList", nameList);
 		intent.putStringArrayListExtra("commentList", commentList);
-
-		getCaches().insertPhotoUriToIntent(photo1Url, intent, "photo1");
-		getCaches().insertPhotoUriToIntent(photo2Url, intent, "photo2");
-		getCaches()
-				.insertPhotoUriToIntent(userPhotoUrl, intent, "userPhotoUrl");
-
+		
 		screenToController.get(Screen.FEED).getActivity()
 				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);
 

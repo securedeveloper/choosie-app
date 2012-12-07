@@ -56,10 +56,8 @@ public class PostScreenController extends ScreenController {
 		Button buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 		questionText = (EditText) view.findViewById(R.id.editText_question);
 		questionText.setInputType(EditorInfo.TYPE_NULL);
-//		questionText.setFocusable(false);
+		// questionText.setFocusable(false);
 
-		
-		
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
 				onItemClick(arg0);
@@ -70,14 +68,13 @@ public class PostScreenController extends ScreenController {
 		image1.setOnClickListener(listener);
 		image2.setOnClickListener(listener);
 		buttonSubmit.setOnClickListener(listener);
-		
-		
+
 	}
 
 	@Override
 	protected void onShow() {
-//		questionText.setFocusableInTouchMode(true);
-//		questionText.setFocusable(true);
+		// questionText.setFocusableInTouchMode(true);
+		// questionText.setFocusable(true);
 		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
@@ -94,16 +91,6 @@ public class PostScreenController extends ScreenController {
 
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
-			android.widget.CheckBox ckb= (CheckBox) view.findViewById(R.id.ckb_share_fb);
-			if (ckb.isChecked()) {
-				Session session = Session.getActiveSession();
-				if (session != null)
-				{
-				ReauthorizeRequest reauthorizeRequest = new ReauthorizeRequest();
-				session.reauthorizeForPublish(reauthorizeRequest)
-				}
-			}
-			
 			submitChoosiePost();
 		} else {
 			startDialog(arg0);

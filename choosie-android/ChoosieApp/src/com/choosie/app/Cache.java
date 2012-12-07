@@ -1,5 +1,6 @@
 package com.choosie.app;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +10,27 @@ import android.os.AsyncTask;
 
 public class Cache<Key, Value> {
 	final ResultCallback<Value, Key> downloader;
+	final ResultCallback<ByteArrayOutputStream, Value> serializer;
+	final ResultCallback<Value, Key> deSerializer;
 	final Object cacheLock = new Object();
 	final Map<Key, Value> memoryCache = new HashMap<Key, Value>();
 	final Map<Key, List<Callback<Void, Object, Value>>> callbacksForKey = new HashMap<Key, List<Callback<Void, Object, Value>>>();
+	final Boolean persistent;
+
+	public Cache(ResultCallback<Value, Key> downloader,
+			ResultCallback<ByteArrayOutputStream, Value> serializer,
+			final ResultCallback<Value, Key> deSerializer) {
+		this.downloader = downloader;
+		this.serializer = serializer;
+		this.deSerializer = deSerializer;
+		this.persistent = true;
+	}
 
 	public Cache(ResultCallback<Value, Key> downloader) {
 		this.downloader = downloader;
+		this.serializer = null;
+		this.deSerializer = null;
+		this.persistent = false;
 	}
 
 	public void getValue(Key key, Callback<Void, Object, Value> callback) {
@@ -22,16 +38,25 @@ public class Cache<Key, Value> {
 		synchronized (cacheLock) {
 			fromMemoryCache = memoryCache.get(key);
 			if (fromMemoryCache == null) {
-				// Not in memory cache
-				if (!isCurrentlyDownloading(key)) {
-					// In case this is the first time this key is encountered,
-					// initiate downloading it in the background.
-					startDownload(key);
+
+				// if in persistent - check if available on SD
+				if ((persistent == true) && (isPersisted(key) == true)) {
+					memoryCache.put(key, deSerializer.getData(key, null));
+					fromMemoryCache = memoryCache.get(key);
+				} else {
+					// Not in memory cache and not persisted
+					if (!isCurrentlyDownloading(key)) {
+						// In case this is the first time this key is
+						// encountered,
+						// initiate downloading it in the background.
+						startDownload(key);
+					}
+					// Make sure that this callback is run when the download
+					// is
+					// finished.
+					addCallback(key, callback);
+					return;
 				}
-				// Make sure that this callback is run when the download is
-				// finished.
-				addCallback(key, callback);
-				return;
 			}
 		}
 		callback.onFinish(fromMemoryCache);
@@ -91,7 +116,7 @@ public class Cache<Key, Value> {
 
 			@Override
 			protected void onPostExecute(Value result) {
-				runCallbacks(key, result);
+				savePersistentAndRunCallbacks(key, result);
 			}
 		};
 
@@ -125,9 +150,12 @@ public class Cache<Key, Value> {
 		}
 	}
 
-	private void runCallbacks(final Key key, Value result) {
+	private void savePersistentAndRunCallbacks(final Key key, Value result) {
 		List<Callback<Void, Object, Value>> callbacks;
 		synchronized (cacheLock) {
+			if (persistent == true) {
+				savePersistent(key, result, serializer);
+			}
 			if (result != null) {
 				memoryCache.put(key, result);
 			}
@@ -139,4 +167,21 @@ public class Cache<Key, Value> {
 		}
 	}
 
+	/*
+	 * saves on sd params: key - this will be the file name value - what to save
+	 */
+	private void savePersistent(Key key, Value value,
+			ResultCallback<ByteArrayOutputStream, Value> serializer) {
+
+		String fileName = (String) Integer.toString(key.toString().hashCode());
+
+		ByteArrayOutputStream bos = serializer.getData(value, null);
+
+		Utils.getInstance().writeByteStreamOnSD(bos, fileName);
+	}
+
+	private boolean isPersisted(Key key) {
+		String fileName = (String) Integer.toString(key.toString().hashCode());
+		return Utils.getInstance().isFileExists(fileName);
+	}
 }

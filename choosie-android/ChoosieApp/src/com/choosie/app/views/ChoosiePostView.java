@@ -14,6 +14,9 @@ import com.choosie.app.Models.*;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Debug;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -70,7 +73,7 @@ public class ChoosiePostView extends RelativeLayout {
 		// etc
 		time_text.setText(Utils.getTimeDifferenceTextFromNow(post
 				.getCreatedAt()));
-
+ 
 		imgView1.setVisibility(View.GONE);
 		imgView2.setVisibility(View.GONE);
 
@@ -208,6 +211,16 @@ public class ChoosiePostView extends RelativeLayout {
 				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
 					@Override
 					public void onFinish(Bitmap param) {
+						Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
+						Debug.getMemoryInfo(memoryInfo);
+
+						String memMessage = String.format(
+						    "Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
+						    memoryInfo.getTotalPss() / 1024.0,
+						    memoryInfo.getTotalPrivateDirty() / 1024.0,
+						    memoryInfo.getTotalSharedDirty() / 1024.0);
+						Log.d("loadImageToView", memMessage);
+						
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
