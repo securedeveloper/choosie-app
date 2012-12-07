@@ -1,0 +1,7 @@
+indexes:
+
+- kind: Vote
+  ancestor: yes
+
+- kind: Comment
+  ancestor: yes

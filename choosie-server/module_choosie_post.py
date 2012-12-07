@@ -11,10 +11,10 @@ import logging
 class ChoosiePost(db.Model):
   photo1 = db.BlobProperty(required = True)
   photo2 = db.BlobProperty(required = True)
-  question = db.StringProperty(required = True)
+  question = db.StringProperty(indexed = False, required = True)
   created_at = db.DateTimeProperty(auto_now_add = True)
   user = db.ReferenceProperty(User, required = True)
-  updated_at = db.DateTimeProperty(auto_now = True)
+  updated_at = db.DateTimeProperty(indexed = True, auto_now = True)
   cached_comments = None
   cached_votes = None
 
