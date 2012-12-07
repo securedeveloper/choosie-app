@@ -6,11 +6,16 @@ import java.util.List;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.FacebookActivity;
 import com.facebook.GraphUser;
+import com.facebook.LoggingBehaviors;
 import com.facebook.Request;
+import com.facebook.Session;
+import com.facebook.Session.OpenRequest;
 import com.facebook.SessionState;
 import com.facebook.Response;
+import com.facebook.Settings;
 
 import android.os.Bundle;
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
@@ -19,8 +24,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class StartActivity extends FacebookActivity {
+public class StartActivity extends Activity { //FacebookActivity
 
+	Button buttonLoginLogout;
+    Session.StatusCallback statusCallback = new SessionStatusCallback();
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,7 +37,192 @@ public class StartActivity extends FacebookActivity {
 		TextView welcome = (TextView) findViewById(R.id.welcome);
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
+		
+        buttonLoginLogout = (Button)findViewById(R.id.fbLoginButton);
 
+		Settings.addLoggingBehavior(LoggingBehaviors.INCLUDE_ACCESS_TOKENS);
+		
+		
+
+        Session session = Session.getActiveSession();
+        if (session == null) {
+            if (savedInstanceState != null) {
+                session = Session.restoreSession(this, null, statusCallback, savedInstanceState);
+            }
+            if (session == null) {
+                session = new Session(this);
+            }
+            Session.setActiveSession(session);
+            if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED)) {
+                session.openForRead(new Session.OpenRequest(this).setCallback(statusCallback));
+            }
+        }
+
+        updateView();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Session.getActiveSession().addCallback(statusCallback);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Session.getActiveSession().removeCallback(statusCallback);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Session session = Session.getActiveSession();
+        Session.saveSession(session, outState);
+    }
+
+    private void updateView() {
+    	
+        Session session = Session.getActiveSession();
+        Log.i(Constants.LOG_TAG, "Session: " + session.getState().toString());
+        if (session.isOpened()) {
+        	
+        	Log.i(Constants.LOG_TAG, "Session is opened");
+            //textInstructionsOrLink.setText(URL_PREFIX_FRIENDS + session.getAccessToken());
+        	
+        	
+        	
+//			Intent intent = new Intent(StartActivity.this,
+//					ChoosieActivity.class);
+//			FacebookDetails details = new FacebookDetails(session.user.getId(),
+//					session.getAccessToken(), session.getExpirationDate()
+//							.getTime());
+//			intent.putExtra("fb_details", details);
+//
+//			Log.i(Constants.LOG_TAG, "Starting ChoosieActivity");
+//			startActivity(intent);
+        	
+        	
+            buttonLoginLogout.setText("logout");//R.string.logout);
+            buttonLoginLogout.setOnClickListener(new OnClickListener() {
+                public void onClick(View view) { onClickLogout(); }
+            });
+            
+            goToApplication();
+            
+            
+        } else {
+        	Log.i(Constants.LOG_TAG, "Session is closed");
+            //textInstructionsOrLink.setText(R.string.instructions);
+            buttonLoginLogout.setText(R.string.login);
+            buttonLoginLogout.setOnClickListener(new OnClickListener() {
+                public void onClick(View view) { onClickLogin(); }
+            });
+        }
+    }
+
+    private void goToApplication() {
+    	
+    	Log.i(Constants.LOG_TAG, "goToApplication()");
+    	
+		// make request to the /me API
+		Request request = Request.newMeRequest(Session.getActiveSession(),
+				new Request.GraphUserCallback() {
+
+					public void onCompleted(GraphUser user,
+							Response response) {
+						Log.i(Constants.LOG_TAG, "onCompleted");
+						if (user != null) {
+							TextView welcome = (TextView) findViewById(R.id.welcome);
+							welcome.setText("Hello " + user.getName() + "!");
+
+							Log.i(Constants.LOG_TAG,
+									"creating intent for ChoosieActivity");
+							Intent intent = new Intent(StartActivity.this,
+									ChoosieActivity.class);
+							FacebookDetails details = new FacebookDetails(
+									user.getId(), Session.getActiveSession()
+											.getAccessToken(), Session.getActiveSession()
+											.getExpirationDate().getTime());
+							intent.putExtra("fb_details", details);
+
+							Log.i(Constants.LOG_TAG,
+									"Starting ChoosieActivity");
+							startActivity(intent);
+						}
+					}
+				}
+
+		);
+		Request.executeBatchAsync(request);
+	}
+
+	private void onClickLogin() {
+        Session session = Session.getActiveSession();
+        if (!session.isOpened() && !session.isClosed()) {
+        	
+        	List<String> read_permission = new ArrayList<String>();
+        	read_permission.add("read_stream");
+        	read_permission.add("read_friendlists");
+        	Log.i(Constants.LOG_TAG, "Permission: " + read_permission);
+        	
+        	
+        	OpenRequest req = new Session.OpenRequest(this);
+        	req.setPermissions(read_permission);
+        	req.setCallback(statusCallback);
+        	
+        	
+            session.openForRead(req);
+            Log.i(Constants.LOG_TAG, "session.getPermission(): " + session.getPermissions().toString());
+        } else {
+            Session.openActiveSession(this, true, statusCallback);
+        }
+    }
+
+    private void onClickLogout() {
+        Session session = Session.getActiveSession();
+        if (!session.isClosed()) {
+            session.closeAndClearTokenInformation();
+        }
+    }
+
+    private class SessionStatusCallback implements Session.StatusCallback {
+        public void call(Session session, SessionState state, Exception exception) {
+        	
+        	if (state == SessionState.OPENED)
+        	{
+        		Log.i(Constants.LOG_TAG, "CallBack: SessionState = " + state.toString());
+        		Log.i(Constants.LOG_TAG, "Starting ChoosieActivity");
+        		
+        		goToApplication();
+
+    			
+//                Intent intent = new Intent(StartActivity.this, ChoosieActivity.class);
+//                startActivity(intent);	
+        	}
+        	else
+        	{
+        		Log.i(Constants.LOG_TAG, "CallBack: SessionState = " + state.toString());
+        		updateView();	
+        	}
+            
+        }
+    }
+}
+    /*
+		
+		
+		
+		
+		
+		
+		
+		
 		final List<String> read_permissions = new ArrayList<String>() {
 			private static final long serialVersionUID = 1L;
 
@@ -49,8 +242,8 @@ public class StartActivity extends FacebookActivity {
 			}
 		});
 
-		Log.i(Constants.LOG_TAG, "Closing old facebook session");
-		closeSession();
+//		Log.i(Constants.LOG_TAG, "Closing old facebook session");
+//		closeSession();
 
 		Log.i(Constants.LOG_TAG, "Opening facebook session automatically");
 		OpenFacebookSession(read_permissions);
@@ -103,7 +296,15 @@ public class StartActivity extends FacebookActivity {
 	private void OpenFacebookSession(List<String> permissions) {
 		Log.i(Constants.LOG_TAG,
 				"trying to OpenFacebookSession() with read permissions");
+		
 		openSessionForRead(getResources().getString(R.string.app_id),
 				permissions);
 	}
-}
+	
+    private class SessionStatusCallback implements Session.StatusCallback {
+        public void call(Session session, SessionState state, Exception exception) {
+            //updateView();
+        }
+    }
+	
+}*/
