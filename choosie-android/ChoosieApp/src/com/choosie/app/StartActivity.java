@@ -1,5 +1,8 @@
 package com.choosie.app;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.FacebookActivity;
 import com.facebook.GraphUser;
@@ -27,18 +30,30 @@ public class StartActivity extends FacebookActivity {
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
 
+		final List<String> read_permissions = new ArrayList<String>() {
+			private static final long serialVersionUID = 1L;
+
+			{
+				add("read_stream");
+				add("read_friendlists");
+			}
+		};
+
 		Button fbLoginButton = (Button) findViewById(R.id.fbLoginButton);
 		fbLoginButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Log.i(Constants.LOG_TAG, "on click open session");
-				closeSession();
-				openSession();
-
+				Log.i(Constants.LOG_TAG,
+						"Opening facebook session from button click");
+				OpenFacebookSession(read_permissions);
 			}
 		});
 
-		openSession();
+		Log.i(Constants.LOG_TAG, "Closing old facebook session");
+		closeSession();
+
+		Log.i(Constants.LOG_TAG, "Opening facebook session automatically");
+		OpenFacebookSession(read_permissions);
 	}
 
 	@Override
@@ -83,5 +98,12 @@ public class StartActivity extends FacebookActivity {
 			);
 			Request.executeBatchAsync(request);
 		}
+	}
+
+	private void OpenFacebookSession(List<String> permissions) {
+		Log.i(Constants.LOG_TAG,
+				"trying to OpenFacebookSession() with read permissions");
+		openSessionForRead(getResources().getString(R.string.app_id),
+				permissions);
 	}
 }
