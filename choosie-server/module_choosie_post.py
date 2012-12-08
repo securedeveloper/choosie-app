@@ -6,6 +6,7 @@ from module_user import User
 from module_vote import Vote
 from module_comment import Comment
 from utils import Utils
+import facebook
 import logging
 
 class ChoosiePost(db.Model):
@@ -15,6 +16,7 @@ class ChoosiePost(db.Model):
   created_at = db.DateTimeProperty(auto_now_add = True)
   user = db.ReferenceProperty(User, required = True)
   updated_at = db.DateTimeProperty(indexed = True, auto_now = True)
+  photo = db.BlobProperty()
   cached_comments = None
   cached_votes = None
 
@@ -54,4 +56,10 @@ class ChoosiePost(db.Model):
     return count
 
   def photo_path(self, which_photo):
-    return '/photo?which_photo=%s&post_key=%s' % (which_photo, self.key()) 
+    return '/photo?which_photo=%s&post_key=%s' % (which_photo, self.key())
+
+  def publish_to_facebook(self):
+    Utils.create_post_image(self)
+    attach = {"picture": self.photo}
+    graph = facebook.GraphAPI(self.user.fb_access_token)
+    response = graph.put_wall_post("ola!", attach)

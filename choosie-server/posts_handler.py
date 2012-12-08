@@ -34,6 +34,12 @@ class PostsHandler(webapp2.RequestHandler):
        return;
 
     logging.info("user found!")
+
+    #updating user access token cause he might added publish_stream permission
+    # user.fb_access_token = str(self.request.get('fb_access_token'))
+    # user.fb_access_token_expdate = Utils.get_access_token_from_request(self.request)
+    # user.put()
+
     choosie_post = ChoosiePost(question = self.request.get('question'),
                                user = user,
                                photo1 = db.Blob(self.shrinkImage(self.request.get('photo1'))),
@@ -42,4 +48,8 @@ class PostsHandler(webapp2.RequestHandler):
     # Save this post in the datastore, and also in the memcache.
     choosie_post.put()
     CacheController.set_model(choosie_post)
+    logging.info("share:" + self.request.get("share_to_fb", default_value="off"))
+    if (self.request.get("share_to_fb") == "on"):
+      logging.info("publishing!!")
+      choosie_post.publish_to_facebook()  
     self.redirect('/')

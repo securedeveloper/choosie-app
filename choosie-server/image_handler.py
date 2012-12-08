@@ -8,6 +8,7 @@ class ImageHandler(webapp2.RequestHandler):
     choosie_post = CacheController.get_model(self.request.get('post_key'))
     which_photo = int(self.request.get('which_photo'))
     result = {
+    0 : choosie_post.photo,
     1 : choosie_post.photo1,
     2 : choosie_post.photo2
     }[which_photo]

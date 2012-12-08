@@ -4,11 +4,13 @@ import webapp2
 
 from cache_controller import CacheController
 from module_choosie_post import ChoosiePost
+from google.appengine.ext import db
 from module_user import User
 from utils import Utils
 
 class FeedHandler(webapp2.RequestHandler):
     def get(self):
+        logging.info("indexes " + '\n'.join(db.get_indexes()))
         choosie_posts, cursor = FeedHandler.get_feed_and_cursor(self.request.get('cursor'), self.request.get('limit'))
         choosie_posts_json = Utils.items_to_json(choosie_posts)
         self.response.out.write(json.dumps({'feed' : choosie_posts_json, 'cursor': cursor}))
