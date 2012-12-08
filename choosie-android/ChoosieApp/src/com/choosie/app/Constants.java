@@ -13,9 +13,9 @@ public class Constants {
 	public static class URIs {
 
 
-//		public static final String ROOT_URL = "http://choosieapp.appspot.com";
-		 public static final String ROOT_URL =
-		 "http://choosie-dev.appspot.com";
+		public static final String ROOT_URL = "http://choosieapp.appspot.com";
+//		 public static final String ROOT_URL =
+//		 "http://choosie-dev.appspot.com";
 
 		public static final String FEED_URI = ROOT_URL + "/feed";
 		public static final String NEW_VOTE_URI = ROOT_URL + "/votes/new";
@@ -38,6 +38,7 @@ public class Constants {
 		public static final int CROP_SECOND = 6;
 		public static final int COMMENT = 7;
 		public static final int GALLERY = 8;
+		public static final int VOTES = 9;
 	}
 	
 	public static class IntentsCodes {
@@ -50,6 +51,9 @@ public class Constants {
 		public static final String text = "text";
 		public static final String post_key = "post_key";
 		public static final String createdAtList = "createdAtList";
+		public static final String question = "question";
+		public static final String votersPhotoUrlList = "votersPhotoUrlList";
+		public static final String voteForList = "voteForList";
 
 	}
 }

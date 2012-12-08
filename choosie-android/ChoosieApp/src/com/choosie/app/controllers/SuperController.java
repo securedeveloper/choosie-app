@@ -13,11 +13,13 @@ import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
+import com.choosie.app.VotesScreenActivity;
 import com.choosie.app.client.RealClient;
 import com.choosie.app.client.ClientBase;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Comment;
 import com.choosie.app.Models.FacebookDetails;
+import com.choosie.app.Models.Vote;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -177,6 +179,48 @@ public class SuperController {
 
 		screenToController.get(Screen.FEED).getActivity()
 				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);
+	}
+
+	public void switchToVotesScreen(ChoosiePostData choosiePost) {
+		Intent intent = new Intent(screenToController.get(Screen.FEED)
+				.getActivity().getApplicationContext(),
+				VotesScreenActivity.class);
+
+		// intent.putExtra("post_key", choosiePost.getPostKey());
+		intent.putExtra(Constants.IntentsCodes.question,
+				choosiePost.getQuestion());
+
+		String photo1Path = Utils.getInstance().getFileNameForURL(
+				choosiePost.getPhoto1URL());
+		String photo2Path = Utils.getInstance().getFileNameForURL(
+				choosiePost.getPhoto2URL());
+		String userPhotoPath = Utils.getInstance().getFileNameForURL(
+				choosiePost.getAuthor().getPhotoURL());
+
+		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
+		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
+		intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
+
+		// create the votes list
+		ArrayList<String> nameList = new ArrayList<String>();
+		ArrayList<String> votersPhotoUrlList = new ArrayList<String>();
+		ArrayList<Integer> voteForList = new ArrayList<Integer>();
+
+		for (Vote vote : choosiePost.getVotes()) {
+			nameList.add(vote.getUsers().getUserName());
+			votersPhotoUrlList.add(Utils.getInstance().getFileNameForURL(
+					vote.getUsers().getPhotoURL()));
+			voteForList.add(vote.getVote_for());
+		}
+
+		intent.putStringArrayListExtra(Constants.IntentsCodes.nameList,
+				nameList);
+		intent.putStringArrayListExtra(
+				Constants.IntentsCodes.votersPhotoUrlList, votersPhotoUrlList);
+		intent.putIntegerArrayListExtra(Constants.IntentsCodes.voteForList,
+				voteForList);
+
+		screenToController.get(Screen.FEED).getActivity().startActivity(intent);// Constants.RequestCodes.VOTES);
 	}
 
 	public void onActivityResult(int resultCode, Intent data) {

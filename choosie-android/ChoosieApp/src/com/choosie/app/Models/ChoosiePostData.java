@@ -62,7 +62,7 @@ public class ChoosiePostData {
 		for (Vote vote : votes) {
 
 			// Check if post is by me
-			if (vote.getFb_uid() == loggedInUser.getFb_uid()) {
+			if (vote.getUsers().getFbUid() == loggedInUser.getFb_uid()) {
 				this.isPostByMe = true;
 			}
 
@@ -71,7 +71,7 @@ public class ChoosiePostData {
 			votesCounter.put(vote_for, votesCounter.get(vote_for) + 1);
 
 			// Remember what the logged in user already voted for
-			if (vote.getFb_uid().equals(this.loggedInUser.getFb_uid())) {
+			if (vote.getUsers().getFbUid().equals(this.loggedInUser.getFb_uid())) {
 				votedAlready.put(vote_for, true);
 			}
 
@@ -134,6 +134,10 @@ public class ChoosiePostData {
 
 	public List<Comment> getComments() {
 		return Collections.unmodifiableList(comments);
+	}
+	
+	public List<Vote> getVotes() {
+		return Collections.unmodifiableList(votes);
 	}
 
 	public Date getCreatedAt() {

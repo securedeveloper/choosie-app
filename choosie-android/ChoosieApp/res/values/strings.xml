@@ -20,5 +20,6 @@
     <string name="logout">Logout</string>
     <string name="share_on_facebook">Share on Facebook</string>
     <string name="desc">ImageView Content Descripotion</string>
+    <string name="title_activity_votes_screen">VotesScreenActivity</string>
 
 </resources>

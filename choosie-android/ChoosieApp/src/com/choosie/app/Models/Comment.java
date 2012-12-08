@@ -4,15 +4,12 @@ import java.util.Date;
 
 public class Comment {
 
-	private final String fb_uid;
 	private final Date createdAtUTC;
 	private final String text;
 	private final String post_key;
 	private final User user;
 
-	public Comment(String fb_uid, Date createdAtUTC, String text,
-			String post_key, User user) {
-		this.fb_uid = fb_uid;
+	public Comment(Date createdAtUTC, String text, String post_key, User user) {
 		this.createdAtUTC = createdAtUTC;
 		this.text = text;
 		this.post_key = post_key;
@@ -30,7 +27,7 @@ public class Comment {
 	public User getUser() {
 		return this.user;
 	}
-	
+
 	public Date getCreatedAt() {
 		return this.createdAtUTC;
 	}

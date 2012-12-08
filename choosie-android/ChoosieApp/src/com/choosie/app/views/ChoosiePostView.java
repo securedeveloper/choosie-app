@@ -51,6 +51,20 @@ public class ChoosiePostView extends RelativeLayout {
 						superController.switchToCommentScreen(choosiePost);
 					}
 				});
+		
+		this.findViewById(R.id.votes1).setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View arg0) {
+						superController.switchToVotesScreen(choosiePost);
+					}
+				});
+		
+		this.findViewById(R.id.votes2).setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View arg0) {
+						superController.switchToVotesScreen(choosiePost);
+					}
+				});
 	}
 
 	public void loadChoosiePost(ChoosiePostData post) {
@@ -83,6 +97,7 @@ public class ChoosiePostView extends RelativeLayout {
 		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2);
 		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null);
 		loadCommentsToView(post);
+		saveVotersPhotos(post);
 
 		// DECIDE IF SHOW RESUTLS OR NOT
 		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
@@ -141,6 +156,14 @@ public class ChoosiePostView extends RelativeLayout {
 				return false;
 			}
 		});
+	}
+
+	private void saveVotersPhotos(ChoosiePostData post) {
+		List<Vote> lstVotes = post.getVotes();
+		for (Vote vote : lstVotes) {
+			// first, save commentier photo on sd
+			saveURLonSD(vote.getUsers().getPhotoURL());
+		}		
 	}
 
 	private void setImageBorder(ImageView imgView, boolean isBorderVisable) {

@@ -383,16 +383,15 @@ public class RealClient extends ClientBase {
 		for (int j = 0; j < allComments.length(); j++) {
 			JSONObject jsonCommentObject = allComments.getJSONObject(j);
 
-			String fb_uid = jsonCommentObject.getString("fb_uid");
 			String date = jsonCommentObject.getString("created_at");
-			Date createdAtUTC = Utils.getInstance().ConvertStringToDateUTC(date);
+			Date createdAtUTC = Utils.getInstance()
+					.ConvertStringToDateUTC(date);
 			String text = jsonCommentObject.getString("text");
 
 			JSONObject userJsonObject = jsonCommentObject.getJSONObject("user");
 			User user = buildUserFromJson(userJsonObject);
 
-			Comment comment = new Comment(fb_uid, createdAtUTC, text, postKey,
-					user);
+			Comment comment = new Comment(createdAtUTC, text, postKey, user);
 			comments.add(comment);
 		}
 		return comments;
@@ -404,12 +403,14 @@ public class RealClient extends ClientBase {
 		for (int j = 0; j < jsonVotes.length(); j++) {
 			JSONObject jsonVoteObject = jsonVotes.getJSONObject(j);
 
-			String fb_uid = jsonVoteObject.getString("fb_uid");
 			String date = jsonVoteObject.getString("created_at");
-			Date createdAtUTC = Utils.getInstance().ConvertStringToDateUTC(date);
+			Date createdAtUTC = Utils.getInstance()
+					.ConvertStringToDateUTC(date);
 			int vote_for = jsonVoteObject.getInt("vote_for");
+			JSONObject userJsonObject = jsonVoteObject.getJSONObject("user");
+			User user = buildUserFromJson(userJsonObject);
 
-			Vote vote = new Vote(fb_uid, createdAtUTC, vote_for);
+			Vote vote = new Vote(createdAtUTC, vote_for, user);
 			votes.add(vote);
 		}
 		return votes;
@@ -481,7 +482,7 @@ public class RealClient extends ClientBase {
 	public void sendCommentToServer(String post_key, String text,
 			final Callback<Void, Void, Boolean> callback) {
 
-		Comment commentToSend = new Comment(this.fbDetails.getFb_uid(), null,
+		Comment commentToSend = new Comment(null,
 				text, post_key, null);
 		final HttpPost postRequest;
 		postRequest = createNewCommentPostRequest(commentToSend);

@@ -3,13 +3,12 @@ package com.choosie.app.Models;
 import java.util.Date;
 
 public class Vote {
-
-	private final String fb_uid;
 	private final Date createdAtUTC;
 	private final int vote_for;
+	private final User user;
 
-	public Vote(String fb_uid, Date createdAtUTC, int vote_for) {
-		this.fb_uid = fb_uid;
+	public Vote(Date createdAtUTC, int vote_for, User user) {
+		this.user = user;
 		this.createdAtUTC = createdAtUTC;
 		this.vote_for = vote_for;
 	}
@@ -21,9 +20,8 @@ public class Vote {
 	public Date getCreated_at() {
 		return createdAtUTC;
 	}
-
-	public String getFb_uid() {
-		return fb_uid;
+	
+	public User getUsers() {
+		return user;
 	}
-
 }
