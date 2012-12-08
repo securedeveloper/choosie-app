@@ -5,9 +5,9 @@ import webapp2
 from google.appengine.ext import db
 
 from cache_controller import CacheController
-from module_choosie_post import ChoosiePost
-from module_vote import Vote
-from module_user import User
+from model_choosie_post import ChoosiePost
+from model_vote import Vote
+from model_user import User
 
 class VoteHandler(webapp2.RequestHandler):
   def get(self):

@@ -1,7 +1,7 @@
 from cache_controller import CacheController
-from module_user import User
-from module_choosie_post import ChoosiePost
-from module_comment import Comment
+from model_user import User
+from model_choosie_post import ChoosiePost
+from model_comment import Comment
 import webapp2
 import logging
 

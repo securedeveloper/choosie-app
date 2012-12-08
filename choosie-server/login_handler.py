@@ -1,4 +1,4 @@
-from module_user import User
+from model_user import User
 from google.appengine.ext import db
 import webapp2
 from datetime import datetime

@@ -6,8 +6,8 @@ from google.appengine.api import images
 from google.appengine.ext import db
 
 from cache_controller import CacheController
-from module_choosie_post import ChoosiePost
-from module_user import User
+from model_choosie_post import ChoosiePost
+from model_user import User
 
 class PostsHandler(webapp2.RequestHandler):
   def shrinkImage(self, data):

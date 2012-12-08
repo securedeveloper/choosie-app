@@ -1,5 +1,5 @@
 from google.appengine.ext import db
-from module_user import User
+from model_user import User
 import logging
 
 class Vote(db.Model):

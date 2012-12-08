@@ -1,7 +1,7 @@
 import webapp2
 
 from feed_handler import FeedHandler
-from module_choosie_post import ChoosiePost
+from model_choosie_post import ChoosiePost
 
 import jinja2
 import os

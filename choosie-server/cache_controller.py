@@ -3,8 +3,8 @@ import logging
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
-from module_vote import Vote
-from module_comment import Comment
+from model_vote import Vote
+from model_comment import Comment
 
 VOTES_NAMESPACE = 'VOTES'
 COMMENTS_NAMESPACE = 'COMMENTS'

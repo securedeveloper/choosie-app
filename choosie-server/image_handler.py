@@ -1,7 +1,7 @@
 import webapp2
 
 from cache_controller import CacheController
-from module_choosie_post import ChoosiePost
+from model_choosie_post import ChoosiePost
 
 class ImageHandler(webapp2.RequestHandler):
   def get(self):

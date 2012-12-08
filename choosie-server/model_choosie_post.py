@@ -2,9 +2,9 @@ from google.appengine.ext import db
 from google.appengine.api import images
 
 from cache_controller import CacheController
-from module_user import User
-from module_vote import Vote
-from module_comment import Comment
+from model_user import User
+from model_vote import Vote
+from model_comment import Comment
 from utils import Utils
 import facebook
 import logging
