@@ -5,11 +5,13 @@ public class CommentData {
 	private final String name;
 	private final String comment;
 	private final String commentierPhotoPath;
+	private final CharSequence createdAt;
 
-	public CommentData(String name, String comment, String commentierPhotoUrlList) {
+	public CommentData(String name, String comment, String commentierPhotoUrlList, CharSequence createdAt) {
 		this.name = name;
 		this.comment = comment;
 		this.commentierPhotoPath = commentierPhotoUrlList;
+		this.createdAt = createdAt;
 	}
 
 	public String getName() {
@@ -22,5 +24,9 @@ public class CommentData {
 	
 	public String getcommentierPhotoPath() {
 		return this.commentierPhotoPath;
+	}
+	
+	public CharSequence getCreatedAt() {
+		return this.createdAt;
 	}
 }

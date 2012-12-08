@@ -20,14 +20,18 @@ public class Comment {
 	}
 
 	public String getPost_key() {
-		return post_key;
+		return this.post_key;
 	}
 
 	public String getText() {
-		return text;
+		return this.text;
 	}
 
 	public User getUser() {
-		return user;
+		return this.user;
+	}
+	
+	public Date getCreatedAt() {
+		return this.createdAtUTC;
 	}
 }

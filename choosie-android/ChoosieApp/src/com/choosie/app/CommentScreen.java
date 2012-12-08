@@ -82,6 +82,7 @@ public class CommentScreen extends Activity {
 		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<String> commentList = new ArrayList<String>();
 		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
+		ArrayList<CharSequence> createdAtList = new ArrayList<CharSequence>();
 
 		nameList = intent
 				.getStringArrayListExtra(Constants.IntentsCodes.nameList);
@@ -89,10 +90,13 @@ public class CommentScreen extends Activity {
 				.getStringArrayListExtra(Constants.IntentsCodes.commentList);
 		commentierPhotoUrlList = intent
 				.getStringArrayListExtra(Constants.IntentsCodes.commentierPhotoUrlList);
+		createdAtList = intent
+				.getCharSequenceArrayListExtra(Constants.IntentsCodes.createdAtList);
 
 		for (int i = 0; i < nameList.size(); i++) {
 			CommentData newCommentData = new CommentData(nameList.get(i),
-					commentList.get(i), commentierPhotoUrlList.get(i));
+					commentList.get(i), commentierPhotoUrlList.get(i),
+					createdAtList.get(i));
 			adi.add(newCommentData);
 		}
 		return adi;
@@ -131,14 +135,22 @@ public class CommentScreen extends Activity {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_comment, itemView);
 
+		// set the comment text
 		TextView tv = (TextView) itemView
 				.findViewById(R.id.view_comment_comment);
 		setTextOntv(item, tv);
 
+		// set the commentier photo
 		ImageView commentierPhotoImageView = (ImageView) itemView
 				.findViewById(R.id.commentScreen_commentierPhoto);
 		commentierPhotoImageView.setImageBitmap(BitmapFactory.decodeFile(item
 				.getcommentierPhotoPath()));
+
+		// set the comment time
+		TextView commentTime = (TextView) itemView
+				.findViewById(R.id.commentScreen_commentTime);
+		commentTime.setText(item.getCreatedAt() + " ago");
+
 		return itemView;
 	}
 
@@ -151,7 +163,7 @@ public class CommentScreen extends Activity {
 
 		// activate the 'onActivityResult'
 		setResult(RESULT_OK, intent);
-		//resetCommetnScreen();
+		// resetCommetnScreen();
 		finish();
 	}
 

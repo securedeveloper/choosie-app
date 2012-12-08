@@ -154,12 +154,15 @@ public class SuperController {
 		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<String> commentList = new ArrayList<String>();
 		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
+		ArrayList<CharSequence> createdAtList = new ArrayList<CharSequence>();
 
 		for (Comment comment : choosiePost.getComments()) {
 			nameList.add(comment.getUser().getUserName());
 			commentList.add(comment.getText());
 			commentierPhotoUrlList.add(Utils.getInstance().getFileNameForURL(
 					comment.getUser().getPhotoURL()));
+			createdAtList.add(Utils.getTimeDifferenceTextFromNow(comment
+					.getCreatedAt()));
 		}
 
 		intent.putStringArrayListExtra(Constants.IntentsCodes.nameList,
@@ -169,6 +172,8 @@ public class SuperController {
 		intent.putStringArrayListExtra(
 				Constants.IntentsCodes.commentierPhotoUrlList,
 				commentierPhotoUrlList);
+		intent.putCharSequenceArrayListExtra(
+				Constants.IntentsCodes.createdAtList, createdAtList);
 
 		screenToController.get(Screen.FEED).getActivity()
 				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);
