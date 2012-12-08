@@ -162,8 +162,13 @@ public class ChoosiePostView extends RelativeLayout {
 		List<Vote> lstVotes = post.getVotes();
 		for (Vote vote : lstVotes) {
 			// first, save commentier photo on sd
-			saveURLonSD(vote.getUsers().getPhotoURL());
+			if (vote.getIsNeedToSave() == true){
+			Utils.saveURLonSD(vote.getUsers().getPhotoURL(),
+					superController);
+			vote.setsNeedToSave();
+			}
 		}
+
 	}
 
 	private void setImageBorder(ImageView imgView, boolean isBorderVisable) {
@@ -188,7 +193,6 @@ public class ChoosiePostView extends RelativeLayout {
 		}
 		votes1.setVisibility(visibility);
 		votes2.setVisibility(visibility);
-
 	}
 
 	private void loadCommentsToView(ChoosiePostData post) {
@@ -196,23 +200,17 @@ public class ChoosiePostView extends RelativeLayout {
 		List<Comment> lstComment = post.getComments();
 		for (Comment comment : lstComment) {
 			// first, save commentier photo on sd
-			saveURLonSD(comment.getUser().getPhotoURL());
+			if (comment.getIsNeedToSave() == true) {
+				Utils.saveURLonSD(
+						comment.getUser().getPhotoURL(), superController);
+				comment.setIsNeedToSave();
+			}
 			// build view for vurrent comment
 			View commentView = buildViewForComment(comment);
 			commentLayout.addView(commentView);
 		}
 	}
-
-	private void saveURLonSD(final String photoURL) {
-		this.superController.getCaches().getPhotosCache()
-				.getValue(photoURL, new Callback<Void, Object, Bitmap>() {
-					@Override
-					public void onFinish(Bitmap param) {
-						Utils.saveBitmapOnSd(photoURL, param);
-					}
-				});
-	}
-
+	
 	private TextView buildViewForComment(Comment comment) {
 		TextView tv = new TextView(superController.getControllerForScreen(
 				Screen.FEED).getActivity());
@@ -246,6 +244,7 @@ public class ChoosiePostView extends RelativeLayout {
 				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
 					@Override
 					public void onFinish(Bitmap param) {
+
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {

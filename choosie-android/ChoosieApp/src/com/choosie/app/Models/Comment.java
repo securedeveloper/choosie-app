@@ -8,12 +8,14 @@ public class Comment {
 	private final String text;
 	private final String post_key;
 	private final User user;
+	private boolean isNeedTosave;
 
 	public Comment(Date createdAtUTC, String text, String post_key, User user) {
 		this.createdAtUTC = createdAtUTC;
 		this.text = text;
 		this.post_key = post_key;
 		this.user = user;
+		this.isNeedTosave = true;
 	}
 
 	public String getPost_key() {
@@ -30,5 +32,13 @@ public class Comment {
 
 	public Date getCreatedAt() {
 		return this.createdAtUTC;
+	}
+	
+	public Boolean getIsNeedToSave(){
+		return isNeedTosave;
+	}
+	
+	public void setIsNeedToSave(){
+		isNeedTosave = false;
 	}
 }

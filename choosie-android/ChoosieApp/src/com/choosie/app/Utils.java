@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.choosie.app.controllers.SuperController;
+
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -108,6 +110,17 @@ public class Utils {
 
 	public static Bitmap getBitmapFromURL(String param) {
 		return BitmapFactory.decodeFile(getFileNameForURL(param));
+	}
+
+	public static void saveURLonSD(final String photoURL,
+			final SuperController superController) {
+		superController.getCaches().getPhotosCache()
+				.getValue(photoURL, new Callback<Void, Object, Bitmap>() {
+					@Override
+					public void onFinish(Bitmap param) {
+					//	Utils.saveBitmapOnSd(photoURL, param);
+					}
+				});
 	}
 
 	public static void saveBitmapOnSd(String photoURL, Bitmap param) {
