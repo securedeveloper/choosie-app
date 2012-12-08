@@ -9,10 +9,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Debug;
 import android.os.Environment;
 import android.util.Log;
 
@@ -112,5 +114,18 @@ public class Utils {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		param.compress(CompressFormat.JPEG, 100, bos);
 		writeByteStreamOnSD(bos, Integer.toString(photoURL.hashCode()));
+	}
+
+	@SuppressLint("DefaultLocale")
+	public static void dumpMemoryInfoToLog() {
+		Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
+		Debug.getMemoryInfo(memoryInfo);
+
+		String memMessage = String.format(
+				"Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB",
+				memoryInfo.getTotalPss() / 1024.0,
+				memoryInfo.getTotalPrivateDirty() / 1024.0,
+				memoryInfo.getTotalSharedDirty() / 1024.0);
+		Log.d("Utils", memMessage);
 	}
 }
