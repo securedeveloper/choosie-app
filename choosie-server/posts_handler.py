@@ -26,7 +26,7 @@ class PostsHandler(webapp2.RequestHandler):
     return img.execute_transforms(output_encoding=images.PNG)
   
   def post(self):
-    user = User.get_user_by_fb_uid(self.request.get('fb_uid'))
+    user = CacheController.get_user_by_fb_id(self.request.get('fb_uid'))
     logging.info(self.request.get('fb_uid'))
     if user is None:
        self.error(500)
@@ -41,7 +41,7 @@ class PostsHandler(webapp2.RequestHandler):
     # user.put()
 
     choosie_post = ChoosiePost(question = self.request.get('question'),
-                               user = user,
+                               user_fb_id = self.request.get('fb_uid'),
                                photo1 = db.Blob(self.shrinkImage(self.request.get('photo1'))),
                                photo2 = db.Blob(self.shrinkImage(self.request.get('photo2'))))
 

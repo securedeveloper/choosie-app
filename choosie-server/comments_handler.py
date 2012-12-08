@@ -12,15 +12,14 @@ class CommentsHandler(webapp2.RequestHandler):
     # Since the post is taken from the cache, it might not be the most updated version
     # but that's ok, as it is only used as 'parent'
     choosie_post = CacheController.get_model(self.request.get('post_key'))
-    
-    user = User.get_user_by_fb_uid(fb_uid)
     comment = Comment(parent=choosie_post,
-                      user=user,
+                      user_fb_id=self.request.get('fb_uid'),
                       text=text)
     
     comment.put()
-    # Make sure the ChoosiePost is invalidated in cache, so that next time it is asked
-    # for, the updated is retreived.
-    CacheController.invalidate_comments(self.request.get('post_key'))
-    self.redirect('/')
+    # Make sure the ChoosiePost's comments are invalidated in cache, so that next time
+    # they are asked for, the updated are retreived.
+    Comment.invalidate_comments(self.request.get('post_key'))
+
+    self.response.write('Comment added.')
     

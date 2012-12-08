@@ -13,7 +13,7 @@ class Utils():
       if result.status_code != 200:
         return None
       return result.content;
-
+      
     @staticmethod
     def items_to_json(items):
       arr = []

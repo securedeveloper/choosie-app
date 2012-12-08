@@ -17,17 +17,16 @@ class VoteHandler(webapp2.RequestHandler):
     # but that's ok, as it is only used as 'parent'
     choosie_post = CacheController.get_model(self.request.get('post_key'))
     
-    user = User.get_user_by_fb_uid(fb_uid)
     vote = Vote(parent=choosie_post,
-                user=user,
+                user_fb_id=fb_uid,
                 vote_for=int(vote_for))
     
     prev_vote = vote.prev_vote_for_user_for_post()
     #if the user voted to the same post but for different item, updating the vote
-    if (prev_vote != None and prev_vote.vote_for != vote_for):
+    if (prev_vote is not None and prev_vote.vote_for != vote_for):
       prev_vote.vote_for = vote_for
       prev_vote.put()
-      self.redirect('/')
+      self.response.write('Vote changed to photo number %d.' % vote_for)
     #if voted to same pic - error
     elif(prev_vote != None):
        self.write_error("already voted!")
@@ -35,10 +34,12 @@ class VoteHandler(webapp2.RequestHandler):
       vote.put()
       # Make sure the ChoosiePost is invalidated in cache, so that next time it is asked
       # for, the updated one is retreived.
-      CacheController.invalidate_votes(self.request.get('post_key'))
-      self.redirect('/')
-    
+      Vote.invalidate_votes(self.request.get('post_key'))
+      self.response.write('A new vote issued for photo number %d.' % vote_for)
+
   def post(self):
+    # Delegates the POST handling to the GET handling.
+    # TODO: Fix in the client to actually use POST and not GET, and get rid of the GET handler.
     get(self)
 
   def write_error(self, err):

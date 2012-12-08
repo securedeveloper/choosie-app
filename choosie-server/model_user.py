@@ -23,8 +23,8 @@ class User(db.Model):
       logging.info('creating')
       user_json = Utils.get_user_from_fb(fb_access_token)
       if (user_json is not None):
-        logging.info('user_uson not none')
-        user = User.fb_user_to_choosie_user(user_json,fb_access_token, fb_access_token_expdate)
+        logging.info('user_json is not None: %s' % user_json)
+        user = User.fb_user_to_choosie_user(user_json, fb_access_token, fb_access_token_expdate)
         user.put()
 
     @staticmethod
@@ -40,10 +40,6 @@ class User(db.Model):
                   fb_access_token = fb_access_token,
                   fb_access_token_expdate = fb_access_token_expdate)
       return user
-
-    @staticmethod
-    def get_user_by_fb_uid(fb_uid):
-      return db.GqlQuery("SELECT * from User where fb_uid = :1", fb_uid).get()
 
     def avatar(self):
       return 'http://graph.facebook.com/%s/picture' % self.username

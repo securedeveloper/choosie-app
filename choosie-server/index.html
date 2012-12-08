@@ -43,6 +43,10 @@
 .chs-votes {
 	margin: 10px;
 }
+.chs-votes-users {
+float: left;
+width: 50%;
+}
 .chs-vote:hover {
 	background: #eee;
 	color: #11a;
@@ -67,6 +71,7 @@
 }
 .chs-questcont {
 	margin: 20px;
+	margin-top: 60px;
 }
 .chs-question {
 	border-style: solid;
@@ -92,30 +97,51 @@
 		<div class="chs-feed">
 			{% for choosie_post in choosie_posts %}
 			<div class="chs-post">
-				<div class="images">
-					<img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key() }}"></img>
-					<img class="chs-img-right" src="/photo?which_photo=2&post_key={{ choosie_post.key() }}"></img>
-				</div>
-				<div class="chs-votes">
-					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=1&post_key={{ choosie_post.key() }}">
-						{{choosie_post.votes1() }} votes
-						<span class="vote">Vote!!</span>
-					</a>
-					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=2&post_key={{ choosie_post.key() }}">
-						{{ choosie_post.votes2() }} votes
-						<span class="vote">Vote!!</span>
-					</a>
+				<div class="chs-user-data">
+					<img src="{{ choosie_post.user.avatar }}">{{ choosie_post.user.first_name + ' ' + choosie_post.user.last_name }}
 				</div>
 				<div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
+				<div class="images">
+					<img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key }}"></img>
+					<img class="chs-img-right" src="/photo?which_photo=2&post_key={{ choosie_post.key }}"></img>
+				</div>
+				<div class="chs-votes">
+					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=1&post_key={{ choosie_post.key }}">
+						<span class="vote">Vote!!</span>
+					</a>
+					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=2&post_key={{ choosie_post.key }}">
+						<span class="vote">Vote!!</span>
+					</a>
+				</div>
+				<div class="chs-votes-users">
+					Voted for 1:
+					{% for vote in choosie_post.votes %}
+					{% if vote.vote_for == 1 %}
+					<div>{{ vote.user.first_name }} {{ vote.user.last_name }}</div>
+					{% endif %}
+					{% endfor %}
+				</div>
+				<div class="chs-votes-users">
+					Voted for 2:
+					{% for vote in choosie_post.votes %}
+					{% if vote.vote_for == 2 %}
+					<div>{{ vote.user.first_name }} {{ vote.user.last_name }}</div>
+					{% endif %}
+					{% endfor %}
+				</div>
 				<div class="comments">
-					{% for comment in choosie_post.to_json()['comments'] %}
-					<div class="single_comment"> {{ comment.text }} </div>
+					<b>Comments:</b>
+					{% for comment in choosie_post.comments %}
+					<div class="single_comment">
+						<b>{{ comment.user.first_name }} {{ comment.user.last_name }}</b>
+						{{ comment.text }}
+					</div>
 					{% endfor %}
 					<form action="/comments/new" enctype="multipart/form-data" method="post">
 						Comment:<input type="text" name="text"/>
 						<input type="hidden" value="624205547" name="fb_uid"/>
 						<br>
-						<input type="hidden" name="post_key" value="{{choosie_post.key()}}"/>
+						<input type="hidden" name="post_key" value="{{choosie_post.key}}"/>
 						<input type="submit" value="Add">
 					</form>
 				</div>
@@ -144,7 +170,7 @@
 	<div class="new_user">
 		<H1>Add user</H1>
 		<form action="/login" enctype="multipart/form-data" method="post">
-			<div>Access Token:<input type="text" name="fb_access_token" value="AAAHVHgMjmJwBAFNgeAsRZCwSg2YYrBwI2cEd8zqbMobGR9lQI3galVWLKUd9VT8XoZAPPT3tZC0WTNQIBTOeupJSDOPBH4dBODVRjymhAZDZD" size="100"/></div>
+			<div>Access Token:<input type="text" name="fb_access_token" value="BAAHVHgMjmJwBAFBRxHpWbGJMAzIWAtYfqEyYQSISOYhzjuZCvvjWhO6YfjiccSUlrulxqqevJq7yZAoaxR0zQmmhFgmuI3JBnNZBZAMAyMKW0gfGl7TuUlglrEzGqKHsN7hH5L7GsQZDZD" size="100"/></div>
 			<div>Access Token Expdate: <input type="text" name="fb_access_token_expdate" value="1358319035143"/></div>
 			<div>Uid:<Input type = "text" name ="fb_uid" value="100004697466881"/></div>
 

@@ -3,11 +3,7 @@ import logging
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
-from model_vote import Vote
-from model_comment import Comment
-
-VOTES_NAMESPACE = 'VOTES'
-COMMENTS_NAMESPACE = 'COMMENTS'
+USER_FB_ID_NAMESPACE = 'USER_FB_ID'
 
 class CacheController(object):
   @staticmethod
@@ -16,7 +12,7 @@ class CacheController(object):
     # the datastore and saves for later.
     value = memcache.get(key)
     if value is not None:
-      logging.info('Saved a data store call for %s.' % key)
+      logging.info('Skipped a data store call for %s.' % key)
       return value
     else:
       logging.info('Retreiving [%s] from data store.' % key)
@@ -45,36 +41,13 @@ class CacheController(object):
     memcache.delete(key)
 
   @staticmethod
-  def get_votes_for_post(post_key):
-    votes = memcache.get(post_key, namespace=VOTES_NAMESPACE)
-    if votes is not None:
-      logging.info('Saved a data store call for votes.')
-      return votes
+  def get_user_by_fb_id(user_fb_id):
+    user = memcache.get(user_fb_id, namespace=USER_FB_ID_NAMESPACE)
+    if user is not None:
+      logging.info('Skipped a data store call for comments.')
+      return user
     else:
-      logging.info('Retreiving votes for [%s] from data store.' % post_key)
-      post = CacheController.get_model(post_key)
-      votes = Vote.all().ancestor(post)
-      memcache.set(post_key, votes, namespace=VOTES_NAMESPACE)
-      return votes
-
-  @staticmethod
-  def invalidate_votes(post_key):
-    memcache.delete(post_key, namespace=VOTES_NAMESPACE)
-
-  @staticmethod
-  def get_comments_for_post(post_key):
-    comments = memcache.get(post_key, namespace=COMMENTS_NAMESPACE)
-    if comments is not None:
-      logging.info('Saved a data store call for comments.')
-      return comments
-    else:
-      logging.info('Retreiving comments for [%s] from data store.' % post_key)
-      post = CacheController.get_model(post_key)
-      comments = Comment.all().ancestor(post)
-      memcache.set(post_key, comments, namespace=COMMENTS_NAMESPACE)
-      return comments
-
-  @staticmethod
-  def invalidate_comments(post_key):
-    memcache.delete(post_key, namespace=COMMENTS_NAMESPACE)
-    
+      logging.info('Retreiving user with fb_uid [%s] from data store.' % user_fb_id)
+      user = db.GqlQuery("SELECT * from User where fb_uid = :1", user_fb_id).get()
+      memcache.set(user_fb_id, user, namespace=USER_FB_ID_NAMESPACE)
+      return user
