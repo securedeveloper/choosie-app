@@ -51,14 +51,14 @@ public class ChoosiePostView extends RelativeLayout {
 						superController.switchToCommentScreen(choosiePost);
 					}
 				});
-		
+
 		this.findViewById(R.id.votes1).setOnClickListener(
 				new OnClickListener() {
 					public void onClick(View arg0) {
 						superController.switchToVotesScreen(choosiePost);
 					}
 				});
-		
+
 		this.findViewById(R.id.votes2).setOnClickListener(
 				new OnClickListener() {
 					public void onClick(View arg0) {
@@ -163,7 +163,7 @@ public class ChoosiePostView extends RelativeLayout {
 		for (Vote vote : lstVotes) {
 			// first, save commentier photo on sd
 			saveURLonSD(vote.getUsers().getPhotoURL());
-		}		
+		}
 	}
 
 	private void setImageBorder(ImageView imgView, boolean isBorderVisable) {
@@ -208,7 +208,7 @@ public class ChoosiePostView extends RelativeLayout {
 				.getValue(photoURL, new Callback<Void, Object, Bitmap>() {
 					@Override
 					public void onFinish(Bitmap param) {
-						Utils.getInstance().saveBitmapOnSd(photoURL, param);
+						Utils.saveBitmapOnSd(photoURL, param);
 					}
 				});
 	}

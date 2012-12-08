@@ -18,18 +18,7 @@ import android.util.Log;
 
 public class Utils {
 
-	private static Utils s_instance;
-
-	private Utils() {
-	}
-
-	public static Utils getInstance() {
-		if (s_instance == null)
-			s_instance = new Utils();
-		return s_instance;
-	}
-
-	public Date ConvertStringToDateUTC(String str_date) {
+	public static Date convertStringToDateUTC(String str_date) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Date date = new Date();
@@ -73,14 +62,14 @@ public class Utils {
 		return weeks + "w";
 	}
 
-	public String getFileNameForURL(String param) {
+	public static String getFileNameForURL(String param) {
 		String directory = Constants.URIs.mainDirectoryPath;
 
 		String fileName = Integer.toString(param.hashCode());
 		return directory + fileName;
 	}
 
-	public void makeMainDirectory() {
+	public static void makeMainDirectory() {
 		String directory = Constants.URIs.mainDirectoryPath;
 		// create a File object for the parent directory
 		File choosieDirectory = new File(directory);
@@ -90,10 +79,11 @@ public class Utils {
 		}
 	}
 
-	public void writeByteStreamOnSD(ByteArrayOutputStream bos, String HashedfileName) {
+	public static void writeByteStreamOnSD(ByteArrayOutputStream bos,
+			String HashedfileName) {
 		String fullPath = Constants.URIs.mainDirectoryPath + HashedfileName;
 		File f = new File(fullPath);
-		if (f.exists()){
+		if (f.exists()) {
 			return;
 		}
 		FileOutputStream fo = null;
@@ -108,20 +98,19 @@ public class Utils {
 		}
 	}
 
-	public boolean isFileExists(String fileName) {
+	public static boolean isFileExists(String fileName) {
 		String fullPath = Constants.URIs.mainDirectoryPath + fileName;
 		File f = new File(fullPath);
 		return f.exists();
 	}
 
-	public Bitmap getBitmapFromURL(String param) {
-		return BitmapFactory.decodeFile(Utils.getInstance().getFileNameForURL(
-				param));
+	public static Bitmap getBitmapFromURL(String param) {
+		return BitmapFactory.decodeFile(getFileNameForURL(param));
 	}
 
-	public void saveBitmapOnSd(String photoURL, Bitmap param) {
+	public static void saveBitmapOnSd(String photoURL, Bitmap param) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		param.compress(CompressFormat.JPEG, 100, bos);
-		writeByteStreamOnSD(bos, Integer.toString(photoURL.hashCode()));				
+		writeByteStreamOnSD(bos, Integer.toString(photoURL.hashCode()));
 	}
 }

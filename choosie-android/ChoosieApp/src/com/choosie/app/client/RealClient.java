@@ -351,8 +351,8 @@ public class RealClient extends ClientBase {
 				+ jsonObject.getString("photo2");
 		String question = jsonObject.getString("question");
 		String postKey = jsonObject.getString("key");
-		Date createdAtUTC = Utils.getInstance().ConvertStringToDateUTC(
-				jsonObject.getString("created_at"));
+		Date createdAtUTC = Utils.convertStringToDateUTC(jsonObject
+				.getString("created_at"));
 
 		JSONObject userJsonObject = jsonObject.getJSONObject("user");
 		User author = buildUserFromJson(userJsonObject);
@@ -384,8 +384,7 @@ public class RealClient extends ClientBase {
 			JSONObject jsonCommentObject = allComments.getJSONObject(j);
 
 			String date = jsonCommentObject.getString("created_at");
-			Date createdAtUTC = Utils.getInstance()
-					.ConvertStringToDateUTC(date);
+			Date createdAtUTC = Utils.convertStringToDateUTC(date);
 			String text = jsonCommentObject.getString("text");
 
 			JSONObject userJsonObject = jsonCommentObject.getJSONObject("user");
@@ -404,8 +403,7 @@ public class RealClient extends ClientBase {
 			JSONObject jsonVoteObject = jsonVotes.getJSONObject(j);
 
 			String date = jsonVoteObject.getString("created_at");
-			Date createdAtUTC = Utils.getInstance()
-					.ConvertStringToDateUTC(date);
+			Date createdAtUTC = Utils.convertStringToDateUTC(date);
 			int vote_for = jsonVoteObject.getInt("vote_for");
 			JSONObject userJsonObject = jsonVoteObject.getJSONObject("user");
 			User user = buildUserFromJson(userJsonObject);
@@ -482,8 +480,7 @@ public class RealClient extends ClientBase {
 	public void sendCommentToServer(String post_key, String text,
 			final Callback<Void, Void, Boolean> callback) {
 
-		Comment commentToSend = new Comment(null,
-				text, post_key, null);
+		Comment commentToSend = new Comment(null, text, post_key, null);
 		final HttpPost postRequest;
 		postRequest = createNewCommentPostRequest(commentToSend);
 

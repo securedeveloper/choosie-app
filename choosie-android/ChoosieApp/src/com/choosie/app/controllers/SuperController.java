@@ -141,12 +141,10 @@ public class SuperController {
 		intent.putExtra("post_key", choosiePost.getPostKey());
 		intent.putExtra("question", choosiePost.getQuestion());
 
-		String photo1Path = Utils.getInstance().getFileNameForURL(
-				choosiePost.getPhoto1URL());
-		String photo2Path = Utils.getInstance().getFileNameForURL(
-				choosiePost.getPhoto2URL());
-		String userPhotoPath = Utils.getInstance().getFileNameForURL(
-				choosiePost.getAuthor().getPhotoURL());
+		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
+		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
+		String userPhotoPath = Utils.getFileNameForURL(choosiePost.getAuthor()
+				.getPhotoURL());
 
 		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
 		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
@@ -161,8 +159,8 @@ public class SuperController {
 		for (Comment comment : choosiePost.getComments()) {
 			nameList.add(comment.getUser().getUserName());
 			commentList.add(comment.getText());
-			commentierPhotoUrlList.add(Utils.getInstance().getFileNameForURL(
-					comment.getUser().getPhotoURL()));
+			commentierPhotoUrlList.add(Utils.getFileNameForURL(comment
+					.getUser().getPhotoURL()));
 			createdAtList.add(Utils.getTimeDifferenceTextFromNow(comment
 					.getCreatedAt()));
 		}
@@ -190,12 +188,10 @@ public class SuperController {
 		intent.putExtra(Constants.IntentsCodes.question,
 				choosiePost.getQuestion());
 
-		String photo1Path = Utils.getInstance().getFileNameForURL(
-				choosiePost.getPhoto1URL());
-		String photo2Path = Utils.getInstance().getFileNameForURL(
-				choosiePost.getPhoto2URL());
-		String userPhotoPath = Utils.getInstance().getFileNameForURL(
-				choosiePost.getAuthor().getPhotoURL());
+		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
+		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
+		String userPhotoPath = Utils.getFileNameForURL(choosiePost.getAuthor()
+				.getPhotoURL());
 
 		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
 		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
@@ -208,8 +204,8 @@ public class SuperController {
 
 		for (Vote vote : choosiePost.getVotes()) {
 			nameList.add(vote.getUsers().getUserName());
-			votersPhotoUrlList.add(Utils.getInstance().getFileNameForURL(
-					vote.getUsers().getPhotoURL()));
+			votersPhotoUrlList.add(Utils.getFileNameForURL(vote.getUsers()
+					.getPhotoURL()));
 			voteForList.add(vote.getVote_for());
 		}
 

@@ -23,9 +23,9 @@ public class ChoosieActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choosie);
-		
-		Utils.getInstance().makeMainDirectory();
-		
+
+		Utils.makeMainDirectory();
+
 		LayoutInflater layoutInflater = (LayoutInflater) this
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 

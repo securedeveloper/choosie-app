@@ -177,11 +177,11 @@ public class Cache<Key, Value> {
 
 		ByteArrayOutputStream bos = serializer.getData(value, null);
 
-		Utils.getInstance().writeByteStreamOnSD(bos, fileName);
+		Utils.writeByteStreamOnSD(bos, fileName);
 	}
 
 	private boolean isPersisted(Key key) {
 		String fileName = (String) Integer.toString(key.toString().hashCode());
-		return Utils.getInstance().isFileExists(fileName);
+		return Utils.isFileExists(fileName);
 	}
 }

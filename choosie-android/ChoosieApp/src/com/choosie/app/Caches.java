@@ -68,7 +68,7 @@ public class Caches {
 					@Override
 					Bitmap getData(String param,
 							Callback<Void, Object, Void> progressCallback) {
-						return Utils.getInstance().getBitmapFromURL(param);
+						return Utils.getBitmapFromURL(param);
 					}
 				});
 
