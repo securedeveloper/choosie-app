@@ -17,7 +17,8 @@
             android:layout_weight="1"
             android:background="@drawable/image_frame_post"
             android:onClick="takePhoto"
-            android:src="@android:drawable/ic_menu_crop" />
+            android:src="@android:drawable/ic_menu_crop"
+            android:contentDescription="@string/desc" />
 
         <ImageView
             android:id="@+id/image_photo2"
@@ -25,7 +26,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/image_frame_post"
-            android:src="@android:drawable/ic_menu_crop" />
+            android:src="@android:drawable/ic_menu_crop"
+            android:contentDescription="@string/desc" />
     </LinearLayout>
 
     <Button
@@ -48,14 +50,14 @@
 
         <requestFocus />
     </EditText>
-
+
     <CheckBox
         android:id="@+id/ckb_share_fb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:text="Share On Facebook"
-        android:checked="true"/>
+        android:checked="true"
+        android:text="@string/share_on_facebook" />
 
 </RelativeLayout>

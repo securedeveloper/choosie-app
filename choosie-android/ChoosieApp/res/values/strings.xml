@@ -17,5 +17,8 @@
     <string name="login">Login</string>
     <string name="load_more">Load more</string>
     <string name="how_long_ago_was_it_taken">How long ago was it taken</string>
+    <string name="logout">Logout</string>
+    <string name="share_on_facebook">Share on Facebook</string>
+    <string name="desc">ImageView Content Descripotion</string>
 
 </resources>

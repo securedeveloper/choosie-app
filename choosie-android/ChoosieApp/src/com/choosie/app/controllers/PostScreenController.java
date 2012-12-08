@@ -1,8 +1,8 @@
 package com.choosie.app.controllers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
@@ -19,7 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images.Media;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -34,7 +34,6 @@ import android.widget.Toast;
 
 import com.facebook.Session;
 import com.facebook.Session.ReauthorizeRequest;
-import com.facebook.android.*;
 
 public class PostScreenController extends ScreenController {
 	private Bitmap mImage1;
@@ -68,7 +67,6 @@ public class PostScreenController extends ScreenController {
 		image1.setOnClickListener(listener);
 		image2.setOnClickListener(listener);
 		buttonSubmit.setOnClickListener(listener);
-
 	}
 
 	@Override
@@ -91,6 +89,29 @@ public class PostScreenController extends ScreenController {
 
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
+			CheckBox ckb = (CheckBox) view
+					.findViewById(R.id.ckb_share_fb);
+			if (ckb.isChecked()) {
+				Session session = Session.getActiveSession();
+				if (session.isOpened()) {
+					if (!session.getPermissions().contains("publish_stream")) {
+
+						List<String> write_permissions = new ArrayList<String>();
+						write_permissions.add("publish_stream");
+
+						ReauthorizeRequest openRequest = new ReauthorizeRequest(
+								getActivity(), write_permissions);
+						try {
+							session.reauthorizeForPublish(openRequest);
+						} catch (Exception ex) {
+							Log.i(Constants.LOG_TAG,
+									"EXCEPTION!!! : " + ex.toString());
+						}
+
+					}
+				}
+			}
+
 			submitChoosiePost();
 		} else {
 			startDialog(arg0);
