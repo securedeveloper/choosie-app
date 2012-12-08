@@ -2,4 +2,5 @@
 <resources>
     <dimen name="view_choosie_post_text_margin">5dp</dimen>
     <dimen name="view_choosie_post_margin">10dp</dimen>
+    <dimen name="share_button_magin">15dp</dimen>
 </resources>

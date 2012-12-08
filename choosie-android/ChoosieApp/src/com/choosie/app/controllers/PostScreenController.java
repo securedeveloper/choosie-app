@@ -27,10 +27,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.facebook.Session;
 import com.facebook.Session.ReauthorizeRequest;
@@ -43,6 +43,8 @@ public class PostScreenController extends ScreenController {
 	private ImageView image1;
 	private ImageView image2;
 	private EditText questionText;
+	private Button buttonSubmit;
+	private ToggleButton shareOnFacebookTb;
 
 	public PostScreenController(View layout, SuperController superController) {
 		super(layout, superController);
@@ -52,9 +54,11 @@ public class PostScreenController extends ScreenController {
 	protected void onCreate() {
 		image1 = (ImageView) view.findViewById(R.id.image_photo1);
 		image2 = (ImageView) view.findViewById(R.id.image_photo2);
-		Button buttonSubmit = (Button) view.findViewById(R.id.button_submit);
+		buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 		questionText = (EditText) view.findViewById(R.id.editText_question);
 		questionText.setInputType(EditorInfo.TYPE_NULL);
+		shareOnFacebookTb = (ToggleButton) view
+				.findViewById(R.id.shareOnFacebookToggleButton);
 		// questionText.setFocusable(false);
 
 		OnClickListener listener = new OnClickListener() {
@@ -89,9 +93,7 @@ public class PostScreenController extends ScreenController {
 
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit) {
-			CheckBox ckb = (CheckBox) view
-					.findViewById(R.id.ckb_share_fb);
-			if (ckb.isChecked()) {
+			if (shareOnFacebookTb.isChecked()) {
 				Session session = Session.getActiveSession();
 				if (session.isOpened()) {
 					if (!session.getPermissions().contains("publish_stream")) {
@@ -107,11 +109,9 @@ public class PostScreenController extends ScreenController {
 							Log.i(Constants.LOG_TAG,
 									"EXCEPTION!!! : " + ex.toString());
 						}
-
 					}
 				}
 			}
-
 			submitChoosiePost();
 		} else {
 			startDialog(arg0);
