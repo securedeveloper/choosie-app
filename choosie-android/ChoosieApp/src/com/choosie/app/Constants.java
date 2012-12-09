@@ -1,6 +1,5 @@
 package com.choosie.app;
 
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +11,9 @@ public class Constants {
 
 	public static class URIs {
 
-
 		public static final String ROOT_URL = "http://choosieapp.appspot.com";
-//		 public static final String ROOT_URL =
-//		 "http://choosie-dev.appspot.com";
+		// public static final String ROOT_URL =
+		// "http://choosie-dev.appspot.com";
 
 		public static final String FEED_URI = ROOT_URL + "/feed";
 		public static final String NEW_VOTE_URI = ROOT_URL + "/votes/new";
@@ -27,6 +25,9 @@ public class Constants {
 				+ File.separator
 				+ "choosie"
 				+ File.separator;
+//		public static final String mainDirectoryPath = (Environment
+//				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).getAbsolutePath();
+		public static final String APPLICATION_NAME = "chooZie";
 	}
 
 	public static class RequestCodes {
@@ -40,7 +41,7 @@ public class Constants {
 		public static final int GALLERY = 8;
 		public static final int VOTES = 9;
 	}
-	
+
 	public static class IntentsCodes {
 		public static final String photo2Path = "photo2Path";
 		public static final String photo1Path = "photo1Path";

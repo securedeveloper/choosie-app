@@ -1,7 +1,10 @@
 package com.choosie.app.controllers;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.choosie.app.Callback;
@@ -39,12 +42,12 @@ public class PostScreenController extends ScreenController {
 	private Bitmap mImage1;
 	private Bitmap mImage2;
 	private String mQuestion;
-	private Uri outputFileUri;
 	private ImageView image1;
 	private ImageView image2;
 	private EditText questionText;
 	private Button buttonSubmit;
 	private ToggleButton shareOnFacebookTb;
+	private String mCurrentPhotoPath;
 
 	public PostScreenController(View layout, SuperController superController) {
 		super(layout, superController);
@@ -119,6 +122,8 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void startDialog(final View arg0) {
+		final File tempFile = createImageFile(arg0.getId());
+				
 		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
 				getActivity());
 		myAlertDialog.setTitle("Upload Pictures Option");
@@ -127,7 +132,7 @@ public class PostScreenController extends ScreenController {
 		myAlertDialog.setPositiveButton("Camera",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface arg1, int arg3) {
-						TakePhoto(arg0);
+						TakePhoto(arg0, Uri.fromFile(tempFile));
 					}
 				});
 
@@ -141,13 +146,10 @@ public class PostScreenController extends ScreenController {
 		myAlertDialog.show();
 	}
 
-	private void TakePhoto(View arg0) {
-		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-		File f = new File(Environment.getExternalStorageDirectory(),
-				"photo.jpg");
-		outputFileUri = Uri.fromFile(f);
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-		outputFileUri = Uri.fromFile(f);
+	private void TakePhoto(View arg0, Uri uri) {
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);		
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+		
 		if (arg0.getId() == R.id.image_photo1) {
 			getActivity().startActivityForResult(intent,
 					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA);
@@ -208,27 +210,30 @@ public class PostScreenController extends ScreenController {
 			break;
 
 		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA:
-			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST);
+			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST,
+					Uri.fromFile(new File(mCurrentPhotoPath)));
 			break;
 
 		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA:
-			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND);
+			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND,
+					Uri.fromFile(new File(mCurrentPhotoPath)));
 			break;
 
 		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY:
-			outputFileUri = data.getData();
-			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST);
+			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST,
+					data.getData());
 			break;
 
 		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY:
-			outputFileUri = data.getData();
-			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND);
+			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND,
+					data.getData());
 			break;
 		}
 
 	}
 
 	private Bitmap setImageFromData(Intent data, ImageView imageView) {
+		galleryAddPic();
 		final Bundle extras = data.getExtras();
 
 		Bitmap imageBitmapToReturn = null;
@@ -245,31 +250,15 @@ public class PostScreenController extends ScreenController {
 					.getDrawable(R.drawable.image_frame_post_filled));
 		}
 
-		// Wysie_Soh: Delete the temporary file
-		File f = new File(outputFileUri.getPath());
-		if (f.exists()) {
-			f.delete();
-		}
-
 		InputMethodManager mgr = (InputMethodManager) getActivity()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		mgr.showSoftInput(imageView, InputMethodManager.SHOW_IMPLICIT);
 		return imageBitmapToReturn;
 	}
 
-	private void setAndStartCropIntent(int code) {
+	private void setAndStartCropIntent(int code, Uri uri) {
 		Intent intent = new Intent("com.android.camera.action.CROP");
-		// intent.setClassName("com.android.camera",
-		// "com.android.camera.CropImage");
-		/*
-		 * Bitmap im= null; try { im =
-		 * Media.getBitmap(getActivity().getContentResolver(), outputFileUri); }
-		 * catch (FileNotFoundException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated
-		 * catch block e.printStackTrace(); }
-		 */
-
-		intent.setDataAndType(outputFileUri, "image/*");
+		intent.setDataAndType(uri, "image/*");
 		intent.putExtra("outputX", 200);
 		intent.putExtra("outputY", 200 * 6 / 5);
 		intent.putExtra("aspectX", 5);
@@ -341,4 +330,39 @@ public class PostScreenController extends ScreenController {
 		questionText.setText("");
 
 	}
+
+	private File createImageFile(Integer prefix) {
+		File dir = getAlbumDir();
+		dir.mkdir();
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("_yyyyMMdd_HHmmss")
+				.format(new Date());
+		String imageFileName = "image"+ prefix.toString() + timeStamp + "_";
+		File image = null;
+		try {
+			image = File.createTempFile(imageFileName, ".jpg", getAlbumDir());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mCurrentPhotoPath = image.getAbsolutePath();
+		return image;
+	}
+
+	private File getAlbumDir() {
+		File storageDir = new File(
+		Environment
+				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Constants.URIs.APPLICATION_NAME);
+		return storageDir;
+	}
+
+	private void galleryAddPic() {
+		Intent mediaScanIntent = new Intent(
+				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		File f = new File(mCurrentPhotoPath);
+		Uri contentUri = Uri.fromFile(f);
+		mediaScanIntent.setData(contentUri);
+		getActivity().sendBroadcast(mediaScanIntent);
+	}
+
 }
