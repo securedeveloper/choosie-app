@@ -54,8 +54,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	private View buildLoadingItemView() {
-		RelativeLayout loadingItemLayout = new RelativeLayout(
-				this.getContext());
+		RelativeLayout loadingItemLayout = new RelativeLayout(this.getContext());
 
 		final int TEXT_VIEW_ID = 32555;
 		final int PROGRESS_BAR_ID = 32556;
@@ -89,7 +88,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		loadingItemLayout.addView(progressBar);
 		loadingItemLayout.addView(textView);
 		loadingItemLayout.setPadding(0, 8, 0, 8);
-		
+
 		return loadingItemLayout;
 	}
 
@@ -232,9 +231,9 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 					LOADING_ITEM_TEXT, null, null, null, null);
 		}
 		Log.i(Constants.LOG_TAG, "Showing 'Loading items...'");
-		if (this.state == state.APPENDING_TO_FEED) {
+		if (this.state == State.APPENDING_TO_FEED) {
 			this.add(loadingItem);
-		} else if (this.state == state.REFRESHING_FEED) {
+		} else if (this.state == State.REFRESHING_FEED) {
 			this.insert(loadingItem, 0);
 		}
 	}

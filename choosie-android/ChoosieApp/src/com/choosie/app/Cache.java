@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.annotation.TargetApi;
 import android.os.AsyncTask;
+import android.os.Build;
 
 public class Cache<Key, Value> {
 	final ResultCallback<Value, Key> downloader;
@@ -120,7 +122,16 @@ public class Cache<Key, Value> {
 			}
 		};
 
-		task.execute();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			executeOnThreadPoolExecutor(task);
+		} else {
+			task.execute();
+		}
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void executeOnThreadPoolExecutor(AsyncTask<Void, ?, Value> task) {
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	private void restartDownload(Key key) {
