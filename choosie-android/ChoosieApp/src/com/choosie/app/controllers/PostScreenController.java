@@ -48,6 +48,7 @@ public class PostScreenController extends ScreenController {
 	private Button buttonSubmit;
 	private ToggleButton shareOnFacebookTb;
 	private String mCurrentPhotoPath;
+	private Boolean isNeedToSave;
 
 	public PostScreenController(View layout, SuperController superController) {
 		super(layout, superController);
@@ -123,7 +124,7 @@ public class PostScreenController extends ScreenController {
 
 	private void startDialog(final View arg0) {
 		final File tempFile = createImageFile(arg0.getId());
-				
+
 		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
 				getActivity());
 		myAlertDialog.setTitle("Upload Pictures Option");
@@ -147,9 +148,9 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void TakePhoto(View arg0, Uri uri) {
-		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);		
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-		
+
 		if (arg0.getId() == R.id.image_photo1) {
 			getActivity().startActivityForResult(intent,
 					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA);
@@ -210,21 +211,25 @@ public class PostScreenController extends ScreenController {
 			break;
 
 		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA:
+			isNeedToSave = true;
 			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST,
 					Uri.fromFile(new File(mCurrentPhotoPath)));
 			break;
 
 		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA:
+			isNeedToSave = true;
 			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND,
 					Uri.fromFile(new File(mCurrentPhotoPath)));
 			break;
 
 		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY:
+			isNeedToSave = false;
 			setAndStartCropIntent(Constants.RequestCodes.CROP_FIRST,
 					data.getData());
 			break;
 
 		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY:
+			isNeedToSave = false;
 			setAndStartCropIntent(Constants.RequestCodes.CROP_SECOND,
 					data.getData());
 			break;
@@ -233,7 +238,9 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private Bitmap setImageFromData(Intent data, ImageView imageView) {
-		galleryAddPic();
+		if (isNeedToSave == true) {
+			galleryAddPic();
+		}
 		final Bundle extras = data.getExtras();
 
 		Bitmap imageBitmapToReturn = null;
@@ -333,11 +340,13 @@ public class PostScreenController extends ScreenController {
 
 	private File createImageFile(Integer prefix) {
 		File dir = getAlbumDir();
-		dir.mkdir();
+		if (dir.exists() == false) {
+			dir.mkdir();
+		}
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("_yyyyMMdd_HHmmss")
 				.format(new Date());
-		String imageFileName = "image"+ prefix.toString() + timeStamp + "_";
+		String imageFileName = "image" + prefix.toString() + timeStamp + "_";
 		File image = null;
 		try {
 			image = File.createTempFile(imageFileName, ".jpg", getAlbumDir());
@@ -351,8 +360,9 @@ public class PostScreenController extends ScreenController {
 
 	private File getAlbumDir() {
 		File storageDir = new File(
-		Environment
-				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), Constants.URIs.APPLICATION_NAME);
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				Constants.URIs.APPLICATION_NAME);
 		return storageDir;
 	}
 
