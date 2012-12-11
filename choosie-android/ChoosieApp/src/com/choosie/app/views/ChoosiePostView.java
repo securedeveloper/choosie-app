@@ -223,7 +223,7 @@ public class ChoosiePostView extends RelativeLayout {
 			float h = ((TextView) commentView).getTextSize();
 			im.getLayoutParams().height = (int) h;
 			im.getLayoutParams().width = (int) h;
-			commentLayout.addView(commentView);
+			//commentLayout.addView(commentView);
 		}
 		if ((size > 3) && (i == 0)) {
 			TextView tv = new TextView(superController.getControllerForScreen(
@@ -238,7 +238,7 @@ public class ChoosiePostView extends RelativeLayout {
 				}
 			});
 			commentLayout.addView(tv);
-		} if (((i == size - 1) || (i == size - 2)) && (i != 0)) {
+		} if ((i == size - 1) || (i == size - 2) || (i == size - 3)) {
 			// build view for vurrent comment
 			View commentView = buildViewForComment(comment);
 			commentLayout.addView(commentView);
