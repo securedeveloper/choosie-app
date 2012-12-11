@@ -162,10 +162,10 @@ public class ChoosiePostView extends RelativeLayout {
 		List<Vote> lstVotes = post.getVotes();
 		for (Vote vote : lstVotes) {
 			// first, save commentier photo on sd
-			if (vote.getIsNeedToSave() == true){
-			Utils.saveURLonSD(vote.getUsers().getPhotoURL(),
-					superController);
-			vote.setsNeedToSave();
+			if (vote.getIsNeedToSave() == true) {
+				Utils.saveURLonSD(vote.getUsers().getPhotoURL(),
+						superController);
+				vote.setsNeedToSave();
 			}
 		}
 
@@ -197,20 +197,54 @@ public class ChoosiePostView extends RelativeLayout {
 
 	private void loadCommentsToView(ChoosiePostData post) {
 		final LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
+		final LinearLayout commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
 		List<Comment> lstComment = post.getComments();
+		int i = 0;
 		for (Comment comment : lstComment) {
 			// first, save commentier photo on sd
 			if (comment.getIsNeedToSave() == true) {
-				Utils.saveURLonSD(
-						comment.getUser().getPhotoURL(), superController);
+				Utils.saveURLonSD(comment.getUser().getPhotoURL(),
+						superController);
 				comment.setIsNeedToSave();
 			}
+			if (i == 0) {
+				commentLayoutMain.setVisibility(LinearLayout.VISIBLE);
+			}
+			showCommentByLocatin(commentLayout, lstComment.size(), i, comment);
+			i++;
+		}
+	}
+
+	private void showCommentByLocatin(final LinearLayout commentLayout,
+			int size, int i, Comment comment) {
+		if (i == 0) { // build first comment
+			View commentView = buildViewForComment(comment);
+			ImageView im = (ImageView) findViewById(R.id.chat_icon);
+			float h = ((TextView) commentView).getTextSize();
+			im.getLayoutParams().height = (int) h;
+			im.getLayoutParams().width = (int) h;
+			commentLayout.addView(commentView);
+		}
+		if ((size > 3) && (i == 0)) {
+			TextView tv = new TextView(superController.getControllerForScreen(
+					Screen.FEED).getActivity());
+			tv.setText("View all " + size + " comments");
+			tv.setTextColor(superController.getActivity().getResources()
+					.getColor(R.color.Gray));
+			tv.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View arg0) {
+					superController.switchToCommentScreen(choosiePost);
+				}
+			});
+			commentLayout.addView(tv);
+		} if (((i == size - 1) || (i == size - 2)) && (i != 0)) {
 			// build view for vurrent comment
 			View commentView = buildViewForComment(comment);
 			commentLayout.addView(commentView);
 		}
 	}
-	
+
 	private TextView buildViewForComment(Comment comment) {
 		TextView tv = new TextView(superController.getControllerForScreen(
 				Screen.FEED).getActivity());
