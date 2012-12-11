@@ -209,7 +209,7 @@ public class CommentScreen extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			setResult(RESULT_CANCELED, null);
-			resetCommetnScreen();
+			resetCommentScreen();
 			finish();
 			return true;
 		}
@@ -217,7 +217,7 @@ public class CommentScreen extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 
-	private void resetCommetnScreen() {
+	private void resetCommentScreen() {
 		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
 		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
 		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
