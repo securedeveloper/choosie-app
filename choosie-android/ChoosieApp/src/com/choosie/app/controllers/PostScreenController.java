@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils.TruncateAt;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -63,7 +64,6 @@ public class PostScreenController extends ScreenController {
 		questionText.setInputType(EditorInfo.TYPE_NULL);
 		shareOnFacebookTb = (ToggleButton) view
 				.findViewById(R.id.shareOnFacebookToggleButton);
-		// questionText.setFocusable(false);
 
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
@@ -79,8 +79,6 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
-		// questionText.setFocusableInTouchMode(true);
-		// questionText.setFocusable(true);
 		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
@@ -318,8 +316,8 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void resetPost() {
-		image1.setImageResource(android.R.drawable.ic_menu_crop);
-		image2.setImageResource(android.R.drawable.ic_menu_crop);
+		image1.setImageResource(R.drawable.camera);
+		image2.setImageResource(R.drawable.camera);
 		image1.setBackgroundDrawable(getActivity().getResources().getDrawable(
 				R.drawable.image_frame_post));
 		image2.setBackgroundDrawable(getActivity().getResources().getDrawable(
