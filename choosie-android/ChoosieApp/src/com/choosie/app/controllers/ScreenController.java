@@ -2,6 +2,7 @@ package com.choosie.app.controllers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.KeyEvent;
 import android.view.View;
 
 public abstract class ScreenController {
@@ -39,5 +40,10 @@ public abstract class ScreenController {
 
 	public Activity getActivity() {
 		return superController.getActivity();
+	}
+
+	public void onKeyDown(int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		
 	}
 }

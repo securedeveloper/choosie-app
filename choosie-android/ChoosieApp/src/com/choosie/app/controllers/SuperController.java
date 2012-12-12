@@ -28,6 +28,7 @@ import android.util.Pair;
 import android.widget.Toast;
 
 public class SuperController {
+	private Screen currentScreen;
 	private Activity activity;
 	private ClientBase client;
 	private final Caches caches = new Caches(this);
@@ -64,6 +65,8 @@ public class SuperController {
 			public void onFinish(Void param) {
 			}
 		});
+		
+		setCurrentScreen(Screen.FEED);
 	}
 
 	public void switchToScreen(Screen screenToShow) {
@@ -234,5 +237,13 @@ public class SuperController {
 
 	public Activity getActivity() {
 		return this.activity;
+	}
+	
+	public Screen getCurrentScreen(){
+		return currentScreen;
+	}
+	
+	public void setCurrentScreen(Screen screen){
+		currentScreen = screen;
 	}
 }

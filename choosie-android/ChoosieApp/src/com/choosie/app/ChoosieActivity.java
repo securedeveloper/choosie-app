@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -84,4 +85,25 @@ public class ChoosieActivity extends Activity {
 			superController.onActivityResult(resultCode, data);
 		}
 	}
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		switch (superController.getCurrentScreen()){
+		case POST:
+			superController.getControllerForScreen(Screen.POST).onKeyDown(keyCode, event);
+			break;
+		case FEED:
+			finish();
+			break;
+		}
+		 
+		return true;
+	 }
+	
+	
 }

@@ -3,6 +3,7 @@ package com.choosie.app.controllers;
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
+import com.choosie.app.Screen;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.client.RealClient;
 
@@ -65,6 +66,7 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
+		superController.setCurrentScreen(Screen.FEED);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_feed))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));

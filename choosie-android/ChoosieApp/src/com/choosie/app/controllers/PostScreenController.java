@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils.TruncateAt;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -45,7 +46,6 @@ public class PostScreenController extends ScreenController {
 	private String mQuestion;
 	private ImageView image1;
 	private ImageView image2;
-	private EditText questionText;
 	private Button buttonSubmit;
 	private ToggleButton shareOnFacebookTb;
 	private String mCurrentPhotoPath;
@@ -60,7 +60,7 @@ public class PostScreenController extends ScreenController {
 		image1 = (ImageView) view.findViewById(R.id.image_photo1);
 		image2 = (ImageView) view.findViewById(R.id.image_photo2);
 		buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-		questionText = (EditText) view.findViewById(R.id.editText_question);
+		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
 		questionText.setInputType(EditorInfo.TYPE_NULL);
 		shareOnFacebookTb = (ToggleButton) view
 				.findViewById(R.id.shareOnFacebookToggleButton);
@@ -79,6 +79,8 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
+		superController.setCurrentScreen(Screen.POST);
+		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
 		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
@@ -87,6 +89,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
+		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
 		questionText.setInputType(EditorInfo.TYPE_NULL);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
@@ -279,6 +282,7 @@ public class PostScreenController extends ScreenController {
 					"Please add two photos", Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
+			EditText questionText = (EditText) view.findViewById(R.id.editText_question);
 			mQuestion = questionText.getText().toString();
 			final ProgressBar progressBar = (ProgressBar) getActivity()
 					.findViewById(R.id.progressBarPost);
@@ -331,7 +335,7 @@ public class PostScreenController extends ScreenController {
 		mImage1 = null;
 		mImage2 = null;
 		mQuestion = null;
-
+		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
 		questionText.setText("");
 
 	}
@@ -371,6 +375,11 @@ public class PostScreenController extends ScreenController {
 		Uri contentUri = Uri.fromFile(f);
 		mediaScanIntent.setData(contentUri);
 		getActivity().sendBroadcast(mediaScanIntent);
+	}
+	
+	@Override
+	public void onKeyDown(int keyCode, KeyEvent event) {
+		superController.switchToScreen(Screen.FEED);		
 	}
 
 }
