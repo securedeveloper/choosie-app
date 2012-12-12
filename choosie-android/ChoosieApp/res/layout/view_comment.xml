@@ -4,58 +4,85 @@
     android:layout_height="match_parent" >
 
     <RelativeLayout
-        android:id="@+id/LinearLayout_view_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:background="#FFFFFFFF"
-        android:orientation="horizontal" >
-
-        <ImageView
-            android:id="@+id/commentScreen_commentierPhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="4dp"
-            android:adjustViewBounds="true"
-            android:scaleType="matrix"
-            android:src="@drawable/ic_action_search" />
-
-        <TextView
-            android:id="@+id/view_comment_comment"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center_vertical"
-            android:layout_toRightOf="@+id/commentScreen_commentierPhoto"
-            android:text="Comment" />
+        android:background="#FFFFFFFF" >
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/view_comment_comment"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/commentScreen_commentierPhoto"
-            android:orientation="horizontal"
-            android:paddingRight="2dp" >
+            android:id="@+id/layout_images_comment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_below="@+id/layout_user_comments"
+            android:orientation="horizontal" >
 
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="@string/how_long_ago_was_it_taken"
-                android:src="@drawable/simple_icon_time_120px" />
-            <!-- android:tint="#88888888" -->
+                android:id="@+id/photo1_comment_screen"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:src="@android:drawable/divider_horizontal_dark" />
 
-            <TextView
-                android:id="@+id/commentScreen_commentTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="25s"
-                android:textColor="#FF888888" />
+            <ImageView
+                android:id="@+id/photo2_comment_screen"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:src="@android:drawable/divider_horizontal_dark" />
         </LinearLayout>
 
-       
+        <RelativeLayout
+            android:id="@+id/LinearLayout_view_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/layout_images_comment"
+            android:background="#FFFFFFFF"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/commentScreen_commentierPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:adjustViewBounds="true"
+                android:scaleType="matrix"
+                android:src="@drawable/ic_action_search" />
+
+            <TextView
+                android:id="@+id/view_comment_comment"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center_vertical"
+                android:layout_toRightOf="@+id/commentScreen_commentierPhoto"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_comment_comment"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/commentScreen_commentierPhoto"
+                android:orientation="horizontal"
+                android:paddingRight="2dp" >
+
+                <ImageView
+                    android:id="@+id/view_comment_clockImage"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@string/how_long_ago_was_it_taken"
+                    android:src="@drawable/simple_icon_time_120px" />
+                <!-- android:tint="#88888888" -->
+
+                <TextView
+                    android:id="@+id/commentScreen_commentTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#FF888888" />
+            </LinearLayout>
+        </RelativeLayout>
     </RelativeLayout>
 
 </merge>

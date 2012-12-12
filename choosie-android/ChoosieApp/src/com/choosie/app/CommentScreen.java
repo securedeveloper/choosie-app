@@ -73,7 +73,7 @@ public class CommentScreen extends Activity {
 
 				CommentData item = getItem(position);
 
-				return createViewComment(item);
+				return createViewComment(item, intent, position);
 			}
 		};
 
@@ -93,32 +93,40 @@ public class CommentScreen extends Activity {
 		createdAtList = intent
 				.getCharSequenceArrayListExtra(Constants.IntentsCodes.createdAtList);
 
-		for (int i = 0; i < nameList.size(); i++) {
-			CommentData newCommentData = new CommentData(nameList.get(i),
-					commentList.get(i), commentierPhotoUrlList.get(i),
-					createdAtList.get(i));
-			adi.add(newCommentData);
+		// if there are no comments - put a dummy item for showing the pictures
+		if (nameList.size() == 0) {
+			adi.add(new CommentData(true));
+		} else {
+			for (int i = 0; i < nameList.size(); i++) {
+				CommentData newCommentData = new CommentData(nameList.get(i),
+						commentList.get(i), commentierPhotoUrlList.get(i),
+						createdAtList.get(i));
+				adi.add(newCommentData);
+			}
 		}
+
 		return adi;
 	}
 
 	private void fillCommentView(Intent intent) {
 
-		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
-		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
+		// final ImageView imageViewPhoto1 = (ImageView)
+		// findViewById(R.id.photo1_comment_screen);
+		// final ImageView imageViewPhoto2 = (ImageView)
+		// findViewById(R.id.photo2_comment_screen);
 		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
 
 		// get the images Strings from the intent
 
-		String photo1Path = intent
-				.getStringExtra(Constants.IntentsCodes.photo1Path);
-		String photo2Path = intent
-				.getStringExtra(Constants.IntentsCodes.photo2Path);
+		// String photo1Path = intent
+		// .getStringExtra(Constants.IntentsCodes.photo1Path);
+		// String photo2Path = intent
+		// .getStringExtra(Constants.IntentsCodes.photo2Path);
 		String userPhotoPath = intent
 				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
 
-		setImageFromPath(photo1Path, imageViewPhoto1);
-		setImageFromPath(photo2Path, imageViewPhoto2);
+		// setImageFromPath(photo1Path, imageViewPhoto1);
+		// setImageFromPath(photo2Path, imageViewPhoto2);
 		setImageFromPath(userPhotoPath, imageViewUserPhoto);
 
 		// set the question
@@ -126,7 +134,7 @@ public class CommentScreen extends Activity {
 				.setText(intent.getStringExtra("question"));
 	}
 
-	private View createViewComment(CommentData item) {
+	private View createViewComment(CommentData item, Intent intent, int position) {
 		LinearLayout itemView = new LinearLayout(this);
 		// itemView.inflate(this.getContext(), R.id.LinearLayout_view_comment,
 		// parent);
@@ -135,22 +143,47 @@ public class CommentScreen extends Activity {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_comment, itemView);
 
-		// set the comment text
-		TextView tv = (TextView) itemView
-				.findViewById(R.id.view_comment_comment);
-		setTextOntv(item, tv);
+		if ((position == 0) || (item.checkIfDummyComment() == true)) {
+			final ImageView imageViewPhoto1 = (ImageView) itemView
+					.findViewById(R.id.photo1_comment_screen);
+			final ImageView imageViewPhoto2 = (ImageView) itemView
+					.findViewById(R.id.photo2_comment_screen);
 
-		// set the commentier photo
-		ImageView commentierPhotoImageView = (ImageView) itemView
-				.findViewById(R.id.commentScreen_commentierPhoto);
-		commentierPhotoImageView.setImageBitmap(BitmapFactory.decodeFile(item
-				.getcommentierPhotoPath()));
+			String photo1Path = intent
+					.getStringExtra(Constants.IntentsCodes.photo1Path);
+			String photo2Path = intent
+					.getStringExtra(Constants.IntentsCodes.photo2Path);
 
-		// set the comment time
-		TextView commentTime = (TextView) itemView
-				.findViewById(R.id.commentScreen_commentTime);
-		commentTime.setText(item.getCreatedAt() + " ago");
+			setImageFromPath(photo1Path, imageViewPhoto1);
+			setImageFromPath(photo2Path, imageViewPhoto2);
+		} else {
+			LinearLayout imagesLayout = (LinearLayout) itemView
+					.findViewById(R.id.layout_images_comment);
+			imagesLayout.setVisibility(View.GONE);
+		}
+		
+		//comtinue only if it is a real comment
+		if (item.checkIfDummyComment() == false) {
 
+			// set the comment text
+			TextView tv = (TextView) itemView
+					.findViewById(R.id.view_comment_comment);
+			setTextOntv(item, tv);
+
+			// set the commentier photo
+			ImageView commentierPhotoImageView = (ImageView) itemView
+					.findViewById(R.id.commentScreen_commentierPhoto);
+			commentierPhotoImageView.setImageBitmap(BitmapFactory
+					.decodeFile(item.getcommentierPhotoPath()));
+
+			// set the comment time
+			TextView commentTime = (TextView) itemView
+					.findViewById(R.id.commentScreen_commentTime);
+			commentTime.setText(item.getCreatedAt() + " ago");
+		}
+		else{
+			((ImageView) itemView.findViewById(R.id.view_comment_clockImage)).setVisibility(View.GONE);
+		}
 		return itemView;
 	}
 
@@ -222,19 +255,21 @@ public class CommentScreen extends Activity {
 		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
 		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
 
-		Bitmap image1Bitmap = ((BitmapDrawable) imageViewPhoto1.getDrawable())
-				.getBitmap();
-		Bitmap image2Bitmap = ((BitmapDrawable) imageViewPhoto2.getDrawable())
-				.getBitmap();
+		// Bitmap image1Bitmap = ((BitmapDrawable)
+		// imageViewPhoto1.getDrawable())
+		// .getBitmap();
+		// Bitmap image2Bitmap = ((BitmapDrawable)
+		// imageViewPhoto2.getDrawable())
+		// .getBitmap();
 		Bitmap userPhotoBitmap = ((BitmapDrawable) imageViewUserPhoto
 				.getDrawable()).getBitmap();
 
-		if (image1Bitmap != null) {
-			image1Bitmap.recycle();
-		}
-		if (image2Bitmap != null) {
-			image2Bitmap.recycle();
-		}
+		// if (image1Bitmap != null) {
+		// image1Bitmap.recycle();
+		// }
+		// if (image2Bitmap != null) {
+		// image2Bitmap.recycle();
+		// }
 		if (userPhotoBitmap != null) {
 			userPhotoBitmap.recycle();
 		}
