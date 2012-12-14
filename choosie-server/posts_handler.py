@@ -51,5 +51,5 @@ class PostsHandler(webapp2.RequestHandler):
     logging.info("share:" + self.request.get("share_to_fb", default_value="off"))
     if (self.request.get("share_to_fb") == "on"):
       logging.info("publishing!!")
-      choosie_post.publish_to_facebook()  
+      choosie_post.publish_to_facebook(self.request.host_url)  
     self.redirect('/')

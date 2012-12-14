@@ -43,6 +43,7 @@ import hmac
 import base64
 import logging
 import socket
+import logging
 
 # Find a JSON parser
 try:
@@ -205,9 +206,9 @@ class GraphAPI(object):
         #it would have been nice to reuse self.request;
         #but multipart is messy in urllib
         post_args = {
-                  'access_token': self.access_token,
-                  'source': image,
-                  'message': message
+            'access_token': self.access_token,
+            'source': image,
+            'message': message,
         }
         post_args.update(kwargs)
         content_type, body = self._encode_multipart_form(post_args)
@@ -227,7 +228,7 @@ class GraphAPI(object):
             # Raise an error if we got one, but don't not if Facebook just
             # gave us a Bool value
             if (response and isinstance(response, dict) and
-                response.get("error")):
+                    response.get("error")):
                 raise GraphAPIError(response)
         except ValueError:
             response = data

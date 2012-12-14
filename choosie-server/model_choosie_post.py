@@ -1,15 +1,18 @@
 from google.appengine.ext import db
+from google.appengine.ext import deferred
 from google.appengine.api import images
 
 from cache_controller import CacheController
 from model_user import User
 from model_vote import Vote
 from model_comment import Comment
+from model_configuration import ChoosieConfiguration
 from utils import Utils
 
 import ast
 import facebook
 import logging
+import sys
 
 class ChoosiePost(db.Model):
   photo1 = db.BlobProperty(required = True)
@@ -64,11 +67,21 @@ class ChoosiePost(db.Model):
   def photo_path(self, which_photo):
     return '/photo?which_photo=%s&post_key=%s' % (which_photo, self.key())
 
-  def publish_to_facebook(self):
+  def publish_to_facebook(self, domain):
     Utils.create_post_image(self)
-    attach = {"picture": self.photo}
-    graph = facebook.GraphAPI(self.user.fb_access_token)
-    response = graph.put_wall_post("ola!", attach)
+    if ChoosieConfiguration.post_to_fb_setting():
+      deferred.defer(self.publish_dillema_on_wall, self.key(), domain)
+    else:
+      logging.info("skipped fb publishing due to configuration settings")
+
+  def publish_dillema_on_wall(self, choosie_post_key, domain):
+    try:
+      choosie_post = db.get(choosie_post_key)
+      logging.info("publishing on wall")
+      graph = facebook.GraphAPI(choosie_post.get_user().fb_access_token)
+      response = graph.put_object("me", "photos", message="You can put a caption here", url=(domain + self.photo_path(0)))
+    except Exception, e:
+       logging.error("Facebook publishing failed: %s" % e)
 
   def add_comment_to_post(self, comment):
     db.run_in_transaction(ChoosiePost.add_comment_to_post_transaction, self.key(), comment)

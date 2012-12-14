@@ -5,6 +5,7 @@ from datetime import datetime
 import urllib2
 import cStringIO
 import logging
+import os
 
 class Utils():
     @staticmethod
@@ -29,11 +30,16 @@ class Utils():
     @staticmethod
     def create_post_image(choosie_post):
       img1 = images.Image(choosie_post.photo1)
-      img1.resize(240,352)
       img2 = images.Image(choosie_post.photo2)
-      img2.resize(240,352)
+      icon_1_path = os.path.join(os.path.split(__file__)[0], '1.png')
+      icon_2_path = os.path.join(os.path.split(__file__)[0], '2.png')
+      icon1 = open(icon_1_path).read()
+      icon2 = open(icon_2_path).read()
+      img_icon_1 = images.Image(image_data=icon1)
+      img_icon_2 = images.Image(image_data=icon2)
       composite = images.composite([(img1, 0, 0, 1.0, images.TOP_LEFT),
-      (img2, 240, 0, 1.0, images.TOP_LEFT)], 480, 704)
+      (img2, img1.width, 0, 1.0, images.TOP_LEFT), (img_icon_1, 0, 0, 0.3, images.TOP_LEFT),
+      (img_icon_2, img1.width, 0, 0.3, images.TOP_LEFT)], img1.width + img2.width, img1.height)
       choosie_post.photo = db.Blob(composite)
       choosie_post.put()
       logging.info('___saved')
