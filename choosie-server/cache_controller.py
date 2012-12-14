@@ -44,7 +44,7 @@ class CacheController(object):
   def get_user_by_fb_id(user_fb_id):
     user = memcache.get(user_fb_id, namespace=USER_FB_ID_NAMESPACE)
     if user is not None:
-      logging.info('Skipped a data store call for comments.')
+      logging.info('Skipped a data store call for user.')
       return user
     else:
       logging.info('Retreiving user with fb_uid [%s] from data store.' % user_fb_id)
