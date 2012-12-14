@@ -15,7 +15,7 @@ class CacheController(object):
       logging.info('Skipped a data store call for %s.' % key)
       return value
     else:
-      logging.info('Retreiving [%s] from data store.' % key)
+      logging.info('Retrieving [%s] from data store.' % key)
       value = db.get(key)
       CacheController.set_model(value)
       return value
@@ -47,7 +47,8 @@ class CacheController(object):
       logging.info('Skipped a data store call for user.')
       return user
     else:
-      logging.info('Retreiving user with fb_uid [%s] from data store.' % user_fb_id)
+      logging.info('Retrieving user with fb_uid [%s] from data store.' % user_fb_id)
       user = db.GqlQuery("SELECT * from User where fb_uid = :1", user_fb_id).get()
-      memcache.set(user_fb_id, user, namespace=USER_FB_ID_NAMESPACE)
+      if user is not None:
+        memcache.set(user_fb_id, user, namespace=USER_FB_ID_NAMESPACE)
       return user

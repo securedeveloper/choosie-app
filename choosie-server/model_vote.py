@@ -12,29 +12,40 @@ class Vote(db.Model):
   user_fb_id = db.StringProperty()
   created_at = db.DateTimeProperty(auto_now_add=True)
   vote_for = db.IntegerProperty(required=True,choices=set([1, 2]))
+  is_scraped = db.BooleanProperty()
+  scraped_user_details = db.StringProperty()
 
   # Returns previous vote for the same user for the same post
   def prev_vote_for_user_for_post(self):
     return Vote.all().filter("user_fb_id =", self.user_fb_id).ancestor(self.parent()).get()
 
   def to_json(self):
-    return {"user": self.get_user().to_short_json(),
+    user_details = ast.literal_eval(self.scraped_user_details) if self.is_scraped else self.get_user().to_short_json() 
+    return {"user": user_details,
             "vote_for": self.vote_for,
             "created_at": str(self.created_at.replace(microsecond=0))
            }
 
   def to_string_for_choosie_post(self):
-    return str({"user_fb_id": self.user_fb_id,
-                "vote_for": self.vote_for,
-                "created_at": str(self.created_at.replace(microsecond=0))})
+    as_dict = {"vote_for": self.vote_for,
+               "created_at": str(self.created_at.replace(microsecond=0))}
+    # Two different string represantations (see comment in model_comment.py)
+    if not self.is_scraped:
+      as_dict["user_fb_id"] = self.user_fb_id
+    else:
+      as_dict["user"] = ast.literal_eval(self.scraped_user_details)
+    return str(as_dict)
 
   @staticmethod
-  def from_string_for_choosie_post(shallow_vote_str):
-    shallow_vote_dict = ast.literal_eval(shallow_vote_str)
-    user = CacheController.get_user_by_fb_id(shallow_vote_dict["user_fb_id"])
-    return {"user": user.to_short_json(),
-            "vote_for": shallow_vote_dict["vote_for"],
-            "created_at": shallow_vote_dict["created_at"]}
+  def from_string_for_choosie_post(vote_str):
+    as_dict = ast.literal_eval(vote_str)
+    if "user_fb_id" in as_dict:
+      # For option 1 (regualr, not scraped comments), we need to also get the user
+      # details.
+      user = CacheController.get_user_by_fb_id(as_dict["user_fb_id"])
+      del as_dict["user_fb_id"]
+      as_dict["user"] = user.to_short_json()
+    return as_dict
 
              
   def get_user(self):

@@ -26,7 +26,7 @@ class VoteHandler(webapp2.RequestHandler):
     if (prev_vote is not None and prev_vote.vote_for != vote_for):
       prev_vote.vote_for = vote_for
       prev_vote.put()
-      ChoosiePost.add_vote_to_post(choosie_post, vote)
+      choosie_post.add_vote_to_post(vote)
       self.response.write('Vote changed to photo number %d.' % vote_for)
     #if voted to same pic - error
     elif(prev_vote != None):

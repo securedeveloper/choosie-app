@@ -41,13 +41,10 @@ class User(db.Model):
                   fb_access_token_expdate = fb_access_token_expdate)
       return user
 
-    def avatar(self):
-      return 'http://graph.facebook.com/%s/picture' % self.username
-
     def to_short_json(self):
       return {"fb_uid": self.fb_uid,
               "first_name": self.first_name,
               "last_name": self.last_name,
-              "avatar": self.avatar()}
+              "avatar": Utils.get_avatar(self.username)}
     
 

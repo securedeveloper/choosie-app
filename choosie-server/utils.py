@@ -57,3 +57,6 @@ class Utils():
     def parse_utf_format_datetime(datetime_str):
         #"2008-09-03T20:56:35+450686Z
         return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S+%f")
+    @staticmethod
+    def get_avatar(fb_id_or_username):
+      return 'http://graph.facebook.com/%s/picture' % fb_id_or_username

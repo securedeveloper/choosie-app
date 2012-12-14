@@ -16,7 +16,7 @@ class CommentsHandler(webapp2.RequestHandler):
                       user_fb_id=self.request.get('fb_uid'),
                       text=text)
     comment.put()
-    ChoosiePost.add_comment_to_post(choosie_post, comment)
+    choosie_post.add_comment_to_post(comment)
     # Make sure the ChoosiePost's comments are invalidated in cache, so that next time
     # they are asked for, the updated are retreived.
     Comment.invalidate_comments(self.request.get('post_key'))

@@ -134,16 +134,27 @@ width: 50%;
 					<b>Comments:</b>
 					{% for comment in choosie_post.comments %}
 					<div class="single_comment">
+						<img src="{{ comment.user.avatar }}">
 						<b>{{ comment.user.first_name }} {{ comment.user.last_name }}</b>
 						{{ comment.text }}
 					</div>
 					{% endfor %}
 					<form action="/comments/new" enctype="multipart/form-data" method="post">
-						Comment:<input type="text" name="text"/>
-						<input type="hidden" value="100004697466881" name="fb_uid"/>
+						Comment: <input type="text" name="text"/>
 						<br>
+						<input type="hidden" value="100004697466881" name="fb_uid"/>
 						<input type="hidden" name="post_key" value="{{choosie_post.key}}"/>
 						<input type="submit" value="Add">
+					</form>
+				</div>
+				<div class="debug">
+<!--					<b>Key:</b>{{choosie_post.key|escape}} -->
+					<b>Scape comments:</b>
+					<form action="/scrape" enctype="multipart/form-data" method="post">
+						<div>Access Token:<input type="hidden" name="fb_access_token" value="BAAHVHgMjmJwBAFBRxHpWbGJMAzIWAtYfqEyYQSISOYhzjuZCvvjWhO6YfjiccSUlrulxqqevJq7yZAoaxR0zQmmhFgmuI3JBnNZBZAMAyMKW0gfGl7TuUlglrEzGqKHsN7hH5L7GsQZDZD" size="100"/></div>
+						<div>post_id:<Input type = "text" name ="fb_post_id" value="100004697466881_114558872044028" size="35"/></div>
+						<input type="hidden" name="choosie_post_key" value="{{choosie_post.key}}">
+						<div><input type="submit" value="Scrape!"></div>
 					</form>
 				</div>
 			</div>
@@ -184,7 +195,6 @@ width: 50%;
 		<form action="/scrape" enctype="multipart/form-data" method="post">
 			<div>Access Token:<input type="text" name="fb_access_token" value="BAAHVHgMjmJwBAFBRxHpWbGJMAzIWAtYfqEyYQSISOYhzjuZCvvjWhO6YfjiccSUlrulxqqevJq7yZAoaxR0zQmmhFgmuI3JBnNZBZAMAyMKW0gfGl7TuUlglrEzGqKHsN7hH5L7GsQZDZD" size="100"/></div>
 			<div>post_id:<Input type = "text" name ="fb_post_id" value="100004697466881_114558872044028" size="35"/></div>
-
 			<div><input type="submit" value="Scrape!"></div>
 		</form>
 	</div>
