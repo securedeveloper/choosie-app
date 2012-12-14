@@ -9,6 +9,7 @@ from homepage_handler import HomepageHandler
 from login_handler import LoginHandler
 from comments_handler import CommentsHandler
 from post_item_handler import PostItemHandler
+from scrape_comments_handler import ScrapeCommentsHandler
 
 app = webapp2.WSGIApplication([('/', HomepageHandler),
                                ('/posts/new', PostsHandler),
@@ -18,5 +19,6 @@ app = webapp2.WSGIApplication([('/', HomepageHandler),
                                ('/login', LoginHandler),
                                ('/comments/new', CommentsHandler),
                                ('/posts/(.+)', PostItemHandler),
+                               ('/scrape', ScrapeCommentsHandler),
                                ],
                               debug=True)

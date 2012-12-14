@@ -1,11 +1,13 @@
 import ast
 import logging
+import json
 
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
 from cache_controller import CacheController
 from model_user import User
+from utils import Utils
 
 COMMENTS_NAMESPACE = 'COMMENTS_2'
 
@@ -52,5 +54,19 @@ class Comment(db.Model):
   @staticmethod
   def invalidate_comments(post_key):
     memcache.delete(post_key, namespace=COMMENTS_NAMESPACE)
-    
-   
+
+  @staticmethod
+  def parse_json_to_comments_array(json_comments):
+    data = json.loads(json_comments)
+    logging.info("parsed data: " + str(data))
+
+    json_data = data["data"]
+    logging.info("********** parsed json data: " + str(json_data))
+
+    comments = []
+    for json_comment in json_data:
+      comment = Comment(user_fb_id=json_comment["from"]["id"],
+                        created_at=Utils.parse_utf_format_datetime(json_comment["created_time"]),
+                        text=json_comment["message"])
+      comments.append(comment)
+      logging.info("Added new comment: " + comment.to_string_for_choosie_post())

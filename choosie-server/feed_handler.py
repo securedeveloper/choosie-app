@@ -28,7 +28,7 @@ class FeedHandler(webapp2.RequestHandler):
         if cursor:
             posts.with_cursor(cursor)
         if timestamp:
-            created_after = FeedHandler.parse_isoformat_datetime(timestamp)
+            created_after = Utils.parse_iso_format_datetime(timestamp)
             posts.filter('created_at >', created_after)
         posts.order("-created_at")
         posts_result = []
@@ -38,7 +38,3 @@ class FeedHandler(webapp2.RequestHandler):
         CacheController.set_multi_models(posts_result)
         return (posts_result, new_cursor)
         
-    @staticmethod
-    def parse_isoformat_datetime(datetime_str):
-        #"2008-09-03T20:56:35.450686Z
-        return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%f")

@@ -1,10 +1,11 @@
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
+from google.appengine.api import images
 from datetime import datetime
 import urllib2
 import cStringIO
-from google.appengine.api import images
 import logging
+
 class Utils():
     @staticmethod
     def get_user_from_fb(fb_access_token):
@@ -37,4 +38,22 @@ class Utils():
       choosie_post.put()
       logging.info('___saved')
 
-    
+    @staticmethod
+    def get_json_comments_from_fb_post(fb_post_id, access_token):
+      url = "https://graph.facebook.com/" + fb_post_id + "/comments?access_token=" + access_token
+      logging.info('URL to fetch: ' + url)
+      result = urlfetch.fetch(url);
+      logging.info('result: ' + str(result.content))
+      if result.status_code != 200:
+        return None
+      return result.content
+
+    @staticmethod
+    def parse_iso_format_datetime(datetime_str):
+        #"2008-09-03T20:56:35.450686Z
+        return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S.%f")
+
+    @staticmethod
+    def parse_utf_format_datetime(datetime_str):
+        #"2008-09-03T20:56:35+450686Z
+        return datetime.strptime(datetime_str, "%Y-%m-%dT%H:%M:%S+%f")
