@@ -1,3 +1,4 @@
+import ast
 import logging
 
 from google.appengine.api import memcache
@@ -9,7 +10,6 @@ from model_user import User
 COMMENTS_NAMESPACE = 'COMMENTS_2'
 
 class Comment(db.Model):
-  user = db.ReferenceProperty(User, required = False)
   user_fb_id = db.StringProperty()
   created_at = db.DateTimeProperty(auto_now_add = True)
   text = db.StringProperty(required = True)
@@ -18,14 +18,21 @@ class Comment(db.Model):
     return {"user": self.get_user().to_short_json(),
             "text": self.text,
             "created_at": str(self.created_at.replace(microsecond=0))}
+  
+  def to_shallow_dict(self):
+    return {"user_fb_id": self.user_fb_id,
+            "text": self.text,
+            "created_at": str(self.created_at.replace(microsecond=0))}
+
+  @staticmethod
+  def deepen_comment(shallow_comment_str):
+    shallow_comment = ast.literal_eval(shallow_comment_str)
+    user = CacheController.get_user_by_fb_id(shallow_comment["user_fb_id"])
+    return {"user": user.to_short_json(),
+            "text": shallow_comment["text"],
+            "created_at": shallow_comment["created_at"]}
 
   def get_user(self):
-    if not self.user_fb_id:
-      # Old versions had the 'user' reference property. We switched to user_fb_id.
-      self.user_fb_id = self.user.fb_uid
-      self.user = None
-      self.put()
-
     return CacheController.get_user_by_fb_id(self.user_fb_id)
 
 

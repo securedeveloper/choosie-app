@@ -1,3 +1,4 @@
+import ast
 import logging
 
 from cache_controller import CacheController
@@ -8,28 +9,35 @@ from model_user import User
 VOTES_NAMESPACE = 'VOTES_2'
 
 class Vote(db.Model):
-  user = db.ReferenceProperty(User, required = False)
   user_fb_id = db.StringProperty()
   created_at = db.DateTimeProperty(auto_now_add=True)
   vote_for = db.IntegerProperty(required=True,choices=set([1, 2]))
 
-  #Returns previous vote for the same user for the same post
+  # Returns previous vote for the same user for the same post
   def prev_vote_for_user_for_post(self):
-    return Vote.all().filter("user =", self.user).ancestor(self.parent()).get()
+    return Vote.all().filter("user_fb_id =", self.user_fb_id).ancestor(self.parent()).get()
 
   def to_json(self):
     return {"user": self.get_user().to_short_json(),
-            "vote_for":self.vote_for,
+            "vote_for": self.vote_for,
             "created_at": str(self.created_at.replace(microsecond=0))
            }
-           
-  def get_user(self):
-    if not self.user_fb_id:
-      # Old versions had the 'user' reference property. We switched to user_fb_id.
-      self.user_fb_id = self.user.fb_uid
-      self.user = None
-      self.put()
 
+  def to_shallow_dict(self):
+    return {"user_fb_id": self.user_fb_id,
+            "vote_for": self.vote_for,
+            "created_at": str(self.created_at.replace(microsecond=0))}
+
+  @staticmethod
+  def deepen_vote(shallow_vote_str):
+    shallow_vote_dict = ast.literal_eval(shallow_vote_str)
+    user = CacheController.get_user_by_fb_id(shallow_vote_dict["user_fb_id"])
+    return {"user": user.to_short_json(),
+            "vote_for": shallow_vote_dict["vote_for"],
+            "created_at": shallow_vote_dict["created_at"]}
+
+             
+  def get_user(self):
     return CacheController.get_user_by_fb_id(self.user_fb_id)
 
 
@@ -40,7 +48,7 @@ class Vote(db.Model):
       logging.info('Skipped a data store call for votes.')
       return votes
     else:
-      logging.info('Retreiving votes for [%s] from data store.' % post_key)
+      logging.info('Retrieving votes for [%s] from data store.' % post_key)
       post = CacheController.get_model(post_key)
       votes = Vote.all().ancestor(post)
       memcache.set(post_key, votes, namespace=VOTES_NAMESPACE)

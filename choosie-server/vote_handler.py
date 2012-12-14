@@ -26,12 +26,14 @@ class VoteHandler(webapp2.RequestHandler):
     if (prev_vote is not None and prev_vote.vote_for != vote_for):
       prev_vote.vote_for = vote_for
       prev_vote.put()
+      ChoosiePost.add_vote_to_post(choosie_post, vote)
       self.response.write('Vote changed to photo number %d.' % vote_for)
     #if voted to same pic - error
     elif(prev_vote != None):
        self.write_error("already voted!")
     else:
       vote.put()
+      ChoosiePost.add_vote_to_post(choosie_post, vote)
       # Make sure the ChoosiePost is invalidated in cache, so that next time it is asked
       # for, the updated one is retreived.
       Vote.invalidate_votes(self.request.get('post_key'))

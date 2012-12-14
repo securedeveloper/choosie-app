@@ -98,7 +98,8 @@ width: 50%;
 			{% for choosie_post in choosie_posts %}
 			<div class="chs-post">
 				<div class="chs-user-data">
-					<img src="{{ choosie_post.user.avatar }}">{{ choosie_post.user.first_name + ' ' + choosie_post.user.last_name }}
+					<img src="{{ choosie_post.user.avatar }}">
+					{{ choosie_post.user.first_name + ' ' + choosie_post.user.last_name }}
 				</div>
 				<div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
 				<div class="images">
@@ -106,10 +107,10 @@ width: 50%;
 					<img class="chs-img-right" src="/photo?which_photo=2&post_key={{ choosie_post.key }}"></img>
 				</div>
 				<div class="chs-votes">
-					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=1&post_key={{ choosie_post.key }}">
+					<a class="chs-vote" href="/votes/new?fb_uid=100004697466881&which_photo=1&post_key={{ choosie_post.key }}">
 						<span class="vote">Vote!!</span>
 					</a>
-					<a class="chs-vote" href="/votes/new?fb_uid=624205547&which_photo=2&post_key={{ choosie_post.key }}">
+					<a class="chs-vote" href="/votes/new?fb_uid=100004697466881&which_photo=2&post_key={{ choosie_post.key }}">
 						<span class="vote">Vote!!</span>
 					</a>
 				</div>
@@ -139,7 +140,7 @@ width: 50%;
 					{% endfor %}
 					<form action="/comments/new" enctype="multipart/form-data" method="post">
 						Comment:<input type="text" name="text"/>
-						<input type="hidden" value="624205547" name="fb_uid"/>
+						<input type="hidden" value="100004697466881" name="fb_uid"/>
 						<br>
 						<input type="hidden" name="post_key" value="{{choosie_post.key}}"/>
 						<input type="submit" value="Add">
