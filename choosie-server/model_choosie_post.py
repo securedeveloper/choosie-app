@@ -13,6 +13,7 @@ import ast
 import facebook
 import logging
 import sys
+from time import sleep
 
 class ChoosiePost(db.Model):
   photo1 = db.BlobProperty(required = True)
@@ -24,6 +25,7 @@ class ChoosiePost(db.Model):
   photo = db.BlobProperty()
   comments = db.StringListProperty()
   votes = db.StringListProperty()
+  fb_post_id = db.StringProperty()
 
   def to_json(self):
     return {"key": str(self.key()),
@@ -76,10 +78,16 @@ class ChoosiePost(db.Model):
 
   def publish_dillema_on_wall(self, choosie_post_key, domain):
     try:
+      sleep(5) #todo: make a loop 
       choosie_post = db.get(choosie_post_key)
       logging.info("publishing on wall")
       graph = facebook.GraphAPI(choosie_post.get_user().fb_access_token)
-      response = graph.put_object("me", "photos", message="You can put a caption here", url=(domain + self.photo_path(0)))
+      pic_url = (domain + self.photo_path(0))
+      # logging.info("url=" + pic_url)
+      # pic_url = "http://choosieapp.appspot.com/photo?which_photo=0&post_key=agxzfmNob29zaWVhcHByEwsSC0Nob29zaWVQb3N0GNutAww"
+      response = graph.put_object("me", "photos", message="You can put a caption here", url=pic_url)
+      choosie_post.fb_post_id = response['post_id']
+      choosie_post.put()
     except Exception, e:
        logging.error("Facebook publishing failed: %s" % e)
 
