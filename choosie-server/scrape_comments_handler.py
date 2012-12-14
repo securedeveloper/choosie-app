@@ -16,20 +16,25 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
     fb_post_id = str(self.request.get('fb_post_id'))
     fb_access_token = str(self.request.get('fb_access_token'))
     choosie_post_key = str(self.request.get('choosie_post_key'))
-    json_comments = Utils.get_json_comments_from_fb_post(fb_post_id, fb_access_token)
 
-    comments, votes = ScrapeCommentsHandler.parse_facebook_comments(json_comments)
-
-    if choosie_post_key:
-      choosie_post = CacheController.get_model(choosie_post_key)
-      if choosie_post:
-        choosie_post.add_scraped_comments_to_post(comments, votes)
-        logging.info("Adding %d scraped comments to ChoosiePost with key [%s].", len(comments), choosie_post_key)
+    comments, votes = ScrapeCommentsHandler.scrape_comments_and_votes_from_facebook(fb_post_id, fb_access_token, choosie_post_key)
 
     message = ("Scraped %d comments and %d votes.<br><br>Comments: %s<br><br><br><br>Votes: %s"
                % (len(comments), len(votes), json.dumps(comments), json.dumps([vote.to_json() for vote in votes])))
-
     self.response.write(message)
+
+
+  @staticmethod
+  def scrape_comments_and_votes_from_facebook(fb_post_id, fb_access_token, choosie_post_key):
+    json_comments = Utils.get_json_comments_from_fb_post(fb_post_id, fb_access_token)
+    comments, votes = ScrapeCommentsHandler.parse_facebook_comments(json_comments)
+
+    if choosie_post_key and (len(comments) > 0 or len(votes) > 0):
+      choosie_post = CacheController.get_model(choosie_post_key)
+      if choosie_post:
+        choosie_post.add_scraped_comments_to_post(comments, votes)
+    
+    return comments, votes
 
 
   @staticmethod
