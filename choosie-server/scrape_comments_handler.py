@@ -42,7 +42,7 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
       if choosie_post:
         choosie_post.add_scraped_comments_to_post(comments, votes)
     
-    return comments, votes
+    return comments, votes, None
 
 
   @staticmethod
