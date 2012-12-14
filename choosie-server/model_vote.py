@@ -23,13 +23,13 @@ class Vote(db.Model):
             "created_at": str(self.created_at.replace(microsecond=0))
            }
 
-  def to_shallow_dict(self):
-    return {"user_fb_id": self.user_fb_id,
-            "vote_for": self.vote_for,
-            "created_at": str(self.created_at.replace(microsecond=0))}
+  def to_string_for_choosie_post(self):
+    return str({"user_fb_id": self.user_fb_id,
+                "vote_for": self.vote_for,
+                "created_at": str(self.created_at.replace(microsecond=0))})
 
   @staticmethod
-  def deepen_vote(shallow_vote_str):
+  def from_string_for_choosie_post(shallow_vote_str):
     shallow_vote_dict = ast.literal_eval(shallow_vote_str)
     user = CacheController.get_user_by_fb_id(shallow_vote_dict["user_fb_id"])
     return {"user": user.to_short_json(),

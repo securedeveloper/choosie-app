@@ -19,13 +19,13 @@ class Comment(db.Model):
             "text": self.text,
             "created_at": str(self.created_at.replace(microsecond=0))}
   
-  def to_shallow_dict(self):
-    return {"user_fb_id": self.user_fb_id,
-            "text": self.text,
-            "created_at": str(self.created_at.replace(microsecond=0))}
+  def to_string_for_choosie_post(self):
+    return str({"user_fb_id": self.user_fb_id,
+                "text": self.text,
+                "created_at": str(self.created_at.replace(microsecond=0))})
 
   @staticmethod
-  def deepen_comment(shallow_comment_str):
+  def from_string_for_choosie_post(shallow_comment_str):
     shallow_comment = ast.literal_eval(shallow_comment_str)
     user = CacheController.get_user_by_fb_id(shallow_comment["user_fb_id"])
     return {"user": user.to_short_json(),
