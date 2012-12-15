@@ -3,8 +3,9 @@ package com.choosie.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.apphance.android.Log;
-import com.apphance.android.Apphance;
+//import com.apphance.android.Log;
+//import com.apphance.android.Apphance;
+import android.util.Log;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.GraphUser;
 import com.facebook.LoggingBehaviors;
@@ -34,7 +35,7 @@ public class StartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		// Starts an Apphance session using a dummy key and QA mode
-        Apphance.startNewSession(this, APP_KEY, Apphance.Mode.QA);
+//        Apphance.startNewSession(this, APP_KEY, Apphance.Mode.QA);
         
 		setContentView(R.layout.activity_start);
 		
@@ -47,6 +48,7 @@ public class StartActivity extends Activity {
 		Settings.addLoggingBehavior(LoggingBehaviors.INCLUDE_ACCESS_TOKENS);
 
 		Session session = Session.getActiveSession();
+		
 		if (session == null) {
 			if (savedInstanceState != null) {
 				session = Session.restoreSession(this, null, statusCallback,
@@ -61,7 +63,8 @@ public class StartActivity extends Activity {
 						.setCallback(statusCallback));
 			}
 		}
-
+		
+		Log.i(Constants.LOG_TAG, "on start permissions: " + session.getPermissions().toString());
 		updateView();
 	}
 

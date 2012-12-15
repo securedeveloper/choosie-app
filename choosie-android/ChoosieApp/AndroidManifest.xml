@@ -12,8 +12,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
+<!--     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission> -->
+<!--     <uses-permission android:name="android.permission.GET_TASKS"></uses-permission> -->
     
     <uses-sdk
         android:minSdkVersion="10"
@@ -35,15 +35,15 @@
             android:label="@string/title_activity_start"
             android:screenOrientation="portrait" >
             <intent-filter android:label="@string/app_name" >
-                <action android:name="com.apphance.android.LAUNCH" >
-                </action>
+<!--                 <action android:name="com.apphance.android.LAUNCH" > -->
+<!--                 </action> -->
 
-                <category android:name="android.intent.category.DEFAULT" >
-                </category>
-                <!-- <action android:name="android.intent.action.MAIN" /> -->
+<!--                 <category android:name="android.intent.category.DEFAULT" > -->
+<!--                 </category> -->
+                <action android:name="android.intent.action.MAIN" />
 
 
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -66,40 +66,40 @@
             android:label="@string/title_activity_votes_screen"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name="com.apphance.android.LauncherActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
-        <activity
-            android:name="com.apphance.android.ui.LoginActivity"
-            android:launchMode="singleInstance" >
-        </activity>
-        <activity
-            android:name="com.apphance.android.ui.TestCycleActivity"
-            android:launchMode="singleInstance" >
-        </activity>
-        <activity
-            android:name="com.apphance.android.ui.ProblemActivity"
-            android:configChanges="orientation"
-            android:launchMode="singleInstance" >
-        </activity>
+<!--         <activity -->
+<!--             android:name="com.apphance.android.LauncherActivity" -->
+<!--             android:theme="@android:style/Theme.Translucent.NoTitleBar" > -->
+<!--         </activity> -->
+<!--         <activity -->
+<!--             android:name="com.apphance.android.ui.LoginActivity" -->
+<!--             android:launchMode="singleInstance" > -->
+<!--         </activity> -->
+<!--         <activity -->
+<!--             android:name="com.apphance.android.ui.TestCycleActivity" -->
+<!--             android:launchMode="singleInstance" > -->
+<!--         </activity> -->
+<!--         <activity -->
+<!--             android:name="com.apphance.android.ui.ProblemActivity" -->
+<!--             android:configChanges="orientation" -->
+<!--             android:launchMode="singleInstance" > -->
+<!--         </activity> -->
 
-        <activity-alias
-            android:name=".ApphanceLauncherActivity"
-            android:targetActivity="com.apphance.android.LauncherActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" >
-                </action>
+<!--         <activity-alias -->
+<!--             android:name=".ApphanceLauncherActivity" -->
+<!--             android:targetActivity="com.apphance.android.LauncherActivity" > -->
+<!--             <intent-filter> -->
+<!--                 <action android:name="android.intent.action.MAIN" > -->
+<!--                 </action> -->
 
-                <category android:name="android.intent.category.LAUNCHER" >
-                </category>
-            </intent-filter>
-        </activity-alias>
+<!--                 <category android:name="android.intent.category.LAUNCHER" > -->
+<!--                 </category> -->
+<!--             </intent-filter> -->
+<!--         </activity-alias> -->
     </application>
 
-    <instrumentation
-        android:name="com.apphance.android.ApphanceInstrumentation"
-        android:targetPackage="com.choosie.app" >
-    </instrumentation>
+<!--     <instrumentation -->
+<!--         android:name="com.apphance.android.ApphanceInstrumentation" -->
+<!--         android:targetPackage="com.choosie.app" > -->
+<!--     </instrumentation> -->
 
 </manifest>
