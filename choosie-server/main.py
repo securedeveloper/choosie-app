@@ -4,6 +4,7 @@ import webapp2
 from feed_handler import FeedHandler
 from posts_handler import PostsHandler
 from image_handler import ImageHandler
+from image_handler import BlobImageServeHandler
 from vote_handler import VoteHandler
 from homepage_handler import HomepageHandler
 from login_handler import LoginHandler
@@ -14,6 +15,7 @@ from scrape_comments_handler import ScrapeCommentsHandler
 app = webapp2.WSGIApplication([('/', HomepageHandler),
                                ('/posts/new', PostsHandler),
                                ('/photo', ImageHandler),
+                               ('/blobphoto/([^/]+)?', BlobImageServeHandler),
                                ('/votes/new', VoteHandler),
                                ('/feed', FeedHandler),
                                ('/login', LoginHandler),

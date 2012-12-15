@@ -14,7 +14,7 @@ class Utils():
       result = urlfetch.fetch(url)
       if result.status_code != 200:
         return None
-      return result.content;
+      return result.content
       
     @staticmethod
     def items_to_json(items):
@@ -48,7 +48,7 @@ class Utils():
     def get_json_comments_from_fb_post(fb_post_id, access_token):
       url = "https://graph.facebook.com/" + fb_post_id + "/comments?access_token=" + access_token
       logging.info('URL to fetch: ' + url)
-      result = urlfetch.fetch(url);
+      result = urlfetch.fetch(url)
       logging.info('result: ' + str(result.content))
       if result.status_code != 200:
         return None
@@ -66,3 +66,20 @@ class Utils():
     @staticmethod
     def get_avatar(fb_id_or_username):
       return 'http://graph.facebook.com/%s/picture' % fb_id_or_username
+    
+    @staticmethod
+    def write_file_to_blobstore(data):
+      # Warning: They say this feature is experimental. Careful.
+      # See https://developers.google.com/appengine/docs/python/blobstore/overview#Writing_Files_to_the_Blobstore
+      
+      # Create the file
+      file_name = files.blobstore.create(mime_type='application/octet-stream')
+      # Open the file and write to it
+      with files.open(file_name, 'a') as f:
+        f.write(data)
+      # Finalize the file. Do this before attempting to read it.
+      files.finalize(file_name)
+      # Get the file's blob key
+      blob_key = files.blobstore.get_blob_key(file_name)
+      return blob_key
+  

@@ -1,19 +1,23 @@
+from __future__ import with_statement
+
 import logging
 import webapp2
 import math
 
+from google.appengine.api import files
 from google.appengine.api import images
 from google.appengine.ext import db
 
 from cache_controller import CacheController
 from model_choosie_post import ChoosiePost
 from model_user import User
+from utils import Utils
 
 class PostsHandler(webapp2.RequestHandler):
   def shrinkImage(self, data):
     img = images.Image(data)
     max_width = 800
-    max_height = 800;
+    max_height = 800
     logging.info("width-" + str(img.width))
     logging.info("height-" + str(img.height))
     ratio = math.ceil(min(float(max_width)/float(img.width), float(max_height)/float(img.height)))
@@ -31,7 +35,7 @@ class PostsHandler(webapp2.RequestHandler):
     if user is None:
        self.error(500)
        logging.error("user not found!")
-       return;
+       return
 
     logging.info("user found!")
 
@@ -40,10 +44,13 @@ class PostsHandler(webapp2.RequestHandler):
     # user.fb_access_token_expdate = Utils.get_access_token_from_request(self.request)
     # user.put()
 
+    photo1_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo1')))
+    photo2_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo2')))
+
     choosie_post = ChoosiePost(question = self.request.get('question'),
                                user_fb_id = self.request.get('fb_uid'),
-                               photo1 = db.Blob(self.shrinkImage(self.request.get('photo1'))),
-                               photo2 = db.Blob(self.shrinkImage(self.request.get('photo2'))))
+                               photo1_blob_key = photo1_blob_key,
+                               photo2_blob_key = photo2_blob_key)
 
     # Save this post in the datastore, and also in the memcache.
     choosie_post.put()
@@ -53,3 +60,4 @@ class PostsHandler(webapp2.RequestHandler):
       logging.info("publishing!!")
       choosie_post.publish_to_facebook(self.request.host_url)  
     self.redirect('/')
+    

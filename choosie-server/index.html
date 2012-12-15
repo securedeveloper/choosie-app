@@ -1,6 +1,9 @@
 <html>
 <head>
 <style>
+.chs-feed {
+	min-width: 460px;
+}
 .chs-stream {
 	border-style: solid;
 	border-width: 1px;
@@ -103,8 +106,8 @@ width: 50%;
 				</div>
 				<div class="chs-questcont">Question:<span class="chs-question">{{ choosie_post.question|escape }}</span></div>
 				<div class="images">
-					<img class="chs-img" src="/photo?which_photo=1&post_key={{ choosie_post.key }}"></img>
-					<img class="chs-img-right" src="/photo?which_photo=2&post_key={{ choosie_post.key }}"></img>
+					<img class="chs-img" src="{{ choosie_post.photo1 }}"></img>
+					<img class="chs-img-right" src="{{ choosie_post.photo2 }}"></img>
 				</div>
 				<div class="chs-votes">
 					<a class="chs-vote" href="/votes/new?fb_uid=100004697466881&which_photo=1&post_key={{ choosie_post.key }}">

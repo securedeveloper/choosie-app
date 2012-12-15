@@ -1,3 +1,4 @@
+from google.appengine.ext import blobstore
 from google.appengine.ext import db
 from google.appengine.ext import deferred
 from google.appengine.api import images
@@ -16,8 +17,11 @@ import sys
 from time import sleep
 
 class ChoosiePost(db.Model):
-  photo1 = db.BlobProperty(required = True)
-  photo2 = db.BlobProperty(required = True)
+  photo1 = db.BlobProperty(required = False)
+  photo2 = db.BlobProperty(required = False)
+  photo1_blob_key = blobstore.BlobReferenceProperty()
+  photo2_blob_key = blobstore.BlobReferenceProperty()
+  fb_photo_blob_key = blobstore.BlobReferenceProperty()
   question = db.StringProperty(indexed = False, required = True)
   created_at = db.DateTimeProperty(auto_now_add = True)
   user_fb_id = db.StringProperty()
@@ -52,6 +56,7 @@ class ChoosiePost(db.Model):
     #  "user": {"fb_uid": "152343",
     #           ...}
     # }
+    logging.info('For question [%s], returning %d votes.', self.question, len(self.votes))
     return [Vote.from_string_for_choosie_post(vote_str) for vote_str in self.votes]
 
   def get_cached_comments(self):
@@ -67,7 +72,18 @@ class ChoosiePost(db.Model):
     return [Comment.from_string_for_choosie_post(comment_str) for comment_str in self.comments if comment_str]
 
   def photo_path(self, which_photo):
-    return '/photo?which_photo=%s&post_key=%s' % (which_photo, self.key())
+    # Option 1: Using OLD method (photo is stored in the ChoosiePost itself)
+    if ((which_photo == 0 and self.photo)
+        or (which_photo == 1 and self.photo1)
+        or (which_photo == 2 and self.photo2)):
+      return '/photo?which_photo=%s&post_key=%s' % (which_photo, self.key())
+
+    # Option 2: Using Blobstore method (photo is stored as a Blob in the Blobstore)
+    photo_to_blob_key = {0: self.fb_photo_blob_key,
+                         1: self.photo1_blob_key,
+                         2: self.photo2_blob_key}
+    blob_key = photo_to_blob_key[which_photo].key()
+    return '/blobphoto/%s' % blob_key
 
   def publish_to_facebook(self, domain):
     Utils.create_post_image(self)
