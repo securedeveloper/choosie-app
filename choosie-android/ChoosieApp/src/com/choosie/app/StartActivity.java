@@ -3,6 +3,8 @@ package com.choosie.app;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.apphance.android.Log;
+import com.apphance.android.Apphance;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.GraphUser;
 import com.facebook.LoggingBehaviors;
@@ -16,7 +18,6 @@ import com.facebook.Settings;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,12 +27,17 @@ public class StartActivity extends Activity {
 
 	Button buttonLoginLogout;
 	Session.StatusCallback statusCallback = new SessionStatusCallback();
+	public static final String APP_KEY = "1e88673534da04f74864cb17f9773498c1151400";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// Starts an Apphance session using a dummy key and QA mode
+        Apphance.startNewSession(this, APP_KEY, Apphance.Mode.QA);
+        
 		setContentView(R.layout.activity_start);
-
+		
 		TextView welcome = (TextView) findViewById(R.id.welcome);
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
