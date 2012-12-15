@@ -271,10 +271,10 @@ public class PostScreenController extends ScreenController {
 	private void setAndStartCropIntent(int code, Uri uri) {
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
-		intent.putExtra("outputX", 200);
-		intent.putExtra("outputY", 200 * 6 / 5);
-		intent.putExtra("aspectX", 5);
-		intent.putExtra("aspectY", 6);
+		intent.putExtra("outputX", 350);
+		intent.putExtra("outputY", 350);
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
 		intent.putExtra("scale", true);
 		intent.putExtra("return-data", true);
 		getActivity().startActivityForResult(intent, code);
