@@ -3,22 +3,28 @@ package com.choosie.app.client;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,7 +128,14 @@ public class RealClient extends ClientBase {
 		String postUri = Constants.URIs.POSTS_URI + "/" + postKey;
 
 		Log.i(Constants.LOG_TAG, "Getting post from URI: " + postUri);
-		final HttpClient client = new DefaultHttpClient();
+
+		//enable on server hebrew sync
+//		HttpParams params = new BasicHttpParams();
+//		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+//		HttpProtocolParams.setContentCharset(params, "UTF-8");
+//		params.setBooleanParameter("http.protocol.expect-continue", false);
+
+		final HttpClient client = new DefaultHttpClient(null);
 		final HttpGet request = new HttpGet(postUri);
 		HttpResponse response;
 		try {
@@ -258,15 +271,16 @@ public class RealClient extends ClientBase {
 					this.fbDetails.getAccess_token()));
 			multipartContent.addPart("fb_access_token_expdate", new StringBody(
 					String.valueOf(this.fbDetails.getAccess_token_expdate())));
-			
+
 			Log.i(Constants.LOG_TAG, "share_to_fb = on");
-			Log.i(Constants.LOG_TAG, "sent fb_access_token + fb_access_token_expdate");
-		}
-		else {
+			Log.i(Constants.LOG_TAG,
+					"sent fb_access_token + fb_access_token_expdate");
+		} else {
 			Log.i(Constants.LOG_TAG, "share_to_fb = off");
-			Log.i(Constants.LOG_TAG, "didn't send fb_access_token + fb_access_token_expdate");	
+			Log.i(Constants.LOG_TAG,
+					"didn't send fb_access_token + fb_access_token_expdate");
 		}
-		
+
 		Log.i(Constants.LOG_TAG, "finished building multipart content");
 
 		return multipartContent;
@@ -504,7 +518,13 @@ public class RealClient extends ClientBase {
 		final HttpPost postRequest;
 		postRequest = createNewCommentPostRequest(commentToSend);
 
-		final HttpClient httpClient = new DefaultHttpClient();
+		//enable on server hebrew sync
+//		HttpParams params = new BasicHttpParams();
+//		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+//		HttpProtocolParams.setContentCharset(params, "UTF-8");
+//		params.setBooleanParameter("http.protocol.expect-continue", false);
+
+		final HttpClient httpClient = new DefaultHttpClient(null);
 		AsyncTask<Void, Void, Boolean> postVoteTask = new AsyncTask<Void, Void, Boolean>() {
 
 			@Override
@@ -540,6 +560,12 @@ public class RealClient extends ClientBase {
 				HttpMultipartMode.BROWSER_COMPATIBLE);
 
 		try {
+			Charset chars = Charset.forName("UTF-8"); // Setting up the encoding
+			StringBody stringB;
+			// Adding the content to the StringBody and setting up the encoding
+			stringB = new StringBody("I am the caption of the file", chars);
+			// Add the part to my MultipartEntity
+			multipartContent.addPart("caption", stringB);
 			multipartContent.addPart("fb_uid",
 					new StringBody(this.fbDetails.getFb_uid()));
 			multipartContent.addPart("text", new StringBody(comment.getText()
@@ -550,6 +576,7 @@ public class RealClient extends ClientBase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		commentPostRequest.setEntity(multipartContent);
 
 		return commentPostRequest;
