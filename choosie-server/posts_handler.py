@@ -1,10 +1,7 @@
-from __future__ import with_statement
-
 import logging
 import webapp2
 import math
 
-from google.appengine.api import files
 from google.appengine.api import images
 from google.appengine.ext import db
 

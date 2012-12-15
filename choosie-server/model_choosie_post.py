@@ -38,7 +38,7 @@ class ChoosiePost(db.Model):
             "comments": self.get_serialized_comments(),
             "photo1": self.photo_path(1),
             "photo2": self.photo_path(2),
-            "question": str(self.question),
+            "question": self.question,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at)
            }
