@@ -251,6 +251,24 @@ public class RealClient extends ClientBase {
 		multipartContent.addPart("fb_uid",
 				new StringBody(this.fbDetails.getFb_uid()));
 
+		// Add share on facebook details to server HTTP request
+		if (data.isShareOnFacebook()) {
+			multipartContent.addPart("share_to_fb", new StringBody("on"));
+			multipartContent.addPart("fb_access_token", new StringBody(
+					this.fbDetails.getAccess_token()));
+			multipartContent.addPart("fb_access_token_expdate", new StringBody(
+					String.valueOf(this.fbDetails.getAccess_token_expdate())));
+			
+			Log.i(Constants.LOG_TAG, "share_to_fb = on");
+			Log.i(Constants.LOG_TAG, "sent fb_access_token + fb_access_token_expdate");
+		}
+		else {
+			Log.i(Constants.LOG_TAG, "share_to_fb = off");
+			Log.i(Constants.LOG_TAG, "didn't send fb_access_token + fb_access_token_expdate");	
+		}
+		
+		Log.i(Constants.LOG_TAG, "finished building multipart content");
+
 		return multipartContent;
 	}
 
@@ -279,6 +297,8 @@ public class RealClient extends ClientBase {
 							});
 					totalSize = multipartContent.getContentLength();
 					httpPost.setEntity(multipartContent);
+					Log.i(Constants.LOG_TAG,
+							"doInBackground(): Executing HTTP Request!");
 					return httpClient.execute(httpPost);
 				} catch (ClientProtocolException e) {
 					// TODO Auto-generated catch block

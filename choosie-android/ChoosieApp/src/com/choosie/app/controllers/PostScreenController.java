@@ -103,9 +103,13 @@ public class PostScreenController extends ScreenController {
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit1) {
 			if (shareOnFacebookTb.isChecked()) {
+				Log.i(Constants.LOG_TAG, "Share on facebook is checked!");
 				Session session = Session.getActiveSession();
 				if (session.isOpened()) {
+					Log.i(Constants.LOG_TAG, "session permissions: " + session.getPermissions().toString());
 					if (!session.getPermissions().contains("publish_stream")) {
+						
+						Log.i(Constants.LOG_TAG, "requesting publish_stream permissions");
 
 						List<String> write_permissions = new ArrayList<String>();
 						write_permissions.add("publish_stream");
@@ -293,7 +297,8 @@ public class PostScreenController extends ScreenController {
 					.findViewById(R.id.progressBarPost);
 
 			superController.getClient().sendChoosiePostToServer(
-					new NewChoosiePostData(mImage1, mImage2, mQuestion),
+					new NewChoosiePostData(mImage1, mImage2, mQuestion,
+							shareOnFacebookTb.isChecked()),
 					new Callback<Void, Integer, Void>() {
 
 						@Override
