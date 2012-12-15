@@ -144,9 +144,11 @@ class ChoosiePost(db.Model):
   def add_vote_to_post_transaction(choosie_post_key, new_vote):
     updated_post = db.get(choosie_post_key)
     updated_post.add_vote_to_post_internal(new_vote)
+    updated_post.put()
     CacheController.set_model(updated_post)
 
   def add_vote_to_post_internal(self, new_vote):
+    logging.info("Adding vote.")
     # Before adding a new vote, remove any existing votes by the same user.
     for existing_vote_str in self.votes:
       # updated_post.votes is a StringListProperty. To make the comparison,
