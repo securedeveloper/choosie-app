@@ -52,3 +52,7 @@ class CacheController(object):
       if user is not None:
         memcache.set(user_fb_id, user, namespace=USER_FB_ID_NAMESPACE)
       return user
+
+  @staticmethod
+  def invalidate_user_fb_id(user_fb_id):
+    memcache.delete(user_fb_id, namespace=USER_FB_ID_NAMESPACE)

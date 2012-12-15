@@ -5,7 +5,9 @@ from google.appengine.api import files
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from google.appengine.api import images
+from google.appengine.ext import blobstore
 from datetime import datetime
+from StringIO import *
 import urllib2
 import cStringIO
 import logging
@@ -33,8 +35,11 @@ class Utils():
 
     @staticmethod
     def create_post_image(choosie_post):
-      img1 = images.Image(choosie_post.photo1)
-      img2 = images.Image(choosie_post.photo2)
+      img1_blob_reader = blobstore.BlobReader(choosie_post.photo1_blob_key)
+      img2_blob_reader = blobstore.BlobReader(choosie_post.photo2_blob_key)
+      img1 = images.Image(image_data=img1_blob_reader.read())
+      img2 = images.Image(image_data=img2_blob_reader.read())
+
       icon_1_path = os.path.join(os.path.split(__file__)[0], '1.png')
       icon_2_path = os.path.join(os.path.split(__file__)[0], '2.png')
       icon1 = open(icon_1_path).read()
@@ -44,9 +49,8 @@ class Utils():
       composite = images.composite([(img1, 0, 0, 1.0, images.TOP_LEFT),
       (img2, img1.width, 0, 1.0, images.TOP_LEFT), (img_icon_1, 0, 0, 0.3, images.TOP_LEFT),
       (img_icon_2, img1.width, 0, 0.3, images.TOP_LEFT)], img1.width + img2.width, img1.height)
-      choosie_post.photo = db.Blob(composite)
-      choosie_post.put()
-      logging.info('___saved')
+      logging.info('created image')
+      return composite
 
     @staticmethod
     def get_json_comments_from_fb_post(fb_post_id, access_token):

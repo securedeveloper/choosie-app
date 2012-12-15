@@ -35,11 +35,19 @@ class PostsHandler(webapp2.RequestHandler):
        return
 
     logging.info("user found!")
+    logging.info("share_to_fb_param: " + self.request.get("share_to_fb", default_value="off"))
 
-    #updating user access token cause he might added publish_stream permission
-    # user.fb_access_token = str(self.request.get('fb_access_token'))
-    # user.fb_access_token_expdate = Utils.get_access_token_from_request(self.request)
-    # user.put()
+    if (self.request.get("share_to_fb", default_value="off") == "on"):
+      logging.info("user" + user.fb_access_token)
+      logging.info("user_db" + str(self.request.get('fb_access_token')))
+      logging.info("key " + str(user.key()))
+      # updating user access token cause he might added publish_stream permission
+      if (user.fb_access_token != str(self.request.get('fb_access_token'))):
+        logging.info("Changing access_token!")
+        user.fb_access_token = str(self.request.get('fb_access_token'))
+        user.fb_access_token_expdate = Utils.get_access_token_from_request(self.request)
+        user.put()
+        CacheController.invalidate_user_fb_id(user.fb_uid)
 
     photo1_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo1')))
     photo2_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo2')))

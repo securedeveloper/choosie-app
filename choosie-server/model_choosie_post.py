@@ -15,6 +15,7 @@ import facebook
 import logging
 import sys
 from time import sleep
+from StringIO import *
 
 class ChoosiePost(db.Model):
   photo1 = db.BlobProperty(required = False)
@@ -86,7 +87,7 @@ class ChoosiePost(db.Model):
     return '/blobphoto/%s' % blob_key
 
   def publish_to_facebook(self, domain):
-    Utils.create_post_image(self)
+    # Utils.create_post_image(self)
     if ChoosieConfiguration.post_to_fb_setting():
       deferred.defer(self.publish_dillema_on_wall, self.key(), domain)
     else:
@@ -94,14 +95,14 @@ class ChoosiePost(db.Model):
 
   def publish_dillema_on_wall(self, choosie_post_key, domain):
     try:
-      sleep(5) #todo: make a loop 
       choosie_post = db.get(choosie_post_key)
       logging.info("publishing on wall")
+      logging.info("publishing with access_token " + choosie_post.get_user().fb_access_token)
       graph = facebook.GraphAPI(choosie_post.get_user().fb_access_token)
-      pic_url = (domain + self.photo_path(0))
-      # logging.info("url=" + pic_url)
-      # pic_url = "http://choosieapp.appspot.com/photo?which_photo=0&post_key=agxzfmNob29zaWVhcHByEwsSC0Nob29zaWVQb3N0GNutAww"
-      response = graph.put_object("me", "photos", message="You can put a caption here", url=pic_url)
+      pic = Utils.create_post_image(self)
+      picIO = StringIO(pic)
+      response = graph.put_photo(picIO, choosie_post.question)
+      logging.info(str(response))
       choosie_post.fb_post_id = response['post_id']
       choosie_post.put()
     except Exception, e:
