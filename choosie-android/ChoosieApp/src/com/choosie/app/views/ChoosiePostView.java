@@ -78,6 +78,8 @@ public class ChoosiePostView extends RelativeLayout {
 		final ImageView feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
 		final ImageView imgView1 = (ImageView) findViewById(R.id.feedimage1);
 		final ImageView imgView2 = (ImageView) findViewById(R.id.feedimage2);
+		final ImageView imgSelected1 = (ImageView) findViewById(R.id.feed_imageSelect1);
+		final ImageView imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
 		final ProgressBar progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
 		final ProgressBar progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
 
@@ -107,30 +109,22 @@ public class ChoosiePostView extends RelativeLayout {
 		}
 
 		// Set border for voted image
-		setImageBorder(imgView1, choosiePost.isVotedAlready(1));
-		setImageBorder(imgView2, choosiePost.isVotedAlready(2));
+		setImageBorder(imgSelected1, choosiePost.isVotedAlready(1));
+		setImageBorder(imgSelected2, choosiePost.isVotedAlready(2));
 
 		// TODO: Merge both listeners below to a single one that accepts an
 		// argument.
 		imgView1.setOnLongClickListener(new OnLongClickListener() {
 			public boolean onLongClick(View v) {
 				Log.i(Constants.LOG_TAG, "onLongClick signaled for voting 1");
+				return handleVote1(votes1, votes2, imgSelected1, imgSelected2);
+			}
+		});
 
-				if (!choosiePost.isVotedAlready(1)) {
-					Log.i(Constants.LOG_TAG, "voting 1 (Not voted 1 yet)");
-					superController.voteFor(choosiePost, 1);
+		imgSelected1.setOnClickListener(new OnClickListener() {
 
-					// SHOW VOTES RESULTS
-					ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
-
-					// Set border for relevant image
-					Log.i(Constants.LOG_TAG, "Setting border for image 1");
-					setImageBorder(imgView1, true);
-					setImageBorder(imgView2, false);
-					return true;
-				}
-				Log.i(Constants.LOG_TAG, "Already voted for 1. vote not sent");
-				return false;
+			public void onClick(View v) {
+				handleVote1(votes1, votes2, imgSelected1, imgSelected2);
 			}
 		});
 
@@ -138,24 +132,55 @@ public class ChoosiePostView extends RelativeLayout {
 
 			public boolean onLongClick(View v) {
 				Log.i(Constants.LOG_TAG, "onLongClick signaled for voting 2");
+				return handleVote2(votes1, votes2, imgSelected1, imgSelected2);
+			}
 
-				if (!choosiePost.isVotedAlready(2)) {
-					Log.i(Constants.LOG_TAG, "voting 2 (Not voted 2 yet)");
-					superController.voteFor(choosiePost, 2);
+		});
 
-					// SHOW VOTES RESULTS
-					ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
+		imgSelected1.setOnClickListener(new OnClickListener() {
 
-					// Set border for relevant image
-					Log.i(Constants.LOG_TAG, "Setting border for image 2");
-					setImageBorder(imgView2, true);
-					setImageBorder(imgView1, false);
-					return true;
-				}
-				Log.i(Constants.LOG_TAG, "Already voted for 2. vote not sent");
-				return false;
+			public void onClick(View v) {
+				handleVote2(votes1, votes2, imgSelected1, imgSelected2);
 			}
 		});
+	}
+
+	private boolean handleVote2(final TextView votes1, final TextView votes2,
+			final ImageView imgSelected1, final ImageView imgSelected2) {
+		if (!choosiePost.isVotedAlready(2)) {
+			Log.i(Constants.LOG_TAG, "voting 2 (Not voted 2 yet)");
+			superController.voteFor(choosiePost, 2);
+
+			// SHOW VOTES RESULTS
+			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
+
+			// Set border for relevant image
+			Log.i(Constants.LOG_TAG, "Setting border for image 2");
+			setImageBorder(imgSelected2, true);
+			setImageBorder(imgSelected1, false);
+			return true;
+		}
+		Log.i(Constants.LOG_TAG, "Already voted for 2. vote not sent");
+		return false;
+	}
+
+	private boolean handleVote1(final TextView votes1, final TextView votes2,
+			final ImageView imgSelected1, final ImageView imgSelected2) {
+		if (!choosiePost.isVotedAlready(1)) {
+			Log.i(Constants.LOG_TAG, "voting 1 (Not voted 1 yet)");
+			superController.voteFor(choosiePost, 1);
+
+			// SHOW VOTES RESULTS
+			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
+
+			// Set border for relevant image
+			Log.i(Constants.LOG_TAG, "Setting border for image 1");
+			setImageBorder(imgSelected1, true);
+			setImageBorder(imgSelected2, false);
+			return true;
+		}
+		Log.i(Constants.LOG_TAG, "Already voted for 1. vote not sent");
+		return false;
 	}
 
 	private void saveVotersPhotos(ChoosiePostData post) {
@@ -173,8 +198,12 @@ public class ChoosiePostView extends RelativeLayout {
 
 	private void setImageBorder(ImageView imgView, boolean isBorderVisable) {
 		if (isBorderVisable) {
-			imgView.setBackgroundResource(R.drawable.image_selected);
+			imgView.setImageDrawable(getResources().getDrawable(
+					R.drawable.image_selected_v));
+			// imgView.setBackgroundResource(R.drawable.image_selected);
 		} else {
+			imgView.setImageDrawable(getResources().getDrawable(
+					R.drawable.image_not_selected_v));
 			imgView.setBackgroundResource(R.drawable.image_not_selected);
 		}
 	}
@@ -223,7 +252,7 @@ public class ChoosiePostView extends RelativeLayout {
 			float h = ((TextView) commentView).getTextSize();
 			im.getLayoutParams().height = (int) h;
 			im.getLayoutParams().width = (int) h;
-			//commentLayout.addView(commentView);
+			// commentLayout.addView(commentView);
 		}
 		if ((size > 3) && (i == 0)) {
 			TextView tv = new TextView(superController.getControllerForScreen(
@@ -238,7 +267,8 @@ public class ChoosiePostView extends RelativeLayout {
 				}
 			});
 			commentLayout.addView(tv);
-		} if ((i == size - 1) || (i == size - 2) || (i == size - 3)) {
+		}
+		if ((i == size - 1) || (i == size - 2) || (i == size - 3)) {
 			// build view for vurrent comment
 			View commentView = buildViewForComment(comment);
 			commentLayout.addView(commentView);
