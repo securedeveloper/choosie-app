@@ -208,7 +208,7 @@ public class ChoosiePostView extends RelativeLayout {
 		} else {
 			imgView.setImageDrawable(getResources().getDrawable(
 					R.drawable.image_not_selected_v));
-			imgView.setBackgroundResource(R.drawable.image_not_selected);
+			// imgView.setBackgroundResource(R.drawable.image_not_selected);
 		}
 	}
 
@@ -221,8 +221,8 @@ public class ChoosiePostView extends RelativeLayout {
 			int voteCount1 = choosiePost.getVotes1();
 			int voteCount2 = choosiePost.getVotes2();
 
-			votes1.setText(voteCount1 + " Votes");
-			votes2.setText(voteCount2 + " Votes");
+			votes1.setText(voteCount1 + " votes");
+			votes2.setText(voteCount2 + " votes");
 		}
 		votes1.setVisibility(visibility);
 		votes2.setVisibility(visibility);
