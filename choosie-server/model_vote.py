@@ -37,14 +37,19 @@ class Vote(db.Model):
     return str(as_dict)
 
   @staticmethod
-  def from_string_for_choosie_post(vote_str):
+  def from_string_for_choosie_post(vote_str, keep_shallow=False):
     as_dict = ast.literal_eval(vote_str)
+
     if "user_fb_id" in as_dict:
-      # For option 1 (regualr, not scraped comments), we need to also get the user
+      # For option 1 (regular, not scraped comments), we need to also get the user
       # details.
-      user = CacheController.get_user_by_fb_id(as_dict["user_fb_id"])
+      if keep_shallow:
+        user = {"fb_uid": as_dict["user_fb_id"]}
+      else:
+        user = CacheController.get_user_by_fb_id(as_dict["user_fb_id"]).to_short_json()
       del as_dict["user_fb_id"]
-      as_dict["user"] = user.to_short_json()
+      as_dict["user"] = user
+    
     return as_dict
 
              

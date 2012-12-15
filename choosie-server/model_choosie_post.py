@@ -153,10 +153,8 @@ class ChoosiePost(db.Model):
     for existing_vote_str in self.votes:
       # updated_post.votes is a StringListProperty. To make the comparison,
       # each vote is 'inflated' to a dictionary, and its user ID is compared to the new_vote's.
-      existing_vote_dict = ast.literal_eval(existing_vote_str)
-      existing_voter = (existing_vote_dict['user_fb_id'] if 'user_fb_id' in existing_vote_dict
-                        else existing_vote_dict['user']['fb_uid'])
-      if existing_voter == new_vote.user_fb_id:
+      existing_vote_dict = Vote.from_string_for_choosie_post(existing_vote_str, keep_shallow=True)
+      if existing_vote_dict["user"]["fb_uid"] == new_vote.user_fb_id:
         self.votes.remove(existing_vote_str)
         break
 
