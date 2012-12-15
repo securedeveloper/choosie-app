@@ -92,12 +92,16 @@ public class ChoosiePostView extends RelativeLayout {
 
 		imgView1.setVisibility(View.GONE);
 		imgView2.setVisibility(View.GONE);
+		imgSelected1.setVisibility(View.GONE);
+		imgSelected2.setVisibility(View.GONE);
 
+
+		
 		feed_userimage.setVisibility(View.GONE);
 
-		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1);
-		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2);
-		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null);
+		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1, imgSelected1);
+		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2, imgSelected2);
+		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null, null);
 		loadCommentsToView(post);
 		saveVotersPhotos(post);
 
@@ -137,7 +141,7 @@ public class ChoosiePostView extends RelativeLayout {
 
 		});
 
-		imgSelected1.setOnClickListener(new OnClickListener() {
+		imgSelected2.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				handleVote2(votes1, votes2, imgSelected1, imgSelected2);
@@ -303,7 +307,7 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
-			final ProgressBar progressBar) {
+			final ProgressBar progressBar, final ImageView img) {
 		this.superController.getCaches().getPhotosCache()
 				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
 					@Override
@@ -312,7 +316,11 @@ public class ChoosiePostView extends RelativeLayout {
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
-							progressBar.setVisibility(View.GONE);
+							progressBar.setVisibility(View.GONE);							
+						}
+						if (img != null){
+							img.setVisibility(View.VISIBLE);
+							img.bringToFront();
 						}
 					}
 
