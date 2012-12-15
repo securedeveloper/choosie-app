@@ -129,13 +129,13 @@ public class RealClient extends ClientBase {
 
 		Log.i(Constants.LOG_TAG, "Getting post from URI: " + postUri);
 
-		//enable on server hebrew sync
-//		HttpParams params = new BasicHttpParams();
-//		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-//		HttpProtocolParams.setContentCharset(params, "UTF-8");
-//		params.setBooleanParameter("http.protocol.expect-continue", false);
+		// enable on server hebrew sync
+		HttpParams params = new BasicHttpParams();
+		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+		HttpProtocolParams.setContentCharset(params, "UTF-8");
+		params.setBooleanParameter("http.protocol.expect-continue", false);
 
-		final HttpClient client = new DefaultHttpClient(null);
+		final HttpClient client = new DefaultHttpClient(params);
 		final HttpGet request = new HttpGet(postUri);
 		HttpResponse response;
 		try {
@@ -259,8 +259,8 @@ public class RealClient extends ClientBase {
 				});
 		multipartContent.addPart("photo1", bab1);
 		multipartContent.addPart("photo2", bab2);
-		multipartContent
-				.addPart("question", new StringBody(data.getQuestion()));
+		multipartContent.addPart("question", new StringBody(data.getQuestion(),
+				Charset.forName("UTF-8")));
 		multipartContent.addPart("fb_uid",
 				new StringBody(this.fbDetails.getFb_uid()));
 
@@ -518,13 +518,13 @@ public class RealClient extends ClientBase {
 		final HttpPost postRequest;
 		postRequest = createNewCommentPostRequest(commentToSend);
 
-		//enable on server hebrew sync
-//		HttpParams params = new BasicHttpParams();
-//		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-//		HttpProtocolParams.setContentCharset(params, "UTF-8");
-//		params.setBooleanParameter("http.protocol.expect-continue", false);
+		// enable on server hebrew sync
+		HttpParams params = new BasicHttpParams();
+		HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+		HttpProtocolParams.setContentCharset(params, "UTF-8");
+		params.setBooleanParameter("http.protocol.expect-continue", false);
 
-		final HttpClient httpClient = new DefaultHttpClient(null);
+		final HttpClient httpClient = new DefaultHttpClient(params);
 		AsyncTask<Void, Void, Boolean> postVoteTask = new AsyncTask<Void, Void, Boolean>() {
 
 			@Override
@@ -560,16 +560,10 @@ public class RealClient extends ClientBase {
 				HttpMultipartMode.BROWSER_COMPATIBLE);
 
 		try {
-			Charset chars = Charset.forName("UTF-8"); // Setting up the encoding
-			StringBody stringB;
-			// Adding the content to the StringBody and setting up the encoding
-			stringB = new StringBody("I am the caption of the file", chars);
-			// Add the part to my MultipartEntity
-			multipartContent.addPart("caption", stringB);
 			multipartContent.addPart("fb_uid",
 					new StringBody(this.fbDetails.getFb_uid()));
 			multipartContent.addPart("text", new StringBody(comment.getText()
-					.toString()));
+					.toString(), Charset.forName("UTF-8")));
 			multipartContent.addPart("post_key",
 					new StringBody(comment.getPost_key()));
 		} catch (UnsupportedEncodingException e) {
@@ -581,5 +575,4 @@ public class RealClient extends ClientBase {
 
 		return commentPostRequest;
 	}
-
 }
