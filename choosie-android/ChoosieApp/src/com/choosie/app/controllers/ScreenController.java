@@ -46,4 +46,9 @@ public abstract class ScreenController {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void onResume() {
+		// TODO Auto-generated method stub
+		
+	}
 }

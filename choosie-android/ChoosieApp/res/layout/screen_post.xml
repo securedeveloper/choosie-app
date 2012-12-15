@@ -78,7 +78,7 @@
         android:id="@+id/linearLayour2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button_submit"
+        android:layout_above="@+id/button_submit1"
         android:layout_alignParentLeft="true"
         android:orientation="horizontal"
         android:padding="@dimen/view_choosie_post_margin" >
@@ -111,7 +111,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_submit"
+        android:id="@+id/button_submit1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

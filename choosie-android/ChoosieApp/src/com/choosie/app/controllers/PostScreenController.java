@@ -59,9 +59,11 @@ public class PostScreenController extends ScreenController {
 	protected void onCreate() {
 		image1 = (ImageView) view.findViewById(R.id.image_photo1);
 		image2 = (ImageView) view.findViewById(R.id.image_photo2);
-		buttonSubmit = (Button) view.findViewById(R.id.button_submit);
-		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
-		questionText.setInputType(EditorInfo.TYPE_NULL);
+		buttonSubmit = (Button) view.findViewById(R.id.button_submit1);
+		EditText questionText = (EditText) view
+				.findViewById(R.id.editText_question);
+		questionText.setFocusable(false);
+//		questionText.setInputType(EditorInfo.TYPE_NULL);
 		shareOnFacebookTb = (ToggleButton) view
 				.findViewById(R.id.shareOnFacebookToggleButton);
 
@@ -80,8 +82,9 @@ public class PostScreenController extends ScreenController {
 	@Override
 	protected void onShow() {
 		superController.setCurrentScreen(Screen.POST);
-		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
-		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+//		EditText questionText = (EditText) view
+//				.findViewById(R.id.editText_question);
+//		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
@@ -89,15 +92,16 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
-		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
-		questionText.setInputType(EditorInfo.TYPE_NULL);
+//		EditText questionText = (EditText) view
+//				.findViewById(R.id.editText_question);
+//		questionText.setInputType(EditorInfo.TYPE_NULL);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));
 	}
 
 	private void onItemClick(View arg0) {
-		if (arg0.getId() == R.id.button_submit) {
+		if (arg0.getId() == R.id.button_submit1) {
 			if (shareOnFacebookTb.isChecked()) {
 				Session session = Session.getActiveSession();
 				if (session.isOpened()) {
@@ -282,7 +286,8 @@ public class PostScreenController extends ScreenController {
 					"Please add two photos", Toast.LENGTH_SHORT);
 			toast.show();
 		} else {
-			EditText questionText = (EditText) view.findViewById(R.id.editText_question);
+			EditText questionText = (EditText) view
+					.findViewById(R.id.editText_question);
 			mQuestion = questionText.getText().toString();
 			final ProgressBar progressBar = (ProgressBar) getActivity()
 					.findViewById(R.id.progressBarPost);
@@ -335,7 +340,8 @@ public class PostScreenController extends ScreenController {
 		mImage1 = null;
 		mImage2 = null;
 		mQuestion = null;
-		EditText questionText = (EditText) view.findViewById(R.id.editText_question);
+		EditText questionText = (EditText) view
+				.findViewById(R.id.editText_question);
 		questionText.setText("");
 
 	}
@@ -376,10 +382,19 @@ public class PostScreenController extends ScreenController {
 		mediaScanIntent.setData(contentUri);
 		getActivity().sendBroadcast(mediaScanIntent);
 	}
-	
+
 	@Override
 	public void onKeyDown(int keyCode, KeyEvent event) {
-		superController.switchToScreen(Screen.FEED);		
+		superController.switchToScreen(Screen.FEED);
+	}
+
+	@Override
+	public void onResume() {
+		EditText questionText = (EditText) view
+				.findViewById(R.id.editText_question);
+		questionText.setFocusable(true);   
+		questionText.setFocusableInTouchMode(true);
+		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 	}
 
 }

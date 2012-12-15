@@ -89,6 +89,11 @@ public class ChoosieActivity extends Activity {
 	@Override
 	protected void onResume(){
 		super.onResume();
+		switch (superController.getCurrentScreen()){
+		case POST:
+			superController.getControllerForScreen(Screen.POST).onResume();
+			break;		
+		}
 	}
 	
 	@Override
