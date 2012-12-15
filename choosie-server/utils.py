@@ -1,3 +1,7 @@
+from __future__ import with_statement
+
+from google.appengine.api import files
+
 from google.appengine.ext import db
 from google.appengine.api import urlfetch
 from google.appengine.api import images
