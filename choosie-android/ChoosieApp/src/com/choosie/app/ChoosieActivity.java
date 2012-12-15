@@ -1,15 +1,14 @@
 package com.choosie.app;
 
-import java.io.File;
-
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.FacebookDetails;
+import com.facebook.Session;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -72,6 +71,9 @@ public class ChoosieActivity extends Activity {
 		if (resultCode == Activity.RESULT_CANCELED) {
 			return;
 		}
+		Log.i(Constants.LOG_TAG, "after activity "
+				+ Session.getActiveSession().getPermissions().toString());
+
 		if ((requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA)
 				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA
 				|| requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY
@@ -84,31 +86,36 @@ public class ChoosieActivity extends Activity {
 		if (requestCode == Constants.RequestCodes.COMMENT) {
 			superController.onActivityResult(resultCode, data);
 		}
-	}
-	
-	@Override
-	protected void onResume(){
-		super.onResume();
-		switch (superController.getCurrentScreen()){
-		case POST:
-			superController.getControllerForScreen(Screen.POST).onResume();
-			break;		
+		if (requestCode == Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION) {
+			Log.i(Constants.LOG_TAG, "after activity fb");
+			Session.getActiveSession().onActivityResult(this, requestCode,
+					resultCode, data);
 		}
 	}
-	
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		switch (superController.getCurrentScreen()) {
+		case POST:
+			superController.getControllerForScreen(Screen.POST).onResume();
+			break;
+		}
+	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		switch (superController.getCurrentScreen()){
+		switch (superController.getCurrentScreen()) {
 		case POST:
-			superController.getControllerForScreen(Screen.POST).onKeyDown(keyCode, event);
+			superController.getControllerForScreen(Screen.POST).onKeyDown(
+					keyCode, event);
 			break;
 		case FEED:
 			finish();
 			break;
 		}
-		 
+
 		return true;
-	 }
-	
-	
+	}
+
 }

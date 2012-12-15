@@ -30,6 +30,8 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -38,6 +40,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.facebook.Session.AuthorizationRequest;
+import com.facebook.Session.OpenRequest;
 import com.facebook.Session.ReauthorizeRequest;
 
 public class PostScreenController extends ScreenController {
@@ -50,6 +56,8 @@ public class PostScreenController extends ScreenController {
 	private ToggleButton shareOnFacebookTb;
 	private String mCurrentPhotoPath;
 	private Boolean isNeedToSave;
+	private Session session;
+	private StatusCallback statusCallback = new SessionStatusCallback();
 
 	public PostScreenController(View layout, SuperController superController) {
 		super(layout, superController);
@@ -63,9 +71,32 @@ public class PostScreenController extends ScreenController {
 		EditText questionText = (EditText) view
 				.findViewById(R.id.editText_question);
 		questionText.setFocusable(false);
-//		questionText.setInputType(EditorInfo.TYPE_NULL);
+		// questionText.setInputType(EditorInfo.TYPE_NULL);
 		shareOnFacebookTb = (ToggleButton) view
 				.findViewById(R.id.shareOnFacebookToggleButton);
+
+		OnCheckedChangeListener checkChangedListener = new OnCheckedChangeListener() {
+
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					// check if user has publish_stream permissions
+					boolean userHasPublishPermissions = isUserHasPublishPermissions();
+
+					// if so, just show button as checked
+					if (userHasPublishPermissions) {
+						Log.i(Constants.LOG_TAG,
+								"Already have publish permissions: "
+										+ session.getPermissions().toString());
+						shareOnFacebookTb.setChecked(true);
+					} else {
+						// else - pop up Facebook screen and ask for
+						// publish_stream permissions
+						askForPublishPermissions();
+					}
+				}
+			}
+		};
 
 		OnClickListener listener = new OnClickListener() {
 			public void onClick(View arg0) {
@@ -74,17 +105,54 @@ public class PostScreenController extends ScreenController {
 			}
 		};
 
+		shareOnFacebookTb.setOnCheckedChangeListener(checkChangedListener);
 		image1.setOnClickListener(listener);
 		image2.setOnClickListener(listener);
 		buttonSubmit.setOnClickListener(listener);
+		session = Session.getActiveSession();
+	}
+
+	protected void askForPublishPermissions() {
+		Session session = Session.getActiveSession();
+		if (session.isOpened()) {
+			List<String> permissions = new ArrayList<String>();
+			permissions.add("publish_stream");
+
+			ReauthorizeRequest request = new ReauthorizeRequest(getActivity(),
+					permissions);
+			request.setCallback(statusCallback);
+
+			try {
+				session.reauthorizeForPublish(request);
+			} catch (Exception ex) {
+				Log.i(Constants.LOG_TAG,
+						"Exception in reauthorizeForPublish() : "
+								+ ex.toString());
+			}
+			Log.i(Constants.LOG_TAG, "on set active session permissions: "
+					+ session.getPermissions().toString());
+		}
+	}
+
+	protected boolean isUserHasPublishPermissions() {
+		boolean userHasPublishPermissions = false;
+		Session session = Session.getActiveSession();
+		if (session.isOpened()) {
+			List<String> perms = session.getPermissions();
+			userHasPublishPermissions = perms.contains("publish_stream");
+		} else {
+			Log.i(Constants.LOG_TAG,
+					"isUserHasPublishPermissions(): session is not opened!");
+		}
+		return userHasPublishPermissions;
 	}
 
 	@Override
 	protected void onShow() {
 		superController.setCurrentScreen(Screen.POST);
-//		EditText questionText = (EditText) view
-//				.findViewById(R.id.editText_question);
-//		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+		// EditText questionText = (EditText) view
+		// .findViewById(R.id.editText_question);
+		// questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
@@ -92,9 +160,9 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
-//		EditText questionText = (EditText) view
-//				.findViewById(R.id.editText_question);
-//		questionText.setInputType(EditorInfo.TYPE_NULL);
+		// EditText questionText = (EditText) view
+		// .findViewById(R.id.editText_question);
+		// questionText.setInputType(EditorInfo.TYPE_NULL);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));
@@ -106,17 +174,23 @@ public class PostScreenController extends ScreenController {
 				Log.i(Constants.LOG_TAG, "Share on facebook is checked!");
 				Session session = Session.getActiveSession();
 				if (session.isOpened()) {
-					Log.i(Constants.LOG_TAG, "session permissions: " + session.getPermissions().toString());
+					Log.i(Constants.LOG_TAG, "session permissions: "
+							+ session.getPermissions().toString());
 					if (!session.getPermissions().contains("publish_stream")) {
-						
-						Log.i(Constants.LOG_TAG, "requesting publish_stream permissions");
+
+						Log.i(Constants.LOG_TAG,
+								"requesting publish_stream permissions");
 
 						List<String> write_permissions = new ArrayList<String>();
 						write_permissions.add("publish_stream");
 
+						Log.i(Constants.LOG_TAG,
+								"Opening new ReauthorizeRequest");
 						ReauthorizeRequest openRequest = new ReauthorizeRequest(
 								getActivity(), write_permissions);
 						try {
+							Log.i(Constants.LOG_TAG,
+									"Opening new ReauthorizeRequest");
 							session.reauthorizeForPublish(openRequest);
 						} catch (Exception ex) {
 							Log.i(Constants.LOG_TAG,
@@ -125,6 +199,7 @@ public class PostScreenController extends ScreenController {
 					}
 				}
 			}
+			Log.i(Constants.LOG_TAG, "executing submitChoosiePost()");
 			submitChoosiePost();
 		} else {
 			startDialog(arg0);
@@ -397,9 +472,23 @@ public class PostScreenController extends ScreenController {
 	public void onResume() {
 		EditText questionText = (EditText) view
 				.findViewById(R.id.editText_question);
-		questionText.setFocusable(true);   
+		questionText.setFocusable(true);
 		questionText.setFocusableInTouchMode(true);
 		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+	}
+
+	@Override
+	public void onRequestPublishPermission() {
+
+	}
+
+	private class SessionStatusCallback implements Session.StatusCallback {
+		public void call(Session session, SessionState state,
+				Exception exception) {
+			int a = 5;
+			Log.i(Constants.LOG_TAG, "SessionStatusCallback(): a=" + a);
+
+		}
 	}
 
 }

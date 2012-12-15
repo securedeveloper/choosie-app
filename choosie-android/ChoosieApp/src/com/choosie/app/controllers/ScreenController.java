@@ -51,4 +51,9 @@ public abstract class ScreenController {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void onRequestPublishPermission() {
+		// TODO Auto-generated method stub
+		
+	}
 }

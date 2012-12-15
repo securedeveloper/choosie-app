@@ -25,8 +25,8 @@ public class Constants {
 				+ File.separator
 				+ "choosie"
 				+ File.separator;
-//		public static final String mainDirectoryPath = (Environment
-//				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).getAbsolutePath();
+		// public static final String mainDirectoryPath = (Environment
+		// .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).getAbsolutePath();
 		public static final String APPLICATION_NAME = "chooZie";
 	}
 
@@ -40,6 +40,7 @@ public class Constants {
 		public static final int COMMENT = 7;
 		public static final int GALLERY = 8;
 		public static final int VOTES = 9;
+		public static final int FB_REQUEST_PUBLISH_PERMISSION = 64206;
 	}
 
 	public static class IntentsCodes {

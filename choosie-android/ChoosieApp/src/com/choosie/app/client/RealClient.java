@@ -273,14 +273,10 @@ public class RealClient extends ClientBase {
 					String.valueOf(this.fbDetails.getAccess_token_expdate())));
 
 			Log.i(Constants.LOG_TAG, "share_to_fb = on");
-			Log.i(Constants.LOG_TAG,
-					"sent fb_access_token + fb_access_token_expdate");
-		} else {
-			Log.i(Constants.LOG_TAG, "share_to_fb = off");
-			Log.i(Constants.LOG_TAG,
-					"didn't send fb_access_token + fb_access_token_expdate");
+			Log.i(Constants.LOG_TAG, "fb_access_token = " + this.fbDetails.getAccess_token());
+			Log.i(Constants.LOG_TAG, "fb_access_token_expdate = " + String.valueOf(this.fbDetails.getAccess_token_expdate()));
 		}
-
+		
 		Log.i(Constants.LOG_TAG, "finished building multipart content");
 
 		return multipartContent;
