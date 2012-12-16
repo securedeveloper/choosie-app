@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">Choosie</string>
@@ -22,5 +23,7 @@
     <string name="desc">ImageView Content Descripotion</string>
     <string name="create_new_post">Create new post</string>
     <string name="title_activity_votes_screen">VotesScreenActivity</string>
+    <string name="title_activity_enlarge_first_photo">EnlargeFirstPhoto</string>
+    <string name="title_activity_enlarge_second_photo">EnlargeSecondPhoto</string>
 
 </resources>

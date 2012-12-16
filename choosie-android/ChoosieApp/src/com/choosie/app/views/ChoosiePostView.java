@@ -33,6 +33,12 @@ import android.view.View;
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
 	private SuperController superController;
+	private OnClickListener enlargeListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			superController.handleEnlargePhoto(choosiePost, v);
+		}
+	};
 
 	public ChoosiePostView(Context context, SuperController superController) {
 		super(context);
@@ -94,14 +100,17 @@ public class ChoosiePostView extends RelativeLayout {
 		imgView2.setVisibility(View.GONE);
 		imgSelected1.setVisibility(View.GONE);
 		imgSelected2.setVisibility(View.GONE);
-
-
-		
 		feed_userimage.setVisibility(View.GONE);
 
-		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1, imgSelected1);
-		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2, imgSelected2);
-		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null, null);
+		imgView1.setOnClickListener(enlargeListener);
+		imgView2.setOnClickListener(enlargeListener);
+
+		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1,
+				imgSelected1);
+		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2,
+				imgSelected2);
+		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null,
+				null);
 		loadCommentsToView(post);
 		saveVotersPhotos(post);
 
@@ -316,9 +325,9 @@ public class ChoosiePostView extends RelativeLayout {
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
-							progressBar.setVisibility(View.GONE);							
+							progressBar.setVisibility(View.GONE);
 						}
-						if (img != null){
+						if (img != null) {
 							img.setVisibility(View.VISIBLE);
 							img.bringToFront();
 						}

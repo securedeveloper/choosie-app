@@ -68,6 +68,11 @@ public class ChoosieActivity extends Activity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if ((requestCode == Constants.RequestCodes.ENLARGE_FIRST)
+				|| (requestCode == Constants.RequestCodes.ENLARGE_SECOND)) {
+			superController.onActivityResult(requestCode, resultCode, data);
+		}
+
 		if (resultCode == Activity.RESULT_CANCELED) {
 			return;
 		}
@@ -84,7 +89,7 @@ public class ChoosieActivity extends Activity {
 					.onActivityResult(requestCode, resultCode, data);
 		}
 		if (requestCode == Constants.RequestCodes.COMMENT) {
-			superController.onActivityResult(resultCode, data);
+			superController.onActivityResult(requestCode, resultCode, data);
 		}
 		if (requestCode == Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION) {
 			Log.i(Constants.LOG_TAG, "after activity fb");
