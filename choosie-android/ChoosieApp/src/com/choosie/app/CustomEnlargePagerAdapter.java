@@ -11,11 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
-public class CustomPagerAdapter extends PagerAdapter {
-	String image1Path;
-	String image2Path;
+public class CustomEnlargePagerAdapter extends PagerAdapter {
+	private String image1Path;
+	private String image2Path;
 
-	public CustomPagerAdapter(String image1Path, String image2Path) {
+	public CustomEnlargePagerAdapter(String image1Path, String image2Path) {
 		super();
 		this.image1Path = image1Path;
 		this.image2Path = image2Path;

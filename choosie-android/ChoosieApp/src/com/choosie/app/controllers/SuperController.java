@@ -68,7 +68,7 @@ public class SuperController {
 			public void onFinish(Void param) {
 			}
 		});
-		
+
 		setCurrentScreen(Screen.FEED);
 	}
 
@@ -241,12 +241,12 @@ public class SuperController {
 	public Activity getActivity() {
 		return this.activity;
 	}
-	
-	public Screen getCurrentScreen(){
+
+	public Screen getCurrentScreen() {
 		return currentScreen;
 	}
-	
-	public void setCurrentScreen(Screen screen){
+
+	public void setCurrentScreen(Screen screen) {
 		currentScreen = screen;
 	}
 
@@ -267,15 +267,21 @@ public class SuperController {
 
 		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
 		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
-		// String userPhotoPath =
-		// Utils.getFileNameForURL(choosiePost.getAuthor()
-		// .getPhotoURL());
+		String userPhotoPath = Utils.getFileNameForURL(choosiePost.getAuthor()
+				.getPhotoURL());
+		String question = choosiePost.getQuestion();
 
 		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
 		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
-		// intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
-		intent.putExtra(Constants.IntentsCodes.startingImageToEnlarge, startingImage);
-		getActivity().startActivityForResult(intent, Constants.RequestCodes.EnalargeImage);
+		intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
+		intent.putExtra(Constants.IntentsCodes.startingImageToEnlarge,
+				startingImage);
+		intent.putExtra(Constants.IntentsCodes.question, question);
+		intent.putExtra(Constants.IntentsCodes.votes1, choosiePost.getVotes1());
+		intent.putExtra(Constants.IntentsCodes.votes2, choosiePost.getVotes2());
+		
+		getActivity().startActivityForResult(intent,
+				Constants.RequestCodes.EnalargeImage);
 
 		// create the comments list
 		// ArrayList<String> nameList = new ArrayList<String>();

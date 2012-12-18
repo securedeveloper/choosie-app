@@ -41,7 +41,7 @@ public class Constants {
 		public static final int GALLERY = 8;
 		public static final int VOTES = 9;
 		public static final int FB_REQUEST_PUBLISH_PERMISSION = 64206;
-		public static final int EnalargeImage = 10;  
+		public static final int EnalargeImage = 10;
 
 	}
 
@@ -59,6 +59,8 @@ public class Constants {
 		public static final String votersPhotoUrlList = "votersPhotoUrlList";
 		public static final String voteForList = "voteForList";
 		public static final String startingImageToEnlarge = "startingImageToEnlarge";
+		public static final String votes1 = "votes1";
+		public static final String votes2 = "votes2";
 
 	}
 }

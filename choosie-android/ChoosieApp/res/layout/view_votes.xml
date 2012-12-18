@@ -8,14 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:background="#FFFFFFFF"
         android:orientation="horizontal" >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#FFFFFFFF" >
+            android:layout_weight="1" >
 
             <ImageView
                 android:id="@+id/voteView_voterPhoto1"
@@ -24,8 +22,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginRight="4dp"
                 android:adjustViewBounds="true"
-                android:scaleType="matrix"
-                android:src="@drawable/ic_action_search" />
+                android:scaleType="matrix" />
 
             <TextView
                 android:id="@+id/voteView_name1"
@@ -39,8 +36,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#FFFFFFFF" >
+            android:layout_weight="1" >
 
             <ImageView
                 android:id="@+id/voteView_voterPhoto2"
@@ -49,8 +45,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginRight="4dp"
                 android:adjustViewBounds="true"
-                android:scaleType="matrix"
-                android:src="@drawable/ic_action_search" />
+                android:scaleType="matrix" />
 
             <TextView
                 android:id="@+id/voteView_name2"

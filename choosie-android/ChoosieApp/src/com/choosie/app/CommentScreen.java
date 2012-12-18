@@ -27,6 +27,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -40,14 +41,36 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class CommentScreen extends Activity {
+	Intent intent;
+	// key listener - for: when the user pressing the enter key - sends the
+	// comment
+	OnKeyListener sendKeyListener = new OnKeyListener() {
+		public boolean onKey(View v, int keyCode, KeyEvent event) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN) {
+				switch (keyCode) {
+				case KeyEvent.KEYCODE_DPAD_CENTER:
+				case KeyEvent.KEYCODE_ENTER:
+					activateSendButton(intent);
+					return true;
+				default:
+					break;
+				}
+			}
+			return false;
+		}
+	};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.i(Constants.LOG_TAG, "in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
-		final Intent intent = getIntent();
 
+		// setting onclikelistener
+		EditText questionEditText = (EditText) findViewById(R.id.editText_comment);
+		questionEditText.setOnKeyListener(sendKeyListener);
+
+		intent = getIntent();
 		fillCommentView(intent);
 
 		ArrayAdapter<CommentData> commentScreenAdapter = makeCommentScreenAdapter(intent);
@@ -61,6 +84,7 @@ public class CommentScreen extends Activity {
 				activateSendButton(intent);
 			}
 		});
+
 	}
 
 	private ArrayAdapter<CommentData> makeCommentScreenAdapter(
@@ -109,24 +133,11 @@ public class CommentScreen extends Activity {
 	}
 
 	private void fillCommentView(Intent intent) {
-
-		// final ImageView imageViewPhoto1 = (ImageView)
-		// findViewById(R.id.photo1_comment_screen);
-		// final ImageView imageViewPhoto2 = (ImageView)
-		// findViewById(R.id.photo2_comment_screen);
 		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
 
-		// get the images Strings from the intent
-
-		// String photo1Path = intent
-		// .getStringExtra(Constants.IntentsCodes.photo1Path);
-		// String photo2Path = intent
-		// .getStringExtra(Constants.IntentsCodes.photo2Path);
 		String userPhotoPath = intent
 				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
 
-		// setImageFromPath(photo1Path, imageViewPhoto1);
-		// setImageFromPath(photo2Path, imageViewPhoto2);
 		setImageFromPath(userPhotoPath, imageViewUserPhoto);
 
 		// set the question
@@ -136,9 +147,6 @@ public class CommentScreen extends Activity {
 
 	private View createViewComment(CommentData item, Intent intent, int position) {
 		LinearLayout itemView = new LinearLayout(this);
-		// itemView.inflate(this.getContext(), R.id.LinearLayout_view_comment,
-		// parent);
-
 		LayoutInflater inflater = (LayoutInflater) this
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_comment, itemView);
@@ -161,8 +169,8 @@ public class CommentScreen extends Activity {
 					.findViewById(R.id.layout_images_comment);
 			imagesLayout.setVisibility(View.GONE);
 		}
-		
-		//comtinue only if it is a real comment
+
+		// comtinue only if it is a real comment
 		if (item.checkIfDummyComment() == false) {
 
 			// set the comment text
@@ -180,9 +188,9 @@ public class CommentScreen extends Activity {
 			TextView commentTime = (TextView) itemView
 					.findViewById(R.id.commentScreen_commentTime);
 			commentTime.setText(item.getCreatedAt() + " ago");
-		}
-		else{
-			((ImageView) itemView.findViewById(R.id.view_comment_clockImage)).setVisibility(View.GONE);
+		} else {
+			((ImageView) itemView.findViewById(R.id.view_comment_clockImage))
+					.setVisibility(View.GONE);
 		}
 		return itemView;
 	}
@@ -246,30 +254,13 @@ public class CommentScreen extends Activity {
 			finish();
 			return true;
 		}
-
 		return super.onKeyDown(keyCode, event);
 	}
 
 	private void resetCommentScreen() {
-		final ImageView imageViewPhoto1 = (ImageView) findViewById(R.id.photo1_comment_screen);
-		final ImageView imageViewPhoto2 = (ImageView) findViewById(R.id.photo2_comment_screen);
 		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
-
-		// Bitmap image1Bitmap = ((BitmapDrawable)
-		// imageViewPhoto1.getDrawable())
-		// .getBitmap();
-		// Bitmap image2Bitmap = ((BitmapDrawable)
-		// imageViewPhoto2.getDrawable())
-		// .getBitmap();
 		Bitmap userPhotoBitmap = ((BitmapDrawable) imageViewUserPhoto
 				.getDrawable()).getBitmap();
-
-		// if (image1Bitmap != null) {
-		// image1Bitmap.recycle();
-		// }
-		// if (image2Bitmap != null) {
-		// image2Bitmap.recycle();
-		// }
 		if (userPhotoBitmap != null) {
 			userPhotoBitmap.recycle();
 		}
