@@ -100,12 +100,8 @@
         <!-- </intent-filter> -->
         <!-- </activity-alias> -->
         <activity
-            android:name="com.choosie.app.EnlargeFirstPhoto"
-            android:label="@string/title_activity_enlarge_first_photo" >
-        </activity>
-        <activity
-            android:name="com.choosie.app.EnlargeSecondPhoto"
-            android:label="@string/title_activity_enlarge_second_photo" >
+            android:name="com.choosie.app.EnlargePhotoActivity"
+            android:label="@string/title_activity_enlarge_photo" >
         </activity>
     </application>
 

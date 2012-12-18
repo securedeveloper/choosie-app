@@ -31,20 +31,18 @@ public class Constants {
 	}
 
 	public static class RequestCodes {
-		public static final int TAKE_FIRST_PICTURE_FROM_CAMERA = 0;
-		public static final int TAKE_SECOND_PICTURE_FROM_CAMERA = 1;
-		public static final int TAKE_FIRST_PICTURE_FROM_GALLERY = 2;
-		public static final int TAKE_SECOND_PICTURE_FROM_GALLERY = 3;
-		public static final int CROP_FIRST = 4;
-		public static final int CROP_SECOND = 5;
-		public static final int COMMENT = 6;
-		public static final int GALLERY = 7;
-		public static final int VOTES = 8;
-		public static int ENLARGE_FIRST = 9;
-		public static final int ENLARGE_SECOND = 10;
+		public static final int TAKE_FIRST_PICTURE_FROM_CAMERA = 1;
+		public static final int TAKE_SECOND_PICTURE_FROM_CAMERA = 2;
+		public static final int TAKE_FIRST_PICTURE_FROM_GALLERY = 3;
+		public static final int TAKE_SECOND_PICTURE_FROM_GALLERY = 4;
+		public static final int CROP_FIRST = 5;
+		public static final int CROP_SECOND = 6;
+		public static final int COMMENT = 7;
+		public static final int GALLERY = 8;
+		public static final int VOTES = 9;
 		public static final int FB_REQUEST_PUBLISH_PERMISSION = 64206;
-		
-		
+		public static final int EnalargeImage = 10;  
+
 	}
 
 	public static class IntentsCodes {
@@ -60,6 +58,7 @@ public class Constants {
 		public static final String question = "question";
 		public static final String votersPhotoUrlList = "votersPhotoUrlList";
 		public static final String voteForList = "voteForList";
+		public static final String startingImageToEnlarge = "startingImageToEnlarge";
 
 	}
 }

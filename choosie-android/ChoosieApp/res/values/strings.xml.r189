@@ -1,0 +1,26 @@
+<resources>
+
+    <string name="app_name">Choosie</string>
+    <string name="title_activity_start">Login to Choosie</string>
+    <string name="title_activity_choosie">Choosie</string>
+    <string name="title_activity_comment_screen">Choosie - Post Details</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="buttonFeed">Feed</string>
+    <string name="buttonPost">Post</string>
+    <string name="buttonMe">Me</string>
+    <string name="button_submit">Share</string>
+    <string name="editTextQuestion">Enter a question</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="welcome">Welcome to </string>
+    <string name="app_id">515799855110300</string>
+    <string name="login">Login</string>
+    <string name="load_more">Load more</string>
+    <string name="how_long_ago_was_it_taken">How long ago was it taken</string>
+    <string name="logout">Logout</string>
+    <string name="share_on_facebook">Share on Facebook</string>
+    <string name="desc">ImageView Content Descripotion</string>
+    <string name="create_new_post">Create new post</string>
+    <string name="title_activity_votes_screen">VotesScreenActivity</string>
+
+</resources>

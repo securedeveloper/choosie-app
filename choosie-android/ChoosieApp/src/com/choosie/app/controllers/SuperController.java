@@ -10,8 +10,8 @@ import com.choosie.app.Callback;
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
-import com.choosie.app.EnlargeFirstPhoto;
-import com.choosie.app.EnlargeSecondPhoto;
+
+import com.choosie.app.EnlargePhotoActivity;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
@@ -68,7 +68,7 @@ public class SuperController {
 			public void onFinish(Void param) {
 			}
 		});
-
+		
 		setCurrentScreen(Screen.FEED);
 	}
 
@@ -225,55 +225,13 @@ public class SuperController {
 		screenToController.get(Screen.FEED).getActivity().startActivity(intent);// Constants.RequestCodes.VOTES);
 	}
 
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == Constants.RequestCodes.COMMENT) {
-			if (resultCode == ChoosieActivity.RESULT_OK) {
-				String text = data.getStringExtra(Constants.IntentsCodes.text);
-				String post_key = data
-						.getStringExtra(Constants.IntentsCodes.post_key);
-				CommentFor(post_key, text);
-			}
+	public void onActivityResult(int resultCode, Intent data) {
+		if (resultCode == ChoosieActivity.RESULT_OK) {
+			String text = data.getStringExtra(Constants.IntentsCodes.text);
+			String post_key = data
+					.getStringExtra(Constants.IntentsCodes.post_key);
+			CommentFor(post_key, text);
 		}
-
-		if ((requestCode == Constants.RequestCodes.ENLARGE_FIRST)
-				|| (requestCode == Constants.RequestCodes.ENLARGE_FIRST)) {
-			switchToScreen(Screen.FEED);
-		}
-	}
-
-	public void handleEnlargePhoto(ChoosiePostData choosiePost, View view) {
-
-		if (view.getId() == R.id.feedimage1) {
-
-			Intent intent = new Intent(screenToController.get(Screen.FEED)
-					.getActivity().getApplicationContext(),
-					EnlargeFirstPhoto.class);
-
-			switchToEnlargeScreen(choosiePost,
-					Constants.RequestCodes.ENLARGE_FIRST, intent);
-
-		} else if (view.getId() == R.id.feedimage2) {
-			Intent intent = new Intent(screenToController.get(Screen.FEED)
-					.getActivity().getApplicationContext(),
-					EnlargeSecondPhoto.class);
-
-			switchToEnlargeScreen(choosiePost,
-					Constants.RequestCodes.ENLARGE_SECOND, intent);
-		}
-
-	}
-
-	private void switchToEnlargeScreen(ChoosiePostData choosiePost, int code,
-			Intent intent) {
-
-		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
-		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
-
-		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
-		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
-
-		screenToController.get(Screen.FEED).getActivity()
-				.startActivityForResult(intent, code);
 	}
 
 	public ScreenController getControllerForScreen(Screen screen) {
@@ -283,12 +241,47 @@ public class SuperController {
 	public Activity getActivity() {
 		return this.activity;
 	}
-
-	public Screen getCurrentScreen() {
+	
+	public Screen getCurrentScreen(){
 		return currentScreen;
 	}
-
-	public void setCurrentScreen(Screen screen) {
+	
+	public void setCurrentScreen(Screen screen){
 		currentScreen = screen;
+	}
+
+	public void switchToEnlargeImage(View v, ChoosiePostData choosiePost) {
+		Intent intent = new Intent(screenToController.get(Screen.FEED)
+				.getActivity().getApplicationContext(),
+				EnlargePhotoActivity.class);
+
+		int startingImage = 2;
+		switch (v.getId()) {
+		case (R.id.feedimage1):
+			startingImage = 0;
+			break;
+		case (R.id.feedimage2):
+			startingImage = 1;
+			break;
+		}
+
+		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
+		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
+		// String userPhotoPath =
+		// Utils.getFileNameForURL(choosiePost.getAuthor()
+		// .getPhotoURL());
+
+		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
+		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
+		// intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
+		intent.putExtra(Constants.IntentsCodes.startingImageToEnlarge, startingImage);
+		getActivity().startActivityForResult(intent, Constants.RequestCodes.EnalargeImage);
+
+		// create the comments list
+		// ArrayList<String> nameList = new ArrayList<String>();
+		// ArrayList<String> commentList = new ArrayList<String>();
+		// ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
+		// ArrayList<CharSequence> createdAtList = new
+		// ArrayList<CharSequence>();
 	}
 }
