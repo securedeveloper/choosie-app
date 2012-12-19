@@ -29,8 +29,9 @@ public class EnlargePhotoActivity extends Activity {
 				.getStringExtra(Constants.IntentsCodes.photo2Path);
 		int startingImage = intent.getIntExtra(
 				Constants.IntentsCodes.startingImageToEnlarge, 3);
+		
 		CustomEnlargePagerAdapter adapter = new CustomEnlargePagerAdapter(
-				image1Path, image2Path);
+				image1Path, image2Path, getWindowManager().getDefaultDisplay());
 		ViewPager myPager = (ViewPager) findViewById(R.id.enlargePhoto_viewPager);
 		myPager.setAdapter(adapter);
 		myPager.setCurrentItem(startingImage);

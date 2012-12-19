@@ -66,7 +66,7 @@ public class ChoosiePostView extends RelativeLayout {
 					}
 				});
 	}
-	
+
 	public void loadChoosiePost(final ChoosiePostData post) {
 		this.choosiePost = post;
 
@@ -96,9 +96,24 @@ public class ChoosiePostView extends RelativeLayout {
 		imgSelected2.setVisibility(View.GONE);
 		feed_userimage.setVisibility(View.GONE);
 
-		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1, imgSelected1);
-		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2, imgSelected2);
-		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null, null);
+		// set the size of the image view to bew a square sized half of the
+		// screen width
+		imgView1.getLayoutParams().height = (superController.getActivity()
+				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
+		imgView1.getLayoutParams().width = (superController.getActivity()
+				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
+
+		imgView2.getLayoutParams().height = (superController.getActivity()
+				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
+		imgView2.getLayoutParams().width = (superController.getActivity()
+				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
+
+		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1,
+				imgSelected1);
+		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2,
+				imgSelected2);
+		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null,
+				null);
 		loadCommentsToView(post);
 		saveVotersPhotos(post);
 
@@ -128,7 +143,6 @@ public class ChoosiePostView extends RelativeLayout {
 				handleVote1(votes1, votes2, imgSelected1, imgSelected2);
 			}
 		});
-		
 
 		imgView2.setOnLongClickListener(new OnLongClickListener() {
 
@@ -145,15 +159,15 @@ public class ChoosiePostView extends RelativeLayout {
 				handleVote2(votes1, votes2, imgSelected1, imgSelected2);
 			}
 		});
-		
-		//listener for handling enlarge image
+
+		// listener for handling enlarge image
 		OnClickListener enlargeListener = new OnClickListener() {
-			
-			public void onClick(View v) {				
+
+			public void onClick(View v) {
 				superController.switchToEnlargeImage(v, post);
 			}
 		};
-		
+
 		imgView1.setOnClickListener(enlargeListener);
 		imgView2.setOnClickListener(enlargeListener);
 	}
@@ -325,9 +339,9 @@ public class ChoosiePostView extends RelativeLayout {
 						imageView.setImageBitmap(param);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
-							progressBar.setVisibility(View.GONE);							
+							progressBar.setVisibility(View.GONE);
 						}
-						if (img != null){
+						if (img != null) {
 							img.setVisibility(View.VISIBLE);
 							img.bringToFront();
 						}

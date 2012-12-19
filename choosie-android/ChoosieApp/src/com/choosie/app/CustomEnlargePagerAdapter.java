@@ -3,10 +3,14 @@ package com.choosie.app;
 import java.io.File;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,11 +18,14 @@ import android.widget.ImageView;
 public class CustomEnlargePagerAdapter extends PagerAdapter {
 	private String image1Path;
 	private String image2Path;
+	private Display display;
 
-	public CustomEnlargePagerAdapter(String image1Path, String image2Path) {
+	public CustomEnlargePagerAdapter(String image1Path, String image2Path,
+			Display display) {
 		super();
 		this.image1Path = image1Path;
 		this.image2Path = image2Path;
+		this.display = display;
 	}
 
 	public int getCount() {
@@ -41,8 +48,13 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 			imagePath = image2Path;
 			break;
 		}
-		// TODO: check that imagePath != null
-		imageView.setImageURI(Uri.fromFile(new File(imagePath)));
+
+		imageView.getLayoutParams().height = display.getWidth();
+		imageView.getLayoutParams().width = display.getWidth();
+
+		if (imagePath != null) {
+			imageView.setImageURI(Uri.fromFile(new File(imagePath)));
+		}
 
 		((ViewPager) collection).addView(view, 0);
 		return view;
