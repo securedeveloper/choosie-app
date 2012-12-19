@@ -1,0 +1,103 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFFFF"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/header_selector" >
+
+        <ImageView
+            android:id="@+id/header_image_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/temp_logo_comments" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_user_comments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_layout"
+        android:layout_margin="5dp"
+        android:background="#FFFFFFFF"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/userPhoto_commetns"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:adjustViewBounds="true"
+            android:scaleType="matrix"
+            android:src="@drawable/ic_action_search" />
+
+        <TextView
+            android:id="@+id/comment_activity_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textColor="#2A1EB0"
+            android:textStyle="bold"
+            android:text="name" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textImage_comment_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_user_comments"
+        android:layout_gravity="center_vertical"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/Black"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/commentsListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_bottom_comment_screen"
+        android:layout_below="@+id/textImage_comment_question"
+        android:background="#FFFFFFFF"
+        android:divider="#00000000"
+        android:listSelector="#00000000" >
+    </ListView>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_above="@+id/layout_bottom_comment_screen"
+        android:layout_centerVertical="true"
+        android:background="#ffcccccc" />
+
+    <LinearLayout
+        android:id="@+id/layout_bottom_comment_screen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/border"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/editText_comment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/button_send_comment"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Enter comment!" >
+        </EditText>
+
+        <Button
+            android:id="@+id/button_send_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="send" />
+    </LinearLayout>
+
+</RelativeLayout>

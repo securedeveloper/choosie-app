@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">CameraTry2</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_cmaera">Cmaera</string>
+    <string name="button_pic">Photo</string>
+    <string name="photoButton1">snap first</string>
+    <string name="buttonPic2">snap second</string>
+    <string name="button_submit">Post it!</string>
+    <string name="TextQuestion">question something</string>
+    <string name="post">post</string>
+
+</resources>

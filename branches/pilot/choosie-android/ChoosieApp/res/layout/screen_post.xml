@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/view_choosie_post_margin"
+    android:background="@color/White">
+
+<!--     <TextView -->
+<!--         android:id="@+id/create_new_post" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignParentLeft="true" -->
+<!--         android:layout_alignParentTop="true" -->
+<!--         android:paddingLeft="@dimen/view_choosie_post_margin" -->
+<!--         android:text="@string/create_new_post" -->
+<!--         android:textAppearance="?android:attr/textAppearanceMedium" -->
+<!--         android:textColor="@color/CornflowerBlue" /> -->
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal" >
+        <!--         android:layout_below="@+id/create_new_post" -->
+
+        <ImageView
+            android:id="@+id/image_photo1"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="@dimen/view_choosie_post_margin"
+            android:layout_marginLeft="@dimen/view_choosie_post_margin"
+            android:layout_marginRight="@dimen/view_choosie_post_margin"
+            android:layout_marginTop="@dimen/view_choosie_post_margin"
+            android:layout_weight="1"
+            android:background="@drawable/image_frame_post"
+            android:contentDescription="@string/desc"
+            android:onClick="takePhoto"
+            android:scaleType="centerInside"
+            android:src="@drawable/camera" />
+
+        <ImageView
+            android:id="@+id/image_photo2"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="@dimen/view_choosie_post_margin"
+            android:layout_marginLeft="@dimen/view_choosie_post_margin"
+            android:layout_marginRight="@dimen/view_choosie_post_margin"
+            android:layout_marginTop="@dimen/view_choosie_post_margin"
+            android:layout_weight="1"
+            android:background="@drawable/image_frame_post"
+            android:contentDescription="@string/desc"
+            android:scaleType="centerInside"
+            android:src="@drawable/camera" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/editText_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayour2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/text_view_border"
+        android:ems="10"
+        android:gravity="top|left"
+        android:hint="@string/editTextQuestion"
+        android:includeFontPadding="false"
+        android:lines="2"
+        android:maxLines="2" >
+
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:id="@+id/linearLayour2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_submit1"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal"
+        android:padding="@dimen/view_choosie_post_margin" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:contentDescription="@string/desc"
+            android:maxHeight="@android:dimen/app_icon_size"
+            android:maxWidth="@android:dimen/app_icon_size"
+            android:scaleType="fitCenter"
+            android:src="@drawable/fb_logo" />
+
+        <TextView
+            android:id="@+id/shareOnFacebookTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/view_choosie_post_text_margin"
+            android:layout_weight="0.87"
+            android:text="@string/share_on_facebook"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <ToggleButton
+            android:id="@+id/shareOnFacebookToggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:gravity="center_vertical|center_horizontal|bottom|fill_vertical" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_submit1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/button_submit" />
+
+</RelativeLayout>
