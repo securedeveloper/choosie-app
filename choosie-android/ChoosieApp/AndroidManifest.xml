@@ -29,8 +29,7 @@
             android:name="com.choosie.app.ChoosieActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_choosie"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.choosie.app.StartActivity"
@@ -62,14 +61,12 @@
         <activity
             android:name="com.choosie.app.CommentScreen"
             android:label="@string/title_activity_comment_screen"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.choosie.app.VotesScreenActivity"
             android:label="@string/title_activity_votes_screen"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:screenOrientation="portrait">
         </activity>
         <!-- <activity -->
         <!-- android:name="com.apphance.android.LauncherActivity" -->
@@ -104,8 +101,7 @@
         <!-- </activity-alias> -->
         <activity
             android:name="com.choosie.app.EnlargePhotoActivity"
-            android:label="@string/title_activity_enlarge_photo"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:label="@string/title_activity_enlarge_photo">
         </activity>
     </application>
 
