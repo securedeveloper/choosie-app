@@ -62,7 +62,7 @@ public class CommentScreen extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.i(Constants.LOG_TAG, "in comment screen");
+		Logger.getInstance().WriteLine("in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
 
@@ -139,10 +139,11 @@ public class CommentScreen extends Activity {
 				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
 
 		setImageFromPath(userPhotoPath, imageViewUserPhoto);
-		
-		//set the user name
+
+		// set the user name
 		TextView userNameTextView = (TextView) findViewById(R.id.comment_activity_user_name);
-		userNameTextView.setText(intent.getStringExtra(Constants.IntentsCodes.userName));
+		userNameTextView.setText(intent
+				.getStringExtra(Constants.IntentsCodes.userName));
 
 		// set the question
 		((TextView) findViewById(R.id.textImage_comment_question))

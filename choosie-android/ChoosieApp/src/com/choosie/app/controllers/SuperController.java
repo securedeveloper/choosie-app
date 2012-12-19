@@ -11,6 +11,7 @@ import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
 import com.choosie.app.IntentData;
+import com.choosie.app.Logger;
 
 import com.choosie.app.EnlargePhotoActivity;
 import com.choosie.app.R;
@@ -85,7 +86,8 @@ public class SuperController {
 	}
 
 	public void voteFor(final ChoosiePostData post, int whichPhoto) {
-		Log.i(Constants.LOG_TAG, "Issuing vote for: " + post.getPostKey());
+		Logger.getInstance()
+				.WriteLine("Issuing vote for: " + post.getPostKey());
 		this.client.sendVoteToServer(post, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 
@@ -120,7 +122,7 @@ public class SuperController {
 	}
 
 	public void CommentFor(final String post_key, String text) {
-		Log.i(Constants.LOG_TAG, "commenting vote for: " + post_key);
+		Logger.getInstance().WriteLine("commenting vote for: " + post_key);
 		this.client.sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
 
@@ -281,7 +283,7 @@ public class SuperController {
 		IntentData intentData = new IntentData(startingImage, votes1, votes2,
 				photo1Path, photo2Path, userPhotoPath, userName, question,
 				isVotedAlready);
-		
+
 		intent.putExtra(Constants.IntentsCodes.intentData, intentData);
 
 		getActivity().startActivityForResult(intent,

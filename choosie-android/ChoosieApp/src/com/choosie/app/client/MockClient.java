@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.Models.ChoosiePostData;
@@ -51,7 +52,7 @@ public class MockClient extends ClientBase {
 			cursor = "";
 		}
 
-		Log.i(Constants.LOG_TAG, "Got feed request. Cursor = " + cursor);
+		Logger.getInstance().WriteLine("Got feed request. Cursor = " + cursor);
 
 		List<ChoosiePostData> mockPosts = new ArrayList<ChoosiePostData>();
 
@@ -82,8 +83,8 @@ public class MockClient extends ClientBase {
 
 		ChoosiePostData mockPost = new ChoosiePostData(fbDetails, postKey,
 				photo1URL, photo2URL, question, new User(userName,
-						userPhotoUrl, fbUID), new Date(), new ArrayList<Vote>(),
-				new ArrayList<Comment>());
+						userPhotoUrl, fbUID), new Date(),
+				new ArrayList<Vote>(), new ArrayList<Comment>());
 		return mockPost;
 	}
 

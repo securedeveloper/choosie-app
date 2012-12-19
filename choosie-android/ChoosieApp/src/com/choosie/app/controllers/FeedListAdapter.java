@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.views.ChoosiePostView;
@@ -96,15 +97,17 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private ChoosiePostData loadingItem;
 
 	private void update(FeedResponse param) {
-		Log.i(Constants.LOG_TAG, "FeedListAdapter: update. Posts count: "
-				+ param.getPosts().size() + ". Append: " + param.isAppend());
+		Logger.getInstance().WriteLine(
+				"FeedListAdapter: update. Posts count: "
+						+ param.getPosts().size() + ". Append: "
+						+ param.isAppend());
 		if (param.getPosts().size() == 0) {
-			Log.i(Constants.LOG_TAG, "No images in feed.");
+			Logger.getInstance().WriteLine("No images in feed.");
 		}
 		State relevantState = param.isAppend() ? State.APPENDING_TO_FEED
 				: State.REFRESHING_FEED;
 		if (relevantState != this.state) {
-			Log.i(Constants.LOG_TAG,
+			Logger.getInstance().WriteLine(
 					"FeedListAdapter: update. Got new posts, but not updating"
 							+ " because not in relevant state. "
 							+ "Relevant = " + relevantState + ", Real state = "
@@ -118,15 +121,16 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return;
 		}
 		if (this.state == State.REFRESHING_FEED) {
-			Log.i(Constants.LOG_TAG, "Clearing feed (cause in Refresh state)");
+			Logger.getInstance().WriteLine(
+					"Clearing feed (cause in Refresh state)");
 			this.clear();
 		}
-		Log.i(Constants.LOG_TAG, "Adding posts.");
+		Logger.getInstance().WriteLine("Adding posts.");
 		for (ChoosiePostData item : param.getPosts()) {
 			this.add(item);
 		}
 		lastCursor = param.getCursor();
-		Log.i(Constants.LOG_TAG, "Last cursor is now = " + lastCursor);
+		Logger.getInstance().WriteLine("Last cursor is now = " + lastCursor);
 	}
 
 	public void refreshFeed() {
@@ -145,7 +149,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return;
 		}
 		this.state = newState;
-		Log.i(Constants.LOG_TAG, "Changing to state " + this.state);
+		Logger.getInstance().WriteLine("Changing to state " + this.state);
 		switch (this.state) {
 		case APPENDING_TO_FEED:
 			showLoadingItem();
@@ -166,7 +170,8 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			showErrorToast();
 			break;
 		}
-		Log.i(Constants.LOG_TAG, "Finished changing to state " + this.state);
+		Logger.getInstance().WriteLine(
+				"Finished changing to state " + this.state);
 
 	}
 
@@ -178,7 +183,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	private void addItemsToList() {
-		Log.i(Constants.LOG_TAG, "addItemsToList. state = " + state);
+		Logger.getInstance().WriteLine("addItemsToList. state = " + state);
 
 		FeedCacheKey request = null;
 		if (this.state == State.REFRESHING_FEED) {
@@ -206,7 +211,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private class AdapterUpdater extends Callback<Void, Object, FeedResponse> {
 		@Override
 		public void onFinish(FeedResponse param) {
-			Log.i(Constants.LOG_TAG, "onFINISH!!!");
+			Logger.getInstance().WriteLine("onFINISH!!!");
 			if (param == null) {
 				changeState(State.ERROR);
 			} else {
@@ -230,7 +235,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			loadingItem = new ChoosiePostData(null, null, null, null,
 					LOADING_ITEM_TEXT, null, null, null, null);
 		}
-		Log.i(Constants.LOG_TAG, "Showing 'Loading items...'");
+		Logger.getInstance().WriteLine("Showing 'Loading items...'");
 		if (this.state == State.APPENDING_TO_FEED) {
 			this.add(loadingItem);
 		} else if (this.state == State.REFRESHING_FEED) {
@@ -248,7 +253,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			if (++i > 3) {
 				break;
 			}
-			Log.i(Constants.LOG_TAG, "Hiding 'Loading items...'");
+			Logger.getInstance().WriteLine("Hiding 'Loading items...'");
 			this.remove(loadingItem);
 		}
 	}

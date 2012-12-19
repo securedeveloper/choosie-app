@@ -64,8 +64,7 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 				.findViewById(R.id.view_enlarge_votes);
 		if (data.checkIfVotedAlready() == true) {
 			votesTextView.setText(votes + " votes");
-		}
-		else{
+		} else {
 			votesTextView.setVisibility(view.GONE);
 		}
 		((ViewPager) collection).addView(view, 0);

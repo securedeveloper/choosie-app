@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.Models.ChoosiePostData;
@@ -38,8 +39,8 @@ public abstract class ClientBase {
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
 			Callback<Void, Object, Void> progressCallback) {
 		String urlToLoad = pictureUrl;
-		Log.i(Constants.LOG_TAG, "getPictureFromServer: Loading URL: "
-				+ urlToLoad);
+		Logger.getInstance().WriteLine(
+				"getPictureFromServer: Loading URL: " + urlToLoad);
 		URL url;
 		try {
 			url = new URL(urlToLoad);

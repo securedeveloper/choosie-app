@@ -2,6 +2,7 @@ package com.choosie.app.controllers;
 
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Models.ChoosiePostData;
@@ -30,7 +31,7 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onCreate() {
-		Log.i(Constants.LOG_TAG, "Feed.onShow()");
+		Logger.getInstance().WriteLine("Feed.onShow()");
 		// Create a progress bar to display while the list loads
 		TextView textView = new TextView(this.getActivity());
 		textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,

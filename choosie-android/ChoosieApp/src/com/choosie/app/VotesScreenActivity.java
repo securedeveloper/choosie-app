@@ -36,7 +36,7 @@ public class VotesScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_votes_screen);
 
-		Log.i(Constants.LOG_TAG, "in votes screen");
+		Logger.getInstance().WriteLine("in votes screen");
 
 		final Intent intent = getIntent();
 
@@ -109,23 +109,22 @@ public class VotesScreenActivity extends Activity {
 
 		for (int i = 0; i < Math.max(votersToPhoto1.size(),
 				votersToPhoto2.size()); i++) {
-			
+
 			String voterName1 = null;
 			String photoUrl1 = null;
 			String voterName2 = null;
 			String photoUrl2 = null;
-			
-			if (i<votersToPhoto1.size()){
+
+			if (i < votersToPhoto1.size()) {
 				voterName1 = votersToPhoto1.get(i).getName();
-				photoUrl1 = votersToPhoto1.get(i)
-						.getphotoUrl();
+				photoUrl1 = votersToPhoto1.get(i).getphotoUrl();
 			}
-			if (i<votersToPhoto2.size()){
+			if (i < votersToPhoto2.size()) {
 				voterName2 = votersToPhoto2.get(i).getName();
-				photoUrl2 = votersToPhoto2.get(i)
-						.getphotoUrl();
+				photoUrl2 = votersToPhoto2.get(i).getphotoUrl();
 			}
-			VoteData newVoteData = new VoteData(voterName1, photoUrl1, voterName2, photoUrl2);			
+			VoteData newVoteData = new VoteData(voterName1, photoUrl1,
+					voterName2, photoUrl2);
 			adi.add(newVoteData);
 		}
 		return adi;

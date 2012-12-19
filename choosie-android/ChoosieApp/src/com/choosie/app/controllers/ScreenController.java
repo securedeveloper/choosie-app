@@ -44,16 +44,16 @@ public abstract class ScreenController {
 
 	public void onKeyDown(int keyCode, KeyEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void onResume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void onRequestPublishPermission() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

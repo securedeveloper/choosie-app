@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
@@ -85,7 +86,7 @@ public class PostScreenController extends ScreenController {
 
 					// if so, just show button as checked
 					if (userHasPublishPermissions) {
-						Log.i(Constants.LOG_TAG,
+						Logger.getInstance().WriteLine(
 								"Already have publish permissions: "
 										+ session.getPermissions().toString());
 						shareOnFacebookTb.setChecked(true);
@@ -129,8 +130,9 @@ public class PostScreenController extends ScreenController {
 						"Exception in reauthorizeForPublish() : "
 								+ ex.toString());
 			}
-			Log.i(Constants.LOG_TAG, "on set active session permissions: "
-					+ session.getPermissions().toString());
+			Logger.getInstance().WriteLine(
+					"on set active session permissions: "
+							+ session.getPermissions().toString());
 		}
 	}
 
@@ -141,7 +143,7 @@ public class PostScreenController extends ScreenController {
 			List<String> perms = session.getPermissions();
 			userHasPublishPermissions = perms.contains("publish_stream");
 		} else {
-			Log.i(Constants.LOG_TAG,
+			Logger.getInstance().WriteLine(
 					"isUserHasPublishPermissions(): session is not opened!");
 		}
 		return userHasPublishPermissions;
@@ -171,25 +173,26 @@ public class PostScreenController extends ScreenController {
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit1) {
 			if (shareOnFacebookTb.isChecked()) {
-				Log.i(Constants.LOG_TAG, "Share on facebook is checked!");
+				Logger.getInstance().WriteLine("Share on facebook is checked!");
 				Session session = Session.getActiveSession();
 				if (session.isOpened()) {
-					Log.i(Constants.LOG_TAG, "session permissions: "
-							+ session.getPermissions().toString());
+					Logger.getInstance().WriteLine(
+							"session permissions: "
+									+ session.getPermissions().toString());
 					if (!session.getPermissions().contains("publish_stream")) {
 
-						Log.i(Constants.LOG_TAG,
+						Logger.getInstance().WriteLine(
 								"requesting publish_stream permissions");
 
 						List<String> write_permissions = new ArrayList<String>();
 						write_permissions.add("publish_stream");
 
-						Log.i(Constants.LOG_TAG,
+						Logger.getInstance().WriteLine(
 								"Opening new ReauthorizeRequest");
 						ReauthorizeRequest openRequest = new ReauthorizeRequest(
 								getActivity(), write_permissions);
 						try {
-							Log.i(Constants.LOG_TAG,
+							Logger.getInstance().WriteLine(
 									"Opening new ReauthorizeRequest");
 							session.reauthorizeForPublish(openRequest);
 						} catch (Exception ex) {
@@ -199,7 +202,7 @@ public class PostScreenController extends ScreenController {
 					}
 				}
 			}
-			Log.i(Constants.LOG_TAG, "executing submitChoosiePost()");
+			Logger.getInstance().WriteLine("executing submitChoosiePost()");
 			submitChoosiePost();
 		} else {
 			startDialog(arg0);
@@ -439,7 +442,8 @@ public class PostScreenController extends ScreenController {
 		try {
 			image = File.createTempFile(imageFileName, ".jpg", getAlbumDir());
 		} catch (IOException e) {
-			Log.e("createImageFile", "failed to create temp image file: " + imageFileName);
+			Log.e("createImageFile", "failed to create temp image file: "
+					+ imageFileName);
 			e.printStackTrace();
 		}
 		mCurrentPhotoPath = image.getAbsolutePath();
@@ -485,9 +489,7 @@ public class PostScreenController extends ScreenController {
 	private class SessionStatusCallback implements Session.StatusCallback {
 		public void call(Session session, SessionState state,
 				Exception exception) {
-			int a = 5;
-			Log.i(Constants.LOG_TAG, "SessionStatusCallback(): a=" + a);
-
+			Logger.getInstance().WriteLine("Entered SessionStatusCallback()");
 		}
 	}
 

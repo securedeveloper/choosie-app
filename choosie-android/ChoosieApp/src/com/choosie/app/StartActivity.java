@@ -3,9 +3,9 @@ package com.choosie.app;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.apphance.android.Log;
-//import com.apphance.android.Apphance;
-import android.util.Log;
+import com.apphance.android.Log;
+import com.apphance.android.Apphance;
+//import android.util.Log;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.GraphUser;
 import com.facebook.LoggingBehaviors;
@@ -33,22 +33,24 @@ public class StartActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		// Starts an Apphance session using a dummy key and QA mode
-//        Apphance.startNewSession(this, APP_KEY, Apphance.Mode.QA);
-        
+		Apphance.startNewSession(this, APP_KEY, Apphance.Mode.QA);
+
 		setContentView(R.layout.activity_start);
-		
+
 		TextView welcome = (TextView) findViewById(R.id.welcome);
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
+
+		Logger.getInstance().WriteLine("TESTING MESSAGE!");
 
 		buttonLoginLogout = (Button) findViewById(R.id.fbLoginButton);
 
 		Settings.addLoggingBehavior(LoggingBehaviors.INCLUDE_ACCESS_TOKENS);
 
 		Session session = Session.getActiveSession();
-		
+
 		if (session == null) {
 			if (savedInstanceState != null) {
 				session = Session.restoreSession(this, null, statusCallback,
@@ -63,8 +65,9 @@ public class StartActivity extends Activity {
 						.setCallback(statusCallback));
 			}
 		}
-		
-		Log.i(Constants.LOG_TAG, "on start permissions: " + session.getPermissions().toString());
+
+		Logger.getInstance().WriteLine(
+				"on start permissions: " + session.getPermissions().toString());
 		updateView();
 	}
 
@@ -97,11 +100,12 @@ public class StartActivity extends Activity {
 	private void updateView() {
 
 		Session session = Session.getActiveSession();
-		Log.i(Constants.LOG_TAG, "Session: " + session.getState().toString());
+		Logger.getInstance().WriteLine(
+				"Session: " + session.getState().toString());
 
 		// Show "Logout" and go to application main screen
 		if (session.isOpened()) {
-			Log.i(Constants.LOG_TAG, "Session is opened");
+			Logger.getInstance().WriteLine("Session is opened");
 			buttonLoginLogout.setText(R.string.logout);
 			buttonLoginLogout.setOnClickListener(new OnClickListener() {
 				public void onClick(View view) {
@@ -113,7 +117,7 @@ public class StartActivity extends Activity {
 
 			// Show "Login" and let user to login
 		} else {
-			Log.i(Constants.LOG_TAG, "Session is closed");
+			Logger.getInstance().WriteLine("Session is closed");
 			buttonLoginLogout.setText(R.string.login);
 			buttonLoginLogout.setOnClickListener(new OnClickListener() {
 				public void onClick(View view) {
@@ -125,19 +129,19 @@ public class StartActivity extends Activity {
 
 	private void goToApplication() {
 
-		Log.i(Constants.LOG_TAG, "goToApplication()");
+		Logger.getInstance().WriteLine("goToApplication()");
 
 		// make request to the /me API
 		Request request = Request.newMeRequest(Session.getActiveSession(),
 				new Request.GraphUserCallback() {
 
 					public void onCompleted(GraphUser user, Response response) {
-						Log.i(Constants.LOG_TAG, "onCompleted");
+						Logger.getInstance().WriteLine("onCompleted");
 						if (user != null) {
 							TextView welcome = (TextView) findViewById(R.id.welcome);
 							welcome.setText("Hello " + user.getName() + "!");
 
-							Log.i(Constants.LOG_TAG,
+							Logger.getInstance().WriteLine(
 									"creating intent for ChoosieActivity");
 							Intent intent = new Intent(StartActivity.this,
 									ChoosieActivity.class);
@@ -148,7 +152,8 @@ public class StartActivity extends Activity {
 									.getTime());
 							intent.putExtra("fb_details", details);
 
-							Log.i(Constants.LOG_TAG, "Starting ChoosieActivity");
+							Logger.getInstance().WriteLine(
+									"Starting ChoosieActivity");
 							startActivity(intent);
 						}
 					}
@@ -166,7 +171,7 @@ public class StartActivity extends Activity {
 			List<String> read_permission = new ArrayList<String>();
 			read_permission.add("read_stream");
 			read_permission.add("read_friendlists");
-			Log.i(Constants.LOG_TAG, "Permission: " + read_permission);
+			Logger.getInstance().WriteLine("Permission: " + read_permission);
 
 			// Create the request for login
 			OpenRequest req = new Session.OpenRequest(this);
@@ -175,8 +180,9 @@ public class StartActivity extends Activity {
 
 			// Show login to Facebook screen
 			session.openForRead(req);
-			Log.i(Constants.LOG_TAG, "session.getPermission(): "
-					+ session.getPermissions().toString());
+			Logger.getInstance().WriteLine(
+					"session.getPermission(): "
+							+ session.getPermissions().toString());
 		} else {
 			Session.openActiveSession(this, true, statusCallback);
 		}
@@ -195,15 +201,15 @@ public class StartActivity extends Activity {
 
 			// If session was opened - go to application main screen
 			if (state == SessionState.OPENED) {
-				Log.i(Constants.LOG_TAG,
+				Logger.getInstance().WriteLine(
 						"CallBack: SessionState = " + state.toString());
-				Log.i(Constants.LOG_TAG, "Starting ChoosieActivity");
+				Logger.getInstance().WriteLine("Starting ChoosieActivity");
 
 				goToApplication();
 
 				// Else - show login screen
 			} else {
-				Log.i(Constants.LOG_TAG,
+				Logger.getInstance().WriteLine(
 						"CallBack: SessionState = " + state.toString());
 				updateView();
 			}
