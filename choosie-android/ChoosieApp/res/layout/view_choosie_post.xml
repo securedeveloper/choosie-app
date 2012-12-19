@@ -114,10 +114,8 @@
                         android:id="@+id/feed_imageSelect1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
                         android:adjustViewBounds="true"
                         android:scaleType="matrix"
                         android:src="@drawable/ic_action_search" />
@@ -164,10 +162,8 @@
                         android:id="@+id/feed_imageSelect2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentLeft="true"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
                         android:adjustViewBounds="true"
                         android:scaleType="matrix"
                         android:src="@drawable/ic_action_search" />
@@ -179,6 +175,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:text="1,000,000 votes"
+                    android:gravity="right"
                     android:textColor="#2A1EB0"
                     android:textStyle="bold" />
             </LinearLayout>
