@@ -139,6 +139,10 @@ public class CommentScreen extends Activity {
 				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
 
 		setImageFromPath(userPhotoPath, imageViewUserPhoto);
+		
+		//set the user name
+		TextView userNameTextView = (TextView) findViewById(R.id.comment_activity_user_name);
+		userNameTextView.setText(intent.getStringExtra(Constants.IntentsCodes.userName));
 
 		// set the question
 		((TextView) findViewById(R.id.textImage_comment_question))

@@ -10,4 +10,14 @@
         android:layout_height="fill_parent"
         android:src="@drawable/com_facebook_button_grey_normal" />
 
+    <TextView
+        android:id="@+id/view_enlarge_votes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_below="@+id/view_enlarge_image1"
+        android:text="1,000,000 votes"
+        android:textColor="#2A1EB0"
+        android:textStyle="bold" />
+
 </RelativeLayout>

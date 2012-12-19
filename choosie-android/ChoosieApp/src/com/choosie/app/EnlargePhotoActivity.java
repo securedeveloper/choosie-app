@@ -21,19 +21,32 @@ public class EnlargePhotoActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_enlarge_photo);
 
+		//get the intent
 		Intent intent = getIntent();
+		
+		//set the constant views at this activity
 		fillViewWithUserDetails(intent);
+		
+		//get from the intent the data to pass to the pager adapter
 		String image1Path = intent
 				.getStringExtra(Constants.IntentsCodes.photo1Path);
 		String image2Path = intent
 				.getStringExtra(Constants.IntentsCodes.photo2Path);
-		int startingImage = intent.getIntExtra(
-				Constants.IntentsCodes.startingImageToEnlarge, 3);
-		
+		int votes1 = intent.getIntExtra(Constants.IntentsCodes.votes1, 0);
+		int votes2 = intent.getIntExtra(Constants.IntentsCodes.votes2, 0);	
+		boolean isAlreadyVoted = intent.getBooleanExtra(Constants.IntentsCodes.isAlreadyVoted, false);
+
+		EnlargeDetails details = new EnlargeDetails(image1Path, image2Path,
+				votes1, votes2, isAlreadyVoted);
+
 		CustomEnlargePagerAdapter adapter = new CustomEnlargePagerAdapter(
-				image1Path, image2Path, getWindowManager().getDefaultDisplay());
+				details, getWindowManager().getDefaultDisplay());
 		ViewPager myPager = (ViewPager) findViewById(R.id.enlargePhoto_viewPager);
 		myPager.setAdapter(adapter);
+		
+		//start the view pager by the current photo
+		int startingImage = intent.getIntExtra(
+				Constants.IntentsCodes.startingImageToEnlarge, 3);
 		myPager.setCurrentItem(startingImage);
 	}
 
@@ -42,14 +55,19 @@ public class EnlargePhotoActivity extends Activity {
 				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
 		String question = intent
 				.getStringExtra(Constants.IntentsCodes.question);
+		String userName = intent
+				.getStringExtra(Constants.IntentsCodes.userName);
 		ImageView userPhotoImageView = (ImageView) findViewById(R.id.enlarge_activity_userPhoto);
+		TextView userNameTextView = (TextView) findViewById(R.id.enlarge_activity_user_name);
 		TextView questionTextView = (TextView) findViewById(R.id.enlarge_activity_question);
 		if (userPhotoPath != null) {
-//			userPhotoImageView.setImageURI(Uri
-//					.fromFile(new File(userPhotoPath)));
-			userPhotoImageView.setImageBitmap(BitmapFactory.decodeFile(userPhotoPath));
+			// userPhotoImageView.setImageURI(Uri
+			// .fromFile(new File(userPhotoPath)));
+			userPhotoImageView.setImageBitmap(BitmapFactory
+					.decodeFile(userPhotoPath));
 			questionTextView.setText(question);
 		}
+		userNameTextView.setText(userName);
 	}
 
 	@Override

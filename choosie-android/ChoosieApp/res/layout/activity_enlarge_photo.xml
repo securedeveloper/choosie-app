@@ -36,14 +36,24 @@
             android:src="@drawable/ic_action_search" />
 
         <TextView
-            android:id="@+id/enlarge_activity_question"
+            android:id="@+id/enlarge_activity_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textAppearance="@android:style/TextAppearance.Medium"
-            android:textColor="@color/Black"
+            android:textColor="#2A1EB0"
+            android:text="name"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/enlarge_activity_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/Black"
+        android:layout_marginLeft="5dp"
+        android:textStyle="bold" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/enlargePhoto_viewPager"

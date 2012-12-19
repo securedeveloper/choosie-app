@@ -61,6 +61,8 @@ public class Constants {
 		public static final String startingImageToEnlarge = "startingImageToEnlarge";
 		public static final String votes1 = "votes1";
 		public static final String votes2 = "votes2";
+		public static final String userName = "userName";
+		public static final String isAlreadyVoted = "isAlreadyVoted";
 
 	}
 }

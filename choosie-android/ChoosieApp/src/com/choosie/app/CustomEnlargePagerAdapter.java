@@ -14,17 +14,15 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class CustomEnlargePagerAdapter extends PagerAdapter {
-	private String image1Path;
-	private String image2Path;
+	EnlargeDetails details;
 	private Display display;
 
-	public CustomEnlargePagerAdapter(String image1Path, String image2Path,
-			Display display) {
+	public CustomEnlargePagerAdapter(EnlargeDetails details, Display display) {
 		super();
-		this.image1Path = image1Path;
-		this.image2Path = image2Path;
+		this.details = details;
 		this.display = display;
 	}
 
@@ -37,18 +35,23 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		int resId = R.layout.view_enlarge_photo;
 		View view = inflater.inflate(resId, null);
-		ImageView imageView = (ImageView) view
-				.findViewById(R.id.view_enlarge_image1);
+
 		String imagePath = null;
+		int votes = 0;
 		switch (position) {
 		case 0:
-			imagePath = image1Path;
+			imagePath = details.getImagePath1();
+			votes = details.getVotes1();
 			break;
 		case 1:
-			imagePath = image2Path;
+			imagePath = details.getImagePath2();
+			votes = details.getVotes2();
 			break;
 		}
 
+		// setting the image:
+		ImageView imageView = (ImageView) view
+				.findViewById(R.id.view_enlarge_image1);
 		imageView.getLayoutParams().height = display.getWidth();
 		imageView.getLayoutParams().width = display.getWidth();
 
@@ -56,6 +59,15 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 			imageView.setImageURI(Uri.fromFile(new File(imagePath)));
 		}
 
+		// setting the votes:
+		TextView votesTextView = (TextView) view
+				.findViewById(R.id.view_enlarge_votes);
+		if (details.checkIfAlreadyVoted() == true) {
+			votesTextView.setText(votes + " votes");
+		}
+		else{
+			votesTextView.setVisibility(view.GONE);
+		}
 		((ViewPager) collection).addView(view, 0);
 		return view;
 	}
