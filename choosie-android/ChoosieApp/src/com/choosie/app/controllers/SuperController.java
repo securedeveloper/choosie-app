@@ -10,6 +10,7 @@ import com.choosie.app.Callback;
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
+import com.choosie.app.IntentData;
 
 import com.choosie.app.EnlargePhotoActivity;
 import com.choosie.app.R;
@@ -155,7 +156,8 @@ public class SuperController {
 		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
 		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
 		intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
-		intent.putExtra(Constants.IntentsCodes.userName, choosiePost.getAuthor().getUserName());
+		intent.putExtra(Constants.IntentsCodes.userName, choosiePost
+				.getAuthor().getUserName());
 
 		// create the comments list
 		ArrayList<String> nameList = new ArrayList<String>();
@@ -266,32 +268,23 @@ public class SuperController {
 			break;
 		}
 
+		int votes1 = choosiePost.getVotes1();
+		int votes2 = choosiePost.getVotes2();
 		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
 		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
 		String userPhotoPath = Utils.getFileNameForURL(choosiePost.getAuthor()
 				.getPhotoURL());
+		String userName = choosiePost.getAuthor().getUserName();
+		String question = choosiePost.getQuestion();
+		boolean isVotedAlready = choosiePost.isVotedAlready();
 
-		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
-		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
-		intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
-		intent.putExtra(Constants.IntentsCodes.startingImageToEnlarge,
-				startingImage);
-		intent.putExtra(Constants.IntentsCodes.question,
-				choosiePost.getQuestion());
-		intent.putExtra(Constants.IntentsCodes.votes1, choosiePost.getVotes1());
-		intent.putExtra(Constants.IntentsCodes.votes2, choosiePost.getVotes2());
-		intent.putExtra(Constants.IntentsCodes.isAlreadyVoted, choosiePost.isVotedAlready());
-		intent.putExtra(Constants.IntentsCodes.userName, choosiePost
-				.getAuthor().getUserName());
+		IntentData intentData = new IntentData(startingImage, votes1, votes2,
+				photo1Path, photo2Path, userPhotoPath, userName, question,
+				isVotedAlready);
+		
+		intent.putExtra(Constants.IntentsCodes.intentData, intentData);
 
 		getActivity().startActivityForResult(intent,
 				Constants.RequestCodes.EnalargeImage);
-
-		// create the comments list
-		// ArrayList<String> nameList = new ArrayList<String>();
-		// ArrayList<String> commentList = new ArrayList<String>();
-		// ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
-		// ArrayList<CharSequence> createdAtList = new
-		// ArrayList<CharSequence>();
 	}
 }

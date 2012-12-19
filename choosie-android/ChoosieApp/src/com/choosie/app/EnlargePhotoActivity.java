@@ -23,40 +23,40 @@ public class EnlargePhotoActivity extends Activity {
 
 		//get the intent
 		Intent intent = getIntent();
+		Bundle data = intent.getExtras();
+		IntentData intentData = data.getParcelable(Constants.IntentsCodes.intentData);
 		
 		//set the constant views at this activity
-		fillViewWithUserDetails(intent);
+		fillViewWithUserDetails(intentData);
 		
 		//get from the intent the data to pass to the pager adapter
-		String image1Path = intent
-				.getStringExtra(Constants.IntentsCodes.photo1Path);
-		String image2Path = intent
-				.getStringExtra(Constants.IntentsCodes.photo2Path);
-		int votes1 = intent.getIntExtra(Constants.IntentsCodes.votes1, 0);
-		int votes2 = intent.getIntExtra(Constants.IntentsCodes.votes2, 0);	
-		boolean isAlreadyVoted = intent.getBooleanExtra(Constants.IntentsCodes.isAlreadyVoted, false);
+		String image1Path = intentData.getphoto1Path();
+				
+		String image2Path = intentData.getphoto2Path();
+				
+		int votes1 = intentData.getVotes1();
+		int votes2 = intentData.getVotes2();	
+		boolean isAlreadyVoted = intentData.checkIfVotedAlready();
 
-		EnlargeDetails details = new EnlargeDetails(image1Path, image2Path,
-				votes1, votes2, isAlreadyVoted);
+//		EnlargeDetails details = new EnlargeDetails(image1Path, image2Path,
+//				votes1, votes2, isAlreadyVoted);
 
 		CustomEnlargePagerAdapter adapter = new CustomEnlargePagerAdapter(
-				details, getWindowManager().getDefaultDisplay());
+				intentData, getWindowManager().getDefaultDisplay());
 		ViewPager myPager = (ViewPager) findViewById(R.id.enlargePhoto_viewPager);
 		myPager.setAdapter(adapter);
 		
 		//start the view pager by the current photo
-		int startingImage = intent.getIntExtra(
-				Constants.IntentsCodes.startingImageToEnlarge, 3);
+		int startingImage = intentData.getStartingImage();
 		myPager.setCurrentItem(startingImage);
 	}
 
-	private void fillViewWithUserDetails(Intent intent) {
-		String userPhotoPath = intent
-				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
-		String question = intent
-				.getStringExtra(Constants.IntentsCodes.question);
-		String userName = intent
-				.getStringExtra(Constants.IntentsCodes.userName);
+	private void fillViewWithUserDetails(IntentData intentData) {
+		
+		String userPhotoPath = intentData.getUserPhotoPath();				
+		String question = intentData.getQuestion();				
+		String userName = intentData.getUserName();
+				
 		ImageView userPhotoImageView = (ImageView) findViewById(R.id.enlarge_activity_userPhoto);
 		TextView userNameTextView = (TextView) findViewById(R.id.enlarge_activity_user_name);
 		TextView questionTextView = (TextView) findViewById(R.id.enlarge_activity_question);

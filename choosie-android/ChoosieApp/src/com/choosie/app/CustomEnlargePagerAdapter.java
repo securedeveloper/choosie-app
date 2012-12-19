@@ -17,12 +17,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class CustomEnlargePagerAdapter extends PagerAdapter {
-	EnlargeDetails details;
+	IntentData data;
 	private Display display;
 
-	public CustomEnlargePagerAdapter(EnlargeDetails details, Display display) {
+	public CustomEnlargePagerAdapter(IntentData data, Display display) {
 		super();
-		this.details = details;
+		this.data = data;
 		this.display = display;
 	}
 
@@ -40,12 +40,12 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 		int votes = 0;
 		switch (position) {
 		case 0:
-			imagePath = details.getImagePath1();
-			votes = details.getVotes1();
+			imagePath = data.getphoto1Path();
+			votes = data.getVotes1();
 			break;
 		case 1:
-			imagePath = details.getImagePath2();
-			votes = details.getVotes2();
+			imagePath = data.getphoto2Path();
+			votes = data.getVotes2();
 			break;
 		}
 
@@ -62,7 +62,7 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 		// setting the votes:
 		TextView votesTextView = (TextView) view
 				.findViewById(R.id.view_enlarge_votes);
-		if (details.checkIfAlreadyVoted() == true) {
+		if (data.checkIfVotedAlready() == true) {
 			votesTextView.setText(votes + " votes");
 		}
 		else{
