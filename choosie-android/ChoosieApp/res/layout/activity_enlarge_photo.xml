@@ -2,13 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#FFFFFFFF"
     android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/header_selector" >
+
+        <ImageView
+            android:id="@+id/header_image_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/temp_logo" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_user_comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textImage_comment_question"
+        android:layout_below="@+id/header_layout"
         android:layout_margin="5dp"
         android:orientation="horizontal" >
 
@@ -27,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:textAppearance="@android:style/TextAppearance.Medium"
+            android:textColor="@color/Black"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -37,6 +52,5 @@
         android:layout_weight="1"
         android:paddingLeft="5dp"
         android:paddingRight="5dp" />
-
 
 </LinearLayout>

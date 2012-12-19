@@ -4,26 +4,27 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:paddingTop="@dimen/view_choosie_post_margin" >
+    android:paddingTop="@dimen/view_choosie_post_margin"
+    android:background="@color/White">
 
-    <TextView
-        android:id="@+id/create_new_post"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:paddingLeft="@dimen/view_choosie_post_margin"
-        android:text="@string/create_new_post"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/CornflowerBlue" />
+<!--     <TextView -->
+<!--         android:id="@+id/create_new_post" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignParentLeft="true" -->
+<!--         android:layout_alignParentTop="true" -->
+<!--         android:paddingLeft="@dimen/view_choosie_post_margin" -->
+<!--         android:text="@string/create_new_post" -->
+<!--         android:textAppearance="?android:attr/textAppearanceMedium" -->
+<!--         android:textColor="@color/CornflowerBlue" /> -->
 
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/create_new_post"
         android:orientation="horizontal" >
+        <!--         android:layout_below="@+id/create_new_post" -->
 
         <ImageView
             android:id="@+id/image_photo1"
