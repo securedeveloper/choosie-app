@@ -16,7 +16,8 @@ import os
 class Utils():
     @staticmethod
     def get_user_from_fb(fb_access_token):
-      url = "https://graph.facebook.com/me?access_token=" + fb_access_token 
+      url = "https://graph.facebook.com/me?access_token=" + fb_access_token
+      logging.info("url= " + url)
       result = urlfetch.fetch(url)
       if result.status_code != 200:
         return None

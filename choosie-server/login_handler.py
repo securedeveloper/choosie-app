@@ -12,6 +12,8 @@ class LoginHandler(webapp2.RequestHandler):
     fb_access_token = str(self.request.get('fb_access_token'))
     fb_uid = str(self.request.get('fb_uid'))
     fb_access_token_expdate = Utils.get_access_token_from_request(self.request)
+    logging.info("fb_access_token:" + fb_access_token)
+    logging.info("fb_uid:" + fb_uid)
     user = CacheController.get_user_by_fb_id(fb_uid)
     if user is None:
       User.create(fb_access_token, fb_access_token_expdate)

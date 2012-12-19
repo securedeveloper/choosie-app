@@ -31,6 +31,7 @@ class ChoosiePost(db.Model):
   comments = db.StringListProperty()
   votes = db.StringListProperty()
   fb_post_id = db.StringProperty()
+  posted_to_fb = db.BooleanProperty(default=False)
 
   def to_json(self):
     return {"key": str(self.key()),
@@ -104,6 +105,7 @@ class ChoosiePost(db.Model):
       response = graph.put_photo(picIO, choosie_post.question)
       logging.info(str(response))
       choosie_post.fb_post_id = response['post_id']
+      choosie_post.posted_to_fb = True
       choosie_post.put()
     except Exception, e:
        logging.error("Facebook publishing failed: %s" % e)
