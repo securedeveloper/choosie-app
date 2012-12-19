@@ -125,7 +125,7 @@ public class PostScreenController extends ScreenController {
 			try {
 				session.reauthorizeForPublish(request);
 			} catch (Exception ex) {
-				Log.i(Constants.LOG_TAG,
+				Log.e(Constants.LOG_TAG,
 						"Exception in reauthorizeForPublish() : "
 								+ ex.toString());
 			}
@@ -193,7 +193,7 @@ public class PostScreenController extends ScreenController {
 									"Opening new ReauthorizeRequest");
 							session.reauthorizeForPublish(openRequest);
 						} catch (Exception ex) {
-							Log.i(Constants.LOG_TAG,
+							Log.e(Constants.LOG_TAG,
 									"EXCEPTION!!! : " + ex.toString());
 						}
 					}
@@ -439,7 +439,7 @@ public class PostScreenController extends ScreenController {
 		try {
 			image = File.createTempFile(imageFileName, ".jpg", getAlbumDir());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.e("createImageFile", "failed to create temp image file: " + imageFileName);
 			e.printStackTrace();
 		}
 		mCurrentPhotoPath = image.getAbsolutePath();

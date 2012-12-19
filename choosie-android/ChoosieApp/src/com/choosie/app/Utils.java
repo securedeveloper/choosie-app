@@ -30,8 +30,9 @@ public class Utils {
 		try {
 			date = df.parse(str_date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+			Log.e("convertStringToDateUTC", "failed parsing SimpleDateFormat");
 			e.printStackTrace();
+			return null;
 		}
 
 		return date;
@@ -97,7 +98,7 @@ public class Utils {
 			fo.write(bos.toByteArray());
 			fo.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.e("writeByteStreamOnSD", "failed to wirte on file: " + fullPath);
 			e.printStackTrace();
 		}
 	}
