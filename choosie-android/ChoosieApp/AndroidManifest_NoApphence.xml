@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.choosie.app"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission> -->
+    <!-- <uses-permission android:name="android.permission.GET_TASKS"></uses-permission> -->
+
+    <uses-sdk
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.choosie.app.ChoosieActivity"
+            android:configChanges="orientation"
+            android:label="@string/title_activity_choosie"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name="com.choosie.app.StartActivity"
+            android:label="@string/title_activity_start"
+            android:screenOrientation="portrait" >
+            <intent-filter android:label="@string/app_name" >
+
+                <!-- <action android:name="com.apphance.android.LAUNCH" > -->
+                <!-- </action> -->
+
+
+                <!-- <category android:name="android.intent.category.DEFAULT" > -->
+                <!-- </category> -->
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.choosie.app.CommentScreen"
+            android:label="@string/title_activity_comment_screen"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.choosie.app.VotesScreenActivity"
+            android:label="@string/title_activity_votes_screen"
+            android:screenOrientation="portrait">
+        </activity>
+        <!-- <activity -->
+        <!-- android:name="com.apphance.android.LauncherActivity" -->
+        <!-- android:theme="@android:style/Theme.Translucent.NoTitleBar" > -->
+        <!-- </activity> -->
+        <!-- <activity -->
+        <!-- android:name="com.apphance.android.ui.LoginActivity" -->
+        <!-- android:launchMode="singleInstance" > -->
+        <!-- </activity> -->
+        <!-- <activity -->
+        <!-- android:name="com.apphance.android.ui.TestCycleActivity" -->
+        <!-- android:launchMode="singleInstance" > -->
+        <!-- </activity> -->
+        <!-- <activity -->
+        <!-- android:name="com.apphance.android.ui.ProblemActivity" -->
+        <!-- android:configChanges="orientation" -->
+        <!-- android:launchMode="singleInstance" > -->
+        <!-- </activity> -->
+
+
+        <!-- <activity-alias -->
+        <!-- android:name=".ApphanceLauncherActivity" -->
+        <!-- android:targetActivity="com.apphance.android.LauncherActivity" > -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" > -->
+        <!-- </action> -->
+
+
+        <!-- <category android:name="android.intent.category.LAUNCHER" > -->
+        <!-- </category> -->
+        <!-- </intent-filter> -->
+        <!-- </activity-alias> -->
+        <activity
+            android:name="com.choosie.app.EnlargePhotoActivity"
+            android:label="@string/title_activity_enlarge_photo">
+        </activity>
+    </application>
+
+    <!-- <instrumentation -->
+    <!-- android:name="com.apphance.android.ApphanceInstrumentation" -->
+    <!-- android:targetPackage="com.choosie.app" > -->
+    <!-- </instrumentation> -->
+
+</manifest>
