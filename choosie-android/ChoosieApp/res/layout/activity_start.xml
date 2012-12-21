@@ -12,27 +12,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="98dp"
         android:text="@string/welcome"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         tools:context=".StartActivity" />
-
-    <ImageButton
-        android:id="@+id/goToApplication"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fbLogoutButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="92dp"
-        android:background="@color/White"
-        android:visibility="invisible"
-        android:src="@drawable/go_to_app" />
-
-    <Button
-        android:id="@+id/fbLogoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/welcome"
-        android:layout_below="@+id/fbLoginButton"
-        android:layout_marginTop="22dp"
-        android:text="@string/logout" />
 
     <ImageButton
         android:id="@+id/fbLoginButton"
@@ -40,9 +21,31 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/welcome"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="38dp"
         android:background="@color/White"
         android:contentDescription="@string/com_facebook_loginview_log_in_button"
         android:scaleType="center"
         android:src="@drawable/connect" />
+
+    <Button
+        android:id="@+id/fbLogoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fbLoginButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="53dp"
+        android:text="@string/logout" />
+
+    <ImageButton
+        android:id="@+id/goToApplication"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fbLogoutButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="62dp"
+        android:background="@color/White"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/go_to_app"
+        android:visibility="invisible" />
 
 </RelativeLayout>
