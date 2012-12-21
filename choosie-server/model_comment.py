@@ -14,7 +14,7 @@ COMMENTS_NAMESPACE = 'COMMENTS_2'
 class Comment(db.Model):
   user_fb_id = db.StringProperty()
   created_at = db.DateTimeProperty(auto_now_add = True)
-  text = db.StringProperty(required = True)
+  text = db.StringProperty(required = True,multiline=True)
   is_scraped = db.BooleanProperty()
   scraped_user_details = db.StringProperty()
 

@@ -5,3 +5,8 @@ indexes:
 
 - kind: Comment
   ancestor: yes
+
+- kind: ChoosiePost
+  properties:
+  - name: posted_to_fb
+  - name: created_at
