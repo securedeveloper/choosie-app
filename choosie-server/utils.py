@@ -40,7 +40,7 @@ class Utils():
       img2_blob_reader = blobstore.BlobReader(choosie_post.photo2_blob_key)
       img1 = images.Image(image_data=img1_blob_reader.read())
       img2 = images.Image(image_data=img2_blob_reader.read())
-      return compose_two_images(img1, img2)
+      return Utils.compose_two_images(img1, img2)
 
     @staticmethod
     def load_image(file_name):

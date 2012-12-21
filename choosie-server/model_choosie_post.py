@@ -102,7 +102,8 @@ class ChoosiePost(db.Model):
       graph = facebook.GraphAPI(choosie_post.get_user().fb_access_token)
       pic = Utils.create_post_image(self)
       picIO = StringIO(pic)
-      response = graph.put_photo(picIO, choosie_post.question)
+      question = choosie_post.question + '\n(Start your comment with #1 or #2 to help me choose.)'
+      response = graph.put_photo(picIO, question)
       logging.info(str(response))
       choosie_post.fb_post_id = response['post_id']
       choosie_post.posted_to_fb = True

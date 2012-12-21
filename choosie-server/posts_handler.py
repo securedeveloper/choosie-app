@@ -36,7 +36,7 @@ class PostsHandler(webapp2.RequestHandler):
 
     logging.info("user found!")
     logging.info("share_to_fb_param: " + self.request.get("share_to_fb", default_value="off"))
-    debug_show_fb = self.request.get("debug_show_fb", default_value="off")
+    debug_show_fb = self.request.get("debug_show_fb", default_value="")
     logging.info("debug_show_fb: " + debug_show_fb)
     
     if (debug_show_fb):
