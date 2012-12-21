@@ -71,14 +71,14 @@ class Utils():
       composite = images.composite(
           [(img1, margin, margin, 1.0, images.TOP_LEFT),
            (img2, img1.width + 2*margin, margin, 1.0, images.TOP_LEFT),
-           (corner_tr, margin + img1.width - corner_tr.width, margin, 0.3, images.TOP_LEFT),
-           (corner_tr, 2*margin + img1.width + img2.width - corner_tr.width, margin, 0.3, images.TOP_LEFT),
-           (corner_br, margin + img1.width - corner_br.width, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
-           (corner_br, 2*margin + img1.width + img2.width - corner_br.width, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
-           (corner_bl, margin, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
-           (corner_bl, 2*margin + img1.width, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
-           (img_icon_1, margin, margin, 0.3, images.TOP_LEFT),
-           (img_icon_2, img1.width + 2*margin, margin, 0.3, images.TOP_LEFT)],
+           (corner_tr, margin + img1.width - corner_tr.width, margin, 1.0, images.TOP_LEFT),
+           (corner_tr, 2*margin + img1.width + img2.width - corner_tr.width, margin, 1.0, images.TOP_LEFT),
+           (corner_br, margin + img1.width - corner_br.width, margin + img1.height - corner_br.height, 1.0, images.TOP_LEFT),
+           (corner_br, 2*margin + img1.width + img2.width - corner_br.width, margin + img1.height - corner_br.height, 1.0, images.TOP_LEFT),
+           (corner_bl, margin, margin + img1.height - corner_br.height, 1.0, images.TOP_LEFT),
+           (corner_bl, 2*margin + img1.width, margin + img1.height - corner_br.height, 1.0, images.TOP_LEFT),
+           (img_icon_1, margin, margin, 1.0, images.TOP_LEFT),
+           (img_icon_2, img1.width + 2*margin, margin, 1.0, images.TOP_LEFT)],
           img1.width + img2.width + 3*margin,
           img1.height + 2*margin)
       logging.info('created image')
