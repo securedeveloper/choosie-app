@@ -1,19 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="#FFFFFFFF" >
 
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="fill_parent"
-        android:layout_height="40dp" 
-        android:background="@drawable/header_selector">
+        android:layout_height="40dp"
+        android:background="@drawable/header_selector" >
 
         <ImageView
             android:id="@+id/header_image_logo"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:background="@drawable/temp_logo" />
+
     </LinearLayout>
 
     <ProgressBar
