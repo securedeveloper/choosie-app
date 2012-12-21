@@ -49,7 +49,7 @@ public class ChoosieActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_choosie, menu);
+		// getMenuInflater().inflate(R.menu.activity_choosie, menu);
 		return true;
 	}
 
@@ -70,29 +70,35 @@ public class ChoosieActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i(Constants.LOG_TAG, "after activity "
 				+ Session.getActiveSession().getPermissions().toString());
-		if ((requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA)
-				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA
-				|| requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY
-				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY
-				|| requestCode == Constants.RequestCodes.CROP_FIRST
-				|| requestCode == Constants.RequestCodes.CROP_SECOND) {
+
+		switch (requestCode) {
+
+		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA:
+		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA:
+		case Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY:
+		case Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY:
+		case Constants.RequestCodes.CROP_FIRST:
+		case Constants.RequestCodes.CROP_SECOND:
 			superController.getControllerForScreen(Screen.POST)
 					.onActivityResult(requestCode, resultCode, data);
-		}
-		if (requestCode == Constants.RequestCodes.COMMENT) {
+			break;
+
+		case Constants.RequestCodes.COMMENT:
 			superController.onActivityResult(resultCode, data);
-		}
-		if (requestCode == Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION) {
+			break;
+
+		case Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION:
 			Log.i(Constants.LOG_TAG, "after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
-			
-			// NOTE: Special handling: In case user presses on 'Share on Facebook' 
+			// NOTE: Special handling: In case user presses on 'Share on
+			// Facebook'
 			// and then, after we launch askForPublicPermissions(), the user
 			// cancels, we identify this situation and set it back to 'false'.
 			// This happens by:
-			// ChoosieActivity gets onActivityResult with 
-			// requestCode == FB_REQUEST_PUBLISH_PERMISSION, it calls this refresh
+			// ChoosieActivity gets onActivityResult with
+			// requestCode == FB_REQUEST_PUBLISH_PERMISSION, it calls this
+			// refresh
 			// method.
 			superController.getControllerForScreen(Screen.POST).refresh();
 		}
@@ -108,16 +114,17 @@ public class ChoosieActivity extends Activity {
 		}
 	}
 
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		switch (superController.getCurrentScreen()) {
-		case POST:
-			superController.getControllerForScreen(Screen.POST).onKeyDown(
-					keyCode, event);
-			break;
-		case FEED:
-			finish();
-			break;
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			switch (superController.getCurrentScreen()) {
+			case POST:
+				superController.getControllerForScreen(Screen.POST).onKeyDown(
+						keyCode, event);
+				break;
+			case FEED:
+				finish();
+				break;
+			}
 		}
 
 		return true;

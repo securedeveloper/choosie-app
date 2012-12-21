@@ -107,6 +107,9 @@ public class StartActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 		Session.getActiveSession().onActivityResult(this, requestCode,
 				resultCode, data);
+		if (requestCode == Constants.RequestCodes.START_ACTIVITY){
+			finish();
+		}
 	}
 
 	@Override
@@ -169,7 +172,7 @@ public class StartActivity extends Activity {
 
 							Logger.getInstance().WriteLine(
 									"Starting ChoosieActivity");
-							startActivity(intent);
+							startActivityForResult(intent, Constants.RequestCodes.START_ACTIVITY);
 						}
 					}
 				}

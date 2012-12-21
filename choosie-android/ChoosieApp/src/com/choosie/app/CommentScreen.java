@@ -274,7 +274,7 @@ public class CommentScreen extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.activity_comment_screen, menu);
+//		getMenuInflater().inflate(R.menu.activity_comment_screen, menu);
 		return true;
 	}
 }
