@@ -3,9 +3,6 @@ package com.choosie.app;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.apphance.android.Log;
-import com.apphance.android.Apphance;
-//import android.util.Log;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.GraphUser;
 import com.facebook.LoggingBehaviors;
@@ -22,20 +19,19 @@ import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class StartActivity extends Activity {
 
-	Button buttonLoginLogout;
+	Button buttonLogout;
+	ImageButton goToApplication;
+	ImageButton buttonLogin;
 	Session.StatusCallback statusCallback = new SessionStatusCallback();
-	public static final String APP_KEY = "1e88673534da04f74864cb17f9773498c1151400";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// Starts an Apphance session using a dummy key and QA mode
-		Apphance.startNewSession(this, APP_KEY, Apphance.Mode.QA);
 
 		setContentView(R.layout.activity_start);
 
@@ -45,7 +41,30 @@ public class StartActivity extends Activity {
 
 		Logger.getInstance().WriteLine("TESTING MESSAGE!");
 
-		buttonLoginLogout = (Button) findViewById(R.id.fbLoginButton);
+		buttonLogout = (Button) findViewById(R.id.fbLogoutButton);
+		buttonLogin = (ImageButton)findViewById(R.id.fbLoginButton);
+		goToApplication = (ImageButton)findViewById(R.id.goToApplication);
+		
+		goToApplication.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				goToApplication();
+			}
+		});
+		
+		buttonLogin.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				onClickLogin();
+			}
+		});
+		
+		buttonLogout.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				onClickLogout();
+			}
+		});
 
 		Settings.addLoggingBehavior(LoggingBehaviors.INCLUDE_ACCESS_TOKENS);
 
@@ -106,24 +125,20 @@ public class StartActivity extends Activity {
 		// Show "Logout" and go to application main screen
 		if (session.isOpened()) {
 			Logger.getInstance().WriteLine("Session is opened");
-			buttonLoginLogout.setText(R.string.logout);
-			buttonLoginLogout.setOnClickListener(new OnClickListener() {
-				public void onClick(View view) {
-					onClickLogout();
-				}
-			});
-
+			
+			goToApplication.setVisibility(View.VISIBLE);
+			buttonLogout.setVisibility(View.VISIBLE);
+			buttonLogin.setVisibility(View.INVISIBLE);
+			
 			goToApplication();
 
 			// Show "Login" and let user to login
 		} else {
 			Logger.getInstance().WriteLine("Session is closed");
-			buttonLoginLogout.setText(R.string.login);
-			buttonLoginLogout.setOnClickListener(new OnClickListener() {
-				public void onClick(View view) {
-					onClickLogin();
-				}
-			});
+			
+			goToApplication.setVisibility(View.INVISIBLE);
+			buttonLogout.setVisibility(View.INVISIBLE);
+			buttonLogin.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -158,7 +173,6 @@ public class StartActivity extends Activity {
 						}
 					}
 				}
-
 		);
 		Request.executeBatchAsync(request);
 	}

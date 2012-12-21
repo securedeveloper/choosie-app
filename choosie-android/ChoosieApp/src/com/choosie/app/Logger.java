@@ -1,6 +1,6 @@
 package com.choosie.app;
 
-import com.apphance.android.Log;
+import android.util.Log;
 
 public class Logger {
 
@@ -17,7 +17,6 @@ public class Logger {
 		return _logger;
 	}
 
-	@SuppressWarnings("unused")
 	public void WriteLine(String msg) {
 		Log.i(Constants.LOG_TAG, msg);
 	}
