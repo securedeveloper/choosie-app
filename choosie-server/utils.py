@@ -57,6 +57,17 @@ class Utils():
       corner_bl = Utils.load_image('corner-bl.png')
       corner_br = Utils.load_image('corner-br.png')
       margin = 6
+      # img_icon_1          img_icon_2
+      #       |    corner_tr   |      
+      #       | margin  |      |   margin
+      #       / ------- \      / -------- \  <--  corner_tr
+      #       |         |      |          |
+      #       |   img1  |      |   img2   |
+      # margin|         |margin|          |margin
+      #       |         |      |          |
+      #       \ ------- /      \ -------- /
+      #       ^ margin  ^      ^  margin  ^
+      # corner_bl corner_br  corner_bl corner_br
       composite = images.composite(
           [(img1, margin, margin, 1.0, images.TOP_LEFT),
            (img2, img1.width + 2*margin, margin, 1.0, images.TOP_LEFT),
