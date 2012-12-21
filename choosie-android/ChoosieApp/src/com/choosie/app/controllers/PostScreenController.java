@@ -136,6 +136,23 @@ public class PostScreenController extends ScreenController {
 		}
 	}
 
+	@Override
+	public void refresh() {
+		super.refresh();
+
+		// NOTE: Special handling: In case user presses on 'Share on Facebook' and 
+		// then, after we launch askForPublicPermissions(), the user cancels, we
+		// identify this situation and set it back to 'false'.
+		// This happens by:
+		// ChoosieActivity gets onActivityResult with 
+		// requestCode == FB_REQUEST_PUBLISH_PERMISSION, it calls this refresh
+		// method.
+		if (this.shareOnFacebookTb.isChecked()
+				&& !isUserHasPublishPermissions()) {
+			this.shareOnFacebookTb.setChecked(false);
+		}
+	}
+
 	protected boolean isUserHasPublishPermissions() {
 		boolean userHasPublishPermissions = false;
 		Session session = Session.getActiveSession();

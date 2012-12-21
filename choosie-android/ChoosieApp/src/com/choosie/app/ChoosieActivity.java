@@ -68,12 +68,8 @@ public class ChoosieActivity extends Activity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == Activity.RESULT_CANCELED) {
-			return;
-		}
 		Log.i(Constants.LOG_TAG, "after activity "
 				+ Session.getActiveSession().getPermissions().toString());
-
 		if ((requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA)
 				|| requestCode == Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA
 				|| requestCode == Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY
@@ -90,6 +86,15 @@ public class ChoosieActivity extends Activity {
 			Log.i(Constants.LOG_TAG, "after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
+			
+			// NOTE: Special handling: In case user presses on 'Share on Facebook' 
+			// and then, after we launch askForPublicPermissions(), the user
+			// cancels, we identify this situation and set it back to 'false'.
+			// This happens by:
+			// ChoosieActivity gets onActivityResult with 
+			// requestCode == FB_REQUEST_PUBLISH_PERMISSION, it calls this refresh
+			// method.
+			superController.getControllerForScreen(Screen.POST).refresh();
 		}
 	}
 
