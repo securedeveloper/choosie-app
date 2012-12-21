@@ -9,6 +9,7 @@ import com.facebook.LoggingBehaviors;
 import com.facebook.Request;
 import com.facebook.Session;
 import com.facebook.Session.OpenRequest;
+import com.facebook.android.FbDialog;
 import com.facebook.SessionState;
 import com.facebook.Response;
 import com.facebook.Settings;
@@ -22,7 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class StartActivity extends Activity {
+public class StartActivity extends Activity{
 
 	Button buttonLogout;
 	ImageButton goToApplication;
@@ -39,33 +40,11 @@ public class StartActivity extends Activity {
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
 
-		Logger.getInstance().WriteLine("TESTING MESSAGE!");
+		Logger.getInstance().WriteLine("Start Application!");
 
-		buttonLogout = (Button) findViewById(R.id.fbLogoutButton);
-		buttonLogin = (ImageButton)findViewById(R.id.fbLoginButton);
-		goToApplication = (ImageButton)findViewById(R.id.goToApplication);
+		//Initialize all buttons
+		InitializeComponents();
 		
-		goToApplication.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				goToApplication();
-			}
-		});
-		
-		buttonLogin.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				onClickLogin();
-			}
-		});
-		
-		buttonLogout.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				onClickLogout();
-			}
-		});
-
 		Settings.addLoggingBehavior(LoggingBehaviors.INCLUDE_ACCESS_TOKENS);
 
 		Session session = Session.getActiveSession();
@@ -88,6 +67,20 @@ public class StartActivity extends Activity {
 		Logger.getInstance().WriteLine(
 				"on start permissions: " + session.getPermissions().toString());
 		updateView();
+	}
+
+	private void InitializeComponents() {
+		Logger.getInstance().WriteLine("InitializeComponents()");
+		
+		// find all buttons
+		buttonLogout = (Button) findViewById(R.id.fbLogoutButton);
+		buttonLogin = (ImageButton)findViewById(R.id.fbLoginButton);
+		goToApplication = (ImageButton)findViewById(R.id.goToApplication);
+		
+		// set on click listeners
+		buttonLogin.setOnClickListener(loginListener);
+		buttonLogout.setOnClickListener(logoutListener);
+		goToApplication.setOnClickListener(goToApplicationListener);
 	}
 
 	@Override
@@ -130,7 +123,7 @@ public class StartActivity extends Activity {
 			Logger.getInstance().WriteLine("Session is opened");
 			
 			goToApplication.setVisibility(View.VISIBLE);
-			buttonLogout.setVisibility(View.VISIBLE);
+			//buttonLogout.setVisibility(View.VISIBLE);
 			buttonLogin.setVisibility(View.INVISIBLE);
 			
 			goToApplication();
@@ -140,7 +133,7 @@ public class StartActivity extends Activity {
 			Logger.getInstance().WriteLine("Session is closed");
 			
 			goToApplication.setVisibility(View.INVISIBLE);
-			buttonLogout.setVisibility(View.INVISIBLE);
+			//buttonLogout.setVisibility(View.INVISIBLE);
 			buttonLogin.setVisibility(View.VISIBLE);
 		}
 	}
@@ -232,4 +225,25 @@ public class StartActivity extends Activity {
 			}
 		}
 	}
+	
+	OnClickListener loginListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			onClickLogin();
+		}
+	};
+
+	OnClickListener logoutListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			onClickLogout();
+		}
+	};
+
+	OnClickListener goToApplicationListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			goToApplication();
+		}
+	};
 }
