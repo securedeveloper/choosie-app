@@ -103,13 +103,13 @@ class ChoosiePost(db.Model):
       pic = Utils.create_post_image(self)
       picIO = StringIO(pic)
       question = choosie_post.question + '\n(Start your comment with #1 or #2 to help me choose.)'
-      response = graph.put_photo(picIO, question)
+      response = graph.put_photo(picIO, question.encode('utf-8'))
       logging.info(str(response))
       choosie_post.fb_post_id = response['post_id']
       choosie_post.posted_to_fb = True
       choosie_post.put()
     except Exception, e:
-       logging.error("Facebook publishing failed: %s" % e)
+      logging.error("Facebook publishing failed: %s" % e)
 
   def add_comment_to_post(self, comment):
     db.run_in_transaction(ChoosiePost.add_comment_to_post_transaction, self.key(), comment)
