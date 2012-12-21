@@ -3,6 +3,7 @@
 <style>
 .chs-feed {
 	min-width: 460px;
+	max-width: 500px;
 }
 .chs-stream {
 	border-style: solid;
@@ -110,10 +111,10 @@ width: 50%;
 					<img class="chs-img-right" src="{{ choosie_post.photo2 }}"></img>
 				</div>
 				<div class="chs-votes">
-					<a class="chs-vote" href="/votes/new?fb_uid=100004697466881&which_photo=1&post_key={{ choosie_post.key }}">
+					<a class="chs-vote" href="/votes/new?fb_uid=100004161394098&which_photo=1&post_key={{ choosie_post.key }}">
 						<span class="vote">Vote!!</span>
 					</a>
-					<a class="chs-vote" href="/votes/new?fb_uid=100004697466881&which_photo=2&post_key={{ choosie_post.key }}">
+					<a class="chs-vote" href="/votes/new?fb_uid=100004161394098&which_photo=2&post_key={{ choosie_post.key }}">
 						<span class="vote">Vote!!</span>
 					</a>
 				</div>
@@ -145,7 +146,7 @@ width: 50%;
 					<form action="/comments/new" enctype="multipart/form-data" method="post">
 						Comment: <input type="text" name="text"/>
 						<br>
-						<input type="hidden" value="100004697466881" name="fb_uid"/>
+						<input type="hidden" value="100004161394098" name="fb_uid"/>
 						<input type="hidden" name="post_key" value="{{choosie_post.key}}"/>
 						<input type="submit" value="Add">
 					</form>
@@ -188,7 +189,7 @@ width: 50%;
 		<form action="/login" enctype="multipart/form-data" method="post">
 			<div>Access Token:<input type="text" name="fb_access_token" value="BAAHVHgMjmJwBAFBRxHpWbGJMAzIWAtYfqEyYQSISOYhzjuZCvvjWhO6YfjiccSUlrulxqqevJq7yZAoaxR0zQmmhFgmuI3JBnNZBZAMAyMKW0gfGl7TuUlglrEzGqKHsN7hH5L7GsQZDZD" size="100"/></div>
 			<div>Access Token Expdate: <input type="text" name="fb_access_token_expdate" value="1358319035143"/></div>
-			<div>Uid:<Input type = "text" name ="fb_uid" value="100004697466881"/></div>
+			<div>Uid:<Input type = "text" name ="fb_uid" value="100004161394098"/></div>
 
 			<div><input type="submit" value="Login"></div>
 		</form>

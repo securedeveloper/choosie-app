@@ -55,8 +55,11 @@ class Comment(db.Model):
       # For option 1 (regualr, not scraped comments), we need to also get the user
       # details.
       user = CacheController.get_user_by_fb_id(as_dict["user_fb_id"])
-      del as_dict["user_fb_id"]
-      as_dict["user"] = user.to_short_json()
+      if user:
+        del as_dict["user_fb_id"]
+        as_dict["user"] = user.to_short_json()
+      else:
+        as_dict["user"] = {'fb_uid': as_dict["user_fb_id"]}
     return as_dict
 
   def get_user(self):

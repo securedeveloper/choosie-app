@@ -14,8 +14,14 @@ class CommentsHandler(webapp2.RequestHandler):
     # Since the post is taken from the cache, it might not be the most updated version
     # but that's ok, as it is only used as 'parent'
     choosie_post = CacheController.get_model(self.request.get('post_key'))
+    fb_uid = self.request.get('fb_uid')
+    user = CacheController.get_user_by_fb_id(fb_uid)
+    if not user:
+      self.response.write("Comment not added: User with fb_uid %s is not logged in." % fb_uid)
+      return
+      
     comment = Comment(parent=choosie_post,
-                      user_fb_id=self.request.get('fb_uid'),
+                      user_fb_id=fb_uid,
                       text=text)
     comment.put()
     choosie_post.add_comment_to_post(comment)

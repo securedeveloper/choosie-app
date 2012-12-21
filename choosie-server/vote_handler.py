@@ -13,14 +13,20 @@ class VoteHandler(webapp2.RequestHandler):
   def get(self):
     vote_for = int(self.request.get('which_photo'))
     fb_uid = str(self.request.get('fb_uid'))
+    user = CacheController.get_user_by_fb_id(fb_uid)
+
+    if not user:
+      self.write_error("Can't add vote: User with fb_uid %s is not logged in." % fb_uid)
+      return
+
     # Since the post is taken from the cache, it might not be the most updated version
     # but that's ok, as it is only used as 'parent'
     choosie_post = CacheController.get_model(self.request.get('post_key'))
-    
+
     vote = Vote(parent=choosie_post,
                 user_fb_id=fb_uid,
                 vote_for=int(vote_for))
-    
+
     prev_vote = vote.prev_vote_for_user_for_post()
     #if the user voted to the same post but for different item, updating the vote
     if (prev_vote is not None and prev_vote.vote_for != vote_for):
