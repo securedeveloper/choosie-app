@@ -36,6 +36,15 @@ class PostsHandler(webapp2.RequestHandler):
 
     logging.info("user found!")
     logging.info("share_to_fb_param: " + self.request.get("share_to_fb", default_value="off"))
+    debug_show_fb = self.request.get("debug_show_fb", default_value="off")
+    logging.info("debug_show_fb: " + debug_show_fb)
+    
+    if (debug_show_fb):
+      img1 = images.Image(self.shrinkImage(self.request.get('photo1')))
+      img2 = images.Image(self.shrinkImage(self.request.get('photo2')))
+      self.response.headers['Content-Type'] = 'image/png'
+      self.response.out.write(Utils.compose_two_images(img1, img2))
+      return
 
     if (self.request.get("share_to_fb", default_value="off") == "on"):
       logging.info("user" + user.fb_access_token)
