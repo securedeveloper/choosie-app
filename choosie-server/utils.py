@@ -43,17 +43,29 @@ class Utils():
       return compose_two_images(img1, img2)
 
     @staticmethod
+    def load_image(file_name):
+      file_path = os.path.join(os.path.split(__file__)[0], file_name)
+      icon = open(file_path).read()
+      img = images.Image(image_data=icon)
+      return img
+
+    @staticmethod
     def compose_two_images(img1, img2):
-      icon_1_path = os.path.join(os.path.split(__file__)[0], '1.png')
-      icon_2_path = os.path.join(os.path.split(__file__)[0], '2.png')
-      icon1 = open(icon_1_path).read()
-      icon2 = open(icon_2_path).read()
-      img_icon_1 = images.Image(image_data=icon1)
-      img_icon_2 = images.Image(image_data=icon2)
+      img_icon_1 = Utils.load_image('1.png')
+      img_icon_2 = Utils.load_image('2.png')
+      corner_tr = Utils.load_image('corner-tr.png')
+      corner_bl = Utils.load_image('corner-bl.png')
+      corner_br = Utils.load_image('corner-br.png')
       margin = 6
       composite = images.composite(
           [(img1, margin, margin, 1.0, images.TOP_LEFT),
            (img2, img1.width + 2*margin, margin, 1.0, images.TOP_LEFT),
+           (corner_tr, margin + img1.width - corner_tr.width, margin, 0.3, images.TOP_LEFT),
+           (corner_tr, 2*margin + img1.width + img2.width - corner_tr.width, margin, 0.3, images.TOP_LEFT),
+           (corner_br, margin + img1.width - corner_br.width, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
+           (corner_br, 2*margin + img1.width + img2.width - corner_br.width, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
+           (corner_bl, margin, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
+           (corner_bl, 2*margin + img1.width, margin + img1.height - corner_br.height, 0.3, images.TOP_LEFT),
            (img_icon_1, margin, margin, 0.3, images.TOP_LEFT),
            (img_icon_2, img1.width + 2*margin, margin, 0.3, images.TOP_LEFT)],
           img1.width + img2.width + 3*margin,
