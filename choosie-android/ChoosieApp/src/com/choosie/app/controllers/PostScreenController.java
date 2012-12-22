@@ -448,6 +448,7 @@ public class PostScreenController extends ScreenController {
 		EditText questionText = (EditText) view
 				.findViewById(R.id.editText_question);
 		questionText.setText("");
+		shareOnFacebookTb.setChecked(false);
 
 	}
 
