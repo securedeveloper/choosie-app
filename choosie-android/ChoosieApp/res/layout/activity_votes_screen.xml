@@ -2,21 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFFFFFFF" >
-    
+    android:background="#FFFFFFFF"
+    android:orientation="vertical" >
+
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="fill_parent"
-        android:layout_height="40dp" 
-        android:background="@drawable/header_selector"
-        android:layout_alignParentTop="true">
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/header_selector" >
 
-        <ImageView
-            android:id="@+id/header_image_logo"
+        <TextView
+            android:id="@+id/app_caption_name"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/temp_logo_votes" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:text="VOTES"
+            android:textColor="@color/White"
+            android:textSize="18dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -24,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header_layout"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal"
         android:paddingLeft="4dp" >
 

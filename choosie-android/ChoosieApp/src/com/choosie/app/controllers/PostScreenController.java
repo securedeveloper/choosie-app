@@ -140,11 +140,12 @@ public class PostScreenController extends ScreenController {
 	public void refresh() {
 		super.refresh();
 
-		// NOTE: Special handling: In case user presses on 'Share on Facebook' and 
+		// NOTE: Special handling: In case user presses on 'Share on Facebook'
+		// and
 		// then, after we launch askForPublicPermissions(), the user cancels, we
 		// identify this situation and set it back to 'false'.
 		// This happens by:
-		// ChoosieActivity gets onActivityResult with 
+		// ChoosieActivity gets onActivityResult with
 		// requestCode == FB_REQUEST_PUBLISH_PERMISSION, it calls this refresh
 		// method.
 		if (this.shareOnFacebookTb.isChecked()
@@ -169,20 +170,16 @@ public class PostScreenController extends ScreenController {
 	@Override
 	protected void onShow() {
 		superController.setCurrentScreen(Screen.POST);
-		// EditText questionText = (EditText) view
-		// .findViewById(R.id.editText_question);
-		// questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
-		superController.getActivity().findViewById(R.id.refresh_button).setVisibility(View.INVISIBLE);
+		superController.getActivity().findViewById(R.id.refresh_button)
+				.setVisibility(View.INVISIBLE);
+		makeEditTextFocusable();
 	}
 
 	@Override
 	protected void onHide() {
-		// EditText questionText = (EditText) view
-		// .findViewById(R.id.editText_question);
-		// questionText.setInputType(EditorInfo.TYPE_NULL);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));
@@ -289,8 +286,8 @@ public class PostScreenController extends ScreenController {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
-		if (resultCode == getActivity().RESULT_CANCELED){
+
+		if (resultCode == getActivity().RESULT_CANCELED) {
 			return;
 		}
 
@@ -497,11 +494,16 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	public void onResume() {
+		makeEditTextFocusable();
+	}
+
+	private void makeEditTextFocusable() {
 		EditText questionText = (EditText) view
 				.findViewById(R.id.editText_question);
 		questionText.setFocusable(true);
 		questionText.setFocusableInTouchMode(true);
-		questionText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+		questionText.setInputType(EditorInfo.TYPE_TEXT_FLAG_CAP_SENTENCES);
+		questionText.setLines(3);
 	}
 
 	@Override

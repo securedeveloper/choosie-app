@@ -8,15 +8,20 @@
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_alignParentTop="true"
         android:background="@drawable/header_selector" >
 
-        <ImageView
-            android:id="@+id/header_image_logo"
+        <TextView
+            android:id="@+id/app_caption_name"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:background="@drawable/temp_logo_comments" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:text="COMMENTS"
+            android:textColor="@color/White"
+            android:textSize="18dp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -24,6 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/header_layout"
+        android:layout_marginTop="4dp"
         android:background="#FFFFFFFF"
         android:orientation="horizontal"
         android:paddingLeft="4dp" >
@@ -88,19 +94,19 @@
 
         <EditText
             android:id="@+id/editText_comment"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/button_send_comment"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Enter comment!" >
+            android:hint="Enter comment."
+            android:inputType="textCapSentences" >
         </EditText>
 
         <Button
             android:id="@+id/button_send_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="send" />
+            android:text="Send" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -7,28 +7,34 @@
     <RelativeLayout
         android:id="@+id/header_layout"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:background="@drawable/header_selector"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
-        <ImageView
-            android:id="@+id/header_image_logo"
+        <TextView
+            android:id="@+id/app_caption_name"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:contentDescription="@string/general_content_description"
-            android:background="@drawable/temp_logo" />
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:gravity="center_vertical"
+            android:text="Choozie."
+            android:textColor="@color/White"
+            android:textSize="32dp" />
 
         <ImageButton
             android:id="@+id/refresh_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_margin="-1dp"
+            android:background="@drawable/header_selector"
             android:contentDescription="@string/general_content_description"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/view_choosie_post_margin"
             android:paddingRight="@dimen/view_choosie_post_margin"
-            android:background="@android:color/transparent"
-            android:src="@drawable/refresh_button_icon" />
-
+            android:src="@drawable/refresh_button_image" />
     </RelativeLayout>
 
     <ProgressBar
@@ -66,8 +72,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:clickable="true"
-                android:onClick="onBottomNavBarButtonClick"
                 android:contentDescription="@string/general_content_description"
+                android:onClick="onBottomNavBarButtonClick"
                 android:src="@drawable/list_button" />
         </RelativeLayout>
 
@@ -88,8 +94,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:clickable="true"
-                android:onClick="onBottomNavBarButtonClick"
                 android:contentDescription="@string/general_content_description"
+                android:onClick="onBottomNavBarButtonClick"
                 android:src="@drawable/camera" />
         </RelativeLayout>
     </LinearLayout>
