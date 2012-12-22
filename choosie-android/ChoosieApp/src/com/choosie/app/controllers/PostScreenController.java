@@ -390,39 +390,47 @@ public class PostScreenController extends ScreenController {
 			EditText questionText = (EditText) view
 					.findViewById(R.id.editText_question);
 			mQuestion = questionText.getText().toString();
-			final ProgressBar progressBar = (ProgressBar) getActivity()
-					.findViewById(R.id.progressBarPost);
+			if (mQuestion.equals("")) {
+				Toast toast = Toast.makeText(getActivity(),
+						"Please add a question", Toast.LENGTH_SHORT);
+				toast.show();
+			} else {
+				final ProgressBar progressBar = (ProgressBar) getActivity()
+						.findViewById(R.id.progressBarPost);
 
-			superController.getClient().sendChoosiePostToServer(
-					new NewChoosiePostData(mImage1, mImage2, mQuestion,
-							shareOnFacebookTb.isChecked()),
-					new Callback<Void, Integer, Void>() {
+				superController.getClient().sendChoosiePostToServer(
+						new NewChoosiePostData(mImage1, mImage2, mQuestion,
+								shareOnFacebookTb.isChecked()),
+						new Callback<Void, Integer, Void>() {
 
-						@Override
-						public void onPre(Void param) {
-							progressBar.setProgress(0);
-							progressBar.setMax(100);
-							progressBar.setVisibility(View.VISIBLE);
-							progressBar.bringToFront();
-						}
+							@Override
+							public void onPre(Void param) {
+								progressBar.setProgress(0);
+								progressBar.setMax(100);
+								progressBar.setVisibility(View.VISIBLE);
+								progressBar.bringToFront();
+							}
 
-						@Override
-						public void onProgress(Integer param) {
-							progressBar.setProgress(param);
-						}
+							@Override
+							public void onProgress(Integer param) {
+								progressBar.setProgress(param);
+							}
 
-						@Override
-						public void onFinish(Void param) {
-							progressBar.setVisibility(View.GONE);
-							superController.screenToController.get(Screen.FEED)
-									.refresh();
-							resetPost();
-						}
-					});
+							@Override
+							public void onFinish(Void param) {
+								progressBar.setVisibility(View.GONE);
+								superController.screenToController.get(
+										Screen.FEED).refresh();
+								resetPost();
+							}
+						});
 
-			// switch back to feed screen
-			superController.screenToController.get(Screen.FEED).showScreen();
-			superController.screenToController.get(Screen.POST).hideScreen();
+				// switch back to feed screen
+				superController.screenToController.get(Screen.FEED)
+						.showScreen();
+				superController.screenToController.get(Screen.POST)
+						.hideScreen();
+			}
 		}
 	}
 
