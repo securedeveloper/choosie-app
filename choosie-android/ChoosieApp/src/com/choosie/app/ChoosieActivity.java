@@ -13,6 +13,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 public class ChoosieActivity extends Activity {
@@ -45,6 +47,9 @@ public class ChoosieActivity extends Activity {
 				.getSerializableExtra("fb_details");
 
 		superController = new SuperController(this, fbDetails);
+		
+		ImageButton refreshButton = (ImageButton)findViewById(R.id.refresh_button);
+		refreshButton.setOnClickListener(refreshClickListener );
 	}
 
 	@Override
@@ -132,5 +137,12 @@ public class ChoosieActivity extends Activity {
 
 		return true;
 	}
+	
+	private OnClickListener refreshClickListener = new OnClickListener() {
+		public void onClick(View v) {
+			Logger.getInstance().WriteLine("Clicked refresh feed button");
+			superController.getControllerForScreen(Screen.FEED).refresh();
+		}
+	};
 
 }

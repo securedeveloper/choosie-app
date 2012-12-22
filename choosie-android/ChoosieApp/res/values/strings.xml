@@ -24,5 +24,6 @@
     <string name="create_new_post">Create new post</string>
     <string name="title_activity_votes_screen">VotesScreenActivity</string>
     <string name="title_activity_enlarge_photo">EnlargePhoto</string>
+    <string name="general_content_description">Widget Content Description</string>
 
 </resources>
