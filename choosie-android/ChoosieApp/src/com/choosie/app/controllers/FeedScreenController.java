@@ -36,7 +36,7 @@ public class FeedScreenController extends ScreenController {
 		TextView textView = new TextView(this.getActivity());
 		textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
-		textView.setText("Nothing to display. Please check back later.");
+		textView.setText(R.string.feed_is_empty_message);
 
 		ListView listView = (ListView) view.findViewById(R.id.feedListView);
 		listView.setEmptyView(textView);
@@ -71,7 +71,8 @@ public class FeedScreenController extends ScreenController {
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_feed))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
-		superController.getActivity().findViewById(R.id.refresh_button).setVisibility(View.VISIBLE);
+		superController.getActivity().findViewById(R.id.refresh_button)
+				.setVisibility(View.VISIBLE);
 		refresh();
 	}
 

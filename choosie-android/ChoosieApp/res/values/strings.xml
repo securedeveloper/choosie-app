@@ -25,5 +25,6 @@
     <string name="title_activity_votes_screen">VotesScreenActivity</string>
     <string name="title_activity_enlarge_photo">EnlargePhoto</string>
     <string name="general_content_description">Widget Content Description</string>
+    <string name="feed_is_empty_message">You have no posts on your feed!\nBe the first to upload a Choozie Post!</string>
 
 </resources>
