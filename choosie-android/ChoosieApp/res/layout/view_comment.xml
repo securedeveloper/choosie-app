@@ -21,7 +21,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:paddingLeft="2dp"
                 android:paddingRight="1dp"
                 android:src="@android:drawable/divider_horizontal_dark" />
 
@@ -30,7 +29,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:paddingRight="2dp"
                 android:paddingLeft="1dp"
                 android:src="@android:drawable/divider_horizontal_dark" />
         </LinearLayout>

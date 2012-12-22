@@ -288,6 +288,10 @@ public class PostScreenController extends ScreenController {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		
+		if (resultCode == getActivity().RESULT_CANCELED){
+			return;
+		}
 
 		switch (requestCode) {
 		case Constants.RequestCodes.CROP_FIRST:

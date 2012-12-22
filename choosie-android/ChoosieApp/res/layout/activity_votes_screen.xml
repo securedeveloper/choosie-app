@@ -23,9 +23,9 @@
         android:id="@+id/layout_user_votes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:layout_below="@+id/header_layout"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="4dp" >
 
         <ImageView
             android:id="@+id/votesScreen_userPhoto"
@@ -51,14 +51,15 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_below="@+id/layout_user_votes"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" >
 
         <ImageView
             android:id="@+id/votesScreen_photo1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:paddingLeft="2dp"
             android:paddingRight="1dp"
             android:src="@android:drawable/divider_horizontal_dark" />
 
@@ -68,7 +69,6 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:paddingLeft="1dp"
-            android:paddingRight="2dp"
             android:src="@android:drawable/divider_horizontal_dark" />
     </LinearLayout>
 
@@ -78,7 +78,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_images_votesScreen"
         android:divider="#00000000"
-        android:listSelector="#00000000" >
+        android:listSelector="#00000000"
+        android:paddingLeft="4dp" >
     </ListView>
 
 </RelativeLayout>
