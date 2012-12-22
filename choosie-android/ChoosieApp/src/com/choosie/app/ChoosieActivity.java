@@ -68,8 +68,11 @@ public class ChoosieActivity extends Activity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i(Constants.LOG_TAG, "after activity "
-				+ Session.getActiveSession().getPermissions().toString());
+		if (Session.getActiveSession() != null
+				&& Session.getActiveSession().getPermissions() != null) {
+			Log.i(Constants.LOG_TAG, "onActivityResult. FB Permissions: "
+					+ Session.getActiveSession().getPermissions().toString());
+		}
 
 		switch (requestCode) {
 
