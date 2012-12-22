@@ -30,11 +30,17 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
     choosie_post = CacheController.get_model(choosie_post_key)
     if not choosie_post:
       return (None, None, "[%s] is not a valid ChoosiePost key" % choosie_post_key)
+
     fb_post_id = choosie_post.fb_post_id
     if not fb_post_id:
       return (None, None, "[%s] doesn't have an associated Facebook post ID" % choosie_post_key)
+
     fb_access_token = choosie_post.get_user().fb_access_token
-    json_comments = Utils.get_json_comments_from_fb_post(fb_post_id, fb_access_token)
+    json_comments, error = Utils.get_json_comments_from_fb_post(fb_post_id, fb_access_token)
+    if error:
+      return (None, None, "Couldn't scraped comments for post with ID [%s] (user FB UID = [%s]). Error: %s"
+                          % (fb_post_id, choosie_post.fb_post_id, error))
+
     comments, votes = ScrapeCommentsHandler.parse_facebook_comments(json_comments)
 
     if choosie_post_key and (len(comments) > 0 or len(votes) > 0):

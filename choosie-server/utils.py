@@ -91,8 +91,8 @@ class Utils():
       result = urlfetch.fetch(url)
       logging.info('result: ' + str(result.content))
       if result.status_code != 200:
-        return None
-      return result.content
+        return None, result.content
+      return result.content, None
 
     @staticmethod
     def parse_iso_format_datetime(datetime_str):

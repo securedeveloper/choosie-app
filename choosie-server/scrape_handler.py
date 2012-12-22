@@ -19,12 +19,15 @@ class ScrapeHandler(webapp2.RequestHandler):
     q = ChoosiePost.all().filter("posted_to_fb = ", True).filter("created_at > ", datetime.datetime.now() - datetime.timedelta(1))
     posts_found = False
     for p in q.run():
-      posts_found = True
-      choosie_post_key = str(p.key())
-      logging.info(choosie_post_key)
-      comments, votes, error = ScrapeCommentsHandler.scrape_comments_and_votes_from_facebook(choosie_post_key)
-      # if error:
-        # logging.info("error scraping post from fb. Error = "  + error)
+      try:
+        posts_found = True
+        choosie_post_key = str(p.key())
+        logging.info(choosie_post_key)
+        comments, votes, error = ScrapeCommentsHandler.scrape_comments_and_votes_from_facebook(choosie_post_key)
+        if error:
+          logging.warn("Error scraping post from FB. Error = %s", error)
+      except Exception, e:
+        logging.error("Unexpected error while scraping Facebook comments for post [%s] (%s).", p.key(), p.question)
 
     if (posts_found is False):
       logging.info("no posts to scrape")
