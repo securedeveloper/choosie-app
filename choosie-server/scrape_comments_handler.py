@@ -81,22 +81,25 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
     # If comment is something like: 'A is nicer' or 'B: because it is better' create a Vote object too.
     words = re.findall(r"[\w']+", choosie_comment.text)
     if len(words) > 0:
-      first_word = words[0].upper()
-      logging.info(first_word)
-      # Any of those as first word of the comment will be considered as a vote
-      user_string_to_photo_number = {'A': 1,
-                                     'B': 2,
-                                     '1': 1,
-                                     '2': 2}
-      if first_word in user_string_to_photo_number:
+      vote = ScrapeCommentsHandler.vote_from_comment(words)
+
+      if vote:
         return Vote(user_fb_id=choosie_comment.user_fb_id,
                     created_at=choosie_comment.created_at,
-                    vote_for=user_string_to_photo_number[first_word],
+                    vote_for=vote,
                     is_scraped=choosie_comment.is_scraped,
                     scraped_user_details=choosie_comment.scraped_user_details)
     else:
       return None
 
+  @staticmethod
+  def vote_from_comment(comment_words):
+    user_string_to_photo_number = {'1': 1,
+                                   '2': 2}
+    for word in comment_words:
+      if word in user_string_to_photo_number:
+        return user_string_to_photo_number[word]
+    return None
 
   @staticmethod
   def build_user_details(json_comment):
