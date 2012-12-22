@@ -175,6 +175,7 @@ public class PostScreenController extends ScreenController {
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
+		superController.getActivity().findViewById(R.id.refresh_button).setVisibility(View.INVISIBLE);
 	}
 
 	@Override

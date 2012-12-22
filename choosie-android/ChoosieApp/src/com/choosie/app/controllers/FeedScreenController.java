@@ -71,6 +71,7 @@ public class FeedScreenController extends ScreenController {
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_feed))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
+		superController.getActivity().findViewById(R.id.refresh_button).setVisibility(View.VISIBLE);
 		refresh();
 	}
 
