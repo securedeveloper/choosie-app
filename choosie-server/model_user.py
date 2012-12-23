@@ -33,10 +33,10 @@ class User(db.Model):
       data = json.loads(fb_user_json)
      
       user = User(fb_uid = data["id"],
-                  first_name = data["first_name"],
-                  last_name = data["last_name"],
-                  username = data["username"],
-                  gender = data["gender"],
+                  first_name = data.get("first_name"),
+                  last_name = data.get("last_name"),
+                  username = data.get("username"),
+                  gender = data.get("gender"),
                   fb_access_token = fb_access_token,
                   fb_access_token_expdate = fb_access_token_expdate)
       return user
