@@ -14,6 +14,7 @@ import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -169,6 +170,8 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
+		Logger.getInstance().WriteLine(
+				"PostScreenController - showing post screen");
 		superController.setCurrentScreen(Screen.POST);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
@@ -180,6 +183,8 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
+		Logger.getInstance().WriteLine(
+				"PostScreenController - hiding post screen");
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));
@@ -225,6 +230,8 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void startDialog(final View arg0) {
+		Logger.getInstance().WriteLine(
+				"PostScreenController - enter startdialog");
 		final File tempFile = createImageFile(arg0.getId());
 
 		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
@@ -250,14 +257,19 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void TakePhoto(View arg0, Uri uri) {
+
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
 		if (arg0.getId() == R.id.image_photo1) {
+			Logger.getInstance().WriteLine(
+					"PostScreenController - enter TakePhoto - first pic");
 			getActivity().startActivityForResult(intent,
 					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA);
 		}
 		if (arg0.getId() == R.id.image_photo2) {
+			Logger.getInstance().WriteLine(
+					"PostScreenController - enter TakePhoto - second pic");
 			intent.putExtra("return-data", true);
 			getActivity().startActivityForResult(intent,
 					Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA);
@@ -265,17 +277,24 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void takeImageFromGallery(View arg0) {
+
 		Intent intent = new Intent();
 		intent.setType("image/*");
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 
 		if (arg0.getId() == R.id.image_photo1) {
+			Logger.getInstance()
+					.WriteLine(
+							"PostScreenController - enter takeImageFromGallery - first pic");
 			getActivity().startActivityForResult(
 					Intent.createChooser(intent, "Select Picture"),
 					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY);
 		}
 
 		if (arg0.getId() == R.id.image_photo2) {
+			Logger.getInstance()
+					.WriteLine(
+							"PostScreenController - enter takeImageFromGallery - second pic");
 			getActivity().startActivityForResult(
 					Intent.createChooser(intent, "Select Picture"),
 					Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY);
@@ -286,8 +305,11 @@ public class PostScreenController extends ScreenController {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		Logger.getInstance().WriteLine(
+				"PostScreenController - onActivityResult - request code = "
+						+ requestCode + " result code = " + resultCode);
 
-		if (resultCode == getActivity().RESULT_CANCELED) {
+		if (resultCode == Activity.RESULT_CANCELED) {
 			return;
 		}
 
@@ -344,6 +366,8 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private Bitmap setImageFromData(Intent data, ImageView imageView) {
+		Logger.getInstance().WriteLine(
+				"PostScreenController - enter setImageFromData");
 		if (isNeedToSave == true) {
 			galleryAddPic();
 		}
@@ -370,6 +394,8 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void setAndStartCropIntent(int code, Uri uri) {
+		Logger.getInstance().WriteLine(
+				"PostScreenController - enter setAndStartCropIntent");
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
 		intent.putExtra("outputX", 350);
@@ -458,9 +484,20 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private File createImageFile(Integer prefix) {
+		Logger.getInstance().WriteLine(
+				"PostScreenController - enter createImageFile");
 		File dir = getAlbumDir();
 		if (dir.exists() == false) {
-			dir.mkdir();
+			Logger.getInstance().WriteLine(
+					"PostScreenController - createImageFile: the dir is not exist, path = "
+							+ dir.getAbsolutePath());
+			boolean dirCreated = dir.mkdir();
+			Logger.getInstance().WriteLine(
+					"PostScreenController, dirCreated = " + dirCreated);
+		} else {
+			Logger.getInstance().WriteLine(
+					"PostScreenController - createImageFile: dir exists, path = "
+							+ dir.getAbsolutePath());
 		}
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("_yyyyMMdd_HHmmss")
@@ -468,7 +505,7 @@ public class PostScreenController extends ScreenController {
 		String imageFileName = "image" + prefix.toString() + timeStamp + "_";
 		File image = null;
 		try {
-			image = File.createTempFile(imageFileName, ".jpg", getAlbumDir());
+			image = File.createTempFile(imageFileName, ".jpg", dir);
 		} catch (IOException e) {
 			Log.e("createImageFile", "failed to create temp image file: "
 					+ imageFileName);
@@ -479,6 +516,12 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private File getAlbumDir() {
+		Logger.getInstance()
+				.WriteLine(
+						"PostScreenController - enter getAlbumDir,path = "
+								+ Environment
+										.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+								+ " " + Constants.URIs.APPLICATION_NAME);
 		File storageDir = new File(
 				Environment
 						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
@@ -489,6 +532,9 @@ public class PostScreenController extends ScreenController {
 	private void galleryAddPic() {
 		Intent mediaScanIntent = new Intent(
 				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		Logger.getInstance().WriteLine(
+				"PostScreenController - adding to gallery - "
+						+ mCurrentPhotoPath);
 		File f = new File(mCurrentPhotoPath);
 		Uri contentUri = Uri.fromFile(f);
 		mediaScanIntent.setData(contentUri);
@@ -497,6 +543,8 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	public void onKeyDown(int keyCode, KeyEvent event) {
+		Logger.getInstance().WriteLine(
+				"PostScreenController - switching to feed");
 		superController.switchToScreen(Screen.FEED);
 	}
 
