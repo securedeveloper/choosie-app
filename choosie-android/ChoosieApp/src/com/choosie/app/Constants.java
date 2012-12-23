@@ -12,8 +12,7 @@ public class Constants {
 	public static class URIs {
 
 		public static final String ROOT_URL = "http://choosieapp.appspot.com";
-		// public static final String ROOT_URL =
-		// "http://choosie-dev.appspot.com";
+//		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
 
 		public static final String FEED_URI = ROOT_URL + "/feed";
 		public static final String NEW_VOTE_URI = ROOT_URL + "/votes/new";
@@ -27,7 +26,7 @@ public class Constants {
 				+ File.separator;
 		// public static final String mainDirectoryPath = (Environment
 		// .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).getAbsolutePath();
-		public static final String APPLICATION_NAME = "chooZie";
+		public static final String APPLICATION_NAME = "Choozie";
 	}
 
 	public static class RequestCodes {

@@ -491,7 +491,7 @@ public class PostScreenController extends ScreenController {
 			Logger.getInstance().WriteLine(
 					"PostScreenController - createImageFile: the dir is not exist, path = "
 							+ dir.getAbsolutePath());
-			boolean dirCreated = dir.mkdir();
+			boolean dirCreated = dir.mkdirs();
 			Logger.getInstance().WriteLine(
 					"PostScreenController, dirCreated = " + dirCreated);
 		} else {
