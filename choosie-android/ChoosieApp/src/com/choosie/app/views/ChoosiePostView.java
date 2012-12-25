@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
+import com.choosie.app.FeedViewHolder;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
@@ -33,11 +34,18 @@ import android.view.View;
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
 	private SuperController superController;
+	private View convertView;
+	private TextView votes1;
+	private TextView votes2;
+	private ImageView imgSelected1;
+	private ImageView imgSelected2;
 
-	public ChoosiePostView(Context context, SuperController superController) {
+	public ChoosiePostView(Context context, SuperController superController,
+			View convertView) {
 		super(context);
 		inflateLayout();
 		this.superController = superController;
+		this.convertView = convertView;
 	}
 
 	private void inflateLayout() {
@@ -70,90 +78,129 @@ public class ChoosiePostView extends RelativeLayout {
 	public void loadChoosiePost(final ChoosiePostData post) {
 		this.choosiePost = post;
 
-		final TextView votes1 = (TextView) findViewById(R.id.votes1);
-		final TextView votes2 = (TextView) findViewById(R.id.votes2);
-		final TextView feedtext = (TextView) findViewById(R.id.feedtext);
-		final TextView feed_name = (TextView) findViewById(R.id.feed_name);
-		final TextView time_text = (TextView) findViewById(R.id.time_text);
-		final ImageView feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
-		final ImageView imgView1 = (ImageView) findViewById(R.id.feedimage1);
-		final ImageView imgView2 = (ImageView) findViewById(R.id.feedimage2);
-		final ImageView imgSelected1 = (ImageView) findViewById(R.id.feed_imageSelect1);
-		final ImageView imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
-		final ProgressBar progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
-		final ProgressBar progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+		FeedViewHolder feedViewHolder = null;
 
-		feedtext.setText(post.getQuestion());
-		feed_name.setText(post.getAuthor().getUserName());
+		if ((convertView == null)
+				|| (!(convertView instanceof ChoosiePostView))) {
+
+			// we can't reuse convertView - we must create new holder
+			feedViewHolder = new FeedViewHolder();
+			
+			feedViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
+			feedViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
+			feedViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
+			feedViewHolder.votes2 = (TextView) findViewById(R.id.votes2);
+			feedViewHolder.feedtext = (TextView) findViewById(R.id.feedtext);
+			feedViewHolder.feed_name = (TextView) findViewById(R.id.feed_name);
+			feedViewHolder.time_text = (TextView) findViewById(R.id.time_text);
+			feedViewHolder.feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
+			feedViewHolder.imgView1 = (ImageView) findViewById(R.id.feedimage1);
+			feedViewHolder.imgView2 = (ImageView) findViewById(R.id.feedimage2);
+			feedViewHolder.imgSelected1 = (ImageView) findViewById(R.id.feed_imageSelect1);
+			feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
+			feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
+			feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+
+			// insert this holder into this. (choosiePostView)
+			this.setTag(feedViewHolder);
+		}
+		else {
+			// convertView is not null and is instancof ChoosiePostView - we can
+			// take it's holder
+			feedViewHolder = (FeedViewHolder) convertView.getTag();
+		}
+		
+		//set the globals
+		 votes1 = feedViewHolder.votes1;
+		 votes2 = feedViewHolder.votes2;
+		 imgSelected1 = feedViewHolder.imgSelected1;
+		 imgSelected2 = feedViewHolder.imgSelected2;
+		 
+		feedViewHolder.feedtext.setText(post.getQuestion());
+		feedViewHolder.feed_name.setText(post.getAuthor().getUserName());
 		// Utils.getTimeDifferenceTextFromNow formats the text as '13d', '2h',
 		// etc
-		time_text.setText(Utils.getTimeDifferenceTextFromNow(post
-				.getCreatedAt()));
+		feedViewHolder.time_text.setText(Utils
+				.getTimeDifferenceTextFromNow(post.getCreatedAt()));
 
-		imgView1.setVisibility(View.GONE);
-		imgView2.setVisibility(View.GONE);
-		imgSelected1.setVisibility(View.GONE);
-		imgSelected2.setVisibility(View.GONE);
-		feed_userimage.setVisibility(View.GONE);
+		feedViewHolder.imgView1.setVisibility(View.GONE);
+		feedViewHolder.imgView2.setVisibility(View.GONE);
+		feedViewHolder.imgSelected1.setVisibility(View.GONE);
+		feedViewHolder.imgSelected2.setVisibility(View.GONE);
+		feedViewHolder.feed_userimage.setVisibility(View.GONE);
 
 		// set the size of the image view to bew a square sized half of the
 		// screen width
-		imgView1.getLayoutParams().height = (superController.getActivity()
-				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
-		imgView1.getLayoutParams().width = (superController.getActivity()
-				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
+		feedViewHolder.imgView1.getLayoutParams().height = (superController
+				.getActivity().getWindowManager().getDefaultDisplay()
+				.getWidth()) / 2;
+		feedViewHolder.imgView1.getLayoutParams().width = (superController
+				.getActivity().getWindowManager().getDefaultDisplay()
+				.getWidth()) / 2;
 
-		imgView2.getLayoutParams().height = (superController.getActivity()
-				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
-		imgView2.getLayoutParams().width = (superController.getActivity()
-				.getWindowManager().getDefaultDisplay().getWidth()) / 2;
+		feedViewHolder.imgView2.getLayoutParams().height = (superController
+				.getActivity().getWindowManager().getDefaultDisplay()
+				.getWidth()) / 2;
+		feedViewHolder.imgView2.getLayoutParams().width = (superController
+				.getActivity().getWindowManager().getDefaultDisplay()
+				.getWidth()) / 2;
 
-		loadImageToView(post.getPhoto1URL(), imgView1, progressBar1,
-				imgSelected1);
-		loadImageToView(post.getPhoto2URL(), imgView2, progressBar2,
-				imgSelected2);
-		loadImageToView(post.getAuthor().getPhotoURL(), feed_userimage, null,
-				null);
-		loadCommentsToView(post);
+		loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
+				feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
+		loadImageToView(post.getPhoto2URL(), feedViewHolder.imgView2,
+				feedViewHolder.progressBar2, feedViewHolder.imgSelected2);
+		loadImageToView(post.getAuthor().getPhotoURL(),
+				feedViewHolder.feed_userimage, null, null);
+		loadCommentsToView(post, feedViewHolder);
 		saveVotersPhotos(post);
 
 		// DECIDE IF SHOW RESUTLS OR NOT
 		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
-			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
+			ChangeVotingResultsVisibility(feedViewHolder.votes1,
+					feedViewHolder.votes2, View.VISIBLE);
 		} else {
-			ChangeVotingResultsVisibility(votes1, votes2, View.INVISIBLE);
+			ChangeVotingResultsVisibility(feedViewHolder.votes1,
+					feedViewHolder.votes2, View.INVISIBLE);
 		}
 
 		// Set border for voted image
-		setImageBorder(imgSelected1, choosiePost.isVotedAlready(1));
-		setImageBorder(imgSelected2, choosiePost.isVotedAlready(2));
+		setImageBorder(feedViewHolder.imgSelected1,
+				choosiePost.isVotedAlready(1));
+		setImageBorder(feedViewHolder.imgSelected2,
+				choosiePost.isVotedAlready(2));
 
 		// TODO: Merge both listeners below to a single one that accepts an
 		// argument.
-		imgView1.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				Log.i(Constants.LOG_TAG, "onLongClick signaled for voting 1");
-				return handleVote1(votes1, votes2, imgSelected1, imgSelected2);
-			}
-		});
+		feedViewHolder.imgView1
+				.setOnLongClickListener(new OnLongClickListener() {
+					public boolean onLongClick(View v) {
+						Log.i(Constants.LOG_TAG,
+								"onLongClick signaled for voting 1");
+						return handleVote1(votes1, votes2, imgSelected1,
+								imgSelected2);
+					}
+				});
 
-		imgSelected1.setOnClickListener(new OnClickListener() {
+		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				handleVote1(votes1, votes2, imgSelected1, imgSelected2);
 			}
 		});
 
-		imgView2.setOnLongClickListener(new OnLongClickListener() {
+		feedViewHolder.imgView2
+				.setOnLongClickListener(new OnLongClickListener() {
 
-			public boolean onLongClick(View v) {
-				Log.i(Constants.LOG_TAG, "onLongClick signaled for voting 2");
-				return handleVote2(votes1, votes2, imgSelected1, imgSelected2);
-			}
+					public boolean onLongClick(View v) {
+						Log.i(Constants.LOG_TAG,
+								"onLongClick signaled for voting 2");
+						return handleVote2(votes1, votes2, imgSelected1,
+								imgSelected2);
+					}
 
-		});
+				});
 
-		imgSelected2.setOnClickListener(new OnClickListener() {
+		feedViewHolder.imgSelected2.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				handleVote2(votes1, votes2, imgSelected1, imgSelected2);
@@ -168,8 +215,8 @@ public class ChoosiePostView extends RelativeLayout {
 			}
 		};
 
-		imgView1.setOnClickListener(enlargeListener);
-		imgView2.setOnClickListener(enlargeListener);
+		feedViewHolder.imgView1.setOnClickListener(enlargeListener);
+		feedViewHolder.imgView2.setOnClickListener(enlargeListener);
 	}
 
 	private boolean handleVote2(final TextView votes1, final TextView votes2,
@@ -251,9 +298,10 @@ public class ChoosiePostView extends RelativeLayout {
 		votes2.setVisibility(visibility);
 	}
 
-	private void loadCommentsToView(ChoosiePostData post) {
-		final LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
-		final LinearLayout commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
+	private void loadCommentsToView(ChoosiePostData post, FeedViewHolder feedViewHolder) {
+//		final LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
+//		final LinearLayout commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main); d
+		feedViewHolder.commentLayout.removeAllViews();
 		List<Comment> lstComment = post.getComments();
 		int i = 0;
 		for (Comment comment : lstComment) {
@@ -264,9 +312,9 @@ public class ChoosiePostView extends RelativeLayout {
 				comment.setIsNeedToSave();
 			}
 			if (i == 0) {
-				commentLayoutMain.setVisibility(LinearLayout.VISIBLE);
+				feedViewHolder.commentLayoutMain.setVisibility(LinearLayout.VISIBLE);
 			}
-			showCommentByLocatin(commentLayout, lstComment.size(), i, comment);
+			showCommentByLocatin(feedViewHolder.commentLayout, lstComment.size(), i, comment);
 			i++;
 		}
 	}

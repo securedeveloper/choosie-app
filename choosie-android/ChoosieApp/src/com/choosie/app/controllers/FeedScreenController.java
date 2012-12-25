@@ -84,7 +84,7 @@ public class FeedScreenController extends ScreenController {
 	}
 
 	@Override
-	public void refresh() {
+	public void refresh() { 
 		// TODO Refresh if needed only.
 		choosiePostsItemAdapter.refreshFeed();
 	}

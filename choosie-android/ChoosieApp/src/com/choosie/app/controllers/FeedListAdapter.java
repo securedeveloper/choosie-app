@@ -27,6 +27,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	State state;
+	private View LoadingItemView = buildLoadingItemView();
 
 	private static final String LOADING_ITEM_TEXT = "LOADING_ITEM";
 	private String feedCursor;
@@ -44,12 +45,23 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 		if (item.getQuestion() == LOADING_ITEM_TEXT) {
 			// TODO: This is a hack.
-			return buildLoadingItemView();
+			return LoadingItemView;
 		}
 
-		ChoosiePostView itemView = new ChoosiePostView(this.getContext(),
-				this.superController);
-
+		ChoosiePostView itemView = null;
+		// Log.i("getView", "getView called, convertView = " + convertView);
+		if ((convertView == null)
+				|| (!(convertView instanceof ChoosiePostView))) {
+			// Log.i("getView", "making a new view...");
+			
+			// we can't use this convertView, we will create new view
+			itemView = new ChoosiePostView(this.getContext(),
+					this.superController, convertView);
+		} else {
+			// Yey!! we can reuse convertView
+			itemView = (ChoosiePostView) convertView;
+		}
+		
 		itemView.loadChoosiePost(item);
 		return itemView;
 	}
