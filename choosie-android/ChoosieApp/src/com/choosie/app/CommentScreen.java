@@ -37,11 +37,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class CommentScreen extends Activity {
 	Intent intent;
+	Bitmap image1Bitmap;
+	Bitmap image2Bitmap;
+	ImageView image1View;
+	ImageView image2View;
 	// key listener - for: when the user pressing the enter key - sends the
 	// comment
 	OnKeyListener sendKeyListener = new OnKeyListener() {
@@ -71,6 +76,14 @@ public class CommentScreen extends Activity {
 		questionEditText.setOnKeyListener(sendKeyListener);
 
 		intent = getIntent();
+
+		String photo1Path = intent
+				.getStringExtra(Constants.IntentsCodes.photo1Path);
+		String photo2Path = intent
+				.getStringExtra(Constants.IntentsCodes.photo2Path);
+		image1Bitmap = BitmapFactory.decodeFile(photo1Path);
+		image2Bitmap = BitmapFactory.decodeFile(photo2Path);
+
 		fillCommentView(intent);
 
 		ArrayAdapter<CommentData> commentScreenAdapter = makeCommentScreenAdapter(intent);
@@ -97,7 +110,7 @@ public class CommentScreen extends Activity {
 
 				CommentData item = getItem(position);
 
-				return createViewComment(item, intent, position);
+				return createViewComment(item, intent, position, convertView);
 			}
 		};
 
@@ -150,49 +163,67 @@ public class CommentScreen extends Activity {
 				.setText(intent.getStringExtra("question"));
 	}
 
-	private View createViewComment(CommentData item, Intent intent, int position) {
-		LinearLayout itemView = new LinearLayout(this);
-		LayoutInflater inflater = (LayoutInflater) this
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		inflater.inflate(R.layout.view_comment, itemView);
+	private View createViewComment(CommentData item, Intent intent,
+			int position, View convertView) {
+
+		RelativeLayout itemView = (RelativeLayout) convertView;
+		CommentViewHolder commentViewHolder = null;
+
+		//if convertView is null we will create a new View
+		if (convertView == null) {
+			//create new holder
+			commentViewHolder = new CommentViewHolder();
+			//inflate view_comment into itemView
+			LayoutInflater inflater = (LayoutInflater) this
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			itemView = (RelativeLayout) inflater.inflate(R.layout.view_comment,
+					null);
+
+			//initialize the holder
+			commentViewHolder.imagesLayout = (LinearLayout) itemView
+					.findViewById(R.id.layout_images_comment);
+			commentViewHolder.imageViewPhoto1 = (ImageView) itemView
+					.findViewById(R.id.photo1_comment_screen);
+			commentViewHolder.imageViewPhoto2 = (ImageView) itemView
+					.findViewById(R.id.photo2_comment_screen);
+			commentViewHolder.tv = (TextView) itemView
+					.findViewById(R.id.view_comment_comment);
+			commentViewHolder.commentierPhotoImageView = (ImageView) itemView
+					.findViewById(R.id.commentScreen_commentierPhoto);
+			commentViewHolder.commentTime = (TextView) itemView
+					.findViewById(R.id.commentScreen_commentTime);
+
+			//set the holder inside the view we just created
+			itemView.setTag(commentViewHolder);
+		} else {
+			//convertView is not null, thus we can reuse it - grabing the holder.
+			commentViewHolder = (CommentViewHolder) itemView.getTag();
+		}
 
 		if ((position == 0) || (item.checkIfDummyComment() == true)) {
-			final ImageView imageViewPhoto1 = (ImageView) itemView
-					.findViewById(R.id.photo1_comment_screen);
-			final ImageView imageViewPhoto2 = (ImageView) itemView
-					.findViewById(R.id.photo2_comment_screen);
-
-			String photo1Path = intent
-					.getStringExtra(Constants.IntentsCodes.photo1Path);
-			String photo2Path = intent
-					.getStringExtra(Constants.IntentsCodes.photo2Path);
-
-			setImageFromPath(photo1Path, imageViewPhoto1);
-			setImageFromPath(photo2Path, imageViewPhoto2);
-		} else {
-			LinearLayout imagesLayout = (LinearLayout) itemView
-					.findViewById(R.id.layout_images_comment);
-			imagesLayout.setVisibility(View.GONE);
+			commentViewHolder.imagesLayout.setVisibility(View.VISIBLE);
+			commentViewHolder.imageViewPhoto1.setImageBitmap(image1Bitmap);
+			commentViewHolder.imageViewPhoto2.setImageBitmap(image2Bitmap);
+			image1View = commentViewHolder.imageViewPhoto1;
+			image2View = commentViewHolder.imageViewPhoto2;
+		}
+		else {
+			commentViewHolder.imagesLayout.setVisibility(View.GONE);
 		}
 
 		// comtinue only if it is a real comment
 		if (item.checkIfDummyComment() == false) {
 
 			// set the comment text
-			TextView tv = (TextView) itemView
-					.findViewById(R.id.view_comment_comment);
-			setTextOntv(item, tv);
+			setTextOntv(item, commentViewHolder.tv);
 
 			// set the commentier photo
-			ImageView commentierPhotoImageView = (ImageView) itemView
-					.findViewById(R.id.commentScreen_commentierPhoto);
-			commentierPhotoImageView.setImageBitmap(BitmapFactory
-					.decodeFile(item.getcommentierPhotoPath()));
+			commentViewHolder.commentierPhotoImageView
+					.setImageBitmap(BitmapFactory.decodeFile(item
+							.getcommentierPhotoPath()));
 
 			// set the comment time
-			TextView commentTime = (TextView) itemView
-					.findViewById(R.id.commentScreen_commentTime);
-			commentTime.setText(item.getCreatedAt() + " ago");
+			commentViewHolder.commentTime.setText(item.getCreatedAt() + " ago");
 		} else {
 			((ImageView) itemView.findViewById(R.id.view_comment_clockImage))
 					.setVisibility(View.GONE);
@@ -210,6 +241,7 @@ public class CommentScreen extends Activity {
 		// activate the 'onActivityResult'
 		setResult(RESULT_OK, intent);
 		// resetCommetnScreen();
+		resetCommentScreen();
 		finish();
 	}
 
@@ -246,6 +278,7 @@ public class CommentScreen extends Activity {
 	@Override
 	public void onBackPressed() {
 		setResult(RESULT_CANCELED, null);
+		resetCommentScreen();
 		finish();
 		return;
 	}
@@ -255,10 +288,11 @@ public class CommentScreen extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			setResult(RESULT_CANCELED, null);
-			resetCommentScreen();
+			resetCommentScreen(); //finish is taking care of it...
 			finish();
 			return true;
 		}
+
 		return super.onKeyDown(keyCode, event);
 	}
 
@@ -269,12 +303,24 @@ public class CommentScreen extends Activity {
 		if (userPhotoBitmap != null) {
 			userPhotoBitmap.recycle();
 		}
+		
+		image1View.setImageDrawable(getResources().getDrawable(R.drawable.back_arrow));
+		image2View.setImageDrawable(getResources().getDrawable(R.drawable.back_arrow));
+				
+		if (image1Bitmap != null){
+			image1Bitmap.recycle();
+			image1Bitmap = null;
+		}
+		if (image2Bitmap != null){
+			image2Bitmap.recycle();
+			image2Bitmap = null;
+		}
 
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-//		getMenuInflater().inflate(R.menu.activity_comment_screen, menu);
+		// getMenuInflater().inflate(R.menu.activity_comment_screen, menu);
 		return true;
 	}
 }
