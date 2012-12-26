@@ -1,4 +1,4 @@
 cron:
 - description: scrape fb commens
   url: /scrape_fb
-  schedule: every 1 minutes
+  schedule: every 3 minutes
