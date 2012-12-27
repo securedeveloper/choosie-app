@@ -3,7 +3,16 @@
     package="com.choosie.app"
     android:versionCode="1"
     android:versionName="1.0" >
-
+	<permission android:name="com.choosie.app.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+	<uses-permission android:name="com.choosie.app.permission.C2D_MESSAGE" /> 
+	<!-- App receives GCM messages. -->
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+	<!-- GCM connects to Google Services. -->
+	<uses-permission android:name="android.permission.INTERNET" /> 
+	<!-- GCM requires a Google account. -->
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<!-- Keeps the processor from sleeping when a message is received. -->
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -16,12 +25,21 @@
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="17" />
-
+	
     <application
         android:allowBackup="true"
         android:icon="@drawable/app_icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
+        <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+  		<intent-filter>
+    		<action android:name="com.google.android.c2dm.intent.RECEIVE" />
+    		<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+    		<category android:name="com.choosie.app" />
+ 		 </intent-filter>
+	</receiver>
+        <service android:name=".GCMIntentService" />
         <activity
             android:name="com.choosie.app.ChoosieActivity"
             android:configChanges="orientation"

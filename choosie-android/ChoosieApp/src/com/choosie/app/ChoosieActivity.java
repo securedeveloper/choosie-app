@@ -3,6 +3,7 @@ package com.choosie.app;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.Session;
+import com.google.android.gcm.GCMRegistrar;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -18,7 +19,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 public class ChoosieActivity extends Activity {
-
+	private final String SENDER_ID = "101212394485";
 	SuperController superController;
 
 	@Override
@@ -50,6 +51,17 @@ public class ChoosieActivity extends Activity {
 		
 		ImageButton refreshButton = (ImageButton)findViewById(R.id.refresh_button);
 		refreshButton.setOnClickListener(refreshClickListener );
+		
+		GCMRegistrar.checkDevice(this);
+		GCMRegistrar.checkManifest(this);
+		final String regId = GCMRegistrar.getRegistrationId(this);
+		if (regId.equals("")) {
+		  GCMRegistrar.register(this, SENDER_ID);
+		  Log.v("GCM", "succeeded registering!!!");
+		} else {
+		  Log.v("GCM", "Already registered");
+		}
+		
 	}
 
 	@Override
