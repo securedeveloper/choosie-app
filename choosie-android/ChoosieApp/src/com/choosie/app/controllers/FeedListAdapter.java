@@ -281,7 +281,10 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return -1;
 		}
 		for (int i = 0; i < this.getCount(); ++i) {
-			if (this.getItem(i).getPostKey().equals(postKey)) {
+			// Crash alert: this.getItem(i).getPostKey() might be null,
+			// for example when this.getItem(0) is the Loading item.
+			String postKeyAtI = this.getItem(i).getPostKey();
+			if (postKeyAtI != null && postKeyAtI.equals(postKey)) {
 				return i;
 			}
 		}
