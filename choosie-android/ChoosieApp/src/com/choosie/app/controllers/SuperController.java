@@ -37,8 +37,25 @@ public class SuperController {
 	private ClientBase client;
 	private final Caches caches = new Caches(this);
 	Map<Screen, ScreenController> screenToController;
+	
+	private static SuperController instance = null; 
+	
+	private SuperController(Activity activity, FacebookDetails fbDetails){
+		initializeSuperController(activity, fbDetails);
+	}
+	
+	 public static SuperController getInstance(Activity activity, FacebookDetails fbDetails) {
+         if (instance == null) {
+                 synchronized (SuperController .class){
+                         if (instance == null) {
+                                 instance = new SuperController(activity, fbDetails);
+                         }
+               }
+         }
+         return instance;
+ }
 
-	public SuperController(Activity activity, FacebookDetails fbDetails) {
+	private void initializeSuperController(Activity activity, FacebookDetails fbDetails) {
 		this.activity = activity;
 		client = new RealClient(fbDetails);
 
@@ -286,5 +303,9 @@ public class SuperController {
 
 		getActivity().startActivityForResult(intent,
 				Constants.RequestCodes.EnalargeImage);
+	}
+
+	public static void setNull() {
+		instance = null;		
 	}
 }

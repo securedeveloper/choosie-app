@@ -20,7 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
-public class ChoosieActivity extends Activity {
+public class ChoosieActivity extends Activity {  
 	private final String SENDER_ID = "101212394485";
 	SuperController superController;
 
@@ -50,7 +50,9 @@ public class ChoosieActivity extends Activity {
 		FacebookDetails fbDetails = (FacebookDetails) getIntent()
 				.getSerializableExtra("fb_details");
 
-		superController = new SuperController(this, fbDetails);
+//		SuperController.setNull();
+//		superController = new SuperController(this, fbDetails);
+		superController = SuperController.getInstance(this, fbDetails);
 		
 		Utils.setScreenWidth(this);
 		
@@ -170,5 +172,12 @@ public class ChoosieActivity extends Activity {
 			superController.getControllerForScreen(Screen.FEED).refresh();
 		}
 	};
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		SuperController.setNull();
+		this.finish();
+	}
 
 }
