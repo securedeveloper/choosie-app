@@ -15,12 +15,17 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.os.Debug;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class Utils {
+	
+	private static int screenWidth = -1;
 
 	public static Date convertStringToDateUTC(String str_date) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -110,7 +115,43 @@ public class Utils {
 	}
 
 	public static Bitmap getBitmapFromURL(String param) {
-		return BitmapFactory.decodeFile(getFileNameForURL(param));
+
+		// **this function is for showing the images in the feed, so we will
+		// bring smaller version**//
+
+		String fullPath = getFileNameForURL(param);
+
+		// First decode with inJustDecodeBounds=true to check dimensions
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(fullPath, options);
+
+		// Calculate inSampleSize
+		options.inSampleSize = calculateInSampleSize(options, screenWidth / 2,
+				screenWidth / 2);
+
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+		return BitmapFactory.decodeFile(fullPath, options);
+
+		// return BitmapFactory.decodeFile(getFileNameForURL(param));
+	}
+
+	public static int calculateInSampleSize(BitmapFactory.Options options,
+			int reqWidth, int reqHeight) {
+		// Raw height and width of image
+		final int height = options.outHeight;
+		final int width = options.outWidth;
+		int inSampleSize = 1;
+
+		if (height > reqHeight || width > reqWidth) {
+			if (width > height) {
+				inSampleSize = Math.round((float) height / (float) reqHeight);
+			} else {
+				inSampleSize = Math.round((float) width / (float) reqWidth);
+			}
+		}
+		return inSampleSize;
 	}
 
 	public static void saveURLonSD(final String photoURL,
@@ -119,7 +160,7 @@ public class Utils {
 				.getValue(photoURL, new Callback<Void, Object, Bitmap>() {
 					@Override
 					public void onFinish(Bitmap param) {
-					//	Utils.saveBitmapOnSd(photoURL, param);
+						// Utils.saveBitmapOnSd(photoURL, param);
 					}
 				});
 	}
@@ -141,5 +182,29 @@ public class Utils {
 				memoryInfo.getTotalPrivateDirty() / 1024.0,
 				memoryInfo.getTotalSharedDirty() / 1024.0);
 		Log.d("Utils", memMessage);
+	}
+
+	public static Bitmap shrinkBitmapToImageViewSize(Bitmap param,
+			SuperController controller) {
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		controller.getActivity().getWindowManager().getDefaultDisplay()
+				.getMetrics(displaymetrics);
+		int width = displaymetrics.widthPixels;
+
+		Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(param, width, width,
+				false);
+
+		param.recycle();
+		param = null;
+		return shrinkedBitmap;
+	}
+
+
+	public static void setScreenWidth(ChoosieActivity choosieActivity) {
+		DisplayMetrics displaymetrics = new DisplayMetrics();
+		choosieActivity.getWindowManager().getDefaultDisplay()
+				.getMetrics(displaymetrics);
+
+		screenWidth = displaymetrics.widthPixels;	
 	}
 }

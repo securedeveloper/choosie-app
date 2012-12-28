@@ -14,6 +14,7 @@ public class Cache<Key, Value> {
 	final ResultCallback<Value, Key> downloader;
 	final ResultCallback<ByteArrayOutputStream, Value> serializer;
 	final ResultCallback<Value, Key> deSerializer;
+	final ResultCallback<Value, Value> beforePutInMemory;
 	final Object cacheLock = new Object();
 	final Map<Key, Value> memoryCache = new HashMap<Key, Value>();
 	final Map<Key, List<Callback<Void, Object, Value>>> callbacksForKey = new HashMap<Key, List<Callback<Void, Object, Value>>>();
@@ -21,11 +22,13 @@ public class Cache<Key, Value> {
 
 	public Cache(ResultCallback<Value, Key> downloader,
 			ResultCallback<ByteArrayOutputStream, Value> serializer,
-			final ResultCallback<Value, Key> deSerializer) {
+			final ResultCallback<Value, Key> deSerializer,
+			ResultCallback<Value, Value> beforePutInMemory) {
 		this.downloader = downloader;
 		this.serializer = serializer;
 		this.deSerializer = deSerializer;
 		this.persistent = true;
+		this.beforePutInMemory = beforePutInMemory;
 	}
 
 	public Cache(ResultCallback<Value, Key> downloader) {
@@ -33,6 +36,7 @@ public class Cache<Key, Value> {
 		this.serializer = null;
 		this.deSerializer = null;
 		this.persistent = false;
+		this.beforePutInMemory = null;
 	}
 
 	public void getValue(Key key, Callback<Void, Object, Value> callback) {
@@ -43,7 +47,9 @@ public class Cache<Key, Value> {
 
 				// if in persistent - check if available on SD
 				if ((persistent == true) && (isPersisted(key) == true)) {
-					memoryCache.put(key, deSerializer.getData(key, null));
+					Value fromSdcard = deSerializer.getData(key, null);
+//					Value inMemoryVersion = beforePutInMemory.getData(fromSdcard, null);
+					memoryCache.put(key, fromSdcard);
 					fromMemoryCache = memoryCache.get(key);
 				} else {
 					// Not in memory cache and not persisted
@@ -166,8 +172,10 @@ public class Cache<Key, Value> {
 		synchronized (cacheLock) {
 			if (persistent == true) {
 				savePersistent(key, result, serializer);
+				result = beforePutInMemory.getData(result, null);
 			}
 			if (result != null) {
+				
 				memoryCache.put(key, result);
 			}
 			callbacks = callbacksForKey.get(key);

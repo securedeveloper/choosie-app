@@ -51,8 +51,10 @@ public class ChoosieActivity extends Activity {
 				.getSerializableExtra("fb_details");
 
 		superController = new SuperController(this, fbDetails);
-
-		// temporary until superController will be a single instance
+		
+		Utils.setScreenWidth(this);
+		
+		//temporary until superController will be a single instance
 		GCMIntentService.setSuperController(superController);
 
 		ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
