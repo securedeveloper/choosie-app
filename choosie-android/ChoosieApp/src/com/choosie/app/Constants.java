@@ -15,6 +15,7 @@ public class Constants {
 //		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
 		
 		public static final String REGISTER = ROOT_URL + "/register";
+		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
 		public static final String FEED_URI = ROOT_URL + "/feed";
 		public static final String NEW_VOTE_URI = ROOT_URL + "/votes/new";
 		public static final String NEW_POSTS_URI = ROOT_URL + "/posts/new";

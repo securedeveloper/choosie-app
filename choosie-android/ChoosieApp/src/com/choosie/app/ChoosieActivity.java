@@ -4,6 +4,7 @@ import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.Session;
 import com.google.android.gcm.GCMRegistrar;
+import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -26,6 +27,7 @@ public class ChoosieActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 		setContentView(R.layout.activity_choosie);
 
 		Utils.makeMainDirectory();

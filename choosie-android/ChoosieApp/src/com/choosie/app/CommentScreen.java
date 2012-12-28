@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import com.choosie.app.R;
 import com.choosie.app.Models.Comment;
 import com.choosie.app.Models.CommentData;
+import com.nullwire.trace.ExceptionHandler;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -70,6 +71,7 @@ public class CommentScreen extends Activity {
 		Logger.getInstance().WriteLine("in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
+		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
 		// setting onclikelistener
 		EditText questionEditText = (EditText) findViewById(R.id.editText_comment);

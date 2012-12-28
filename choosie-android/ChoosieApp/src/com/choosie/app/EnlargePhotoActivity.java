@@ -2,6 +2,8 @@ package com.choosie.app;
 
 import java.io.File;
 
+import com.nullwire.trace.ExceptionHandler;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
@@ -20,6 +22,7 @@ public class EnlargePhotoActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_enlarge_photo);
+		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
 		//get the intent
 		Intent intent = getIntent();

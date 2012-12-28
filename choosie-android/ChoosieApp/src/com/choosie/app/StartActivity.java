@@ -13,6 +13,7 @@ import com.facebook.android.FbDialog;
 import com.facebook.SessionState;
 import com.facebook.Response;
 import com.facebook.Settings;
+import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -33,6 +34,8 @@ public class StartActivity extends Activity{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
 		setContentView(R.layout.activity_start);
 

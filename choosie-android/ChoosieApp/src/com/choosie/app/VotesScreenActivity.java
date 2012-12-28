@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.choosie.app.Models.CommentData;
 import com.choosie.app.Models.Vote;
 import com.choosie.app.Models.VoteData;
+import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -35,6 +36,7 @@ public class VotesScreenActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_votes_screen);
+		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
 		Logger.getInstance().WriteLine("in votes screen");
 

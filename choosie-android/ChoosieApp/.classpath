@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="libs/httpmime-4.2.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/FacebookSDK"/>
 	<classpathentry kind="lib" path="libs/gcm.jar"/>
+	<classpathentry kind="lib" path="libs/trace.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
