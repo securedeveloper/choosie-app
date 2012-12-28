@@ -18,13 +18,14 @@ import com.nullwire.trace.ExceptionHandler;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-public class StartActivity extends Activity{
+public class StartActivity extends Activity {
 
 	Button buttonLogout;
 	ImageButton goToApplication;
@@ -45,9 +46,11 @@ public class StartActivity extends Activity{
 
 		Logger.i("Start Application!");
 
-		//Initialize all buttons
+		Log.i("oernlog", "daasdadasdasd");
+
+		// Initialize all buttons
 		InitializeComponents();
-		
+
 		Settings.addLoggingBehavior(LoggingBehaviors.INCLUDE_ACCESS_TOKENS);
 
 		Session session = Session.getActiveSession();
@@ -55,7 +58,7 @@ public class StartActivity extends Activity{
 		if (session == null) {
 			if (savedInstanceState != null) {
 				session = Session.restoreSession(this, null, statusCallback,
-						savedInstanceState);
+						savedInstanceState);  
 			}
 			if (session == null) {
 				session = new Session(this);
@@ -65,21 +68,22 @@ public class StartActivity extends Activity{
 				session.openForRead(new Session.OpenRequest(this)
 						.setCallback(statusCallback));
 			}
-		}
+		} else {
 
-		Logger.i(
-				"on start permissions: " + session.getPermissions().toString());
-		updateView();
+			Logger.i("on start permissions: "
+					+ session.getPermissions().toString());
+			updateView();
+		}
 	}
 
 	private void InitializeComponents() {
 		Logger.i("InitializeComponents()");
-		
+
 		// find all buttons
 		buttonLogout = (Button) findViewById(R.id.fbLogoutButton);
-		buttonLogin = (ImageButton)findViewById(R.id.fbLoginButton);
-		goToApplication = (ImageButton)findViewById(R.id.goToApplication);
-		
+		buttonLogin = (ImageButton) findViewById(R.id.fbLoginButton);
+		goToApplication = (ImageButton) findViewById(R.id.goToApplication);
+
 		// set on click listeners
 		buttonLogin.setOnClickListener(loginListener);
 		buttonLogout.setOnClickListener(logoutListener);
@@ -103,7 +107,7 @@ public class StartActivity extends Activity{
 		super.onActivityResult(requestCode, resultCode, data);
 		Session.getActiveSession().onActivityResult(this, requestCode,
 				resultCode, data);
-		if (requestCode == Constants.RequestCodes.START_ACTIVITY){
+		if (requestCode == Constants.RequestCodes.START_ACTIVITY) {
 			finish();
 		}
 	}
@@ -118,25 +122,24 @@ public class StartActivity extends Activity{
 	private void updateView() {
 
 		Session session = Session.getActiveSession();
-		Logger.i(
-				"Session: " + session.getState().toString());
+		Logger.i("Session: " + session.getState().toString());
 
 		// Show "Logout" and go to application main screen
 		if (session.isOpened()) {
 			Logger.i("Session is opened");
-			
+
 			goToApplication.setVisibility(View.VISIBLE);
-			//buttonLogout.setVisibility(View.VISIBLE);
+			// buttonLogout.setVisibility(View.VISIBLE);
 			buttonLogin.setVisibility(View.INVISIBLE);
-			
+
 			goToApplication();
 
 			// Show "Login" and let user to login
 		} else {
 			Logger.i("Session is closed");
-			
+
 			goToApplication.setVisibility(View.INVISIBLE);
-			//buttonLogout.setVisibility(View.INVISIBLE);
+			// buttonLogout.setVisibility(View.INVISIBLE);
 			buttonLogin.setVisibility(View.VISIBLE);
 		}
 	}
@@ -155,8 +158,7 @@ public class StartActivity extends Activity{
 							TextView welcome = (TextView) findViewById(R.id.welcome);
 							welcome.setText("Hello " + user.getName() + "!");
 
-							Logger.i(
-									"creating intent for ChoosieActivity");
+							Logger.i("creating intent for ChoosieActivity");
 							Intent intent = new Intent(StartActivity.this,
 									ChoosieActivity.class);
 							FacebookDetails details = new FacebookDetails(user
@@ -166,13 +168,12 @@ public class StartActivity extends Activity{
 									.getTime());
 							intent.putExtra("fb_details", details);
 
-							Logger.i(
-									"Starting ChoosieActivity");
-							startActivityForResult(intent, Constants.RequestCodes.START_ACTIVITY);
+							Logger.i("Starting ChoosieActivity");
+							startActivityForResult(intent,
+									Constants.RequestCodes.START_ACTIVITY);
 						}
 					}
-				}
-		);
+				});
 		Request.executeBatchAsync(request);
 	}
 
@@ -193,9 +194,8 @@ public class StartActivity extends Activity{
 
 			// Show login to Facebook screen
 			session.openForRead(req);
-			Logger.i(
-					"session.getPermission(): "
-							+ session.getPermissions().toString());
+			Logger.i("session.getPermission(): "
+					+ session.getPermissions().toString());
 		} else {
 			Session.openActiveSession(this, true, statusCallback);
 		}
@@ -214,21 +214,19 @@ public class StartActivity extends Activity{
 
 			// If session was opened - go to application main screen
 			if (state == SessionState.OPENED) {
-				Logger.i(
-						"CallBack: SessionState = " + state.toString());
+				Logger.i("CallBack: SessionState = " + state.toString());
 				Logger.i("Starting ChoosieActivity");
 
 				goToApplication();
 
 				// Else - show login screen
 			} else {
-				Logger.i(
-						"CallBack: SessionState = " + state.toString());
+				Logger.i("CallBack: SessionState = " + state.toString());
 				updateView();
 			}
 		}
 	}
-	
+
 	OnClickListener loginListener = new OnClickListener() {
 
 		public void onClick(View v) {
