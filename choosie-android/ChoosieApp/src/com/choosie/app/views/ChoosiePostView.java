@@ -1,11 +1,9 @@
 package com.choosie.app.views;
 
-import java.util.Date;
 import java.util.List;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
-import com.choosie.app.FeedViewHolder;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
@@ -15,9 +13,6 @@ import com.choosie.app.Models.*;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.Debug;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -34,18 +29,32 @@ import android.view.View;
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
 	private SuperController superController;
-	private View convertView;
-	private TextView votes1;
-	private TextView votes2;
-	private ImageView imgSelected1;
-	private ImageView imgSelected2;
+	private FeedViewHolder feedViewHolder;
 
-	public ChoosiePostView(Context context, SuperController superController,
-			View convertView) {
+	public ChoosiePostView(Context context, SuperController superController) {
 		super(context);
 		inflateLayout();
 		this.superController = superController;
-		this.convertView = convertView;
+		initializeHolder();
+	}
+
+	private void initializeHolder() {
+		feedViewHolder = new FeedViewHolder();
+		
+		feedViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
+		feedViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
+		feedViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
+		feedViewHolder.votes2 = (TextView) findViewById(R.id.votes2);
+		feedViewHolder.feedtext = (TextView) findViewById(R.id.feedtext);
+		feedViewHolder.feed_name = (TextView) findViewById(R.id.feed_name);
+		feedViewHolder.time_text = (TextView) findViewById(R.id.time_text);
+		feedViewHolder.feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
+		feedViewHolder.imgView1 = (ImageView) findViewById(R.id.feedimage1);
+		feedViewHolder.imgView2 = (ImageView) findViewById(R.id.feedimage2);
+		feedViewHolder.imgSelected1 = (ImageView) findViewById(R.id.feed_imageSelect1);
+		feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
+		feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
+		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);		
 	}
 
 	private void inflateLayout() {
@@ -77,49 +86,9 @@ public class ChoosiePostView extends RelativeLayout {
 
 	public void loadChoosiePost(final ChoosiePostData post) {
 		this.choosiePost = post;
-
-		FeedViewHolder feedViewHolder = null;
-
-		if ((convertView == null)
-				|| (!(convertView instanceof ChoosiePostView))) {
-
-			// we can't reuse convertView - we must create new holder
-			feedViewHolder = new FeedViewHolder();
-			
-			feedViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
-			feedViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
-			feedViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
-			feedViewHolder.votes2 = (TextView) findViewById(R.id.votes2);
-			feedViewHolder.feedtext = (TextView) findViewById(R.id.feedtext);
-			feedViewHolder.feed_name = (TextView) findViewById(R.id.feed_name);
-			feedViewHolder.time_text = (TextView) findViewById(R.id.time_text);
-			feedViewHolder.feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
-			feedViewHolder.imgView1 = (ImageView) findViewById(R.id.feedimage1);
-			feedViewHolder.imgView2 = (ImageView) findViewById(R.id.feedimage2);
-			feedViewHolder.imgSelected1 = (ImageView) findViewById(R.id.feed_imageSelect1);
-			feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
-			feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
-			feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
-
-			// insert this holder into this. (choosiePostView)
-			this.setTag(feedViewHolder);
-		}
-		else {
-			// convertView is not null and is instancof ChoosiePostView - we can
-			// take it's holder
-			feedViewHolder = (FeedViewHolder) convertView.getTag();
-		}
-		
-		//set the globals
-		 votes1 = feedViewHolder.votes1;
-		 votes2 = feedViewHolder.votes2;
-		 imgSelected1 = feedViewHolder.imgSelected1;
-		 imgSelected2 = feedViewHolder.imgSelected2;
 		 
 		feedViewHolder.feedtext.setText(post.getQuestion());
 		feedViewHolder.feed_name.setText(post.getAuthor().getUserName());
-		// Utils.getTimeDifferenceTextFromNow formats the text as '13d', '2h',
-		// etc
 		feedViewHolder.time_text.setText(Utils
 				.getTimeDifferenceTextFromNow(post.getCreatedAt()));
 
@@ -176,15 +145,15 @@ public class ChoosiePostView extends RelativeLayout {
 					public boolean onLongClick(View v) {
 						Log.i(Constants.LOG_TAG,
 								"onLongClick signaled for voting 1");
-						return handleVote1(votes1, votes2, imgSelected1,
-								imgSelected2);
+						return handleVote1(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1,
+								feedViewHolder.imgSelected2);
 					}
 				});
 
 		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				handleVote1(votes1, votes2, imgSelected1, imgSelected2);
+				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1, feedViewHolder.imgSelected2);
 			}
 		});
 
@@ -194,8 +163,8 @@ public class ChoosiePostView extends RelativeLayout {
 					public boolean onLongClick(View v) {
 						Log.i(Constants.LOG_TAG,
 								"onLongClick signaled for voting 2");
-						return handleVote2(votes1, votes2, imgSelected1,
-								imgSelected2);
+						return handleVote2(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1,
+								feedViewHolder.imgSelected2);
 					}
 
 				});
@@ -203,7 +172,7 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected2.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				handleVote2(votes1, votes2, imgSelected1, imgSelected2);
+				handleVote2(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1, feedViewHolder.imgSelected2);
 			}
 		});
 
@@ -299,8 +268,7 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void loadCommentsToView(ChoosiePostData post, FeedViewHolder feedViewHolder) {
-//		final LinearLayout commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
-//		final LinearLayout commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main); d
+		
 		feedViewHolder.commentLayout.removeAllViews();
 		List<Comment> lstComment = post.getComments();
 		int i = 0;
@@ -408,5 +376,26 @@ public class ChoosiePostView extends RelativeLayout {
 					}
 				});
 	}
-
+	
+	
+	private class FeedViewHolder {
+		public LinearLayout commentLayout;
+		public LinearLayout commentLayoutMain;
+		public TextView votes1;
+		public TextView votes2;
+		public TextView feedtext;
+		public TextView feed_name;
+		public TextView time_text;
+		public ImageView feed_userimage;
+		public ImageView imgView1;
+		public ImageView imgView2;
+		public ImageView imgSelected1;
+		public ImageView imgSelected2;
+		public ProgressBar progressBar1;
+		public ProgressBar progressBar2;
+	}
 }
+
+
+
+

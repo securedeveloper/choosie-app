@@ -2,9 +2,9 @@
 <resources>
 
     <string name="app_name">Choozie</string>
-    <string name="title_activity_start">Login to Choosie</string>
-    <string name="title_activity_choosie">Choosie</string>
-    <string name="title_activity_comment_screen">Choosie - Post Details</string>
+    <string name="title_activity_start">Choozie</string>
+    <string name="title_activity_choosie">Choozie</string>
+    <string name="title_activity_comment_screen">Choozie - Post Details</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="buttonFeed">Feed</string>

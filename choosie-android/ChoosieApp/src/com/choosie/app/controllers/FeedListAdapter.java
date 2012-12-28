@@ -1,9 +1,5 @@
 package com.choosie.app.controllers;
 
-import java.security.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.Logger;
@@ -27,7 +23,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	State state;
-	private View LoadingItemView = buildLoadingItemView();
+	private View loadingItemView = buildLoadingItemView();
 
 	private static final String LOADING_ITEM_TEXT = "LOADING_ITEM";
 	private String feedCursor;
@@ -45,7 +41,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 		if (item.getQuestion() == LOADING_ITEM_TEXT) {
 			// TODO: This is a hack.
-			return LoadingItemView;
+			return loadingItemView;
 		}
 
 		ChoosiePostView itemView = null;
@@ -56,7 +52,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			
 			// we can't use this convertView, we will create new view
 			itemView = new ChoosiePostView(this.getContext(),
-					this.superController, convertView);
+					this.superController);
 		} else {
 			// Yey!! we can reuse convertView
 			itemView = (ChoosiePostView) convertView;

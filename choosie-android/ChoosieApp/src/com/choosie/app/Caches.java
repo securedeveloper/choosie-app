@@ -54,7 +54,9 @@ public class Caches {
 						return controller.getClient().getPictureFromServerSync(
 								param, progressCallback);
 					}
-				}, new ResultCallback<ByteArrayOutputStream, Bitmap>() {
+				},
+				// this is the serializer
+				new ResultCallback<ByteArrayOutputStream, Bitmap>() {
 
 					@Override
 					ByteArrayOutputStream getData(Bitmap param,
@@ -63,7 +65,9 @@ public class Caches {
 						param.compress(CompressFormat.JPEG, 100, bos);
 						return bos;
 					}
-				}, new ResultCallback<Bitmap, String>() {
+				},
+				// this is the deserializer
+				new ResultCallback<Bitmap, String>() {
 
 					@Override
 					Bitmap getData(String param,
