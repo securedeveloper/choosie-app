@@ -7,6 +7,7 @@ import com.google.android.gcm.GCMRegistrar;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -49,11 +50,22 @@ public class ChoosieActivity extends Activity {
 
 		superController = new SuperController(this, fbDetails);
 		
+		//temporary until superController will be a single instance
+		GCMIntentService.setSuperController(superController);
+		
 		ImageButton refreshButton = (ImageButton)findViewById(R.id.refresh_button);
 		refreshButton.setOnClickListener(refreshClickListener );
 		
+		handleGCMRegister();		
+		NotificationManager mNotificationManager =
+			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(123);
+	}
+
+	private void handleGCMRegister() {
 		GCMRegistrar.checkDevice(this);
 		GCMRegistrar.checkManifest(this);
+		GCMRegistrar.unregister(this);
 		final String regId = GCMRegistrar.getRegistrationId(this);
 		if (regId.equals("")) {
 		  GCMRegistrar.register(this, SENDER_ID);
@@ -61,7 +73,6 @@ public class ChoosieActivity extends Activity {
 		} else {
 		  Log.v("GCM", "Already registered");
 		}
-		
 	}
 
 	@Override

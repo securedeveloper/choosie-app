@@ -1,7 +1,9 @@
 package com.choosie.app;
 
+import com.choosie.app.controllers.SuperController;
 import com.google.android.gcm.GCMBaseIntentService;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,6 +13,12 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public class GCMIntentService extends GCMBaseIntentService {
+	
+	private static SuperController superController;
+	
+	public static void setSuperController(SuperController superController1){
+		superController = superController1;
+	}
 
 	@Override
     protected boolean onRecoverableError(Context context, String errorId){
@@ -41,6 +49,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		stackBuilder.addParentStack(StartActivity.class);
 		// Adds the Intent that starts the Activity to the top of the stack
 		stackBuilder.addNextIntent(resultIntent);
+		
 		PendingIntent resultPendingIntent =
 		        stackBuilder.getPendingIntent(
 		            0,
@@ -49,13 +58,17 @@ public class GCMIntentService extends GCMBaseIntentService {
 		mBuilder.setContentIntent(resultPendingIntent);
 		NotificationManager mNotificationManager =
 		    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		Notification notif = mBuilder.build();
+		notif.defaults |= Notification.DEFAULT_SOUND;
 		// mId allows you to update the notification later on.
-		mNotificationManager.notify(123, mBuilder.build());
+		mNotificationManager.notify(123, notif);		
+		
     } 
 
     @Override
     protected void onRegistered(Context arg0, String arg1) {
         Log.d("GCM","registerd " + arg1);
+        superController.getClient().registerGCM(arg1);        
     }
 
     @Override

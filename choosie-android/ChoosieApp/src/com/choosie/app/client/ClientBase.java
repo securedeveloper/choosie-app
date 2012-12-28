@@ -116,4 +116,6 @@ public abstract class ClientBase {
 		return buffer;
 	}
 
+	public abstract void registerGCM(String deviceId);
+
 }

@@ -235,6 +235,16 @@ public class RealClient extends ClientBase {
 		postRequest.setEntity(reqEntity);
 	}
 
+	private void createRegisterRequest(HttpPost postRequest, String deviceId)
+			throws UnsupportedEncodingException {
+		MultipartEntity reqEntity = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		reqEntity.addPart("fb_uid", new StringBody(this.fbDetails.getFb_uid()));
+		reqEntity.addPart("device_id", new StringBody(deviceId));
+		postRequest.setEntity(reqEntity);
+	}
+
 	/**
 	 * Gets a NewChoosiePostData object, and creates an HTML POST request with
 	 * the data.
@@ -586,5 +596,46 @@ public class RealClient extends ClientBase {
 		commentPostRequest.setEntity(multipartContent);
 
 		return commentPostRequest;
+	}
+
+	@Override
+	public void registerGCM(String deviceId) {
+
+		final HttpClient httpClient = new DefaultHttpClient();
+		final HttpPost postRequest = new HttpPost(Constants.URIs.REGISTER);
+
+		try {
+			createRegisterRequest(postRequest, deviceId);
+		} catch (UnsupportedEncodingException e) {
+			Log.e("login",
+					"UnsupportedEncodingException - failed createLoginPostRequest");
+			e.printStackTrace();
+			return;
+		}
+
+		AsyncTask<Void, Void, HttpResponse> registerTask = new AsyncTask<Void, Void, HttpResponse>() {
+
+			@Override
+			protected HttpResponse doInBackground(Void... params) {
+				try {
+					return httpClient.execute(postRequest);
+				} catch (ClientProtocolException e) {
+					Log.e("Register",
+							"ClientProtocolException - failed execute registerReq");
+					e.printStackTrace();
+				} catch (IOException e) {
+					Log.e("login", "IOException - failed execute registerReq");
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(HttpResponse result) {
+				//TODO: chack result or something
+				Log.i("Register", "result status = " + result.getStatusLine());
+			}
+		};
+		registerTask.execute();
 	}
 }
