@@ -105,17 +105,17 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private ChoosiePostData loadingItem;
 
 	private void update(FeedResponse param) {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"FeedListAdapter: update. Posts count: "
 						+ param.getPosts().size() + ". Append: "
 						+ param.isAppend());
 		if (param.getPosts().size() == 0) {
-			Logger.getInstance().WriteLine("No images in feed.");
+			Logger.i("No images in feed.");
 		}
 		State relevantState = param.isAppend() ? State.APPENDING_TO_FEED
 				: State.REFRESHING_FEED;
 		if (relevantState != this.state) {
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"FeedListAdapter: update. Got new posts, but not updating"
 							+ " because not in relevant state. "
 							+ "Relevant = " + relevantState + ", Real state = "
@@ -129,16 +129,16 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return;
 		}
 		if (this.state == State.REFRESHING_FEED) {
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"Clearing feed (cause in Refresh state)");
 			this.clear();
 		}
-		Logger.getInstance().WriteLine("Adding posts.");
+		Logger.i("Adding posts.");
 		for (ChoosiePostData item : param.getPosts()) {
 			this.add(item);
 		}
 		lastCursor = param.getCursor();
-		Logger.getInstance().WriteLine("Last cursor is now = " + lastCursor);
+		Logger.i("Last cursor is now = " + lastCursor);
 	}
 
 	public void refreshFeed() {
@@ -157,7 +157,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return;
 		}
 		this.state = newState;
-		Logger.getInstance().WriteLine("Changing to state " + this.state);
+		Logger.i("Changing to state " + this.state);
 		switch (this.state) {
 		case APPENDING_TO_FEED:
 			showLoadingItem();
@@ -178,7 +178,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			showErrorToast();
 			break;
 		}
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"Finished changing to state " + this.state);
 
 	}
@@ -191,7 +191,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	private void addItemsToList() {
-		Logger.getInstance().WriteLine("addItemsToList. state = " + state);
+		Logger.i("addItemsToList. state = " + state);
 
 		FeedCacheKey request = null;
 		if (this.state == State.REFRESHING_FEED) {
@@ -219,7 +219,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private class AdapterUpdater extends Callback<Void, Object, FeedResponse> {
 		@Override
 		public void onFinish(FeedResponse param) {
-			Logger.getInstance().WriteLine("onFINISH!!!");
+			Logger.i("onFINISH!!!");
 			if (param == null) {
 				changeState(State.ERROR);
 			} else {
@@ -243,7 +243,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			loadingItem = new ChoosiePostData(null, null, null, null,
 					LOADING_ITEM_TEXT, null, null, null, null);
 		}
-		Logger.getInstance().WriteLine("Showing 'Loading items...'");
+		Logger.i("Showing 'Loading items...'");
 		if (this.state == State.APPENDING_TO_FEED) {
 			this.add(loadingItem);
 		} else if (this.state == State.REFRESHING_FEED) {
@@ -261,7 +261,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			if (++i > 3) {
 				break;
 			}
-			Logger.getInstance().WriteLine("Hiding 'Loading items...'");
+			Logger.i("Hiding 'Loading items...'");
 			this.remove(loadingItem);
 		}
 	}
@@ -276,6 +276,10 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	private int findPositionByPostKey(String postKey) {
+		if (postKey == null) {
+			Logger.e("Got to findPositionByPostKey with null postKey.");
+			return -1;
+		}
 		for (int i = 0; i < this.getCount(); ++i) {
 			if (this.getItem(i).getPostKey().equals(postKey)) {
 				return i;

@@ -51,16 +51,15 @@ public class ChoosieActivity extends Activity {
 				.getSerializableExtra("fb_details");
 
 		superController = new SuperController(this, fbDetails);
-		
-		//temporary until superController will be a single instance
+
+		// temporary until superController will be a single instance
 		GCMIntentService.setSuperController(superController);
-		
-		ImageButton refreshButton = (ImageButton)findViewById(R.id.refresh_button);
-		refreshButton.setOnClickListener(refreshClickListener );
-		
-		handleGCMRegister();		
-		NotificationManager mNotificationManager =
-			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+		ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
+		refreshButton.setOnClickListener(refreshClickListener);
+
+		handleGCMRegister();
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(123);
 	}
 
@@ -70,10 +69,10 @@ public class ChoosieActivity extends Activity {
 		GCMRegistrar.unregister(this);
 		final String regId = GCMRegistrar.getRegistrationId(this);
 		if (regId.equals("")) {
-		  GCMRegistrar.register(this, SENDER_ID);
-		  Log.v("GCM", "succeeded registering!!!");
+			GCMRegistrar.register(this, SENDER_ID);
+			Log.v("GCM", "succeeded registering!!!");
 		} else {
-		  Log.v("GCM", "Already registered");
+			Log.v("GCM", "Already registered");
 		}
 	}
 
@@ -162,10 +161,10 @@ public class ChoosieActivity extends Activity {
 
 		return true;
 	}
-	
+
 	private OnClickListener refreshClickListener = new OnClickListener() {
 		public void onClick(View v) {
-			Logger.getInstance().WriteLine("Clicked refresh feed button");
+			Logger.i("Clicked refresh feed button");
 			superController.getControllerForScreen(Screen.FEED).refresh();
 		}
 	};

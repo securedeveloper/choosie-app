@@ -39,7 +39,7 @@ public abstract class ClientBase {
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
 			Callback<Void, Object, Void> progressCallback) {
 		String urlToLoad = pictureUrl;
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"getPictureFromServer: Loading URL: " + urlToLoad);
 		URL url;
 		try {

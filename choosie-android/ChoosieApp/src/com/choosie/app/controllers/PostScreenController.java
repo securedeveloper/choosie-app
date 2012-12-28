@@ -87,7 +87,7 @@ public class PostScreenController extends ScreenController {
 
 					// if so, just show button as checked
 					if (userHasPublishPermissions) {
-						Logger.getInstance().WriteLine(
+						Logger.i(
 								"Already have publish permissions: "
 										+ session.getPermissions().toString());
 						shareOnFacebookTb.setChecked(true);
@@ -131,7 +131,7 @@ public class PostScreenController extends ScreenController {
 						"Exception in reauthorizeForPublish() : "
 								+ ex.toString());
 			}
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"on set active session permissions: "
 							+ session.getPermissions().toString());
 		}
@@ -162,7 +162,7 @@ public class PostScreenController extends ScreenController {
 			List<String> perms = session.getPermissions();
 			userHasPublishPermissions = perms.contains("publish_stream");
 		} else {
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"isUserHasPublishPermissions(): session is not opened!");
 		}
 		return userHasPublishPermissions;
@@ -170,7 +170,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onShow() {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - showing post screen");
 		superController.setCurrentScreen(Screen.POST);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
@@ -183,7 +183,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - hiding post screen");
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
@@ -193,26 +193,26 @@ public class PostScreenController extends ScreenController {
 	private void onItemClick(View arg0) {
 		if (arg0.getId() == R.id.button_submit1) {
 			if (shareOnFacebookTb.isChecked()) {
-				Logger.getInstance().WriteLine("Share on facebook is checked!");
+				Logger.i("Share on facebook is checked!");
 				Session session = Session.getActiveSession();
 				if (session.isOpened()) {
-					Logger.getInstance().WriteLine(
+					Logger.i(
 							"session permissions: "
 									+ session.getPermissions().toString());
 					if (!session.getPermissions().contains("publish_stream")) {
 
-						Logger.getInstance().WriteLine(
+						Logger.i(
 								"requesting publish_stream permissions");
 
 						List<String> write_permissions = new ArrayList<String>();
 						write_permissions.add("publish_stream");
 
-						Logger.getInstance().WriteLine(
+						Logger.i(
 								"Opening new ReauthorizeRequest");
 						ReauthorizeRequest openRequest = new ReauthorizeRequest(
 								getActivity(), write_permissions);
 						try {
-							Logger.getInstance().WriteLine(
+							Logger.i(
 									"Opening new ReauthorizeRequest");
 							session.reauthorizeForPublish(openRequest);
 						} catch (Exception ex) {
@@ -222,7 +222,7 @@ public class PostScreenController extends ScreenController {
 					}
 				}
 			}
-			Logger.getInstance().WriteLine("executing submitChoosiePost()");
+			Logger.i("executing submitChoosiePost()");
 			submitChoosiePost();
 		} else {
 			startDialog(arg0);
@@ -230,7 +230,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void startDialog(final View arg0) {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - enter startdialog");
 		final File tempFile = createImageFile(arg0.getId());
 
@@ -262,13 +262,13 @@ public class PostScreenController extends ScreenController {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
 		if (arg0.getId() == R.id.image_photo1) {
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"PostScreenController - enter TakePhoto - first pic");
 			getActivity().startActivityForResult(intent,
 					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA);
 		}
 		if (arg0.getId() == R.id.image_photo2) {
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"PostScreenController - enter TakePhoto - second pic");
 			intent.putExtra("return-data", true);
 			getActivity().startActivityForResult(intent,
@@ -283,18 +283,14 @@ public class PostScreenController extends ScreenController {
 		intent.setAction(Intent.ACTION_GET_CONTENT);
 
 		if (arg0.getId() == R.id.image_photo1) {
-			Logger.getInstance()
-					.WriteLine(
-							"PostScreenController - enter takeImageFromGallery - first pic");
+			Logger.i("PostScreenController - enter takeImageFromGallery - first pic");
 			getActivity().startActivityForResult(
 					Intent.createChooser(intent, "Select Picture"),
 					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_GALLERY);
 		}
 
 		if (arg0.getId() == R.id.image_photo2) {
-			Logger.getInstance()
-					.WriteLine(
-							"PostScreenController - enter takeImageFromGallery - second pic");
+			Logger.i("PostScreenController - enter takeImageFromGallery - second pic");
 			getActivity().startActivityForResult(
 					Intent.createChooser(intent, "Select Picture"),
 					Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_GALLERY);
@@ -305,7 +301,7 @@ public class PostScreenController extends ScreenController {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - onActivityResult - request code = "
 						+ requestCode + " result code = " + resultCode);
 
@@ -366,7 +362,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private Bitmap setImageFromData(Intent data, ImageView imageView) {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - enter setImageFromData");
 		if (isNeedToSave == true) {
 			galleryAddPic();
@@ -394,7 +390,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void setAndStartCropIntent(int code, Uri uri) {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - enter setAndStartCropIntent");
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
@@ -484,18 +480,18 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private File createImageFile(Integer prefix) {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - enter createImageFile");
 		File dir = getAlbumDir();
 		if (dir.exists() == false) {
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"PostScreenController - createImageFile: the dir is not exist, path = "
 							+ dir.getAbsolutePath());
 			boolean dirCreated = dir.mkdirs();
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"PostScreenController, dirCreated = " + dirCreated);
 		} else {
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"PostScreenController - createImageFile: dir exists, path = "
 							+ dir.getAbsolutePath());
 		}
@@ -516,9 +512,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private File getAlbumDir() {
-		Logger.getInstance()
-				.WriteLine(
-						"PostScreenController - enter getAlbumDir,path = "
+		Logger.i("PostScreenController - enter getAlbumDir,path = "
 								+ Environment
 										.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
 								+ " " + Constants.URIs.APPLICATION_NAME);
@@ -532,7 +526,7 @@ public class PostScreenController extends ScreenController {
 	private void galleryAddPic() {
 		Intent mediaScanIntent = new Intent(
 				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - adding to gallery - "
 						+ mCurrentPhotoPath);
 		File f = new File(mCurrentPhotoPath);
@@ -543,7 +537,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	public void onKeyDown(int keyCode, KeyEvent event) {
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"PostScreenController - switching to feed");
 		superController.switchToScreen(Screen.FEED);
 	}
@@ -570,7 +564,7 @@ public class PostScreenController extends ScreenController {
 	private class SessionStatusCallback implements Session.StatusCallback {
 		public void call(Session session, SessionState state,
 				Exception exception) {
-			Logger.getInstance().WriteLine("Entered SessionStatusCallback()");
+			Logger.i("Entered SessionStatusCallback()");
 		}
 	}
 

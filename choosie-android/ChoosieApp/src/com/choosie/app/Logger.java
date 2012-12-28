@@ -17,7 +17,11 @@ public class Logger {
 		return _logger;
 	}
 
-	public void WriteLine(String msg) {
+	public static void i(String msg) {
 		Log.i(Constants.LOG_TAG, msg);
+	}
+	public static void e(String msg) {
+		// Adding a new Exception prints out the stack trace.
+		Log.e(Constants.LOG_TAG, msg, new Exception());
 	}
 }

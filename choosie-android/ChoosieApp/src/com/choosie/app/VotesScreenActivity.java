@@ -38,7 +38,7 @@ public class VotesScreenActivity extends Activity {
 		setContentView(R.layout.activity_votes_screen);
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
-		Logger.getInstance().WriteLine("in votes screen");
+		Logger.i("in votes screen");
 
 		final Intent intent = getIntent();
 

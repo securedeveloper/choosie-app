@@ -43,7 +43,7 @@ public class StartActivity extends Activity{
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
 
-		Logger.getInstance().WriteLine("Start Application!");
+		Logger.i("Start Application!");
 
 		//Initialize all buttons
 		InitializeComponents();
@@ -67,13 +67,13 @@ public class StartActivity extends Activity{
 			}
 		}
 
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"on start permissions: " + session.getPermissions().toString());
 		updateView();
 	}
 
 	private void InitializeComponents() {
-		Logger.getInstance().WriteLine("InitializeComponents()");
+		Logger.i("InitializeComponents()");
 		
 		// find all buttons
 		buttonLogout = (Button) findViewById(R.id.fbLogoutButton);
@@ -118,12 +118,12 @@ public class StartActivity extends Activity{
 	private void updateView() {
 
 		Session session = Session.getActiveSession();
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"Session: " + session.getState().toString());
 
 		// Show "Logout" and go to application main screen
 		if (session.isOpened()) {
-			Logger.getInstance().WriteLine("Session is opened");
+			Logger.i("Session is opened");
 			
 			goToApplication.setVisibility(View.VISIBLE);
 			//buttonLogout.setVisibility(View.VISIBLE);
@@ -133,7 +133,7 @@ public class StartActivity extends Activity{
 
 			// Show "Login" and let user to login
 		} else {
-			Logger.getInstance().WriteLine("Session is closed");
+			Logger.i("Session is closed");
 			
 			goToApplication.setVisibility(View.INVISIBLE);
 			//buttonLogout.setVisibility(View.INVISIBLE);
@@ -143,19 +143,19 @@ public class StartActivity extends Activity{
 
 	private void goToApplication() {
 
-		Logger.getInstance().WriteLine("goToApplication()");
+		Logger.i("goToApplication()");
 
 		// make request to the /me API
 		Request request = Request.newMeRequest(Session.getActiveSession(),
 				new Request.GraphUserCallback() {
 
 					public void onCompleted(GraphUser user, Response response) {
-						Logger.getInstance().WriteLine("onCompleted");
+						Logger.i("onCompleted");
 						if (user != null) {
 							TextView welcome = (TextView) findViewById(R.id.welcome);
 							welcome.setText("Hello " + user.getName() + "!");
 
-							Logger.getInstance().WriteLine(
+							Logger.i(
 									"creating intent for ChoosieActivity");
 							Intent intent = new Intent(StartActivity.this,
 									ChoosieActivity.class);
@@ -166,7 +166,7 @@ public class StartActivity extends Activity{
 									.getTime());
 							intent.putExtra("fb_details", details);
 
-							Logger.getInstance().WriteLine(
+							Logger.i(
 									"Starting ChoosieActivity");
 							startActivityForResult(intent, Constants.RequestCodes.START_ACTIVITY);
 						}
@@ -184,7 +184,7 @@ public class StartActivity extends Activity{
 			List<String> read_permission = new ArrayList<String>();
 			read_permission.add("read_stream");
 			read_permission.add("read_friendlists");
-			Logger.getInstance().WriteLine("Permission: " + read_permission);
+			Logger.i("Permission: " + read_permission);
 
 			// Create the request for login
 			OpenRequest req = new Session.OpenRequest(this);
@@ -193,7 +193,7 @@ public class StartActivity extends Activity{
 
 			// Show login to Facebook screen
 			session.openForRead(req);
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"session.getPermission(): "
 							+ session.getPermissions().toString());
 		} else {
@@ -214,15 +214,15 @@ public class StartActivity extends Activity{
 
 			// If session was opened - go to application main screen
 			if (state == SessionState.OPENED) {
-				Logger.getInstance().WriteLine(
+				Logger.i(
 						"CallBack: SessionState = " + state.toString());
-				Logger.getInstance().WriteLine("Starting ChoosieActivity");
+				Logger.i("Starting ChoosieActivity");
 
 				goToApplication();
 
 				// Else - show login screen
 			} else {
-				Logger.getInstance().WriteLine(
+				Logger.i(
 						"CallBack: SessionState = " + state.toString());
 				updateView();
 			}

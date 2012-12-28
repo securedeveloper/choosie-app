@@ -52,7 +52,7 @@ public class MockClient extends ClientBase {
 			cursor = "";
 		}
 
-		Logger.getInstance().WriteLine("Got feed request. Cursor = " + cursor);
+		Logger.i("Got feed request. Cursor = " + cursor);
 
 		List<ChoosiePostData> mockPosts = new ArrayList<ChoosiePostData>();
 

@@ -80,7 +80,7 @@ public class RealClient extends ClientBase {
 			feedUri += "&cursor=" + feedRequest.getCursor();
 		}
 
-		Logger.getInstance().WriteLine("Getting feed from URI: " + feedUri);
+		Logger.i("Getting feed from URI: " + feedUri);
 		final HttpClient client = new DefaultHttpClient();
 		final HttpGet request = new HttpGet(feedUri);
 		HttpResponse response;
@@ -118,7 +118,7 @@ public class RealClient extends ClientBase {
 			return null;
 		}
 
-		Logger.getInstance().WriteLine(
+		Logger.i(
 				"Feed converted to posts, and got cursor.");
 		choosiePostsFromFeed.setAppend(feedRequest.isAppend());
 		return choosiePostsFromFeed;
@@ -130,7 +130,7 @@ public class RealClient extends ClientBase {
 		// Creates the GET HTTP request
 		String postUri = Constants.URIs.POSTS_URI + "/" + postKey;
 
-		Logger.getInstance().WriteLine("Getting post from URI: " + postUri);
+		Logger.i("Getting post from URI: " + postUri);
 
 		// enable on server hebrew sync
 		HttpParams params = new BasicHttpParams();
@@ -176,7 +176,7 @@ public class RealClient extends ClientBase {
 			return null;
 		}
 
-		Logger.getInstance().WriteLine("Response converted to post.");
+		Logger.i("Response converted to post.");
 		return choosiePostFromResponse;
 	}
 
@@ -289,16 +289,16 @@ public class RealClient extends ClientBase {
 			multipartContent.addPart("fb_access_token_expdate", new StringBody(
 					String.valueOf(this.fbDetails.getAccess_token_expdate())));
 
-			Logger.getInstance().WriteLine("share_to_fb = on");
-			Logger.getInstance().WriteLine(
+			Logger.i("share_to_fb = on");
+			Logger.i(
 					"fb_access_token = " + this.fbDetails.getAccess_token());
-			Logger.getInstance().WriteLine(
+			Logger.i(
 					"fb_access_token_expdate = "
 							+ String.valueOf(this.fbDetails
 									.getAccess_token_expdate()));
 		}
 
-		Logger.getInstance().WriteLine("finished building multipart content");
+		Logger.i("finished building multipart content");
 
 		return multipartContent;
 	}
@@ -328,7 +328,7 @@ public class RealClient extends ClientBase {
 							});
 					totalSize = multipartContent.getContentLength();
 					httpPost.setEntity(multipartContent);
-					Logger.getInstance().WriteLine(
+					Logger.i(
 							"doInBackground(): Executing HTTP Request!");
 					return httpClient.execute(httpPost);
 				} catch (ClientProtocolException e) {

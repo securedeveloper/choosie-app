@@ -68,7 +68,7 @@ public class CommentScreen extends Activity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Logger.getInstance().WriteLine("in comment screen");
+		Logger.i("in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);

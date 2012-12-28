@@ -31,7 +31,7 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onCreate() {
-		Logger.getInstance().WriteLine("Feed.onShow()");
+		Logger.i("Feed.onShow()");
 		// Create a progress bar to display while the list loads
 		TextView textView = new TextView(this.getActivity());
 		textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,

@@ -86,8 +86,7 @@ public class SuperController {
 	}
 
 	public void voteFor(final ChoosiePostData post, int whichPhoto) {
-		Logger.getInstance()
-				.WriteLine("Issuing vote for: " + post.getPostKey());
+		Logger.i("Issuing vote for: " + post.getPostKey());
 		this.client.sendVoteToServer(post, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 
@@ -122,7 +121,7 @@ public class SuperController {
 	}
 
 	public void CommentFor(final String post_key, String text) {
-		Logger.getInstance().WriteLine("commenting vote for: " + post_key);
+		Logger.i("commenting vote for: " + post_key);
 		this.client.sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
 
