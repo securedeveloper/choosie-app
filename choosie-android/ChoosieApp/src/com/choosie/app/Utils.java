@@ -114,27 +114,45 @@ public class Utils {
 		return f.exists();
 	}
 
-	public static Bitmap getBitmapFromURL(String param) {
-
-		// **this function is for showing the images in the feed, so we will
-		// bring smaller version**//
-
+	@SuppressLint("NewApi") public static Bitmap getBitmapFromURL(String param) {
+		
 		String fullPath = getFileNameForURL(param);
+		
+		Bitmap toRet = BitmapFactory.decodeFile(fullPath);
+		
+		if (toRet.getWidth() > screenWidth / 2){
+			
+			Bitmap toRet2 = Bitmap.createScaledBitmap(toRet, screenWidth / 2, screenWidth / 2, false);
+			
+			toRet.recycle();
+			toRet = null;
+//			Log.i("mem", "insert toRet2 WR" + toRet2.getRowBytes() + " H - " + toRet2.getHeight() + " BC: " +toRet2.getByteCount());
+			return toRet2;
+		}
+//		Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " + toRet.getHeight() + " BC: " +toRet.getByteCount());
+		return toRet;
+		
+		
 
-		// First decode with inJustDecodeBounds=true to check dimensions
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(fullPath, options);
-
-		// Calculate inSampleSize
-		options.inSampleSize = calculateInSampleSize(options, screenWidth / 2,
-				screenWidth / 2);
-
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeFile(fullPath, options);
-
-		// return BitmapFactory.decodeFile(getFileNameForURL(param));
+//		// **this function is for showing the images in the feed, so we will
+//		// bring smaller version**//
+//
+//		String fullPath = getFileNameForURL(param);
+//
+//		// First decode with inJustDecodeBounds=true to check dimensions
+//		final BitmapFactory.Options options = new BitmapFactory.Options();
+//		options.inJustDecodeBounds = true;
+//		BitmapFactory.decodeFile(fullPath, options);
+//
+//		// Calculate inSampleSize
+//		options.inSampleSize = calculateInSampleSize(options, screenWidth / 2,
+//				screenWidth / 2);
+//
+//		// Decode bitmap with inSampleSize set
+//		options.inJustDecodeBounds = false;
+//		return BitmapFactory.decodeFile(fullPath, options);
+//
+//		// return BitmapFactory.decodeFile(getFileNameForURL(param));
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
