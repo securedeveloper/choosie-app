@@ -1,22 +1,16 @@
 package com.choosie.app;
 
-import com.choosie.app.controllers.FeedScreenController;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.Session;
-import com.google.android.gcm.GCMRegistrar;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,7 +19,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class ChoosieActivity extends Activity {
 
@@ -66,17 +59,12 @@ public class ChoosieActivity extends Activity {
 				.getParcelableExtra("notification");
 
 		superController = SuperController.getInstance(this, fbDetails);
-
+		
 		if (notification != null) {
 			handleNotification(notification);
 		}
-
+		
 		Utils.setScreenWidth(this);
-
-		// handleGCMRegister();
-		// NotificationManager mNotificationManager =
-		// (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		// mNotificationManager.cancel(123);
 	}
 
 	private void handleNotification(PushNotification notification) {
@@ -102,7 +90,7 @@ public class ChoosieActivity extends Activity {
 		}
 		
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancel(Constants.Notification.NOTIFICATION_ID);
+		mNotificationManager.cancel(Constants.Notifications.NOTIFICATION_ID);
 	}
 
 	private void handleRegisterNotification(PushNotification notification) {

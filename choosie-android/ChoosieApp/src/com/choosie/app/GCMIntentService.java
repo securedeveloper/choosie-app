@@ -38,7 +38,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.notification_icon)
-				.setContentTitle(Constants.Notification.CONTENT_TITLE)
+				.setContentTitle(Constants.Notifications.CONTENT_TITLE)
 				.setContentText(notification.getText());
 
 		// Creates an explicit intent for an Activity in your app
@@ -63,7 +63,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Notification notif = mBuilder.build();
 		notif.defaults |= Notification.DEFAULT_SOUND;
 		// mId allows you to update the notification later on.
-		mNotificationManager.notify(Constants.Notification.NOTIFICATION_ID, notif);
+		mNotificationManager.notify(Constants.Notifications.NOTIFICATION_ID, notif);
 	}
 
 

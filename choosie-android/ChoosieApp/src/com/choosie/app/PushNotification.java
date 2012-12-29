@@ -1,5 +1,6 @@
 package com.choosie.app;
 
+import com.choosie.app.Constants.Notifications;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -13,21 +14,21 @@ public class PushNotification implements Parcelable {
 	public PushNotification(String notificationType, String text,
 			String postKey, String deviceId) {
 		this.notificationType = notificationType;
-		this.text = CreateTextForNotification(notificationType, text);
+		this.text = createTextForNotification(notificationType, text);
 		this.postKey = postKey;
 		this.deviceId = deviceId;
 	}
 
-	private String CreateTextForNotification(String notificationType,
+	private String createTextForNotification(String notificationType,
 			String text) {
 		int type = Integer.valueOf(notificationType);
-		
+
 		switch (type) {
-		case 1:
+		case Notifications.NEW_POST_NOTIFICATION_TYPE:
 			return text + " needs your help!";
-		case 2:
+		case Notifications.NEW_COMMENT_NOTIFICATION_TYPE:
 			return text + " commented on your Choozie!";
-		case 3:
+		case Notifications.NEW_VOTE_NOTIFICATION_TYPE:
 			return text + " voted on your Choozie!";
 		default:
 			return text;
@@ -90,7 +91,6 @@ public class PushNotification implements Parcelable {
 	}
 
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -111,4 +111,17 @@ public class PushNotification implements Parcelable {
 			return new PushNotification[size];
 		}
 	};
+
+	@Override
+	public String toString() {
+		String str = "Push Notification:\n";
+
+		str += "type = " + this.notificationType + "\n";
+		str += "text = " + this.text + "\n";
+		str += "post key = " + this.postKey + "\n";
+		str += "device id = " + this.deviceId + "\n";
+
+		return str;
+
+	}
 }

@@ -1,9 +1,6 @@
 package com.choosie.app;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Environment;
 
 public class Constants {
@@ -11,9 +8,10 @@ public class Constants {
 
 	public static class URIs {
 
-		public static final String ROOT_URL = "http://choosieapp.appspot.com";
-//		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
-		
+		// public static final String ROOT_URL =
+		// "http://choosieapp.appspot.com";
+		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
+
 		public static final String REGISTER = ROOT_URL + "/register";
 		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
 		public static final String FEED_URI = ROOT_URL + "/feed";
@@ -67,16 +65,17 @@ public class Constants {
 		public static final String isAlreadyVoted = "isAlreadyVoted";
 		public static final String intentData = "intentData";
 	}
-	
-	public static class Notification {
 
-		public enum NotificationType {
-			NEW_POST, COMMENT, VOTE, REGISTER;
-		}
-		
+	public static class Notifications {
+
 		public static final String CONTENT_TITLE = "Choozie Notification";
-		public static final int NOTIFICATION_ID = 1611; 
+		public static final String SENDER_ID = "101212394485";
+		public static final int NOTIFICATION_ID = 1611;
+
+		public static final int NEW_POST_NOTIFICATION_TYPE = 1;
+		public static final int NEW_COMMENT_NOTIFICATION_TYPE = 2;
+		public static final int NEW_VOTE_NOTIFICATION_TYPE = 3;
+		public static final int REGISTER_NOTIFICATION_TYPE = 4;
 	}
-	
-	
+
 }

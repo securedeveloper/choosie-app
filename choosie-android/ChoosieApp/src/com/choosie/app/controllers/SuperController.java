@@ -10,10 +10,8 @@ import com.choosie.app.Callback;
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
-import com.choosie.app.PushNotification;
 import com.choosie.app.IntentData;
 import com.choosie.app.Logger;
-
 import com.choosie.app.EnlargePhotoActivity;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
@@ -39,7 +37,7 @@ public class SuperController {
 	private ClientBase client;
 	private final Caches caches = new Caches(this);
 	Map<Screen, ScreenController> screenToController;
-	private final String SENDER_ID = "101212394485";
+	private final String SENDER_ID = Constants.Notifications.SENDER_ID;
 
 	private static SuperController instance = null;
 
@@ -315,12 +313,14 @@ public class SuperController {
 	private void handleGCMRegister() {
 		GCMRegistrar.checkDevice(getActivity());
 		GCMRegistrar.checkManifest(getActivity());
-		GCMRegistrar.unregister(getActivity());
-		final String regId = GCMRegistrar.getRegistrationId(getActivity());
+		// GCMRegistrar.unregister(getActivity());
+		String regId = GCMRegistrar.getRegistrationId(getActivity());
 		if (regId.equals("")) {
+			Logger.i("Registering with sender_id: " + SENDER_ID);
 			GCMRegistrar.register(getActivity(), SENDER_ID);
 			Logger.i("succeeded registering!!!");
 		} else {
+			GCMRegistrar.setRegisteredOnServer(getActivity(), true);
 			Logger.i("Already registered");
 		}
 	}

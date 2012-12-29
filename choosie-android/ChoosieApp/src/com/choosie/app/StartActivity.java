@@ -39,14 +39,14 @@ public class StartActivity extends Activity {
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
 		setContentView(R.layout.activity_start);
-		
+
 		Intent intent = getIntent();
 		if (intent.getExtras() != null) {
 			notification = intent.getParcelableExtra("notification");
 		} else {
 			notification = null;
 		}
-		
+
 		TextView welcome = (TextView) findViewById(R.id.welcome);
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
@@ -65,7 +65,7 @@ public class StartActivity extends Activity {
 		if (session == null) {
 			if (savedInstanceState != null) {
 				session = Session.restoreSession(this, null, statusCallback,
-						savedInstanceState);  
+						savedInstanceState);
 			}
 			if (session == null) {
 				session = new Session(this);
@@ -150,7 +150,7 @@ public class StartActivity extends Activity {
 			buttonLogin.setVisibility(View.VISIBLE);
 		}
 	}
-	
+
 	private void goToApplication() {
 
 		Logger.i("goToApplication()");
@@ -174,11 +174,15 @@ public class StartActivity extends Activity {
 									.getActiveSession().getExpirationDate()
 									.getTime());
 							intent.putExtra("fb_details", details);
-							
+
 							if (notification != null) {
 								intent.putExtra("notification", notification);
+								Logger.i("Adding Push Notification to intent for ChoosieActivity "
+										+ notification.toString());
+							} else {
+								Logger.i("No Push Notification has been added to ChoosieActivity intent");
 							}
-
+							
 							Logger.i("Starting ChoosieActivity");
 							startActivityForResult(intent,
 									Constants.RequestCodes.START_ACTIVITY);
