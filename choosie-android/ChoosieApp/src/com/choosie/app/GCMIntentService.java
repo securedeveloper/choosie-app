@@ -18,24 +18,24 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onMessage(Context arg0, Intent arg1) {
 		Log.d("GCM", "message " + String.valueOf(arg1));
-		
-		/* Handle Push Notification
-		/* 1 = New Post
-		/* 2 = New Comment
-		/* 3 = New Vote */
+
+		/*
+		 * Handle Push Notification /* 1 = New Post /* 2 = New Comment /* 3 =
+		 * New Vote
+		 */
 		String notificationType = arg1.getStringExtra("type");
 		String text = arg1.getStringExtra("text");
 		String postKey = arg1.getStringExtra("post_key");
 		String deviceId = arg1.getStringExtra("device_id");
-		
-		PushNotification notification = new PushNotification(
-				notificationType, text, postKey, deviceId);
+
+		PushNotification notification = new PushNotification(notificationType,
+				text, postKey, deviceId);
 		NotifyStartActivity(notification);
 	}
 
 	private void NotifyStartActivity(PushNotification notification) {
 		Logger.i("NotifyStartActivity()");
-		
+
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.notification_icon)
 				.setContentTitle(Constants.Notifications.CONTENT_TITLE)
@@ -44,7 +44,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, StartActivity.class);
 		resultIntent.putExtra("notification", notification);
-		
+
 		// The stack builder object will contain an artificial back stack for
 		// the started Activity.
 		// This ensures that navigating backward from the Activity leads out of
@@ -63,14 +63,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Notification notif = mBuilder.build();
 		notif.defaults |= Notification.DEFAULT_SOUND;
 		// mId allows you to update the notification later on.
-		mNotificationManager.notify(Constants.Notifications.NOTIFICATION_ID, notif);
+		mNotificationManager.notify(Constants.Notifications.NOTIFICATION_ID,
+				notif);
 	}
-
 
 	@Override
 	protected void onRegistered(Context arg0, String arg1) {
 		Log.d("GCM", "registerd " + arg1);
-		
+
 		SuperController.getInstance(null, null).getClient().registerGCM(arg1);
 	}
 

@@ -1,5 +1,6 @@
 package com.choosie.app;
 
+import com.choosie.app.Constants.Notifications;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.FacebookDetails;
@@ -59,36 +60,35 @@ public class ChoosieActivity extends Activity {
 				.getParcelableExtra("notification");
 
 		superController = SuperController.getInstance(this, fbDetails);
-		
+
 		if (notification != null) {
 			handleNotification(notification);
 		}
-		
+
 		Utils.setScreenWidth(this);
 	}
 
 	private void handleNotification(PushNotification notification) {
 		Logger.i("Start HandleNotification()");
 
-		// TODO: change this var from INT to NotificationType enum in Constants
 		int notificationType = Integer.parseInt(notification
 				.getNotificationType());
 
 		switch (notificationType) {
-		case 1:
+		case Notifications.NEW_POST_NOTIFICATION_TYPE:
 			handleNewPostNotification(notification);
 			break;
-		case 2:
+		case Notifications.NEW_COMMENT_NOTIFICATION_TYPE:
 			handleCommentNotification(notification);
 			break;
-		case 3:
+		case Notifications.NEW_VOTE_NOTIFICATION_TYPE:
 			handleVoteNotification(notification);
 			break;
-		case 4:
+		case Notifications.REGISTER_NOTIFICATION_TYPE:
 			handleRegisterNotification(notification);
 			break;
 		}
-		
+
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(Constants.Notifications.NOTIFICATION_ID);
 	}
@@ -104,7 +104,7 @@ public class ChoosieActivity extends Activity {
 		Logger.i("HandleNewPostNotification()");
 
 		// TODO Switch to the Post's screen
-		
+
 		// No need to do anything since it already goes by default
 		// to Feed Screen and show latest post.
 	}
