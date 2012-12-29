@@ -12,7 +12,7 @@ public class Vote {
 		this.user = user;
 		this.createdAtUTC = createdAtUTC;
 		this.vote_for = vote_for;
-		this.isNeedToSave = false;
+		this.isNeedToSave = true;
 	}
 
 	public int getVote_for() {
@@ -31,7 +31,7 @@ public class Vote {
 		return isNeedToSave;
 	}
 	
-	public void setsNeedToSave() {
+	public void setsNeedToSave() {  
 		isNeedToSave = false;
 	}
 }
