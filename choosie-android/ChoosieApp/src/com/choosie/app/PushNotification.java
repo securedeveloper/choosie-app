@@ -124,4 +124,19 @@ public class PushNotification implements Parcelable {
 		return str;
 
 	}
+
+	public String getContentTitle() {
+		int type = Integer.valueOf(notificationType);
+
+		switch (type) {
+		case Notifications.NEW_POST_NOTIFICATION_TYPE:
+			return Notifications.NEW_POST_CONTENT_TITLE;
+		case Notifications.NEW_COMMENT_NOTIFICATION_TYPE:
+			return Notifications.NEW_COMMENT_CONTENT_TITLE;
+		case Notifications.NEW_VOTE_NOTIFICATION_TYPE:
+			return Notifications.NEW_VOTE_CONTENT_TITLE;
+		default:
+			return Notifications.DEFAULT_CONTENT_TITLE;
+		}
+	}
 }

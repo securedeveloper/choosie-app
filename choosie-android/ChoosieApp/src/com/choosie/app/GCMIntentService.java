@@ -36,9 +36,11 @@ public class GCMIntentService extends GCMBaseIntentService {
 	private void NotifyStartActivity(PushNotification notification) {
 		Logger.i("NotifyStartActivity()");
 
+		String contentTitle = notification.getContentTitle();
+
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.notification_icon)
-				.setContentTitle(Constants.Notifications.CONTENT_TITLE)
+				.setContentTitle(contentTitle)
 				.setContentText(notification.getText());
 
 		// Creates an explicit intent for an Activity in your app

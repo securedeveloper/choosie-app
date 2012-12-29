@@ -8,9 +8,9 @@ public class Constants {
 
 	public static class URIs {
 
-		 public static final String ROOT_URL =
-		 "http://choosieapp.appspot.com";
-		//public static final String ROOT_URL = "http://choosie-dev.appspot.com";
+		public static final String ROOT_URL = "http://choosieapp.appspot.com";
+		// public static final String ROOT_URL =
+		// "http://choosie-dev.appspot.com";
 
 		public static final String REGISTER = ROOT_URL + "/register";
 		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
@@ -68,14 +68,19 @@ public class Constants {
 
 	public static class Notifications {
 
-		public static final String CONTENT_TITLE = "Choozie Notification";
 		public static final String SENDER_ID = "101212394485";
 		public static final int NOTIFICATION_ID = 1611;
+
+		public static final String NEW_POST_CONTENT_TITLE = "New Choozie";
+		public static final String NEW_COMMENT_CONTENT_TITLE = "New Comment";
+		public static final String NEW_VOTE_CONTENT_TITLE = "New Vote";
+		public static final String DEFAULT_CONTENT_TITLE = "Choozie";
 
 		public static final int NEW_POST_NOTIFICATION_TYPE = 1;
 		public static final int NEW_COMMENT_NOTIFICATION_TYPE = 2;
 		public static final int NEW_VOTE_NOTIFICATION_TYPE = 3;
 		public static final int REGISTER_NOTIFICATION_TYPE = 4;
+
 	}
 
 }
