@@ -1,6 +1,8 @@
 package com.choosie.app;
 
+import com.choosie.app.controllers.FeedScreenController;
 import com.choosie.app.controllers.SuperController;
+import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.Session;
 import com.google.android.gcm.GCMRegistrar;
@@ -8,9 +10,13 @@ import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -19,9 +25,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-public class ChoosieActivity extends Activity {  
-	private final String SENDER_ID = "101212394485";
+public class ChoosieActivity extends Activity {
+
 	SuperController superController;
 
 	@Override
@@ -47,37 +54,117 @@ public class ChoosieActivity extends Activity {
 		RelativeLayout layoutMe = (RelativeLayout) findViewById(R.id.layout_me);
 		layoutMe.addView(layoutInflater.inflate(R.layout.screen_me, null));
 
-		FacebookDetails fbDetails = (FacebookDetails) getIntent()
-				.getSerializableExtra("fb_details");
-
-//		SuperController.setNull();
-//		superController = new SuperController(this, fbDetails);
-		superController = SuperController.getInstance(this, fbDetails);
-		
-		Utils.setScreenWidth(this);
-		
-		//temporary until superController will be a single instance
-		GCMIntentService.setSuperController(superController);
-
 		ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
 		refreshButton.setOnClickListener(refreshClickListener);
 
-		handleGCMRegister();
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancel(123);
+		Intent intent = getIntent();
+
+		FacebookDetails fbDetails = (FacebookDetails) intent
+				.getSerializableExtra("fb_details");
+
+		PushNotification notification = (PushNotification) intent
+				.getParcelableExtra("notification");
+
+		superController = SuperController.getInstance(this, fbDetails);
+
+		if (notification != null) {
+			handleNotification(notification);
+		}
+
+		Utils.setScreenWidth(this);
+
+		// handleGCMRegister();
+		// NotificationManager mNotificationManager =
+		// (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mNotificationManager.cancel(123);
 	}
 
-	private void handleGCMRegister() {
-		GCMRegistrar.checkDevice(this);
-		GCMRegistrar.checkManifest(this);
-		GCMRegistrar.unregister(this);
-		final String regId = GCMRegistrar.getRegistrationId(this);
-		if (regId.equals("")) {
-			GCMRegistrar.register(this, SENDER_ID);
-			Log.v("GCM", "succeeded registering!!!");
-		} else {
-			Log.v("GCM", "Already registered");
+	private void handleNotification(PushNotification notification) {
+		Logger.i("Start HandleNotification()");
+
+		// TODO: change this var from INT to NotificationType enum in Constants
+		int notificationType = Integer.parseInt(notification
+				.getNotificationType());
+
+		switch (notificationType) {
+		case 1:
+			handleNewPostNotification(notification);
+			break;
+		case 2:
+			handleCommentNotification(notification);
+			break;
+		case 3:
+			handleVoteNotification(notification);
+			break;
+		case 4:
+			handleRegisterNotification(notification);
+			break;
 		}
+		
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(Constants.Notification.NOTIFICATION_ID);
+	}
+
+	private void handleRegisterNotification(PushNotification notification) {
+		// TODO Auto-generated method stub
+		Logger.i("handleRegisterNotification()");
+		superController.getClient().registerGCM(notification.getDeviceId());
+	}
+
+	private void handleNewPostNotification(PushNotification notification) {
+		// TODO Auto-generated method stub
+		Logger.i("HandleNewPostNotification()");
+
+		// TODO Switch to the Post's screen
+		
+		// No need to do anything since it already goes by default
+		// to Feed Screen and show latest post.
+	}
+
+	private void handleCommentNotification(PushNotification notification) {
+		Logger.i("HandleCommentNotification()");
+
+		superController
+				.getCaches()
+				.getPostsCache()
+				.getValue(notification.getPostKey(),
+						new Callback<Void, Object, ChoosiePostData>() {
+							@Override
+							public void onFinish(ChoosiePostData param) {
+								if (param == null) {
+									Logger.e("ERROR : param is 'null'");
+									// TODO: Handle error
+									// Toast.makeText(getActivity(),
+									// "Failed to update post.",
+									// Toast.LENGTH_SHORT).show();
+									return;
+								}
+								superController.switchToCommentScreen(param);
+							}
+						});
+	}
+
+	private void handleVoteNotification(PushNotification notification) {
+		Logger.i("HandleVoteNotification()");
+
+		superController
+				.getCaches()
+				.getPostsCache()
+				.getValue(notification.getPostKey(),
+						new Callback<Void, Object, ChoosiePostData>() {
+							@Override
+							public void onFinish(ChoosiePostData param) {
+								if (param == null) {
+									Logger.e("ERROR : param is 'null'");
+									// TODO: Handle error
+									// Toast.makeText(getActivity(),
+									// "Failed to update post.",
+									// Toast.LENGTH_SHORT).show();
+									return;
+								}
+								superController.switchToVotesScreen(param);
+							}
+						});
 	}
 
 	@Override
@@ -172,7 +259,7 @@ public class ChoosieActivity extends Activity {
 			superController.getControllerForScreen(Screen.FEED).refresh();
 		}
 	};
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

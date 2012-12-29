@@ -10,6 +10,7 @@ import com.choosie.app.Callback;
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
+import com.choosie.app.PushNotification;
 import com.choosie.app.IntentData;
 import com.choosie.app.Logger;
 
@@ -24,6 +25,7 @@ import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Comment;
 import com.choosie.app.Models.FacebookDetails;
 import com.choosie.app.Models.Vote;
+import com.google.android.gcm.GCMRegistrar;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -37,25 +39,28 @@ public class SuperController {
 	private ClientBase client;
 	private final Caches caches = new Caches(this);
 	Map<Screen, ScreenController> screenToController;
-	
-	private static SuperController instance = null; 
-	
-	private SuperController(Activity activity, FacebookDetails fbDetails){
+	private final String SENDER_ID = "101212394485";
+
+	private static SuperController instance = null;
+
+	private SuperController(Activity activity, FacebookDetails fbDetails) {
 		initializeSuperController(activity, fbDetails);
 	}
-	
-	 public static SuperController getInstance(Activity activity, FacebookDetails fbDetails) {
-         if (instance == null) {
-                 synchronized (SuperController .class){
-                         if (instance == null) {
-                                 instance = new SuperController(activity, fbDetails);
-                         }
-               }
-         }
-         return instance;
- }
 
-	private void initializeSuperController(Activity activity, FacebookDetails fbDetails) {
+	public static SuperController getInstance(Activity activity,
+			FacebookDetails fbDetails) {
+		if (instance == null) {
+			synchronized (SuperController.class) {
+				if (instance == null) {
+					instance = new SuperController(activity, fbDetails);
+				}
+			}
+		}
+		return instance;
+	}
+
+	private void initializeSuperController(Activity activity,
+			FacebookDetails fbDetails) {
 		this.activity = activity;
 		client = new RealClient(fbDetails);
 
@@ -86,6 +91,8 @@ public class SuperController {
 			public void onFinish(Void param) {
 			}
 		});
+
+		handleGCMRegister();
 
 		setCurrentScreen(Screen.FEED);
 	}
@@ -305,7 +312,21 @@ public class SuperController {
 				Constants.RequestCodes.EnalargeImage);
 	}
 
-	public static void setNull() {
-		instance = null;		
+	private void handleGCMRegister() {
+		GCMRegistrar.checkDevice(getActivity());
+		GCMRegistrar.checkManifest(getActivity());
+		GCMRegistrar.unregister(getActivity());
+		final String regId = GCMRegistrar.getRegistrationId(getActivity());
+		if (regId.equals("")) {
+			GCMRegistrar.register(getActivity(), SENDER_ID);
+			Logger.i("succeeded registering!!!");
+		} else {
+			Logger.i("Already registered");
+		}
 	}
+
+	public static void setNull() {
+		instance = null;
+	}
+
 }

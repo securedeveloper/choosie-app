@@ -67,4 +67,16 @@ public class Constants {
 		public static final String isAlreadyVoted = "isAlreadyVoted";
 		public static final String intentData = "intentData";
 	}
+	
+	public static class Notification {
+
+		public enum NotificationType {
+			NEW_POST, COMMENT, VOTE, REGISTER;
+		}
+		
+		public static final String CONTENT_TITLE = "Choozie Notification";
+		public static final int NOTIFICATION_ID = 1611; 
+	}
+	
+	
 }

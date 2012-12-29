@@ -9,7 +9,6 @@ import com.facebook.LoggingBehaviors;
 import com.facebook.Request;
 import com.facebook.Session;
 import com.facebook.Session.OpenRequest;
-import com.facebook.android.FbDialog;
 import com.facebook.SessionState;
 import com.facebook.Response;
 import com.facebook.Settings;
@@ -31,6 +30,7 @@ public class StartActivity extends Activity {
 	ImageButton goToApplication;
 	ImageButton buttonLogin;
 	Session.StatusCallback statusCallback = new SessionStatusCallback();
+	PushNotification notification;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,14 @@ public class StartActivity extends Activity {
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
 		setContentView(R.layout.activity_start);
-
+		
+		Intent intent = getIntent();
+		if (intent.getExtras() != null) {
+			notification = intent.getParcelableExtra("notification");
+		} else {
+			notification = null;
+		}
+		
 		TextView welcome = (TextView) findViewById(R.id.welcome);
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
@@ -143,7 +150,7 @@ public class StartActivity extends Activity {
 			buttonLogin.setVisibility(View.VISIBLE);
 		}
 	}
-
+	
 	private void goToApplication() {
 
 		Logger.i("goToApplication()");
@@ -167,6 +174,10 @@ public class StartActivity extends Activity {
 									.getActiveSession().getExpirationDate()
 									.getTime());
 							intent.putExtra("fb_details", details);
+							
+							if (notification != null) {
+								intent.putExtra("notification", notification);
+							}
 
 							Logger.i("Starting ChoosieActivity");
 							startActivityForResult(intent,
