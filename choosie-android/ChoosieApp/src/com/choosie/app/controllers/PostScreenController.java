@@ -24,7 +24,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils.TruncateAt;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -44,8 +43,6 @@ import android.widget.ToggleButton;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
-import com.facebook.Session.AuthorizationRequest;
-import com.facebook.Session.OpenRequest;
 import com.facebook.Session.ReauthorizeRequest;
 
 public class PostScreenController extends ScreenController {

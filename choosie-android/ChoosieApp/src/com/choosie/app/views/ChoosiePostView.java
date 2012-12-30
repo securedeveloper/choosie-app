@@ -31,16 +31,17 @@ public class ChoosiePostView extends RelativeLayout {
 	private SuperController superController;
 	private FeedViewHolder feedViewHolder;
 
-	public ChoosiePostView(Context context, SuperController superController) {
+	public ChoosiePostView(Context context, SuperController superController,
+			int position) {
 		super(context);
-		inflateLayout();
+		inflateLayout(position);
 		this.superController = superController;
 		initializeHolder();
 	}
 
 	private void initializeHolder() {
 		feedViewHolder = new FeedViewHolder();
-		
+
 		feedViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		feedViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
 		feedViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
@@ -54,10 +55,10 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected1 = (ImageView) findViewById(R.id.feed_imageSelect1);
 		feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
 		feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
-		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);		
+		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
 	}
 
-	private void inflateLayout() {
+	private void inflateLayout(final int position) {
 		LayoutInflater inflater = (LayoutInflater) this.getContext()
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inflater.inflate(R.layout.view_choosie_post, this);
@@ -69,12 +70,13 @@ public class ChoosiePostView extends RelativeLayout {
 					}
 				});
 
-		this.findViewById(R.id.votes1).setOnClickListener(
-				new OnClickListener() {
-					public void onClick(View arg0) {
-						superController.switchToVotesScreen(choosiePost);
-					}
-				});
+		// this.findViewById(R.id.votes1).setOnClickListener(
+		// new OnClickListener() {
+		// public void onClick(View arg0) {
+		// listView.smoothScrollToPosition(position);
+		// popUpVotesWindow(choosiePost);
+		// }
+		// });
 
 		this.findViewById(R.id.votes2).setOnClickListener(
 				new OnClickListener() {
@@ -84,9 +86,9 @@ public class ChoosiePostView extends RelativeLayout {
 				});
 	}
 
-	public void loadChoosiePost(final ChoosiePostData post) {
+	public void loadChoosiePost(final ChoosiePostData post, final int position) {
 		this.choosiePost = post;
-		 
+
 		feedViewHolder.feedtext.setText(post.getQuestion());
 		feedViewHolder.feed_name.setText(post.getAuthor().getUserName());
 		feedViewHolder.time_text.setText(Utils
@@ -100,19 +102,11 @@ public class ChoosiePostView extends RelativeLayout {
 
 		// set the size of the image view to bew a square sized half of the
 		// screen width
-		feedViewHolder.imgView1.getLayoutParams().height = (superController
-				.getActivity().getWindowManager().getDefaultDisplay()
-				.getWidth()) / 2;
-		feedViewHolder.imgView1.getLayoutParams().width = (superController
-				.getActivity().getWindowManager().getDefaultDisplay()
-				.getWidth()) / 2;
-
-		feedViewHolder.imgView2.getLayoutParams().height = (superController
-				.getActivity().getWindowManager().getDefaultDisplay()
-				.getWidth()) / 2;
-		feedViewHolder.imgView2.getLayoutParams().width = (superController
-				.getActivity().getWindowManager().getDefaultDisplay()
-				.getWidth()) / 2;
+		int screenWidth = Utils.getScreenWidth();
+		feedViewHolder.imgView1.getLayoutParams().height = screenWidth / 2;
+		feedViewHolder.imgView1.getLayoutParams().width = screenWidth / 2;
+		feedViewHolder.imgView2.getLayoutParams().height = screenWidth / 2;
+		feedViewHolder.imgView2.getLayoutParams().width = screenWidth / 2;
 
 		loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
 				feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
@@ -145,7 +139,9 @@ public class ChoosiePostView extends RelativeLayout {
 					public boolean onLongClick(View v) {
 						Log.i(Constants.LOG_TAG,
 								"onLongClick signaled for voting 1");
-						return handleVote1(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1,
+						return handleVote1(feedViewHolder.votes1,
+								feedViewHolder.votes2,
+								feedViewHolder.imgSelected1,
 								feedViewHolder.imgSelected2);
 					}
 				});
@@ -153,7 +149,9 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1, feedViewHolder.imgSelected2);
+				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2,
+						feedViewHolder.imgSelected1,
+						feedViewHolder.imgSelected2);
 			}
 		});
 
@@ -163,7 +161,9 @@ public class ChoosiePostView extends RelativeLayout {
 					public boolean onLongClick(View v) {
 						Log.i(Constants.LOG_TAG,
 								"onLongClick signaled for voting 2");
-						return handleVote2(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1,
+						return handleVote2(feedViewHolder.votes1,
+								feedViewHolder.votes2,
+								feedViewHolder.imgSelected1,
 								feedViewHolder.imgSelected2);
 					}
 
@@ -172,7 +172,9 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected2.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				handleVote2(feedViewHolder.votes1, feedViewHolder.votes2, feedViewHolder.imgSelected1, feedViewHolder.imgSelected2);
+				handleVote2(feedViewHolder.votes1, feedViewHolder.votes2,
+						feedViewHolder.imgSelected1,
+						feedViewHolder.imgSelected2);
 			}
 		});
 
@@ -183,6 +185,17 @@ public class ChoosiePostView extends RelativeLayout {
 				superController.switchToEnlargeImage(v, post);
 			}
 		};
+
+		// listener for handling votes popUpWindow
+		OnClickListener votesListener = new OnClickListener() {
+
+			public void onClick(View v) {
+				superController.handlePopupVoteWindow(choosiePost, position);
+			}
+		};
+
+		feedViewHolder.votes1.setOnClickListener(votesListener);
+		feedViewHolder.votes2.setOnClickListener(votesListener);
 
 		feedViewHolder.imgView1.setOnClickListener(enlargeListener);
 		feedViewHolder.imgView2.setOnClickListener(enlargeListener);
@@ -267,8 +280,9 @@ public class ChoosiePostView extends RelativeLayout {
 		votes2.setVisibility(visibility);
 	}
 
-	private void loadCommentsToView(ChoosiePostData post, FeedViewHolder feedViewHolder) {
-		
+	private void loadCommentsToView(ChoosiePostData post,
+			FeedViewHolder feedViewHolder) {
+
 		feedViewHolder.commentLayout.removeAllViews();
 		List<Comment> lstComment = post.getComments();
 		int i = 0;
@@ -280,9 +294,11 @@ public class ChoosiePostView extends RelativeLayout {
 				comment.setIsNeedToSave();
 			}
 			if (i == 0) {
-				feedViewHolder.commentLayoutMain.setVisibility(LinearLayout.VISIBLE);
+				feedViewHolder.commentLayoutMain
+						.setVisibility(LinearLayout.VISIBLE);
 			}
-			showCommentByLocatin(feedViewHolder.commentLayout, lstComment.size(), i, comment);
+			showCommentByLocatin(feedViewHolder.commentLayout,
+					lstComment.size(), i, comment);
 			i++;
 		}
 	}
@@ -376,8 +392,7 @@ public class ChoosiePostView extends RelativeLayout {
 					}
 				});
 	}
-	
-	
+
 	private class FeedViewHolder {
 		public LinearLayout commentLayout;
 		public LinearLayout commentLayoutMain;
@@ -395,7 +410,3 @@ public class ChoosiePostView extends RelativeLayout {
 		public ProgressBar progressBar2;
 	}
 }
-
-
-
-

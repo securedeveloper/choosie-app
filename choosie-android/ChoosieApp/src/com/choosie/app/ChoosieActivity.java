@@ -58,14 +58,14 @@ public class ChoosieActivity extends Activity {
 
 		PushNotification notification = (PushNotification) intent
 				.getParcelableExtra("notification");
+		
+		Utils.setScreenWidth(this);
 
 		superController = SuperController.getInstance(this, fbDetails);
 
 		if (notification != null) {
 			handleNotification(notification);
-		}
-
-		Utils.setScreenWidth(this);
+		}		
 	}
 
 	private void handleNotification(PushNotification notification) {

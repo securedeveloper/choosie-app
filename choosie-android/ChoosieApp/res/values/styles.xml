@@ -3,7 +3,12 @@
     <style name="AppTheme" parent="android:Theme.Light">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowContentOverlay">@null</item>
-         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="PopupWindowAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/enter</item>
+        <item name="android:windowExitAnimation">@anim/exit</item>
     </style>
 
 </resources>

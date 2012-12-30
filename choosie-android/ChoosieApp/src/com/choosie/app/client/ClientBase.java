@@ -10,10 +10,7 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
-
 import com.choosie.app.Callback;
-import com.choosie.app.Constants;
 import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;

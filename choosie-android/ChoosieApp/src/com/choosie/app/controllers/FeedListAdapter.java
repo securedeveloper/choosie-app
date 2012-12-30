@@ -43,7 +43,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			// TODO: This is a hack.
 			return loadingItemView;
 		}
-
+		
 		ChoosiePostView itemView = null;
 		// Log.i("getView", "getView called, convertView = " + convertView);
 		if ((convertView == null)
@@ -52,13 +52,13 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			
 			// we can't use this convertView, we will create new view
 			itemView = new ChoosiePostView(this.getContext(),
-					this.superController);
+					this.superController, position);
 		} else {
 			// Yey!! we can reuse convertView
 			itemView = (ChoosiePostView) convertView;
 		}
 		
-		itemView.loadChoosiePost(item);
+		itemView.loadChoosiePost(item, position);
 		return itemView;
 	}
 

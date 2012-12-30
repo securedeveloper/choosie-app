@@ -2,8 +2,6 @@ package com.choosie.app;
 
 import java.util.ArrayList;
 
-import com.choosie.app.Models.CommentData;
-import com.choosie.app.Models.Vote;
 import com.choosie.app.Models.VoteData;
 import com.nullwire.trace.ExceptionHandler;
 
@@ -17,14 +15,10 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;

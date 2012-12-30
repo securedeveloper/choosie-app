@@ -1,5 +1,6 @@
 package com.choosie.app.Models;
 
+
 public class VoteData {
 
 	private final String name1;
@@ -29,6 +30,5 @@ public class VoteData {
 	
 	public String getVoterPhotoPath2() {
 		return this.voterPhotoPath2;
-	}
-	
+	}	
 }

@@ -1,10 +1,7 @@
 package com.choosie.app;
 
-import java.io.File;
-
 import com.nullwire.trace.ExceptionHandler;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;

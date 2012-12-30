@@ -26,6 +26,7 @@ import android.util.Log;
 public class Utils {
 	
 	private static int screenWidth = -1;
+	private static int screenHeight = -1;
 
 	public static Date convertStringToDateUTC(String str_date) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -133,9 +134,13 @@ public class Utils {
 		return toRet;
 		
 		
+		/*
+		 *note: code below for showing large images, we will keep it for now 
+		 */
+		
 
 //		// **this function is for showing the images in the feed, so we will
-//		// bring smaller version**//
+//		// bring smaller version**/
 //
 //		String fullPath = getFileNameForURL(param);
 //
@@ -216,6 +221,14 @@ public class Utils {
 		param = null;
 		return shrinkedBitmap;
 	}
+	
+	public static int getScreenWidth(){
+		return screenWidth;
+	}
+	
+	public static int getScreenHeight(){
+		return screenHeight;
+	}
 
 
 	public static void setScreenWidth(ChoosieActivity choosieActivity) {
@@ -223,6 +236,7 @@ public class Utils {
 		choosieActivity.getWindowManager().getDefaultDisplay()
 				.getMetrics(displaymetrics);
 
-		screenWidth = displaymetrics.widthPixels;	
+		screenWidth = displaymetrics.widthPixels;
+		screenHeight  = displaymetrics.heightPixels;	
 	}
 }

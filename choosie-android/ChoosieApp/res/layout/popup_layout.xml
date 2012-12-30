@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popup_element"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/popup_window_selector"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/votesPopupWindow_layoutImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" >
+
+        <TextView
+            android:id="@+id/votesPopupWindow_votes1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="4 votes"
+            android:textColor="#2A1EB0"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/votesPopupWindow_votes2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="40 votes"
+            android:textColor="#2A1EB0"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/votesPopupWindow_listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/votesPopupWindow_layoutImages"
+        android:divider="#00000000"
+        android:listSelector="#00000000"
+        android:background="@drawable/shape_rounded_corners"
+        android:paddingBottom="15dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="2dp"
+        android:paddingTop="5dp" >
+    </ListView>
+
+</RelativeLayout>

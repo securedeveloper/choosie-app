@@ -1,24 +1,14 @@
 package com.choosie.app;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
 
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.ChoosiePostData;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
-import android.hardware.Camera.Size;
-import android.net.Uri;
-import android.os.Environment;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
 public class Caches {
 	Cache<String, Bitmap> photosCache;

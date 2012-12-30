@@ -3,9 +3,6 @@ package com.choosie.app;
 import java.io.File;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -65,7 +62,7 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 		if (data.checkIfVotedAlready() == true) {
 			votesTextView.setText(votes + " votes");
 		} else {
-			votesTextView.setVisibility(view.GONE);
+			votesTextView.setVisibility(View.GONE);
 		}
 		((ViewPager) collection).addView(view, 0);
 		return view;

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ListView;
 
 public abstract class ScreenController {
 	protected View view;
@@ -55,5 +56,10 @@ public abstract class ScreenController {
 	public void onRequestPublishPermission() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public ListView getFeedListView() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

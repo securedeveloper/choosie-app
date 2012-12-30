@@ -1,27 +1,22 @@
 package com.choosie.app.controllers;
 
-import com.choosie.app.ChoosieActivity;
-import com.choosie.app.Constants;
 import com.choosie.app.Logger;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Models.ChoosiePostData;
-import com.choosie.app.client.RealClient;
 
-import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class FeedScreenController extends ScreenController {
+	private ListView listView;
 
 	private FeedListAdapter choosiePostsItemAdapter;
 
@@ -38,7 +33,7 @@ public class FeedScreenController extends ScreenController {
 				LayoutParams.WRAP_CONTENT));
 		textView.setText(R.string.feed_is_empty_message);
 
-		ListView listView = (ListView) view.findViewById(R.id.feedListView);
+		listView = (ListView) view.findViewById(R.id.feedListView);
 		listView.setEmptyView(textView);
 
 		// Must add the progress bar to the root of the layout
@@ -47,7 +42,7 @@ public class FeedScreenController extends ScreenController {
 		choosiePostsItemAdapter = new FeedListAdapter(getActivity(),
 				R.id.layout_me, this.superController);
 		listView.setAdapter(choosiePostsItemAdapter);
-
+		
 		listView.setOnScrollListener(new OnScrollListener() {
 
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -95,6 +90,11 @@ public class FeedScreenController extends ScreenController {
 				Toast.LENGTH_SHORT);
 		toast.show();
 
+	}
+	
+	@Override
+	public ListView getFeedListView(){
+		return listView;
 	}
 
 }

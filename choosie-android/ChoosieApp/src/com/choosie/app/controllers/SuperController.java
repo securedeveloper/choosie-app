@@ -12,6 +12,7 @@ import com.choosie.app.CommentScreen;
 import com.choosie.app.Constants;
 import com.choosie.app.IntentData;
 import com.choosie.app.Logger;
+import com.choosie.app.VotePopupWindowUtils;
 import com.choosie.app.EnlargePhotoActivity;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
@@ -329,4 +330,13 @@ public class SuperController {
 		instance = null;
 	}
 
+	public void handlePopupVoteWindow(ChoosiePostData choosiePost, int position) {
+
+		// first scroll the positioned item
+		getControllerForScreen(Screen.FEED).getFeedListView()
+				.smoothScrollToPosition(position);
+
+		VotePopupWindowUtils voteUtil = new VotePopupWindowUtils(this);
+		voteUtil.popUpVotesWindow(choosiePost);
+	}
 }

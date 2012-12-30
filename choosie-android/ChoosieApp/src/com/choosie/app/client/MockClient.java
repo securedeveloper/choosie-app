@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.text.format.Time;
-import android.util.Log;
 
 import com.choosie.app.Callback;
-import com.choosie.app.Constants;
 import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
