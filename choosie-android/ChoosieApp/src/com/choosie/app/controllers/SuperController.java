@@ -185,6 +185,8 @@ public class SuperController {
 		intent.putExtra(Constants.IntentsCodes.votes2, choosiePost.getVotes2());
 		intent.putExtra(Constants.IntentsCodes.isAlreadyVoted,
 				choosiePost.isVotedAlready());
+		intent.putExtra(Constants.IntentsCodes.post_key,
+				choosiePost.getPostKey());
 
 		// create the comments list
 		ArrayList<String> nameList = new ArrayList<String>();
@@ -337,10 +339,12 @@ public class SuperController {
 	public void handlePopupVoteWindow(ChoosiePostData choosiePost, int position) {
 
 		// first scroll the positioned item
-		getControllerForScreen(Screen.FEED).getFeedListView()
-				.smoothScrollToPosition(position);
+		if (position != -1) {
+			getControllerForScreen(Screen.FEED).getFeedListView()
+					.smoothScrollToPosition(position);
+		}
 
-		VotePopupWindowUtils voteUtil = new VotePopupWindowUtils(this);
-		voteUtil.popUpVotesWindow(choosiePost);
+		VotePopupWindowUtils voteUtil = new VotePopupWindowUtils(getActivity());
+		voteUtil.popUpVotesWindow(choosiePost); 
 	}
 }

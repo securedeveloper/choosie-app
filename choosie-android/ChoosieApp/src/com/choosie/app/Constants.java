@@ -64,6 +64,8 @@ public class Constants {
 		public static final String userName = "userName";
 		public static final String isAlreadyVoted = "isAlreadyVoted";
 		public static final String intentData = "intentData";
+		public static final String channelingJob = "channelingJob";
+		public static final String isChannelingCose = "isChannelingCose";
 	}
 
 	public static class Notifications {

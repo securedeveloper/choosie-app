@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.choosie.app.R;
 import com.choosie.app.Models.CommentData;
+import com.choosie.app.controllers.SuperController;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -43,6 +44,9 @@ public class CommentScreen extends Activity {
 	Bitmap image2Bitmap;
 	ImageView image1View;
 	ImageView image2View;
+	String postKey;
+	// RelativeLayout mainCommentLayout;
+	Activity acivity;
 
 	// key listener - for: when the user pressing the enter key - sends the
 	// comment
@@ -62,12 +66,24 @@ public class CommentScreen extends Activity {
 		}
 	};
 
+	private OnClickListener votesListenter = new OnClickListener() {
+
+		public void onClick(View v) {
+			ChannelingActivity channeling = new ChannelingActivity(
+					SuperController.getInstance(null, null), postKey);
+
+			channeling.handleJob(ChannelingJob.POPUP_VOTES_WINDOW, acivity);
+		}
+	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Logger.i("in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
+
+		this.acivity = this;
 
 		// setting onclikelistener
 		EditText questionEditText = (EditText) findViewById(R.id.editText_comment);
@@ -79,6 +95,7 @@ public class CommentScreen extends Activity {
 				.getStringExtra(Constants.IntentsCodes.photo1Path);
 		String photo2Path = intent
 				.getStringExtra(Constants.IntentsCodes.photo2Path);
+		postKey = intent.getStringExtra(Constants.IntentsCodes.post_key);
 		// make this global for recycling later
 		image1Bitmap = BitmapFactory.decodeFile(photo1Path);
 		image2Bitmap = BitmapFactory.decodeFile(photo2Path);
@@ -237,12 +254,15 @@ public class CommentScreen extends Activity {
 			if (isVotedAlready == true) {
 				commentViewHolder.votes1.setText(votes1 + " votes");
 				commentViewHolder.votes2.setText(votes2 + " votes");
+				commentViewHolder.votes1.setOnClickListener(votesListenter);
+				commentViewHolder.votes2.setOnClickListener(votesListenter);
 			} else {
 				commentViewHolder.votes1.setText("?");
 				commentViewHolder.votes2.setText("?");
 			}
 		} else {
 			commentViewHolder.viewComment_votes_layout.setVisibility(View.GONE);
+			commentViewHolder.imagesLayout.setVisibility(View.GONE);
 		}
 
 		// comtinue only if it is a real comment

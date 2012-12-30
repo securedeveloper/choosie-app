@@ -2,6 +2,7 @@ package com.choosie.app;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -33,10 +34,10 @@ import com.choosie.app.controllers.SuperController;
  */
 public class VotePopupWindowUtils {
 
-	SuperController superController;
+	Activity activity;
 
-	public VotePopupWindowUtils(SuperController superController) {
-		this.superController = superController;
+	public VotePopupWindowUtils(Activity activity) {
+		this.activity = activity;
 	}
 
 	public void popUpVotesWindow(ChoosiePostData choosiePost) {
@@ -44,13 +45,12 @@ public class VotePopupWindowUtils {
 
 		// We need to get the instance of the LayoutInflater, use the
 		// context of this activity
-		LayoutInflater inflater = (LayoutInflater) superController
-				.getActivity()
+		LayoutInflater inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		RelativeLayout layout = (RelativeLayout) inflater.inflate(
-				R.layout.popup_layout, (ViewGroup) superController
-						.getActivity().findViewById(R.id.popup_element));
+				R.layout.popup_layout,
+				(ViewGroup) activity.findViewById(R.id.popup_element));
 
 		// set the votes numbers
 		final TextView textViewVotes1 = (TextView) layout
@@ -98,15 +98,15 @@ public class VotePopupWindowUtils {
 			ArrayList<String> nameList, ArrayList<String> votersPhotoUrlList,
 			ArrayList<Integer> voteForList) {
 
-		ArrayAdapter<VoteData> adi = new ArrayAdapter<VoteData>(
-				superController.getActivity(), R.layout.view_votes) {
+		ArrayAdapter<VoteData> adi = new ArrayAdapter<VoteData>(activity,
+				R.layout.view_votes) {
 
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
 
 				VoteData item = getItem(position);
 
-				return createViewVotes(item, convertView, parent);
+				return createViewVotes(item, convertView, parent); 
 			}
 		};
 
@@ -178,8 +178,8 @@ public class VotePopupWindowUtils {
 		VoteViewHolder voteViewHolder = null;
 
 		if (convertView == null) {
-			//we have to inflate new view, and create new holder
-			
+			// we have to inflate new view, and create new holder
+
 			itemView = new LinearLayout(parentView.getContext());
 
 			LayoutInflater inflater = (LayoutInflater) parentView.getContext()
@@ -197,7 +197,7 @@ public class VotePopupWindowUtils {
 					.findViewById(R.id.voteView_voterPhoto2);
 			itemView.setTag(voteViewHolder);
 		} else {
-			//we can reuse the convertView and get the holder
+			// we can reuse the convertView and get the holder
 			itemView = (LinearLayout) convertView;
 			voteViewHolder = (VoteViewHolder) itemView.getTag();
 		}

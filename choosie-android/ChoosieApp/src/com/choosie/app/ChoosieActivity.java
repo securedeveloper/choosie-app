@@ -28,6 +28,11 @@ public class ChoosieActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		Intent intent = getIntent();
+		boolean isItChannelingJob = intent.getBooleanExtra(
+				Constants.IntentsCodes.isChannelingCose, false);
+
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 		setContentView(R.layout.activity_choosie);
 
@@ -51,21 +56,19 @@ public class ChoosieActivity extends Activity {
 		ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
 		refreshButton.setOnClickListener(refreshClickListener);
 
-		Intent intent = getIntent();
-
 		FacebookDetails fbDetails = (FacebookDetails) intent
 				.getSerializableExtra("fb_details");
 
 		PushNotification notification = (PushNotification) intent
 				.getParcelableExtra("notification");
-		
+
 		Utils.setScreenWidth(this);
 
 		superController = SuperController.getInstance(this, fbDetails);
 
 		if (notification != null) {
 			handleNotification(notification);
-		}		
+		}
 	}
 
 	private void handleNotification(PushNotification notification) {
