@@ -36,10 +36,14 @@ import android.widget.TextView;
 
 public class CommentScreen extends Activity {
 	Intent intent;
+	int votes1;
+	int votes2;
+	boolean isVotedAlready;
 	Bitmap image1Bitmap;
 	Bitmap image2Bitmap;
 	ImageView image1View;
 	ImageView image2View;
+
 	// key listener - for: when the user pressing the enter key - sends the
 	// comment
 	OnKeyListener sendKeyListener = new OnKeyListener() {
@@ -75,8 +79,15 @@ public class CommentScreen extends Activity {
 				.getStringExtra(Constants.IntentsCodes.photo1Path);
 		String photo2Path = intent
 				.getStringExtra(Constants.IntentsCodes.photo2Path);
+		// make this global for recycling later
 		image1Bitmap = BitmapFactory.decodeFile(photo1Path);
 		image2Bitmap = BitmapFactory.decodeFile(photo2Path);
+		isVotedAlready = intent.getBooleanExtra(
+				Constants.IntentsCodes.isAlreadyVoted, false);
+		if (isVotedAlready == true) {
+			votes1 = intent.getIntExtra(Constants.IntentsCodes.votes1, 0);
+			votes2 = intent.getIntExtra(Constants.IntentsCodes.votes2, 0);
+		}
 
 		fillCommentView(intent);
 
@@ -104,7 +115,7 @@ public class CommentScreen extends Activity {
 
 				CommentData item = getItem(position);
 
-				return createViewComment(item, intent, position, convertView);
+				return createViewComment(item, position, convertView);
 			}
 		};
 
@@ -157,25 +168,35 @@ public class CommentScreen extends Activity {
 				.setText(intent.getStringExtra("question"));
 	}
 
-	private View createViewComment(CommentData item, Intent intent,
-			int position, View convertView) {
+	private View createViewComment(CommentData item, int position,
+			View convertView) {
 
 		RelativeLayout itemView = (RelativeLayout) convertView;
 		CommentViewHolder commentViewHolder = null;
 
-		//if convertView is null we will create a new View
+		// if convertView is null we will create a new View
 		if (convertView == null) {
-			//create new holder
+			// create new holder
 			commentViewHolder = new CommentViewHolder();
-			//inflate view_comment into itemView
+			// inflate view_comment into itemView
 			LayoutInflater inflater = (LayoutInflater) this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			itemView = (RelativeLayout) inflater.inflate(R.layout.view_comment,
 					null);
 
-			//initialize the holder
+			// initialize the holder
 			commentViewHolder.imagesLayout = (LinearLayout) itemView
 					.findViewById(R.id.layout_images_comment);
+			commentViewHolder.viewComment_votes_layout = (LinearLayout) itemView
+					.findViewById(R.id.viewComment_votes_layout);
+			commentViewHolder.votes1 = (TextView) itemView
+					.findViewById(R.id.viewComment_votes1);
+			commentViewHolder.votes2 = (TextView) itemView
+					.findViewById(R.id.viewComment_votes2);
+			commentViewHolder.votes1Pointing = (ImageView) itemView
+					.findViewById(R.id.viewComment_votes1_pointing);
+			commentViewHolder.votes2Pointing = (ImageView) itemView
+					.findViewById(R.id.viewComment_votes2_pointing);
 			commentViewHolder.imageViewPhoto1 = (ImageView) itemView
 					.findViewById(R.id.photo1_comment_screen);
 			commentViewHolder.imageViewPhoto2 = (ImageView) itemView
@@ -187,22 +208,41 @@ public class CommentScreen extends Activity {
 			commentViewHolder.commentTime = (TextView) itemView
 					.findViewById(R.id.commentScreen_commentTime);
 
-			//set the holder inside the view we just created
+			// set the size of the image view to be a square sized half of the
+			// screen width
+			int screenWidth = Utils.getScreenWidth();
+			if (screenWidth != -1) {
+				commentViewHolder.imageViewPhoto1.getLayoutParams().height = screenWidth / 2;
+				commentViewHolder.imageViewPhoto1.getLayoutParams().width = screenWidth / 2;
+				commentViewHolder.imageViewPhoto2.getLayoutParams().height = screenWidth / 2;
+				commentViewHolder.imageViewPhoto2.getLayoutParams().width = screenWidth / 2;
+			}
+
+			// set the holder inside the view we just created
 			itemView.setTag(commentViewHolder);
 		} else {
-			//convertView is not null, thus we can reuse it - grabing the holder.
+			// convertView is not null, thus we can reuse it - grabing the
+			// holder.
 			commentViewHolder = (CommentViewHolder) itemView.getTag();
 		}
 
 		if ((position == 0) || (item.checkIfDummyComment() == true)) {
 			commentViewHolder.imagesLayout.setVisibility(View.VISIBLE);
+			commentViewHolder.viewComment_votes_layout
+					.setVisibility(View.VISIBLE);
 			commentViewHolder.imageViewPhoto1.setImageBitmap(image1Bitmap);
 			commentViewHolder.imageViewPhoto2.setImageBitmap(image2Bitmap);
 			image1View = commentViewHolder.imageViewPhoto1;
 			image2View = commentViewHolder.imageViewPhoto2;
-		}
-		else {
-			commentViewHolder.imagesLayout.setVisibility(View.GONE);
+			if (isVotedAlready == true) {
+				commentViewHolder.votes1.setText(votes1 + " votes");
+				commentViewHolder.votes2.setText(votes2 + " votes");
+			} else {
+				commentViewHolder.votes1.setText("?");
+				commentViewHolder.votes2.setText("?");
+			}
+		} else {
+			commentViewHolder.viewComment_votes_layout.setVisibility(View.GONE);
 		}
 
 		// comtinue only if it is a real comment
@@ -282,7 +322,7 @@ public class CommentScreen extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			setResult(RESULT_CANCELED, null);
-			resetCommentScreen(); //finish is taking care of it...
+			resetCommentScreen(); // finish is taking care of it...
 			finish();
 			return true;
 		}
@@ -297,15 +337,17 @@ public class CommentScreen extends Activity {
 		if (userPhotoBitmap != null) {
 			userPhotoBitmap.recycle();
 		}
-		
-		image1View.setImageDrawable(getResources().getDrawable(R.drawable.back_arrow));
-		image2View.setImageDrawable(getResources().getDrawable(R.drawable.back_arrow));
-				
-		if (image1Bitmap != null){
+
+		image1View.setImageDrawable(getResources().getDrawable(
+				R.drawable.back_arrow));
+		image2View.setImageDrawable(getResources().getDrawable(
+				R.drawable.back_arrow));
+
+		if (image1Bitmap != null) {
 			image1Bitmap.recycle();
 			image1Bitmap = null;
 		}
-		if (image2Bitmap != null){
+		if (image2Bitmap != null) {
 			image2Bitmap.recycle();
 			image2Bitmap = null;
 		}
@@ -316,5 +358,19 @@ public class CommentScreen extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// getMenuInflater().inflate(R.menu.activity_comment_screen, menu);
 		return true;
+	}
+
+	private class CommentViewHolder {
+		LinearLayout imagesLayout;
+		LinearLayout viewComment_votes_layout;
+		ImageView imageViewPhoto1;
+		ImageView imageViewPhoto2;
+		ImageView votes1Pointing;
+		ImageView votes2Pointing;
+		TextView votes1;
+		TextView votes2;
+		TextView tv;
+		ImageView commentierPhotoImageView;
+		TextView commentTime;
 	}
 }

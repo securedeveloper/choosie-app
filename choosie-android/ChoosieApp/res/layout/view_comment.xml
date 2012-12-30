@@ -8,14 +8,14 @@
     <LinearLayout
         android:id="@+id/layout_images_comment"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/layout_user_comments"
         android:orientation="horizontal" >
 
         <ImageView
             android:id="@+id/photo1_comment_screen"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingRight="1dp"
             android:src="@android:drawable/divider_horizontal_dark" />
@@ -23,17 +23,75 @@
         <ImageView
             android:id="@+id/photo2_comment_screen"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingLeft="1dp"
             android:src="@android:drawable/divider_horizontal_dark" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/viewComment_votes_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_images_comment"
+        android:layout_marginBottom="10dp" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/viewComment_votes1_pointing"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4dp"
+                android:src="@drawable/pointing" />
+
+            <TextView
+                android:id="@+id/viewComment_votes1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:gravity="right"
+                android:text="1,000,000 votes"
+                android:textColor="#2A1EB0"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/viewComment_votes2_pointing"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="4dp"
+                android:src="@drawable/pointing" />
+
+            <TextView
+                android:id="@+id/viewComment_votes2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:gravity="right"
+                android:text="1,000,000 votes"
+                android:textColor="#2A1EB0"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/LinearLayout_view_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_images_comment"
+        android:layout_below="@+id/viewComment_votes_layout"
         android:layout_marginBottom="10dp"
         android:background="#FFFFFFFF"
         android:orientation="horizontal" >

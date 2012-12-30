@@ -58,6 +58,14 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
 		feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
 		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+
+		// set the size of the image view to be a square sized half of the
+		// screen width
+		int screenWidth = Utils.getScreenWidth();
+		feedViewHolder.imgView1.getLayoutParams().height = screenWidth / 2;
+		feedViewHolder.imgView1.getLayoutParams().width = screenWidth / 2;
+		feedViewHolder.imgView2.getLayoutParams().height = screenWidth / 2;
+		feedViewHolder.imgView2.getLayoutParams().width = screenWidth / 2;
 	}
 
 	private void inflateLayout(final int position) {
@@ -87,14 +95,6 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected2.setVisibility(View.GONE);
 		feedViewHolder.feed_userimage.setVisibility(View.GONE);
 
-		// set the size of the image view to bew a square sized half of the
-		// screen width
-		int screenWidth = Utils.getScreenWidth();
-		feedViewHolder.imgView1.getLayoutParams().height = screenWidth / 2;
-		feedViewHolder.imgView1.getLayoutParams().width = screenWidth / 2;
-		feedViewHolder.imgView2.getLayoutParams().height = screenWidth / 2;
-		feedViewHolder.imgView2.getLayoutParams().width = screenWidth / 2;
-
 		loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
 				feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
 		loadImageToView(post.getPhoto2URL(), feedViewHolder.imgView2,
@@ -109,8 +109,10 @@ public class ChoosiePostView extends RelativeLayout {
 			ChangeVotingResultsVisibility(feedViewHolder.votes1,
 					feedViewHolder.votes2, View.VISIBLE);
 		} else {
-			ChangeVotingResultsVisibility(feedViewHolder.votes1,
-					feedViewHolder.votes2, View.INVISIBLE);
+			feedViewHolder.votes1.setText("?");
+			feedViewHolder.votes2.setText("?");
+			// ChangeVotingResultsVisibility(feedViewHolder.votes1,
+			// feedViewHolder.votes2, View.INVISIBLE);
 		}
 
 		// Set border for voted image
@@ -181,10 +183,20 @@ public class ChoosiePostView extends RelativeLayout {
 			}
 		};
 
-		feedViewHolder.votes1Pointing.setOnClickListener(votesListener);
-		feedViewHolder.votes2Pointing.setOnClickListener(votesListener);
-		feedViewHolder.votes1.setOnClickListener(votesListener);
-		feedViewHolder.votes2.setOnClickListener(votesListener);
+		if (choosiePost.isVotedAlready()) {
+			feedViewHolder.votes1Pointing.setOnClickListener(votesListener);
+			feedViewHolder.votes2Pointing.setOnClickListener(votesListener);
+			feedViewHolder.votes1.setOnClickListener(votesListener);
+			feedViewHolder.votes2.setOnClickListener(votesListener);
+		}
+		else{
+			feedViewHolder.votes1Pointing.setOnClickListener(null);
+			feedViewHolder.votes2Pointing.setOnClickListener(null);
+			feedViewHolder.votes1.setOnClickListener(null);
+			feedViewHolder.votes2.setOnClickListener(null);
+		}
+			
+		
 
 		feedViewHolder.imgView1.setOnClickListener(enlargeListener);
 		feedViewHolder.imgView2.setOnClickListener(enlargeListener);

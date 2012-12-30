@@ -181,6 +181,10 @@ public class SuperController {
 		intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
 		intent.putExtra(Constants.IntentsCodes.userName, choosiePost
 				.getAuthor().getUserName());
+		intent.putExtra(Constants.IntentsCodes.votes1, choosiePost.getVotes1());
+		intent.putExtra(Constants.IntentsCodes.votes2, choosiePost.getVotes2());
+		intent.putExtra(Constants.IntentsCodes.isAlreadyVoted,
+				choosiePost.isVotedAlready());
 
 		// create the comments list
 		ArrayList<String> nameList = new ArrayList<String>();
