@@ -44,6 +44,8 @@ public class ChoosiePostView extends RelativeLayout {
 
 		feedViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		feedViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
+		feedViewHolder.votes1Pointing = (ImageView) findViewById(R.id.votes1_pointing);
+		feedViewHolder.votes2Pointing = (ImageView) findViewById(R.id.votes2_pointing);
 		feedViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
 		feedViewHolder.votes2 = (TextView) findViewById(R.id.votes2);
 		feedViewHolder.feedtext = (TextView) findViewById(R.id.feedtext);
@@ -67,21 +69,6 @@ public class ChoosiePostView extends RelativeLayout {
 				new OnClickListener() {
 					public void onClick(View arg0) {
 						superController.switchToCommentScreen(choosiePost);
-					}
-				});
-
-		// this.findViewById(R.id.votes1).setOnClickListener(
-		// new OnClickListener() {
-		// public void onClick(View arg0) {
-		// listView.smoothScrollToPosition(position);
-		// popUpVotesWindow(choosiePost);
-		// }
-		// });
-
-		this.findViewById(R.id.votes2).setOnClickListener(
-				new OnClickListener() {
-					public void onClick(View arg0) {
-						superController.switchToVotesScreen(choosiePost);
 					}
 				});
 	}
@@ -194,6 +181,8 @@ public class ChoosiePostView extends RelativeLayout {
 			}
 		};
 
+		feedViewHolder.votes1Pointing.setOnClickListener(votesListener);
+		feedViewHolder.votes2Pointing.setOnClickListener(votesListener);
 		feedViewHolder.votes1.setOnClickListener(votesListener);
 		feedViewHolder.votes2.setOnClickListener(votesListener);
 
@@ -396,6 +385,8 @@ public class ChoosiePostView extends RelativeLayout {
 	private class FeedViewHolder {
 		public LinearLayout commentLayout;
 		public LinearLayout commentLayoutMain;
+		public ImageView votes1Pointing;
+		public ImageView votes2Pointing;
 		public TextView votes1;
 		public TextView votes2;
 		public TextView feedtext;

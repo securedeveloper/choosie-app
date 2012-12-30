@@ -123,15 +123,30 @@
                         android:src="@drawable/ic_action_search" />
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/votes1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="4dp"
-                    android:text="1,000 votes"
-                    android:textColor="#2A1EB0"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageView
+                        android:id="@+id/votes1_pointing"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="4dp"
+                        android:src="@drawable/pointing" />
+
+                    <TextView
+                        android:id="@+id/votes1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:text="1,000 votes"
+                        android:textColor="#2A1EB0"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -173,15 +188,29 @@
                         android:src="@drawable/ic_action_search" />
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/votes2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:gravity="right"
-                    android:text="1,000,000 votes"
-                    android:textColor="#2A1EB0"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <ImageView
+                        android:id="@+id/votes2_pointing"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="4dp"
+                        android:src="@drawable/pointing" />
+
+                    <TextView
+                        android:id="@+id/votes2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="4dp"
+                        android:gravity="right"
+                        android:text="1,000,000 votes"
+                        android:textColor="#2A1EB0"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -221,6 +250,16 @@
             android:maxWidth="40dp"
             android:scaleType="fitXY"
             android:src="@drawable/comment_bubble" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
     </LinearLayout>
 
 </merge>
