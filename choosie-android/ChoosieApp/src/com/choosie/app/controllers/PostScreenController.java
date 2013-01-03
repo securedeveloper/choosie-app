@@ -81,18 +81,23 @@ public class PostScreenController extends ScreenController {
 				if (isChecked) {
 					// check if user has publish_stream permissions
 					boolean userHasPublishPermissions = isUserHasPublishPermissions();
+					shareOnFacebookTb
+							.setBackgroundResource(R.drawable.facebook_square_blue);
 
 					// if so, just show button as checked
 					if (userHasPublishPermissions) {
-						Logger.i(
-								"Already have publish permissions: "
-										+ session.getPermissions().toString());
+						Logger.i("Already have publish permissions: "
+								+ session.getPermissions().toString());
 						shareOnFacebookTb.setChecked(true);
+
 					} else {
 						// else - pop up Facebook screen and ask for
 						// publish_stream permissions
 						askForPublishPermissions();
 					}
+				} else {
+					shareOnFacebookTb
+							.setBackgroundResource(R.drawable.facebook_square_bw);
 				}
 			}
 		};
@@ -128,9 +133,8 @@ public class PostScreenController extends ScreenController {
 						"Exception in reauthorizeForPublish() : "
 								+ ex.toString());
 			}
-			Logger.i(
-					"on set active session permissions: "
-							+ session.getPermissions().toString());
+			Logger.i("on set active session permissions: "
+					+ session.getPermissions().toString());
 		}
 	}
 
@@ -159,16 +163,14 @@ public class PostScreenController extends ScreenController {
 			List<String> perms = session.getPermissions();
 			userHasPublishPermissions = perms.contains("publish_stream");
 		} else {
-			Logger.i(
-					"isUserHasPublishPermissions(): session is not opened!");
+			Logger.i("isUserHasPublishPermissions(): session is not opened!");
 		}
 		return userHasPublishPermissions;
 	}
 
 	@Override
 	protected void onShow() {
-		Logger.i(
-				"PostScreenController - showing post screen");
+		Logger.i("PostScreenController - showing post screen");
 		superController.setCurrentScreen(Screen.POST);
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
@@ -180,8 +182,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
-		Logger.i(
-				"PostScreenController - hiding post screen");
+		Logger.i("PostScreenController - hiding post screen");
 		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));
@@ -193,24 +194,20 @@ public class PostScreenController extends ScreenController {
 				Logger.i("Share on facebook is checked!");
 				Session session = Session.getActiveSession();
 				if (session.isOpened()) {
-					Logger.i(
-							"session permissions: "
-									+ session.getPermissions().toString());
+					Logger.i("session permissions: "
+							+ session.getPermissions().toString());
 					if (!session.getPermissions().contains("publish_stream")) {
 
-						Logger.i(
-								"requesting publish_stream permissions");
+						Logger.i("requesting publish_stream permissions");
 
 						List<String> write_permissions = new ArrayList<String>();
 						write_permissions.add("publish_stream");
 
-						Logger.i(
-								"Opening new ReauthorizeRequest");
+						Logger.i("Opening new ReauthorizeRequest");
 						ReauthorizeRequest openRequest = new ReauthorizeRequest(
 								getActivity(), write_permissions);
 						try {
-							Logger.i(
-									"Opening new ReauthorizeRequest");
+							Logger.i("Opening new ReauthorizeRequest");
 							session.reauthorizeForPublish(openRequest);
 						} catch (Exception ex) {
 							Log.e(Constants.LOG_TAG,
@@ -227,8 +224,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void startDialog(final View arg0) {
-		Logger.i(
-				"PostScreenController - enter startdialog");
+		Logger.i("PostScreenController - enter startdialog");
 		final File tempFile = createImageFile(arg0.getId());
 
 		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(
@@ -259,14 +255,12 @@ public class PostScreenController extends ScreenController {
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
 		if (arg0.getId() == R.id.image_photo1) {
-			Logger.i(
-					"PostScreenController - enter TakePhoto - first pic");
+			Logger.i("PostScreenController - enter TakePhoto - first pic");
 			getActivity().startActivityForResult(intent,
 					Constants.RequestCodes.TAKE_FIRST_PICTURE_FROM_CAMERA);
 		}
 		if (arg0.getId() == R.id.image_photo2) {
-			Logger.i(
-					"PostScreenController - enter TakePhoto - second pic");
+			Logger.i("PostScreenController - enter TakePhoto - second pic");
 			intent.putExtra("return-data", true);
 			getActivity().startActivityForResult(intent,
 					Constants.RequestCodes.TAKE_SECOND_PICTURE_FROM_CAMERA);
@@ -298,9 +292,8 @@ public class PostScreenController extends ScreenController {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Logger.i(
-				"PostScreenController - onActivityResult - request code = "
-						+ requestCode + " result code = " + resultCode);
+		Logger.i("PostScreenController - onActivityResult - request code = "
+				+ requestCode + " result code = " + resultCode);
 
 		if (resultCode == Activity.RESULT_CANCELED) {
 			return;
@@ -359,8 +352,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private Bitmap setImageFromData(Intent data, ImageView imageView) {
-		Logger.i(
-				"PostScreenController - enter setImageFromData");
+		Logger.i("PostScreenController - enter setImageFromData");
 		if (isNeedToSave == true) {
 			galleryAddPic();
 		}
@@ -387,8 +379,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void setAndStartCropIntent(int code, Uri uri) {
-		Logger.i(
-				"PostScreenController - enter setAndStartCropIntent");
+		Logger.i("PostScreenController - enter setAndStartCropIntent");
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(uri, "image/*");
 		intent.putExtra("outputX", 350);
@@ -477,20 +468,16 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private File createImageFile(Integer prefix) {
-		Logger.i(
-				"PostScreenController - enter createImageFile");
+		Logger.i("PostScreenController - enter createImageFile");
 		File dir = getAlbumDir();
 		if (dir.exists() == false) {
-			Logger.i(
-					"PostScreenController - createImageFile: the dir is not exist, path = "
-							+ dir.getAbsolutePath());
+			Logger.i("PostScreenController - createImageFile: the dir is not exist, path = "
+					+ dir.getAbsolutePath());
 			boolean dirCreated = dir.mkdirs();
-			Logger.i(
-					"PostScreenController, dirCreated = " + dirCreated);
+			Logger.i("PostScreenController, dirCreated = " + dirCreated);
 		} else {
-			Logger.i(
-					"PostScreenController - createImageFile: dir exists, path = "
-							+ dir.getAbsolutePath());
+			Logger.i("PostScreenController - createImageFile: dir exists, path = "
+					+ dir.getAbsolutePath());
 		}
 		// Create an image file name
 		String timeStamp = new SimpleDateFormat("_yyyyMMdd_HHmmss")
@@ -510,9 +497,9 @@ public class PostScreenController extends ScreenController {
 
 	private File getAlbumDir() {
 		Logger.i("PostScreenController - enter getAlbumDir,path = "
-								+ Environment
-										.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-								+ " " + Constants.URIs.APPLICATION_NAME);
+				+ Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+				+ " " + Constants.URIs.APPLICATION_NAME);
 		File storageDir = new File(
 				Environment
 						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
@@ -523,9 +510,8 @@ public class PostScreenController extends ScreenController {
 	private void galleryAddPic() {
 		Intent mediaScanIntent = new Intent(
 				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-		Logger.i(
-				"PostScreenController - adding to gallery - "
-						+ mCurrentPhotoPath);
+		Logger.i("PostScreenController - adding to gallery - "
+				+ mCurrentPhotoPath);
 		File f = new File(mCurrentPhotoPath);
 		Uri contentUri = Uri.fromFile(f);
 		mediaScanIntent.setData(contentUri);
@@ -534,8 +520,7 @@ public class PostScreenController extends ScreenController {
 
 	@Override
 	public void onKeyDown(int keyCode, KeyEvent event) {
-		Logger.i(
-				"PostScreenController - switching to feed");
+		Logger.i("PostScreenController - switching to feed");
 		superController.switchToScreen(Screen.FEED);
 	}
 

@@ -19,12 +19,13 @@
     <string name="load_more">Load more</string>
     <string name="how_long_ago_was_it_taken">How long ago was it taken</string>
     <string name="logout">Logout</string>
-    <string name="share_on_facebook">Share on Facebook</string>
+    <string name="share_on">Share on:</string>
     <string name="desc">ImageView Content Descripotion</string>
     <string name="create_new_post">Create new post</string>
     <string name="title_activity_votes_screen">VotesScreenActivity</string>
     <string name="title_activity_enlarge_photo">EnlargePhoto</string>
     <string name="general_content_description">Widget Content Description</string>
     <string name="feed_is_empty_message">You have no posts on your feed!\nBe the first to upload a Choozie Post!</string>
+    <string name="empty_string"/>
 
 </resources>

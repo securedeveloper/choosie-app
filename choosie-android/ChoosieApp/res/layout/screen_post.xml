@@ -59,27 +59,19 @@
         android:inputType="textCapSentences"
         android:hint="@string/editTextQuestion"
         android:background="@drawable/text_view_border">
-        <requestFocus />
+
+        <requestFocus android:layout_width="wrap_content" />
+
     </EditText>
 
     <LinearLayout
         android:id="@+id/linearLayour2"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button_submit1"
         android:layout_alignParentLeft="true"
         android:orientation="horizontal"
         android:padding="@dimen/view_choosie_post_margin">
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:contentDescription="@string/desc"
-            android:maxHeight="@android:dimen/app_icon_size"
-            android:maxWidth="@android:dimen/app_icon_size"
-            android:scaleType="fitCenter"
-            android:src="@drawable/fb_logo" />
 
         <TextView
             android:id="@+id/shareOnFacebookTextView"
@@ -87,24 +79,30 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/view_choosie_post_text_margin"
             android:layout_weight="0.87"
-            android:text="@string/share_on_facebook"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:paddingRight="@dimen/share_button_magin"
+            android:text="@string/share_on"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ToggleButton
             android:id="@+id/shareOnFacebookToggleButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="14dp"
-            android:gravity="center_vertical|center_horizontal|bottom|fill_vertical"/> 
+            android:background="@drawable/facebook_square_bw"
+            android:gravity="center_vertical|center_horizontal|bottom|fill_vertical"
+            android:textOff="@string/empty_string"
+            android:textOn="@string/empty_string" />
             
     </LinearLayout>
 
     <Button
         android:id="@+id/button_submit1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:text="@string/button_submit" />
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/share_button" />
+
+<!--     android:text="@string/button_submit" -->
 
 </RelativeLayout>
