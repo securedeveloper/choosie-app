@@ -28,6 +28,7 @@ public class ChoosieActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Logger.i("ChoosieActivity: onCreate()");
 
 		Intent intent = getIntent();
 		boolean isItChannelingJob = intent.getBooleanExtra(
@@ -138,6 +139,13 @@ public class ChoosieActivity extends Activity {
 	private void handleVoteNotification(PushNotification notification) {
 		Logger.i("HandleVoteNotification()");
 
+		final int position = superController
+				.getControllerForScreen(Screen.FEED).getFeedListAdapter()
+				.findPositionByPostKey(notification.getPostKey());
+
+		// final VotePopupWindowUtils votesPopupWindowUtils = new
+		// VotePopupWindowUtils(this);
+
 		superController
 				.getCaches()
 				.getPostsCache()
@@ -153,7 +161,9 @@ public class ChoosieActivity extends Activity {
 									// Toast.LENGTH_SHORT).show();
 									return;
 								}
-								superController.switchToVotesScreen(param);
+								// votesPopupWindowUtils.popUpVotesWindow(param);
+								superController.handlePopupVoteWindow(param,
+										position);
 							}
 						});
 	}
@@ -220,6 +230,7 @@ public class ChoosieActivity extends Activity {
 
 	@Override
 	protected void onResume() {
+		Logger.i("ChoosieActivity: onResume()");
 		super.onResume();
 		switch (superController.getCurrentScreen()) {
 		case POST:
@@ -236,6 +247,7 @@ public class ChoosieActivity extends Activity {
 						keyCode, event);
 				break;
 			case FEED:
+				Logger.i("onKeyDown() - calling finish() to choosieActivity");
 				finish();
 				break;
 			}
@@ -253,9 +265,34 @@ public class ChoosieActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
+		Logger.i("ChoosieActivity: onDestroy()");
 		super.onDestroy();
 		SuperController.setNull();
 		this.finish();
+	}
+
+	@Override
+	protected void onStart() {
+		Logger.i("ChoosieActivity: onStart()");
+		super.onStart();
+	}
+
+	@Override
+	protected void onPause() {
+		Logger.i("ChoosieActivity: onPause()");
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		Logger.i("ChoosieActivity: onStop()");
+		super.onStop();
+	}
+
+	@Override
+	protected void onRestart() {
+		Logger.i("ChoosieActivity: onRestart()");
+		super.onRestart();
 	}
 
 }

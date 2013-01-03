@@ -40,6 +40,9 @@ public class StartActivity extends Activity {
 
 		setContentView(R.layout.activity_start);
 
+		Logger.i("************** Start Application! ****************");
+		Logger.i("StartActivity: onCreate()");
+
 		Intent intent = getIntent();
 		if (intent.getExtras() != null) {
 			notification = intent.getParcelableExtra("notification");
@@ -50,8 +53,6 @@ public class StartActivity extends Activity {
 		TextView welcome = (TextView) findViewById(R.id.welcome);
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
-
-		Logger.i("Start Application!");
 
 		Log.i("oernlog", "daasdadasdasd");
 
@@ -99,13 +100,36 @@ public class StartActivity extends Activity {
 
 	@Override
 	public void onStart() {
+		Logger.i("StartActivity: onStart()");
 		super.onStart();
 		Session.getActiveSession().addCallback(statusCallback);
 	}
 
 	@Override
 	public void onStop() {
+		Logger.i("StartActivity: onStop()");
 		super.onStop();
+		Session.getActiveSession().removeCallback(statusCallback);
+	}
+
+	@Override
+	public void onResume() {
+		Logger.i("StartActivity: onResume()");
+		super.onResume();
+		Session.getActiveSession().addCallback(statusCallback);
+	}
+
+	@Override
+	public void onPause() {
+		Logger.i("StartActivity: onPause()");
+		super.onPause();
+		Session.getActiveSession().removeCallback(statusCallback);
+	}
+
+	@Override
+	public void onDestroy() {
+		Logger.i("StartActivity: onDestroy()");
+		super.onDestroy();
 		Session.getActiveSession().removeCallback(statusCallback);
 	}
 
@@ -182,7 +206,7 @@ public class StartActivity extends Activity {
 							} else {
 								Logger.i("No Push Notification has been added to ChoosieActivity intent");
 							}
-							
+
 							Logger.i("Starting ChoosieActivity");
 							startActivityForResult(intent,
 									Constants.RequestCodes.START_ACTIVITY);

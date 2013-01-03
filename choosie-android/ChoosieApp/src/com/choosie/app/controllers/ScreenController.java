@@ -62,4 +62,9 @@ public abstract class ScreenController {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public FeedListAdapter getFeedListAdapter() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

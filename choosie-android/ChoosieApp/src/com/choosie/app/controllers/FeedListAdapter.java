@@ -43,13 +43,13 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			// TODO: This is a hack.
 			return loadingItemView;
 		}
-		
+
 		ChoosiePostView itemView = null;
 		// Log.i("getView", "getView called, convertView = " + convertView);
 		if ((convertView == null)
 				|| (!(convertView instanceof ChoosiePostView))) {
 			// Log.i("getView", "making a new view...");
-			
+
 			// we can't use this convertView, we will create new view
 			itemView = new ChoosiePostView(this.getContext(),
 					this.superController, position);
@@ -57,7 +57,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			// Yey!! we can reuse convertView
 			itemView = (ChoosiePostView) convertView;
 		}
-		
+
 		itemView.loadChoosiePost(item, position);
 		return itemView;
 	}
@@ -105,21 +105,17 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private ChoosiePostData loadingItem;
 
 	private void update(FeedResponse param) {
-		Logger.i(
-				"FeedListAdapter: update. Posts count: "
-						+ param.getPosts().size() + ". Append: "
-						+ param.isAppend());
+		Logger.i("FeedListAdapter: update. Posts count: "
+				+ param.getPosts().size() + ". Append: " + param.isAppend());
 		if (param.getPosts().size() == 0) {
 			Logger.i("No images in feed.");
 		}
 		State relevantState = param.isAppend() ? State.APPENDING_TO_FEED
 				: State.REFRESHING_FEED;
 		if (relevantState != this.state) {
-			Logger.i(
-					"FeedListAdapter: update. Got new posts, but not updating"
-							+ " because not in relevant state. "
-							+ "Relevant = " + relevantState + ", Real state = "
-							+ this.state);
+			Logger.i("FeedListAdapter: update. Got new posts, but not updating"
+					+ " because not in relevant state. " + "Relevant = "
+					+ relevantState + ", Real state = " + this.state);
 			return;
 		}
 		if (param.isAppend() && lastCursor == param.getCursor()) {
@@ -129,8 +125,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return;
 		}
 		if (this.state == State.REFRESHING_FEED) {
-			Logger.i(
-					"Clearing feed (cause in Refresh state)");
+			Logger.i("Clearing feed (cause in Refresh state)");
 			this.clear();
 		}
 		Logger.i("Adding posts.");
@@ -178,8 +173,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			showErrorToast();
 			break;
 		}
-		Logger.i(
-				"Finished changing to state " + this.state);
+		Logger.i("Finished changing to state " + this.state);
 
 	}
 
@@ -275,7 +269,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		}
 	}
 
-	private int findPositionByPostKey(String postKey) {
+	public int findPositionByPostKey(String postKey) {
 		if (postKey == null) {
 			Logger.e("Got to findPositionByPostKey with null postKey.");
 			return -1;
@@ -285,9 +279,12 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			// for example when this.getItem(0) is the Loading item.
 			String postKeyAtI = this.getItem(i).getPostKey();
 			if (postKeyAtI != null && postKeyAtI.equals(postKey)) {
+				Logger.i("findPoitionByPostKey: post is found! position = " + i);
 				return i;
 			}
 		}
+		Logger.i("findPoitionByPostKey: did not find the position of post \""
+				+ postKey + "\"");
 		return -1;
 	}
 

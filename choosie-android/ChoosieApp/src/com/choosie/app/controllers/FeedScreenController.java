@@ -42,7 +42,7 @@ public class FeedScreenController extends ScreenController {
 		choosiePostsItemAdapter = new FeedListAdapter(getActivity(),
 				R.id.layout_me, this.superController);
 		listView.setAdapter(choosiePostsItemAdapter);
-		
+
 		listView.setOnScrollListener(new OnScrollListener() {
 
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -79,7 +79,7 @@ public class FeedScreenController extends ScreenController {
 	}
 
 	@Override
-	public void refresh() { 
+	public void refresh() {
 		// TODO Refresh if needed only.
 		choosiePostsItemAdapter.refreshFeed();
 	}
@@ -91,10 +91,15 @@ public class FeedScreenController extends ScreenController {
 		toast.show();
 
 	}
-	
+
 	@Override
-	public ListView getFeedListView(){
+	public ListView getFeedListView() {
 		return listView;
+	}
+
+	@Override
+	public FeedListAdapter getFeedListAdapter() {
+		return choosiePostsItemAdapter;
 	}
 
 }
