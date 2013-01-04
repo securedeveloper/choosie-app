@@ -20,29 +20,29 @@ class NotifyHandler(webapp2.RequestHandler):
     message = "i love soja milk"
     # users = db.GqlQuery("SELECT * FROM User WHERE device_id > :1",None)
     users = User.all()
-    devices = []
-    user_ids = []
+    user_array = []
     # devices = ["APA91bHlkage-d5iZhdRAZtKS1gUy8q1LcEyGXmmhBzaGXxMTp6S5QIxQGkp8HxiTExI6cim4KngJXzamvbjzOKLrRUPKQpQqKaevHAEertE_PKKT8UjkLabSDTw8ljXYVt59k_xqIWK"]
     for user in users.run():
       # devices.append(user.device_id)
       if user.device_id is not None:
-        devices.append(user.device_id)
-        user_ids.append(user.fb_uid)
+        user_array.append(user)
 
 
     result = NotifyHandler.send_notifiction(NotifyHandler.notify_type["new_post"],
                                             "ron",
                                             "1",
-                                            devices,
-                                            user_ids)
+                                            user_array)
 
 
     self.response.write("result is " + result)
 
   @staticmethod
-  def send_notifiction(notification_type, text, post_key, device_ids_array, user_ids_array):
+  def send_notifiction(notification_type, text, post_key, recipients):
+
+    device_ids_array = [user.device_id for user in recipients]
+
     logging.info("Sending notification to devices: %s", ", ".join(device_ids_array))
-    logging.info("Sending notification to users: %s", ", ".join(user_ids_array))
+    logging.info("Sending notification to users: %s", ", ".join([user.name() for user in recipients]))
     data = {
           "data": {"type": notification_type,
                    "text": text,
@@ -70,11 +70,12 @@ class NotifyHandler(webapp2.RequestHandler):
     if result_data.get("canonical_ids") is 0:
       for index, result in enumerate(result_data["results"]):
         if result.get("registration_id") is not None:
-          logging.info("Need to change device_id for user [%s]. New ID: %s", user_ids_array[index], result)
-          user = CacheController.get_user_by_fb_id(user_ids_array[index])
+          logging.info("Need to change device_id for user [%s]. New ID: %s",
+                       recipients[index].name(), result)
+          user = recipients[index]
           user.device_id = result.get("registration_id")
           user.put()
-          CacheController.invalidate_user_fb_id(user_ids_array[index])
+          CacheController.invalidate_user_fb_id(user.fb_uid)
     
 
     return str(result)

@@ -113,26 +113,26 @@ class ChoosiePost(db.Model):
     except Exception, e:
       logging.error("Facebook publishing failed: %s" % e)
 
-  def notify_vote_async(self, choosie_post_key, device_id, user_fb_uid, name_of_from_user):
+  def notify_vote_async(self, choosie_post_key, user_fb_uid, name_of_from_user):
     try:
+      user = CacheController.get_user_by_fb_id(user_fb_uid)
       result = NotifyHandler.send_notifiction(NotifyHandler.notify_type["vote"],
                                               name_of_from_user,
                                               str(choosie_post_key), 
-                                              [device_id],
-                                              [user_fb_uid])
+                                              [user])
 
       logging.info("result of notifying on vote from " + name_of_from_user + " : " +  result)
     except Exception, e:
       logging.error("Faled to notify on new vote: %s" % e)
 
 
-  def notify_comment_async(self, choosie_post_key, device_id, user_fb_uid, commenter_name):
+  def notify_comment_async(self, choosie_post_key, user_fb_uid, commenter_name):
     try:
+      user = CacheController.get_user_by_fb_id(user_fb_uid)
       result = NotifyHandler.send_notifiction(NotifyHandler.notify_type["comment"],
                                               commenter_name,
                                               str(choosie_post_key),
-                                              [device_id],
-                                              [user_fb_uid])
+                                              [user])
 
       logging.info("result of notifying on comment from " + commenter_name + " : "  + result)
     except Exception, e:
@@ -145,19 +145,19 @@ class ChoosiePost(db.Model):
     try:
       choosie_post = CacheController.get_model(str(choosie_post_key))
       # choosie_post = db.get(choosie_post_key)
+
+      logging.info("choosie post key = %s", str(choosie_post.key()))
+      for user in User.all():
+        logging.info("%s: device %s, uid: %s", user.name(), user.device_id, user.fb_uid)
+
       users = User.all()
-      device_array = []
-      users = []
-      for user in users:
-        if (user.device_id is not None) and (user.fb_uid != choosie_post.user_fb_id):
-          device_array.append(user.device_id)
-          users.add(user.fb_uid)
+      recipients = [u for u in User.all()
+                    if u.device_id is not None and user.fb_uid != choosie_post.user_fb_id]
 
       result = NotifyHandler.send_notifiction(NotifyHandler.notify_type["new_post"],
                                               self.get_user().name(), 
                                               str(choosie_post_key),
-                                              device_array,
-                                              users)
+                                              recipients)
       logging.info("result of notifying friends= " + result)
     except Exception, e:
       logging.error("Faled to notify friends on new post: %s" % e)
@@ -166,9 +166,9 @@ class ChoosiePost(db.Model):
   def add_comment_to_post(self, comment):
     db.run_in_transaction(ChoosiePost.add_comment_to_post_transaction, self.key(), comment)
     if self.user_fb_id != comment.user_fb_id:
-      device_id = self.get_user().device_id
+      # device_id = self.get_user().device_id
       commenter_name = comment.get_user().name()
-      deferred.defer(self.notify_comment_async, self.key(), device_id, self.user_fb_id, commenter_name)
+      deferred.defer(self.notify_comment_async, self.key(), self.user_fb_id, commenter_name)
 
   @staticmethod
   def add_comment_to_post_transaction(choosie_post_key, comment):
@@ -201,9 +201,8 @@ class ChoosiePost(db.Model):
     logging.info("user_id" + self.user_fb_id)
     logging.info("vote_id " + vote.user_fb_id)
     if self.user_fb_id != vote.user_fb_id and self.created_at > datetime.datetime.now() - datetime.timedelta(0.2): # if i didnt vote on my self and the post was uploaded less then 5 hours ago
-      device_id = self.get_user().device_id
       vote_from = vote.get_user().name()
-      deferred.defer(self.notify_vote_async, self.key(), device_id, self.user_fb_id, vote_from)
+      deferred.defer(self.notify_vote_async, self.key(), self.user_fb_id, vote_from)
 
   @staticmethod
   def add_vote_to_post_transaction(choosie_post_key, new_vote):

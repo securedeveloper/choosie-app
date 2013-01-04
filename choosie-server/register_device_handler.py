@@ -8,6 +8,9 @@ import logging
 from model_user import User
 
 class RegisterDeviceHandler(webapp2.RequestHandler):
+  def get(self):
+    self.post()
+
   def post(self):
     fb_uid = str(self.request.get('fb_uid'))
     device_id = str(self.request.get('device_id'))

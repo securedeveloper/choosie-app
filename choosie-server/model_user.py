@@ -19,7 +19,7 @@ class User(db.Model):
     fb_access_token_expdate = db.DateTimeProperty(required=True)
     device_id = db.StringProperty()
     email = db.StringProperty()
-
+  
     def name(self):
       return self.first_name + " " + self.last_name
 
