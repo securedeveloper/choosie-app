@@ -92,23 +92,25 @@
                 android:paddingRight="1dp" >
 
                 <RelativeLayout
+                    android:id="@+id/layout_for_left_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="#F5F5FF"
                     android:orientation="vertical" >
 
                     <ProgressBar
                         android:id="@+id/progressBar1"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_margin="5dp" />
 
                     <ImageView
                         android:id="@+id/feedimage1"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                     <ImageView
                         android:id="@+id/feed_imageSelect1"
@@ -157,23 +159,25 @@
                 android:paddingLeft="1dp" >
 
                 <RelativeLayout
+                    android:id="@+id/layout_for_right_photo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="#F5F5FF"
                     android:orientation="vertical" >
 
                     <ProgressBar
                         android:id="@+id/progressBar2"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="32dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_margin="5dp" />
 
                     <ImageView
                         android:id="@+id/feedimage2"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                     <ImageView
                         android:id="@+id/feed_imageSelect2"

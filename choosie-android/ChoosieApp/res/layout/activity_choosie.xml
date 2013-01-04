@@ -42,14 +42,13 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_margin="-1dp"
+            android:layout_toLeftOf="@id/refresh_button"
             android:background="@drawable/header_selector"
+            android:contentDescription="@string/general_content_description"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/view_choosie_post_margin"
             android:paddingRight="@dimen/view_choosie_post_margin"
-            android:src="@drawable/settings_icon"
-            android:layout_toLeftOf="@id/refresh_button"
-            android:contentDescription="@string/general_content_description" />
-
+            android:src="@drawable/settings_icon" />
     </RelativeLayout>
 
     <ProgressBar

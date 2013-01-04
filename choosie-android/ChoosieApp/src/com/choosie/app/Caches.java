@@ -19,7 +19,7 @@ public class Caches {
 		initializeCaches(controller);
 	}
 
-    public Cache<String, Bitmap> getPhotosCache() {
+	public Cache<String, Bitmap> getPhotosCache() {
 		return photosCache;
 	}
 
@@ -28,67 +28,63 @@ public class Caches {
 	}
 
 	private void initializeCaches(final SuperController controller) {
-		photosCache = new Cache<String, Bitmap>(
-				new ResultCallback<Bitmap, String>() {
+		int photoCacheMaxSize = 10 * 1024 * 1024;
+		photosCache = new PersistentCache<String, Bitmap>(photoCacheMaxSize) {
 
-					@Override
-					Bitmap getData(String param,
-							Callback<Void, Object, Void> progressCallback) {
-						return controller.getClient().getPictureFromServerSync(
-								param, progressCallback);
-					}
-				},
-				// this is the serializer
-				new ResultCallback<ByteArrayOutputStream, Bitmap>() {
+			@Override
+			protected ByteArrayOutputStream serialize(Bitmap value) {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				value.compress(CompressFormat.JPEG, 100, bos);
+				return bos;
+			}
 
-					@Override
-					ByteArrayOutputStream getData(Bitmap param,
-							Callback<Void, Object, Void> progressCallback) {
-						ByteArrayOutputStream bos = new ByteArrayOutputStream();
-						param.compress(CompressFormat.JPEG, 100, bos);
-						return bos;
-					}
-				},
-				// this is the deserializer
-				new ResultCallback<Bitmap, String>() {
+			@Override
+			protected Bitmap readFromSdCard(String key,
+					Callback<Void, Object, Void> progressCallback) {
+				return Utils.getBitmapFromURL(key, progressCallback);
+			}
 
-					@Override
-					Bitmap getData(String param,
-							Callback<Void, Object, Void> progressCallback) {
-						return Utils.getBitmapFromURL(param);
-					}
-				},
-				// this is the befoer-put-in-memory-er
-				new ResultCallback<Bitmap, Bitmap>() {
+			@Override
+			protected Bitmap beforePutInMemory(Bitmap result) {
+				return Utils.shrinkBitmapToImageViewSize(result, controller);
+			}
 
-					@Override
-					Bitmap getData(Bitmap param,
-							Callback<Void, Object, Void> progressCallback) {
-						return Utils.shrinkBitmapToImageViewSize(param, controller);
-					}
-				});
+			@Override
+			protected Bitmap downloadData(String key,
+					Callback<Void, Object, Void> progressCallback) {
+				return controller.getClient().getPictureFromServerSync(key,
+						progressCallback);
+			}
 
-		feedCache = (new Cache<FeedCacheKey, FeedResponse>(
-				new ResultCallback<FeedResponse, FeedCacheKey>() {
+			@Override
+			protected int calcSizeOf(String key, Bitmap value) {
+				return value.getRowBytes() * value.getHeight();
+			}
+		};
 
-					@Override
-					FeedResponse getData(FeedCacheKey param,
-							Callback<Void, Object, Void> progressCallback) {
-						return controller.getClient().getFeedByCursor(param,
-								progressCallback);
-					}
-				}));
+		int numberOfFeedResponsesToKeepInCache = 15;
+		feedCache = new Cache<FeedCacheKey, FeedResponse>(
+				numberOfFeedResponsesToKeepInCache) {
 
+			@Override
+			protected FeedResponse fetchData(FeedCacheKey key,
+					Callback<Void, Object, Void> progressCallback) {
+				return controller.getClient().getFeedByCursor(key,
+						progressCallback);
+			}
+		};
+
+		int numberOfChoosiePostDatasToKeepInCache = 40;
 		postsCache = new Cache<String, ChoosiePostData>(
-				new ResultCallback<ChoosiePostData, String>() {
+				numberOfChoosiePostDatasToKeepInCache) {
 
-					@Override
-					ChoosiePostData getData(String param,
-							Callback<Void, Object, Void> progressCallback) {
-						return controller.getClient().getPostByKey(param,
-								progressCallback);
-					}
-				});
+			@Override
+			protected ChoosiePostData fetchData(String key,
+					Callback<Void, Object, Void> progressCallback) {
+				return controller.getClient().getPostByKey(key,
+						progressCallback);
+			}
+		};
 	}
 
 	public Cache<String, ChoosiePostData> getPostsCache() {

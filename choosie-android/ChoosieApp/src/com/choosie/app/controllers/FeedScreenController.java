@@ -51,7 +51,7 @@ public class FeedScreenController extends ScreenController {
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
 				/* maybe add a padding */
-				boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount;
+				boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount - 3;
 				if (loadMore) {
 					choosiePostsItemAdapter.appendToList();
 				}

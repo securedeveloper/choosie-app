@@ -15,16 +15,12 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.hardware.Camera.Size;
-import android.net.Uri;
 import android.os.Debug;
-import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 public class Utils {
-	
+
 	private static int screenWidth = -1;
 	private static int screenHeight = -1;
 
@@ -115,49 +111,58 @@ public class Utils {
 		return f.exists();
 	}
 
-	@SuppressLint("NewApi") public static Bitmap getBitmapFromURL(String param) {
-		
+	@SuppressLint("NewApi")
+	public static Bitmap getBitmapFromURL(String param,
+			Callback<Void, Object, Void> progressCallback) {
+
 		String fullPath = getFileNameForURL(param);
-		
+
+		progressCallback.onProgress(5);
 		Bitmap toRet = BitmapFactory.decodeFile(fullPath);
-		
-		if (toRet.getWidth() > screenWidth / 2){
-			
-			Bitmap toRet2 = Bitmap.createScaledBitmap(toRet, screenWidth / 2, screenWidth / 2, false);
-			
+
+		if (toRet.getWidth() > screenWidth / 2) {
+
+			progressCallback.onProgress(25);
+			Bitmap toRet2 = Bitmap.createScaledBitmap(toRet, screenWidth / 2,
+					screenWidth / 2, false);
+			progressCallback.onProgress(75);
+
 			toRet.recycle();
+			progressCallback.onProgress(100);
 			toRet = null;
-//			Log.i("mem", "insert toRet2 WR" + toRet2.getRowBytes() + " H - " + toRet2.getHeight() + " BC: " +toRet2.getByteCount());
+			// Log.i("mem", "insert toRet2 WR" + toRet2.getRowBytes() + " H - "
+			// + toRet2.getHeight() + " BC: " +toRet2.getByteCount());
 			return toRet2;
 		}
-//		Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " + toRet.getHeight() + " BC: " +toRet.getByteCount());
+		// Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " +
+		// toRet.getHeight() + " BC: " +toRet.getByteCount());
+		progressCallback.onProgress(100);
 		return toRet;
-		
-		
-		/*
-		 *note: code below for showing large images, we will keep it for now 
-		 */
-		
 
-//		// **this function is for showing the images in the feed, so we will
-//		// bring smaller version**/
-//
-//		String fullPath = getFileNameForURL(param);
-//
-//		// First decode with inJustDecodeBounds=true to check dimensions
-//		final BitmapFactory.Options options = new BitmapFactory.Options();
-//		options.inJustDecodeBounds = true;
-//		BitmapFactory.decodeFile(fullPath, options);
-//
-//		// Calculate inSampleSize
-//		options.inSampleSize = calculateInSampleSize(options, screenWidth / 2,
-//				screenWidth / 2);
-//
-//		// Decode bitmap with inSampleSize set
-//		options.inJustDecodeBounds = false;
-//		return BitmapFactory.decodeFile(fullPath, options);
-//
-//		// return BitmapFactory.decodeFile(getFileNameForURL(param));
+		/*
+		 * note: code below for showing large images, we will keep it for now
+		 */
+
+		// // **this function is for showing the images in the feed, so we will
+		// // bring smaller version**/
+		//
+		// String fullPath = getFileNameForURL(param);
+		//
+		// // First decode with inJustDecodeBounds=true to check dimensions
+		// final BitmapFactory.Options options = new BitmapFactory.Options();
+		// options.inJustDecodeBounds = true;
+		// BitmapFactory.decodeFile(fullPath, options);
+		//
+		// // Calculate inSampleSize
+		// options.inSampleSize = calculateInSampleSize(options, screenWidth /
+		// 2,
+		// screenWidth / 2);
+		//
+		// // Decode bitmap with inSampleSize set
+		// options.inJustDecodeBounds = false;
+		// return BitmapFactory.decodeFile(fullPath, options);
+		//
+		// // return BitmapFactory.decodeFile(getFileNameForURL(param));
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
@@ -212,24 +217,26 @@ public class Utils {
 		DisplayMetrics displaymetrics = new DisplayMetrics();
 		controller.getActivity().getWindowManager().getDefaultDisplay()
 				.getMetrics(displaymetrics);
-		int width = displaymetrics.widthPixels;
+		int width = displaymetrics.widthPixels / 2;
 
-		Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(param, width, width,
-				false);
+		if (width < param.getWidth()) {
+			Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(param, width,
+					width, false);
 
-		param.recycle();
-		param = null;
-		return shrinkedBitmap;
+			param.recycle();
+			param = null;
+			return shrinkedBitmap;
+		}
+		return param;
 	}
-	
-	public static int getScreenWidth(){
+
+	public static int getScreenWidth() {
 		return screenWidth;
 	}
-	
-	public static int getScreenHeight(){
+
+	public static int getScreenHeight() {
 		return screenHeight;
 	}
-
 
 	public static void setScreenWidth(ChoosieActivity choosieActivity) {
 		DisplayMetrics displaymetrics = new DisplayMetrics();
@@ -237,6 +244,6 @@ public class Utils {
 				.getMetrics(displaymetrics);
 
 		screenWidth = displaymetrics.widthPixels;
-		screenHeight  = displaymetrics.heightPixels;	
+		screenHeight = displaymetrics.heightPixels;
 	}
 }

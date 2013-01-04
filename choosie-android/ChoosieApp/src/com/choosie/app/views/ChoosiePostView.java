@@ -1,5 +1,6 @@
 package com.choosie.app.views;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.choosie.app.Callback;
@@ -58,14 +59,22 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
 		feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
 		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+		feedViewHolder.layoutForLeftPhoto = (RelativeLayout) findViewById(R.id.layout_for_left_photo);
+		feedViewHolder.layoutForRightPhoto = (RelativeLayout) findViewById(R.id.layout_for_right_photo);
 
 		// set the size of the image view to be a square sized half of the
 		// screen width
 		int screenWidth = Utils.getScreenWidth();
-		feedViewHolder.imgView1.getLayoutParams().height = screenWidth / 2;
-		feedViewHolder.imgView1.getLayoutParams().width = screenWidth / 2;
-		feedViewHolder.imgView2.getLayoutParams().height = screenWidth / 2;
-		feedViewHolder.imgView2.getLayoutParams().width = screenWidth / 2;
+		resizeViews(screenWidth / 2, screenWidth / 2, feedViewHolder.imgView1,
+				feedViewHolder.imgView2, feedViewHolder.layoutForLeftPhoto,
+				feedViewHolder.layoutForRightPhoto);
+	}
+
+	private void resizeViews(int width, int height, View... views) {
+		for (View view : views) {
+			view.getLayoutParams().width = width;
+			view.getLayoutParams().height = height;
+		}
 	}
 
 	private void inflateLayout(final int position) {
@@ -188,15 +197,12 @@ public class ChoosiePostView extends RelativeLayout {
 			feedViewHolder.votes2Pointing.setOnClickListener(votesListener);
 			feedViewHolder.votes1.setOnClickListener(votesListener);
 			feedViewHolder.votes2.setOnClickListener(votesListener);
-		}
-		else{
+		} else {
 			feedViewHolder.votes1Pointing.setOnClickListener(null);
 			feedViewHolder.votes2Pointing.setOnClickListener(null);
 			feedViewHolder.votes1.setOnClickListener(null);
 			feedViewHolder.votes2.setOnClickListener(null);
 		}
-			
-		
 
 		feedViewHolder.imgView1.setOnClickListener(enlargeListener);
 		feedViewHolder.imgView2.setOnClickListener(enlargeListener);
@@ -395,6 +401,8 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private class FeedViewHolder {
+		public RelativeLayout layoutForRightPhoto;
+		public RelativeLayout layoutForLeftPhoto;
 		public LinearLayout commentLayout;
 		public LinearLayout commentLayoutMain;
 		public ImageView votes1Pointing;

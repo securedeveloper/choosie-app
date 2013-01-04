@@ -1,6 +1,5 @@
 package com.choosie.app;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,65 +8,48 @@ import java.util.Map;
 import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v4.util.LruCache;
 
-public class Cache<Key, Value> {
-	final ResultCallback<Value, Key> downloader;
-	final ResultCallback<ByteArrayOutputStream, Value> serializer;
-	final ResultCallback<Value, Key> deSerializer;
-	final ResultCallback<Value, Value> beforePutInMemory;
+public abstract class Cache<Key, Value> {
 	final Object cacheLock = new Object();
-	final Map<Key, Value> memoryCache = new HashMap<Key, Value>();
+	final LruCache<Key, Value> memoryCache;
 	final Map<Key, List<Callback<Void, Object, Value>>> callbacksForKey = new HashMap<Key, List<Callback<Void, Object, Value>>>();
-	final Boolean persistent;
 
-	public Cache(ResultCallback<Value, Key> downloader,
-			ResultCallback<ByteArrayOutputStream, Value> serializer,
-			final ResultCallback<Value, Key> deSerializer,
-			ResultCallback<Value, Value> beforePutInMemory) {
-		this.downloader = downloader;
-		this.serializer = serializer;
-		this.deSerializer = deSerializer;
-		this.persistent = true;
-		this.beforePutInMemory = beforePutInMemory;
+	protected abstract Value fetchData(Key key,
+			Callback<Void, Object, Void> progressCallback);
+
+	public Cache(int maxSize) {
+		this.memoryCache = new LruCache<Key, Value>(maxSize) {
+			@Override
+			protected int sizeOf(Key key, Value value) {
+				return calcSizeOf(key, value);
+			}
+		};
 	}
 
-	public Cache(ResultCallback<Value, Key> downloader) {
-		this.downloader = downloader;
-		this.serializer = null;
-		this.deSerializer = null;
-		this.persistent = false;
-		this.beforePutInMemory = null;
+	protected int calcSizeOf(Key key, Value value) {
+		// The default: '1' for each entry in cache, making maxCache size
+		// in units of 'entries'.
+		return 1;
 	}
 
 	public void getValue(Key key, Callback<Void, Object, Value> callback) {
-		Value fromMemoryCache;
+		Value fromMemoryCache = null;
 		synchronized (cacheLock) {
 			fromMemoryCache = memoryCache.get(key);
 			if (fromMemoryCache == null) {
-
-				// if in persistent - check if available on SD
-				if ((persistent == true) && (isPersisted(key) == true)) {
-					Value fromSdcard = deSerializer.getData(key, null);
-//					Value inMemoryVersion = beforePutInMemory.getData(fromSdcard, null);
-					memoryCache.put(key, fromSdcard);
-					fromMemoryCache = memoryCache.get(key);
-				} else {
-					// Not in memory cache and not persisted
-					if (!isCurrentlyDownloading(key)) {
-						// In case this is the first time this key is
-						// encountered,
-						// initiate downloading it in the background.
-						startDownload(key);
-					}
-					// Make sure that this callback is run when the download
-					// is
-					// finished.
-					addCallback(key, callback);
-					return;
+				if (!isCurrentlyFetching(key)) {
+					// In case this is the first time this key is encountered,
+					// initiate downloading it (or loading from the sdcard) in
+					// the background.
+					startFetching(key);
 				}
+				addCallback(key, callback);
 			}
 		}
-		callback.onFinish(fromMemoryCache);
+		if (fromMemoryCache != null) {
+			callback.onFinish(fromMemoryCache);
+		}
 	}
 
 	public void invalidateKey(Key key) {
@@ -75,9 +57,8 @@ public class Cache<Key, Value> {
 			Value fromMemoryCache = memoryCache.get(key);
 			if (fromMemoryCache == null) {
 				// Not in memory cache. If it is currently downloading, restart
-				// the
-				// download. Otherwise do nothing.
-				if (isCurrentlyDownloading(key)) {
+				// the download. Otherwise do nothing.
+				if (isCurrentlyFetching(key)) {
 					restartDownload(key);
 				}
 			} else {
@@ -87,7 +68,7 @@ public class Cache<Key, Value> {
 		}
 	}
 
-	private boolean isCurrentlyDownloading(Key key) {
+	protected boolean isCurrentlyFetching(Key key) {
 		return callbacksForKey.containsKey(key);
 	}
 
@@ -95,7 +76,7 @@ public class Cache<Key, Value> {
 		callbacksForKey.get(key).add(callback);
 	}
 
-	private void startDownload(final Key key) {
+	protected void startFetching(final Key key) {
 		// This marks that this key is currently being downloaded.
 		callbacksForKey
 				.put(key, new ArrayList<Callback<Void, Object, Value>>());
@@ -103,13 +84,18 @@ public class Cache<Key, Value> {
 		AsyncTask<Void, ?, Value> task = new AsyncTask<Void, Object, Value>() {
 			@Override
 			protected Value doInBackground(Void... params) {
-				return downloader.getData(key,
+				// fetchData() is implemented outside this class, and it allows
+				// the users to decide how to download data that is missing from
+				// the cache.
+				Value result = fetchData(key,
 						new Callback<Void, Object, Void>() {
 							@Override
 							public void onProgress(Object progress) {
 								publishProgress(progress);
 							}
 						});
+				return onAfterFetching(key, result);
+
 			}
 
 			@Override
@@ -124,7 +110,7 @@ public class Cache<Key, Value> {
 
 			@Override
 			protected void onPostExecute(Value result) {
-				savePersistentAndRunCallbacks(key, result);
+				putInMemoryCacheAndRunCallbacks(key, result);
 			}
 		};
 
@@ -167,15 +153,10 @@ public class Cache<Key, Value> {
 		}
 	}
 
-	private void savePersistentAndRunCallbacks(final Key key, Value result) {
+	private void putInMemoryCacheAndRunCallbacks(final Key key, Value result) {
 		List<Callback<Void, Object, Value>> callbacks;
 		synchronized (cacheLock) {
-			if (persistent == true) {
-				savePersistent(key, result, serializer);
-				result = beforePutInMemory.getData(result, null);
-			}
 			if (result != null) {
-				
 				memoryCache.put(key, result);
 			}
 			callbacks = callbacksForKey.get(key);
@@ -186,21 +167,8 @@ public class Cache<Key, Value> {
 		}
 	}
 
-	/*
-	 * saves on sd params: key - this will be the file name value - what to save
-	 */
-	private void savePersistent(Key key, Value value,
-			ResultCallback<ByteArrayOutputStream, Value> serializer) {
-
-		String fileName = (String) Integer.toString(key.toString().hashCode());
-
-		ByteArrayOutputStream bos = serializer.getData(value, null);
-
-		Utils.writeByteStreamOnSD(bos, fileName);
-	}
-
-	private boolean isPersisted(Key key) {
-		String fileName = (String) Integer.toString(key.toString().hashCode());
-		return Utils.isFileExists(fileName);
+	protected Value onAfterFetching(Key key, Value result) {
+		// Do nothing by defaut; persistent cache does additional things here.
+		return result;
 	}
 }
