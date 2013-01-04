@@ -5,6 +5,7 @@ import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.FacebookDetails;
 import com.facebook.Session;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -288,6 +289,7 @@ public class ChoosieActivity extends Activity {
 	protected void onStart() {
 		Logger.i("ChoosieActivity: onStart()");
 		super.onStart();
+		EasyTracker.getInstance().activityStart(this);
 	}
 
 	@Override
@@ -300,6 +302,7 @@ public class ChoosieActivity extends Activity {
 	protected void onStop() {
 		Logger.i("ChoosieActivity: onStop()");
 		super.onStop();
+		EasyTracker.getInstance().activityStop(this);
 	}
 
 	@Override

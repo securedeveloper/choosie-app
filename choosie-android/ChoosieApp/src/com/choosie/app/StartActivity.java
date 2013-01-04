@@ -12,6 +12,8 @@ import com.facebook.Session.OpenRequest;
 import com.facebook.SessionState;
 import com.facebook.Response;
 import com.facebook.Settings;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -37,7 +39,7 @@ public class StartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
-
+		
 		setContentView(R.layout.activity_start);
 
 		Logger.i("************** Start Application! ****************");
@@ -104,7 +106,8 @@ public class StartActivity extends Activity {
 	public void onStart() {
 		Logger.i("StartActivity: onStart()");
 		super.onStart();
-		Session.getActiveSession().addCallback(statusCallback);
+		Session.getActiveSession().addCallback(statusCallback);	
+		EasyTracker.getInstance().activityStart(this);
 	}
 
 	@Override
@@ -112,6 +115,7 @@ public class StartActivity extends Activity {
 		Logger.i("StartActivity: onStop()");
 		super.onStop();
 		Session.getActiveSession().removeCallback(statusCallback);
+		EasyTracker.getInstance().activityStop(this);
 	}
 
 	@Override
@@ -219,6 +223,8 @@ public class StartActivity extends Activity {
 	}
 
 	private void onClickLogin() {
+		GoogleAnalytics ga = GoogleAnalytics.getInstance(this);
+		EasyTracker.getInstance().getTracker().trackEvent("Ui action", "login", "esh", null); 
 		Session session = Session.getActiveSession();
 		if (!session.isOpened() && !session.isClosed()) {
 
