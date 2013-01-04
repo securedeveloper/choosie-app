@@ -3,6 +3,7 @@ package com.choosie.app.controllers;
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.Logger;
+import com.choosie.app.caches.Caches;
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.views.ChoosiePostView;
@@ -193,8 +194,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			// In case feed needs refreshing, make sure an actual request
 			// to the server is made.
 			// TODO: Don't cache that result in the first place.
-			this.superController.getCaches().getFeedCache()
-					.invalidateKey(request);
+			Caches.getInstance().getFeedCache().invalidateKey(request);
 		} else if (this.state == State.APPENDING_TO_FEED) {
 			request = new FeedCacheKey(this.feedCursor, true);
 		}
@@ -205,7 +205,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 					"addItemsToList() was called in a forbidden state.");
 		}
 
-		this.superController.getCaches().getFeedCache()
+		Caches.getInstance().getFeedCache()
 				.getValue(request, new AdapterUpdater());
 
 	}

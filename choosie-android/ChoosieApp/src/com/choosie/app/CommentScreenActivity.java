@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.choosie.app.R;
 import com.choosie.app.Models.CommentData;
+import com.choosie.app.caches.Caches;
 import com.choosie.app.controllers.SuperController;
 import com.nullwire.trace.ExceptionHandler;
 
@@ -35,7 +36,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class CommentScreen extends Activity {
+public class CommentScreenActivity extends Activity {
 	Intent intent;
 	int votes1;
 	int votes2;
@@ -46,7 +47,6 @@ public class CommentScreen extends Activity {
 	ImageView image2View;
 	String postKey;
 	// RelativeLayout mainCommentLayout;
-	Activity acivity;
 
 	// key listener - for: when the user pressing the enter key - sends the
 	// comment
@@ -67,23 +67,21 @@ public class CommentScreen extends Activity {
 	};
 
 	private OnClickListener votesListenter = new OnClickListener() {
-
 		public void onClick(View v) {
-			ChannelingActivity channeling = new ChannelingActivity(
-					SuperController.getInstance(null, null), postKey);
-
-			channeling.handleJob(ChannelingJob.POPUP_VOTES_WINDOW, acivity);
+			openVotesWindow();
 		}
 	};
 
+	private void openVotesWindow() {
+		VotePopupWindowUtils voteWindow = new VotePopupWindowUtils(this);
+		voteWindow.popUpVotesWindow(postKey);
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Logger.i("in comment screen");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_comment_screen);
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
-
-		this.acivity = this;
 
 		// setting onclikelistener
 		EditText questionEditText = (EditText) findViewById(R.id.editText_comment);
@@ -247,6 +245,7 @@ public class CommentScreen extends Activity {
 			commentViewHolder.imagesLayout.setVisibility(View.VISIBLE);
 			commentViewHolder.viewComment_votes_layout
 					.setVisibility(View.VISIBLE);
+
 			commentViewHolder.imageViewPhoto1.setImageBitmap(image1Bitmap);
 			commentViewHolder.imageViewPhoto2.setImageBitmap(image2Bitmap);
 			image1View = commentViewHolder.imageViewPhoto1;
@@ -270,11 +269,18 @@ public class CommentScreen extends Activity {
 
 			// set the comment text
 			setTextOntv(item, commentViewHolder.tv);
-
+			final CommentViewHolder holder = commentViewHolder;
 			// set the commentier photo
-			commentViewHolder.commentierPhotoImageView
-					.setImageBitmap(BitmapFactory.decodeFile(item
-							.getcommentierPhotoPath()));
+			Caches.getInstance()
+					.getPhotosCache()
+					.getValue(item.getCommentierPhotoUrl(),
+							new Callback<Void, Object, Bitmap>() {
+								@Override
+								public void onFinish(Bitmap param) {
+									holder.commentierPhotoImageView
+											.setImageBitmap(param);
+								}
+							});
 
 			// set the comment time
 			commentViewHolder.commentTime.setText(item.getCreatedAt() + " ago");

@@ -4,14 +4,14 @@ public class CommentData {
 
 	private final String name;
 	private final String comment;
-	private final String commentierPhotoPath;
+	private final String commentierPhotoUrl;
 	private final CharSequence createdAt;
 	private final boolean isDummyComment;
 
-	public CommentData(String name, String comment, String commentierPhotoUrlList, CharSequence createdAt) {
+	public CommentData(String name, String comment, String commentierPhotoUrl, CharSequence createdAt) {
 		this.name = name;
 		this.comment = comment;
-		this.commentierPhotoPath = commentierPhotoUrlList;
+		this.commentierPhotoUrl = commentierPhotoUrl;
 		this.createdAt = createdAt;
 		this.isDummyComment = false;
 	}
@@ -19,7 +19,7 @@ public class CommentData {
 	public CommentData(boolean isDummyComment){
 		this.name = null;
 		this.comment = null;
-		this.commentierPhotoPath = null;
+		this.commentierPhotoUrl = null;
 		this.createdAt = null;
 		this.isDummyComment = true;
 	}
@@ -32,8 +32,8 @@ public class CommentData {
 		return this.comment;
 	}
 	
-	public String getcommentierPhotoPath() {
-		return this.commentierPhotoPath;
+	public String getCommentierPhotoUrl() {
+		return this.commentierPhotoUrl;
 	}
 	
 	public CharSequence getCreatedAt() {

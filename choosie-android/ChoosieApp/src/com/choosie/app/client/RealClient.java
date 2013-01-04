@@ -47,12 +47,11 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class RealClient extends ClientBase {
+public class RealClient extends Client {
 
-	public RealClient(FacebookDetails fbDetails) {
-		super(fbDetails);
+	protected RealClient() {
 	}
-
+	
 	/**
 	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the
 	 * server.

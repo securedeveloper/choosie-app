@@ -8,6 +8,7 @@ import com.choosie.app.Constants;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
+import com.choosie.app.caches.Caches;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.*;
 
@@ -111,7 +112,6 @@ public class ChoosiePostView extends RelativeLayout {
 		loadImageToView(post.getAuthor().getPhotoURL(),
 				feedViewHolder.feed_userimage, null, null);
 		loadCommentsToView(post, feedViewHolder);
-		saveVotersPhotos(post);
 
 		// DECIDE IF SHOW RESUTLS OR NOT
 		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
@@ -186,9 +186,8 @@ public class ChoosiePostView extends RelativeLayout {
 
 		// listener for handling votes popUpWindow
 		OnClickListener votesListener = new OnClickListener() {
-
 			public void onClick(View v) {
-				superController.handlePopupVoteWindow(choosiePost, position);
+				superController.handlePopupVoteWindow(choosiePost.getPostKey(), position);
 			}
 		};
 
@@ -246,19 +245,6 @@ public class ChoosiePostView extends RelativeLayout {
 		return false;
 	}
 
-	private void saveVotersPhotos(ChoosiePostData post) {
-		List<Vote> lstVotes = post.getVotes();
-		for (Vote vote : lstVotes) {
-			// first, save commentier photo on sd
-			if (vote.getIsNeedToSave() == true) {
-				Utils.saveURLonSD(vote.getUsers().getPhotoURL(),
-						superController);
-				vote.setsNeedToSave();
-			}
-		}
-
-	}
-
 	private void setImageBorder(ImageView imgView, boolean isBorderVisable) {
 		if (isBorderVisable) {
 			imgView.setImageDrawable(getResources().getDrawable(
@@ -295,11 +281,6 @@ public class ChoosiePostView extends RelativeLayout {
 		int i = 0;
 		for (Comment comment : lstComment) {
 			// first, save commentier photo on sd
-			if (comment.getIsNeedToSave() == true) {
-				Utils.saveURLonSD(comment.getUser().getPhotoURL(),
-						superController);
-				comment.setIsNeedToSave();
-			}
 			if (i == 0) {
 				feedViewHolder.commentLayoutMain
 						.setVisibility(LinearLayout.VISIBLE);
@@ -370,7 +351,7 @@ public class ChoosiePostView extends RelativeLayout {
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
 			final ProgressBar progressBar, final ImageView img) {
-		this.superController.getCaches().getPhotosCache()
+		Caches.getInstance().getPhotosCache()
 				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
 					@Override
 					public void onFinish(Bitmap param) {

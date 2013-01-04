@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Vote;
 import com.choosie.app.Models.VoteData;
+import com.choosie.app.caches.Caches;
 import com.choosie.app.controllers.SuperController;
 
 /*
@@ -40,7 +42,27 @@ public class VotePopupWindowUtils {
 		this.activity = activity;
 	}
 
-	public void popUpVotesWindow(ChoosiePostData choosiePost) {
+	public void popUpVotesWindow(String postKey) {
+		Caches.getInstance()
+				.getPostsCache()
+				.getValue(postKey,
+						new Callback<Void, Object, ChoosiePostData>() {
+							@Override
+							public void onFinish(ChoosiePostData param) {
+								if (param == null) {
+									Logger.e("ERROR : param is 'null'");
+									// TODO: Handle error
+									// Toast.makeText(getActivity(),
+									// "Failed to update post.",
+									// Toast.LENGTH_SHORT).show();
+									return;
+								}
+								createAndShowPopup(param);
+							}
+						});
+	}
+	
+	private void createAndShowPopup(ChoosiePostData choosiePost) {
 		PopupWindow pw;
 
 		// We need to get the instance of the LayoutInflater, use the
@@ -68,8 +90,7 @@ public class VotePopupWindowUtils {
 
 		for (Vote vote : choosiePost.getVotes()) {
 			nameList.add(vote.getUsers().getUserName());
-			votersPhotoUrlList.add(Utils.getFileNameForURL(vote.getUsers()
-					.getPhotoURL()));
+			votersPhotoUrlList.add(vote.getUsers().getPhotoURL());
 			voteForList.add(vote.getVote_for());
 		}
 
@@ -106,13 +127,13 @@ public class VotePopupWindowUtils {
 
 				VoteData item = getItem(position);
 
-				return createViewVotes(item, convertView, parent); 
+				return createViewVotes(item, convertView, parent);
 			}
 		};
 
 		ArrayList<MiniVoteData> votersToPhoto1 = new ArrayList<MiniVoteData>();
 		ArrayList<MiniVoteData> votersToPhoto2 = new ArrayList<MiniVoteData>();
-		devideVoters(votersToPhoto1, votersToPhoto2, nameList,
+		divideVoters(votersToPhoto1, votersToPhoto2, nameList,
 				votersPhotoUrlList, voteForList);
 
 		for (int i = 0; i < Math.max(votersToPhoto1.size(),
@@ -125,11 +146,11 @@ public class VotePopupWindowUtils {
 
 			if (i < votersToPhoto1.size()) {
 				voterName1 = votersToPhoto1.get(i).getName();
-				photoUrl1 = votersToPhoto1.get(i).getphotoUrl();
+				photoUrl1 = votersToPhoto1.get(i).getPhotoUrl();
 			}
 			if (i < votersToPhoto2.size()) {
 				voterName2 = votersToPhoto2.get(i).getName();
-				photoUrl2 = votersToPhoto2.get(i).getphotoUrl();
+				photoUrl2 = votersToPhoto2.get(i).getPhotoUrl();
 			}
 			VoteData newVoteData = new VoteData(voterName1, photoUrl1,
 					voterName2, photoUrl2);
@@ -151,12 +172,12 @@ public class VotePopupWindowUtils {
 			return this.name;
 		}
 
-		public String getphotoUrl() {
+		public String getPhotoUrl() {
 			return this.photoUrl;
 		}
 	}
 
-	private void devideVoters(ArrayList<MiniVoteData> votersToPhoto1,
+	private void divideVoters(ArrayList<MiniVoteData> votersToPhoto1,
 			ArrayList<MiniVoteData> votersToPhoto2, ArrayList<String> nameList,
 			ArrayList<String> votersPhotoUrlList, ArrayList<Integer> voteForList) {
 
@@ -208,13 +229,20 @@ public class VotePopupWindowUtils {
 		voteViewHolder.voterPhotoImageView1.setImageBitmap(null);
 		voteViewHolder.voterPhotoImageView2.setImageBitmap(null);
 
+		final VoteViewHolder holder = voteViewHolder;
 		if (item.getName1() != null) {
 			// set the voter1 names
 			setTextOntv(item.getName1(), voteViewHolder.tv1);
-
 			// set the voter1 photo
-			voteViewHolder.voterPhotoImageView1.setImageBitmap(BitmapFactory
-					.decodeFile(item.getVoterPhotoPath1()));
+			Caches.getInstance()
+					.getPhotosCache()
+					.getValue(item.getVoterPhotoUrl1(),
+							new Callback<Void, Object, Bitmap>() {
+								public void onFinish(Bitmap param) {
+									holder.voterPhotoImageView1
+											.setImageBitmap(param);
+								};
+							});
 		}
 
 		if (item.getName2() != null) {
@@ -222,8 +250,15 @@ public class VotePopupWindowUtils {
 			setTextOntv(item.getName2(), voteViewHolder.tv2);
 
 			// set the voter2 photo
-			voteViewHolder.voterPhotoImageView2.setImageBitmap(BitmapFactory
-					.decodeFile(item.getVoterPhotoPath2()));
+			Caches.getInstance()
+					.getPhotosCache()
+					.getValue(item.getVoterPhotoUrl2(),
+							new Callback<Void, Object, Bitmap>() {
+								public void onFinish(Bitmap param) {
+									holder.voterPhotoImageView2
+											.setImageBitmap(param);
+								};
+							});
 		}
 
 		return itemView;
@@ -257,5 +292,6 @@ public class VotePopupWindowUtils {
 
 		tv.setText(sb);
 	}
+
 
 }

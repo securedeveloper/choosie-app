@@ -13,6 +13,7 @@ import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
+import com.choosie.app.client.Client;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -395,7 +396,8 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void submitChoosiePost() {
-		Tracker tracker = GoogleAnalytics.getInstance(superController.getActivity()).getDefaultTracker();
+		Tracker tracker = GoogleAnalytics.getInstance(
+				superController.getActivity()).getDefaultTracker();
 		tracker.trackEvent("Ui action", "Post Screen", "Share", null);
 		if ((mImage1 == null) || (mImage2 == null)) {
 			Toast toast = Toast.makeText(getActivity(),
@@ -413,7 +415,7 @@ public class PostScreenController extends ScreenController {
 				final ProgressBar progressBar = (ProgressBar) getActivity()
 						.findViewById(R.id.progressBarPost);
 
-				superController.getClient().sendChoosiePostToServer(
+				Client.getInstance().sendChoosiePostToServer(
 						new NewChoosiePostData(mImage1, mImage2, mQuestion,
 								shareOnFacebookTb.isChecked()),
 						new Callback<Void, Integer, Void>() {

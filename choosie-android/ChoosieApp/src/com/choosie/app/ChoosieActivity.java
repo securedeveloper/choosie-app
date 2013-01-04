@@ -1,9 +1,14 @@
 package com.choosie.app;
 
-import com.choosie.app.Constants.Notifications;
+import com.choosie.app.R;
+import com.choosie.app.caches.Caches;
+import com.choosie.app.client.Client;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.FacebookDetails;
+import com.choosie.app.Constants.Notifications;
+import com.choosie.app.R.id;
+import com.choosie.app.R.layout;
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.nullwire.trace.ExceptionHandler;
@@ -69,7 +74,7 @@ public class ChoosieActivity extends Activity {
 
 		Utils.setScreenWidth(this);
 
-		superController = SuperController.getInstance(this, fbDetails);
+		superController = new SuperController(this, fbDetails);
 
 		if (notification != null) {
 			handleNotification(notification);
@@ -104,7 +109,7 @@ public class ChoosieActivity extends Activity {
 	private void handleRegisterNotification(PushNotification notification) {
 		// TODO Auto-generated method stub
 		Logger.i("handleRegisterNotification()");
-		superController.getClient().registerGCM(notification.getDeviceId());
+		Client.getInstance().registerGCM(notification.getDeviceId());
 	}
 
 	private void handleNewPostNotification(PushNotification notification) {
@@ -120,8 +125,7 @@ public class ChoosieActivity extends Activity {
 	private void handleCommentNotification(PushNotification notification) {
 		Logger.i("HandleCommentNotification()");
 
-		superController
-				.getCaches()
+		Caches.getInstance()
 				.getPostsCache()
 				.getValue(notification.getPostKey(),
 						new Callback<Void, Object, ChoosiePostData>() {
@@ -147,29 +151,10 @@ public class ChoosieActivity extends Activity {
 				.getControllerForScreen(Screen.FEED).getFeedListAdapter()
 				.findPositionByPostKey(notification.getPostKey());
 
-		// final VotePopupWindowUtils votesPopupWindowUtils = new
-		// VotePopupWindowUtils(this);
+		superController.handlePopupVoteWindow(notification.getPostKey(),
+				position);
+	
 
-		superController
-				.getCaches()
-				.getPostsCache()
-				.getValue(notification.getPostKey(),
-						new Callback<Void, Object, ChoosiePostData>() {
-							@Override
-							public void onFinish(ChoosiePostData param) {
-								if (param == null) {
-									Logger.e("ERROR : param is 'null'");
-									// TODO: Handle error
-									// Toast.makeText(getActivity(),
-									// "Failed to update post.",
-									// Toast.LENGTH_SHORT).show();
-									return;
-								}
-								// votesPopupWindowUtils.popUpVotesWindow(param);
-								superController.handlePopupVoteWindow(param,
-										position);
-							}
-						});
 	}
 
 	@Override
@@ -281,7 +266,6 @@ public class ChoosieActivity extends Activity {
 	protected void onDestroy() {
 		Logger.i("ChoosieActivity: onDestroy()");
 		super.onDestroy();
-		SuperController.setNull();
 		this.finish();
 	}
 

@@ -15,12 +15,11 @@ import com.choosie.app.Models.FacebookDetails;
 import com.choosie.app.Models.User;
 import com.choosie.app.Models.Vote;
 
-public class MockClient extends ClientBase {
+public class MockClient extends Client {
 
-	public MockClient(FacebookDetails fbDetails) {
-		super(fbDetails);
+	protected MockClient() {
 	}
-
+	
 	@Override
 	public void sendCommentToServer(String post_key, String text,
 			Callback<Void, Void, Boolean> callback) {

@@ -2,6 +2,7 @@ package com.choosie.app;
 
 import java.util.List;
 
+import com.choosie.app.client.Client;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.PushNotification;
 import com.google.android.gcm.GCMBaseIntentService;
@@ -127,7 +128,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onRegistered(Context arg0, String arg1) {
 		Log.d("GCM", "registerd " + arg1);
 
-		SuperController.getInstance(null, null).getClient().registerGCM(arg1);
+		Client.getInstance().registerGCM(arg1);
 	}
 
 	@Override

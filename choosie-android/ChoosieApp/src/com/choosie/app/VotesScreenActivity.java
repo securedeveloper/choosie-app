@@ -181,7 +181,7 @@ public class VotesScreenActivity extends Activity {
 			ImageView voterPhotoImageView1 = (ImageView) itemView
 					.findViewById(R.id.voteView_voterPhoto1);
 			voterPhotoImageView1.setImageBitmap(BitmapFactory.decodeFile(item
-					.getVoterPhotoPath1()));
+					.getVoterPhotoUrl1()));
 		}
 
 		// set the voter2 names
@@ -194,7 +194,7 @@ public class VotesScreenActivity extends Activity {
 			ImageView voterPhotoImageView2 = (ImageView) itemView
 					.findViewById(R.id.voteView_voterPhoto2);
 			voterPhotoImageView2.setImageBitmap(BitmapFactory.decodeFile(item
-					.getVoterPhotoPath2()));
+					.getVoterPhotoUrl2()));
 		}
 
 		return itemView;

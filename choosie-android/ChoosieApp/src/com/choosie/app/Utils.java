@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import com.choosie.app.caches.Caches;
 import com.choosie.app.controllers.SuperController;
 
 import android.annotation.SuppressLint;
@@ -120,20 +121,7 @@ public class Utils {
 		progressCallback.onProgress(5);
 		Bitmap toRet = BitmapFactory.decodeFile(fullPath);
 
-		if (toRet.getWidth() > screenWidth / 2) {
-
-			progressCallback.onProgress(25);
-			Bitmap toRet2 = Bitmap.createScaledBitmap(toRet, screenWidth / 2,
-					screenWidth / 2, false);
-			progressCallback.onProgress(75);
-
-			toRet.recycle();
-			progressCallback.onProgress(100);
-			toRet = null;
-			// Log.i("mem", "insert toRet2 WR" + toRet2.getRowBytes() + " H - "
-			// + toRet2.getHeight() + " BC: " +toRet2.getByteCount());
-			return toRet2;
-		}
+		toRet = shrinkBitmapToImageViewSizeIfNeeded(toRet);
 		// Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " +
 		// toRet.getHeight() + " BC: " +toRet.getByteCount());
 		progressCallback.onProgress(100);
@@ -182,17 +170,6 @@ public class Utils {
 		return inSampleSize;
 	}
 
-	public static void saveURLonSD(final String photoURL,
-			final SuperController superController) {
-		superController.getCaches().getPhotosCache()
-				.getValue(photoURL, new Callback<Void, Object, Bitmap>() {
-					@Override
-					public void onFinish(Bitmap param) {
-						// Utils.saveBitmapOnSd(photoURL, param);
-					}
-				});
-	}
-
 	public static void saveBitmapOnSd(String photoURL, Bitmap param) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		param.compress(CompressFormat.JPEG, 100, bos);
@@ -212,22 +189,15 @@ public class Utils {
 		Log.d("Utils", memMessage);
 	}
 
-	public static Bitmap shrinkBitmapToImageViewSize(Bitmap param,
-			SuperController controller) {
-		DisplayMetrics displaymetrics = new DisplayMetrics();
-		controller.getActivity().getWindowManager().getDefaultDisplay()
-				.getMetrics(displaymetrics);
-		int width = displaymetrics.widthPixels / 2;
+	public static Bitmap shrinkBitmapToImageViewSizeIfNeeded(Bitmap inputBitmap) {
+		if (screenWidth / 2 < inputBitmap.getWidth()) {
+			Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(inputBitmap,
+					screenWidth / 2, screenWidth / 2, false);
 
-		if (width < param.getWidth()) {
-			Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(param, width,
-					width, false);
-
-			param.recycle();
-			param = null;
+			inputBitmap.recycle();
 			return shrinkedBitmap;
 		}
-		return param;
+		return inputBitmap;
 	}
 
 	public static int getScreenWidth() {

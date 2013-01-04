@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.choosie.app.Callback;
 import com.choosie.app.ChoosieActivity;
-import com.choosie.app.CommentScreen;
+import com.choosie.app.CommentScreenActivity;
 import com.choosie.app.Constants;
 import com.choosie.app.IntentData;
 import com.choosie.app.Logger;
@@ -19,7 +19,7 @@ import com.choosie.app.Utils;
 import com.choosie.app.VotesScreenActivity;
 import com.choosie.app.caches.Caches;
 import com.choosie.app.client.RealClient;
-import com.choosie.app.client.ClientBase;
+import com.choosie.app.client.Client;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Comment;
 import com.choosie.app.Models.FacebookDetails;
@@ -34,34 +34,18 @@ import android.widget.Toast;
 
 public class SuperController {
 	private Screen currentScreen;
-	private Activity activity;
-	private ClientBase client;
-	private final Caches caches = new Caches(this);
+	private ChoosieActivity activity;
 	Map<Screen, ScreenController> screenToController;
 	private final String SENDER_ID = Constants.Notifications.SENDER_ID;
 
-	private static SuperController instance = null;
-
-	private SuperController(Activity activity, FacebookDetails fbDetails) {
+	public SuperController(ChoosieActivity activity, FacebookDetails fbDetails) {
 		initializeSuperController(activity, fbDetails);
 	}
 
-	public static SuperController getInstance(Activity activity,
-			FacebookDetails fbDetails) {
-		if (instance == null) {
-			synchronized (SuperController.class) {
-				if (instance == null) {
-					instance = new SuperController(activity, fbDetails);
-				}
-			}
-		}
-		return instance;
-	}
-
-	private void initializeSuperController(Activity activity,
+	private void initializeSuperController(ChoosieActivity activity,
 			FacebookDetails fbDetails) {
 		this.activity = activity;
-		client = new RealClient(fbDetails);
+		Client.getInstance().setFacebookDetails(fbDetails);
 
 		List<Pair<Screen, ScreenController>> screenControllerPairs = new ArrayList<Pair<Screen, ScreenController>>();
 
@@ -85,7 +69,7 @@ public class SuperController {
 			screen.onCreate();
 		}
 
-		client.login(new Callback<Void, Void, Void>() {
+		Client.getInstance().login(new Callback<Void, Void, Void>() {
 			@Override
 			public void onFinish(Void param) {
 			}
@@ -109,7 +93,7 @@ public class SuperController {
 
 	public void voteFor(final ChoosiePostData post, int whichPhoto) {
 		Logger.i("Issuing vote for: " + post.getPostKey());
-		this.client.sendVoteToServer(post, whichPhoto,
+		Client.getInstance().sendVoteToServer(post, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 
 					@Override
@@ -123,28 +107,30 @@ public class SuperController {
 	}
 
 	private void refreshPost(String postKey) {
-		this.caches.getPostsCache().invalidateKey(postKey);
-		this.caches.getPostsCache().getValue(postKey,
-				new Callback<Void, Object, ChoosiePostData>() {
-					@Override
-					public void onFinish(ChoosiePostData param) {
-						if (param == null) {
-							// TODO: Handle error
-							Toast.makeText(getActivity(),
-									"Failed to update post.",
-									Toast.LENGTH_SHORT).show();
-							return;
-						}
-						((FeedScreenController) screenToController
-								.get(Screen.FEED)).refreshPost(param);
-					}
-				});
+		Caches.getInstance().getPostsCache().invalidateKey(postKey);
+		Caches.getInstance()
+				.getPostsCache()
+				.getValue(postKey,
+						new Callback<Void, Object, ChoosiePostData>() {
+							@Override
+							public void onFinish(ChoosiePostData param) {
+								if (param == null) {
+									// TODO: Handle error
+									Toast.makeText(getActivity(),
+											"Failed to update post.",
+											Toast.LENGTH_SHORT).show();
+									return;
+								}
+								((FeedScreenController) screenToController
+										.get(Screen.FEED)).refreshPost(param);
+							}
+						});
 
 	}
 
 	public void CommentFor(final String post_key, String text) {
 		Logger.i("commenting vote for: " + post_key);
-		this.client.sendCommentToServer(post_key, text,
+		Client.getInstance().sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
 
 					@Override
@@ -156,17 +142,10 @@ public class SuperController {
 				});
 	}
 
-	public ClientBase getClient() {
-		return client;
-	}
-
-	public Caches getCaches() {
-		return caches;
-	}
-
 	public void switchToCommentScreen(ChoosiePostData choosiePost) {
 		Intent intent = new Intent(screenToController.get(Screen.FEED)
-				.getActivity().getApplicationContext(), CommentScreen.class);
+				.getActivity().getApplicationContext(),
+				CommentScreenActivity.class);
 
 		intent.putExtra("post_key", choosiePost.getPostKey());
 		intent.putExtra("question", choosiePost.getQuestion());
@@ -197,8 +176,7 @@ public class SuperController {
 		for (Comment comment : choosiePost.getComments()) {
 			nameList.add(comment.getUser().getUserName());
 			commentList.add(comment.getText());
-			commentierPhotoUrlList.add(Utils.getFileNameForURL(comment
-					.getUser().getPhotoURL()));
+			commentierPhotoUrlList.add(comment.getUser().getPhotoURL());
 			createdAtList.add(Utils.getTimeDifferenceTextFromNow(comment
 					.getCreatedAt()));
 		}
@@ -332,19 +310,14 @@ public class SuperController {
 		}
 	}
 
-	public static void setNull() {
-		instance = null;
-	}
-
-	public void handlePopupVoteWindow(ChoosiePostData choosiePost, int position) {
-
+	public void handlePopupVoteWindow(String postKey, int position) {
 		// first scroll the positioned item
 		if (position != -1) {
 			getControllerForScreen(Screen.FEED).getFeedListView()
 					.smoothScrollToPosition(position);
 		}
-
-		VotePopupWindowUtils voteUtil = new VotePopupWindowUtils(getActivity());
-		voteUtil.popUpVotesWindow(choosiePost); 
+		VotePopupWindowUtils votesPopupWindowUtils = new VotePopupWindowUtils(
+				getActivity());
+		votesPopupWindowUtils.popUpVotesWindow(postKey);
 	}
 }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Utils;
+import com.choosie.app.client.Client;
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.controllers.SuperController;
@@ -13,12 +14,18 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 
 public class Caches {
-	Cache<String, Bitmap> photosCache;
+	private Cache<String, Bitmap> photosCache;
 	private Cache<FeedCacheKey, FeedResponse> feedCache;
 	private Cache<String, ChoosiePostData> postsCache;
 
-	public Caches(final SuperController controller) {
-		initializeCaches(controller);
+	private static Caches instance = new Caches();
+	
+	private Caches() {
+		initializeCaches();
+	}
+	
+	public static Caches getInstance() {
+		return instance;
 	}
 
 	public Cache<String, Bitmap> getPhotosCache() {
@@ -29,8 +36,12 @@ public class Caches {
 		return feedCache;
 	}
 
-	private void initializeCaches(final SuperController controller) {
-		int photoCacheMaxSize = 10 * 1024 * 1024;
+	public Cache<String, ChoosiePostData> getPostsCache() {
+		return this.postsCache;
+	}
+
+	private void initializeCaches() {
+		int photoCacheMaxSize = 10 * 1024 * 1024; // 10 MB
 		photosCache = new PersistentCache<String, Bitmap>(photoCacheMaxSize) {
 
 			@Override
@@ -48,13 +59,13 @@ public class Caches {
 
 			@Override
 			protected Bitmap beforePutInMemory(Bitmap result) {
-				return Utils.shrinkBitmapToImageViewSize(result, controller);
+				return Utils.shrinkBitmapToImageViewSizeIfNeeded(result);
 			}
 
 			@Override
 			protected Bitmap downloadData(String key,
 					Callback<Void, Object, Void> progressCallback) {
-				return controller.getClient().getPictureFromServerSync(key,
+				return Client.getInstance().getPictureFromServerSync(key,
 						progressCallback);
 			}
 
@@ -71,7 +82,7 @@ public class Caches {
 			@Override
 			protected FeedResponse fetchData(FeedCacheKey key,
 					Callback<Void, Object, Void> progressCallback) {
-				return controller.getClient().getFeedByCursor(key,
+				return Client.getInstance().getFeedByCursor(key,
 						progressCallback);
 			}
 		};
@@ -83,14 +94,9 @@ public class Caches {
 			@Override
 			protected ChoosiePostData fetchData(String key,
 					Callback<Void, Object, Void> progressCallback) {
-				return controller.getClient().getPostByKey(key,
-						progressCallback);
+				return Client.getInstance().getPostByKey(key, progressCallback);
 			}
 		};
-	}
-
-	public Cache<String, ChoosiePostData> getPostsCache() {
-		return this.postsCache;
 	}
 
 }

@@ -69,7 +69,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.choosie.app.CommentScreen"
+            android:name="com.choosie.app.CommentScreenActivity"
             android:label="@string/title_activity_comment_screen"
             android:screenOrientation="portrait" >
         </activity>

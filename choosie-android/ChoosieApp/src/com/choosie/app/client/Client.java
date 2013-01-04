@@ -17,12 +17,18 @@ import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.FacebookDetails;
 
-public abstract class ClientBase {
+public abstract class Client {
 
 	protected FacebookDetails fbDetails;
 
-	public ClientBase(FacebookDetails fbDetails) {
-		this.fbDetails = fbDetails;
+	private static Client instance = new RealClient();
+	
+	protected Client() {
+		
+	}
+	
+	public static Client getInstance() {
+		return instance;
 	}
 
 	public abstract void sendCommentToServer(String post_key, String text,
@@ -74,12 +80,12 @@ public abstract class ClientBase {
 	public abstract ChoosiePostData getPostByKey(String param,
 			Callback<Void, Object, Void> progressCallback);
 
-	public ClientBase() {
-		super();
-	}
-
 	public FacebookDetails getFacebookDetails() {
 		return this.fbDetails;
+	}
+
+	public void setFacebookDetails(FacebookDetails fbDetails) {
+		this.fbDetails = fbDetails;
 	}
 
 	private byte[] downloadFile(Callback<Void, Object, Void> progressCallback,
