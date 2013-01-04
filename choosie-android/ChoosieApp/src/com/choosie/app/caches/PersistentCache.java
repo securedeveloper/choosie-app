@@ -1,10 +1,13 @@
-package com.choosie.app;
+package com.choosie.app.caches;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.choosie.app.Callback;
+import com.choosie.app.Utils;
 
 import android.annotation.TargetApi;
 import android.os.AsyncTask;

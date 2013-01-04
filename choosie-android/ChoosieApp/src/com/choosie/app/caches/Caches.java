@@ -1,7 +1,9 @@
-package com.choosie.app;
+package com.choosie.app.caches;
 
 import java.io.ByteArrayOutputStream;
 
+import com.choosie.app.Callback;
+import com.choosie.app.Utils;
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.controllers.SuperController;

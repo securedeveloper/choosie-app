@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.choosie.app.Caches;
 import com.choosie.app.Callback;
 import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreen;
@@ -18,6 +17,7 @@ import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
 import com.choosie.app.VotesScreenActivity;
+import com.choosie.app.caches.Caches;
 import com.choosie.app.client.RealClient;
 import com.choosie.app.client.ClientBase;
 import com.choosie.app.Models.ChoosiePostData;
