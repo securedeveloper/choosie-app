@@ -10,3 +10,8 @@ indexes:
   properties:
   - name: posted_to_fb
   - name: created_at
+
+- kind: User
+  properties:
+  - name: device_id
+  - name: user_fb_id

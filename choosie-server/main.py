@@ -12,6 +12,8 @@ from comments_handler import CommentsHandler
 from post_item_handler import PostItemHandler
 from scrape_comments_handler import ScrapeCommentsHandler
 from scrape_handler import ScrapeHandler
+from notify_handler import NotifyHandler
+from register_device_handler import RegisterDeviceHandler
 from collect_crash_handler import CollectCrashHandler
 
 app = webapp2.WSGIApplication([('/', HomepageHandler),
@@ -24,6 +26,9 @@ app = webapp2.WSGIApplication([('/', HomepageHandler),
                                ('/comments/new', CommentsHandler),
                                ('/posts/(.+)', PostItemHandler),
                                ('/scrape', ScrapeCommentsHandler),
+                               ('/scrape_fb', ScrapeHandler),
+                               ('/send', NotifyHandler),
+                               ('/register', RegisterDeviceHandler),
                                ('/scrape_fb', ScrapeHandler),
                                ('/collectcrash', CollectCrashHandler)
                                ],

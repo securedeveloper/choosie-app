@@ -73,5 +73,7 @@ class PostsHandler(webapp2.RequestHandler):
     if (self.request.get("share_to_fb") == "on"):
       logging.info("publishing!!")
       choosie_post.publish_to_facebook(self.request.host_url)  
+
+    choosie_post.notify_friends()
     self.redirect('/')
     

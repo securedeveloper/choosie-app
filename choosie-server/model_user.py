@@ -17,6 +17,11 @@ class User(db.Model):
     gender = db.StringProperty()
     fb_access_token = db.StringProperty(required=True)
     fb_access_token_expdate = db.DateTimeProperty(required=True)
+    device_id = db.StringProperty()
+    email = db.StringProperty()
+
+    def name(self):
+      return self.first_name + " " + self.last_name
 
     @staticmethod
     def create(fb_access_token, fb_access_token_expdate):
@@ -37,6 +42,7 @@ class User(db.Model):
                   last_name = data.get("last_name"),
                   username = data.get("username"),
                   gender = data.get("gender"),
+                  email = data.get("email"),
                   fb_access_token = fb_access_token,
                   fb_access_token_expdate = fb_access_token_expdate)
       return user
