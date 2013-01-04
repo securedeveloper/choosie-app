@@ -27,5 +27,7 @@
     <string name="general_content_description">Widget Content Description</string>
     <string name="feed_is_empty_message">You have no posts on your feed!\nBe the first to upload a Choozie Post!</string>
     <string name="empty_string"/>
+    <string name="enable_push_notifications">Enable Push Notifications</string>
+    <string name="settings">Settings</string>
 
 </resources>

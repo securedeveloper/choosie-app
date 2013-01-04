@@ -85,4 +85,8 @@ public class Constants {
 
 	}
 
+	public static class SP {
+		public static final String PUSH_NOTIFICATIONS = "push_notifications";
+	}
+
 }

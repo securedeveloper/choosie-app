@@ -24,6 +24,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 	protected void onMessage(Context arg0, Intent arg1) {
 		Log.d("GCM", "message " + String.valueOf(arg1));
 
+		if (!isAllowedNotifications())
+			return;
+
 		if (isApplicationRunningInForeground()) {
 			// TODO: show +1 in notification manager inside the app
 			Logger.i("Application is running in Foreground");
@@ -44,6 +47,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 					notificationType, text, postKey, deviceId);
 			NotifyStartActivity(notification);
 		}
+	}
+
+	private boolean isAllowedNotifications() {
+		return AppSettings.getPushNotifications().equals("true");
 	}
 
 	private boolean isApplicationRunningInForeground() {

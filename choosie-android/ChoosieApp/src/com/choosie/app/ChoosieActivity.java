@@ -57,6 +57,9 @@ public class ChoosieActivity extends Activity {
 		ImageButton refreshButton = (ImageButton) findViewById(R.id.refresh_button);
 		refreshButton.setOnClickListener(refreshClickListener);
 
+		ImageButton settingsButton = (ImageButton) findViewById(R.id.settings_button);
+		settingsButton.setOnClickListener(settingsClickListener);
+
 		FacebookDetails fbDetails = (FacebookDetails) intent
 				.getSerializableExtra("fb_details");
 
@@ -260,6 +263,16 @@ public class ChoosieActivity extends Activity {
 		public void onClick(View v) {
 			Logger.i("Clicked refresh feed button");
 			superController.getControllerForScreen(Screen.FEED).refresh();
+		}
+	};
+
+	private OnClickListener settingsClickListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			Logger.i("Clicked settings button");
+			AppSettingsWindow settingsWindow = new AppSettingsWindow(
+					superController.getActivity());
+			settingsWindow.show();
 		}
 	};
 
