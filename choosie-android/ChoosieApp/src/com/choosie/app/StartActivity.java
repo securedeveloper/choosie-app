@@ -226,11 +226,13 @@ public class StartActivity extends Activity {
 			List<String> read_permission = new ArrayList<String>();
 			read_permission.add("read_stream");
 			read_permission.add("read_friendlists");
+			read_permission.add("email");
 			Logger.i("Permission: " + read_permission);
 
 			// Create the request for login
 			OpenRequest req = new Session.OpenRequest(this);
 			req.setPermissions(read_permission);
+
 			req.setCallback(statusCallback);
 
 			// Show login to Facebook screen

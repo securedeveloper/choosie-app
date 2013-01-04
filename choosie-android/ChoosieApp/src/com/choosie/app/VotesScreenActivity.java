@@ -69,6 +69,9 @@ public class VotesScreenActivity extends Activity {
 	}
 
 	private void setImageFromPath(String photoPath, ImageView imageViewPhoto) {
+		if  (photoPath.contains("gabay")) {
+			int a =5; 
+		}
 		if (photoPath != null) {
 			imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
 		}
