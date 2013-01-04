@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.choosie.app.Models.FacebookDetails;
+import com.choosie.app.client.Client;
 import com.facebook.GraphUser;
 import com.facebook.LoggingBehaviors;
 import com.facebook.Request;
@@ -195,16 +196,17 @@ public class StartActivity extends Activity {
 							TextView welcome = (TextView) findViewById(R.id.welcome);
 							welcome.setText("Hello " + user.getName() + "!");
 
-							Logger.i("creating intent for ChoosieActivity");
-							Intent intent = new Intent(StartActivity.this,
-									ChoosieActivity.class);
+							// Update Client that there's a logged in user.
 							FacebookDetails details = new FacebookDetails(user
 									.getId(), Session.getActiveSession()
 									.getAccessToken(), Session
 									.getActiveSession().getExpirationDate()
 									.getTime());
-							intent.putExtra("fb_details", details);
+							Client.getInstance().setFacebookDetails(details);
 
+							Logger.i("creating intent for ChoosieActivity");
+							Intent intent = new Intent(StartActivity.this,
+									ChoosieActivity.class);
 							if (notification != null) {
 								intent.putExtra("notification", notification);
 								Logger.i("Adding Push Notification to intent for ChoosieActivity "

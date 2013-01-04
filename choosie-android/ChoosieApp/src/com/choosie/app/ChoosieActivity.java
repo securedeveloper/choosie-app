@@ -66,15 +66,12 @@ public class ChoosieActivity extends Activity {
 		ImageButton settingsButton = (ImageButton) findViewById(R.id.settings_button);
 		settingsButton.setOnClickListener(settingsClickListener);
 
-		FacebookDetails fbDetails = (FacebookDetails) intent
-				.getSerializableExtra("fb_details");
-
 		PushNotification notification = (PushNotification) intent
 				.getParcelableExtra("notification");
 
 		Utils.setScreenWidth(this);
 
-		superController = new SuperController(this, fbDetails);
+		superController = new SuperController(this);
 
 		if (notification != null) {
 			handleNotification(notification);

@@ -18,11 +18,9 @@ import com.choosie.app.Screen;
 import com.choosie.app.Utils;
 import com.choosie.app.VotesScreenActivity;
 import com.choosie.app.caches.Caches;
-import com.choosie.app.client.RealClient;
 import com.choosie.app.client.Client;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Comment;
-import com.choosie.app.Models.FacebookDetails;
 import com.choosie.app.Models.Vote;
 import com.google.android.gcm.GCMRegistrar;
 
@@ -38,14 +36,12 @@ public class SuperController {
 	Map<Screen, ScreenController> screenToController;
 	private final String SENDER_ID = Constants.Notifications.SENDER_ID;
 
-	public SuperController(ChoosieActivity activity, FacebookDetails fbDetails) {
-		initializeSuperController(activity, fbDetails);
+	public SuperController(ChoosieActivity activity) {
+		initializeSuperController(activity);
 	}
 
-	private void initializeSuperController(ChoosieActivity activity,
-			FacebookDetails fbDetails) {
+	private void initializeSuperController(ChoosieActivity activity) {
 		this.activity = activity;
-		Client.getInstance().setFacebookDetails(fbDetails);
 
 		List<Pair<Screen, ScreenController>> screenControllerPairs = new ArrayList<Pair<Screen, ScreenController>>();
 

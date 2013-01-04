@@ -1,10 +1,6 @@
 package com.choosie.app.Models;
 
-import java.io.Serializable;
-
-public class FacebookDetails implements Serializable {
-
-	private static final long serialVersionUID = 4755253194442117895L;
+public class FacebookDetails {
 
 	private final String fb_uid;
 	private final String access_token;
