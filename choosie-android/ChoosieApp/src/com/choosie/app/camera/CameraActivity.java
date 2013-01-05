@@ -9,6 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.choosie.app.NewPostActivity;
+import com.choosie.app.Constants;
 import com.choosie.app.R;
 
 import android.media.MediaPlayer;
@@ -75,6 +77,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private int screenWidth;
 	private int camId;
 	private CameraLayoutViewsHolder cameraLayoutViewHolder;
+
+	private String imagePath1;
+	private String imagePath2;
 
 	Handler mHandler = new Handler();
 	private Runnable mRunnable = new Runnable() {
@@ -663,6 +668,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 						.setText("Choozie second");
 				numOfPhotoToTake = 2;
 				galleryAddPic(Uri.fromFile(new File(path)));
+				imagePath1 = path;
 				pictureFile = getOutputMediaFile(); // get new media picture
 			}
 			// mCamera.startPreview(); //it starts in onResume()
@@ -673,9 +679,11 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 						.setText("Choozie second");
 				numOfPhotoToTake = 2;
 				galleryAddPic(Uri.fromFile(new File(path)));
-				pictureFile = getOutputMediaFile();
-				setResult(Activity.RESULT_OK);
-				finish();
+				imagePath2 = path;
+				activatePostActivity();
+				// pictureFile = getOutputMediaFile();
+				// setResult(Activity.RESULT_OK);
+				// finish();
 			}
 			break;
 
@@ -692,6 +700,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		}
 
+	}
+
+	private void activatePostActivity() {
+
+		Intent intent = new Intent(this.getApplicationContext(),
+				NewPostActivity.class);
+		intent.putExtra(Constants.IntentsCodes.photo1Path, imagePath1);
+		intent.putExtra(Constants.IntentsCodes.photo2Path, imagePath2);
+		startActivity(intent);
 	}
 
 	private void handleCroppedImage(Intent data) {
