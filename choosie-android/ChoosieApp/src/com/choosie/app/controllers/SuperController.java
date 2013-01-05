@@ -22,6 +22,8 @@ import com.choosie.app.client.Client;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Comment;
 import com.choosie.app.Models.Vote;
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Tracker;
 import com.google.android.gcm.GCMRegistrar;
 
 import android.app.Activity;
@@ -88,6 +90,8 @@ public class SuperController {
 
 	public void voteFor(final ChoosiePostData post, int whichPhoto) {
 		Logger.i("Issuing vote for: " + post.getPostKey());
+		Tracker tracker = GoogleAnalytics.getInstance(getActivity()).getDefaultTracker();
+		tracker.trackEvent("Ui Action", "Vote", String.valueOf(whichPhoto), null);
 		Client.getInstance().sendVoteToServer(post, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 
@@ -125,6 +129,8 @@ public class SuperController {
 
 	public void CommentFor(final String post_key, String text) {
 		Logger.i("commenting vote for: " + post_key);
+		Tracker tracker = GoogleAnalytics.getInstance(getActivity()).getDefaultTracker();
+		tracker.trackEvent("Ui Action", "comment", "text", null);
 		Client.getInstance().sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
 

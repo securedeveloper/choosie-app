@@ -45,7 +45,6 @@ import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
 import com.facebook.SessionState;
 import com.facebook.Session.ReauthorizeRequest;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 
@@ -396,9 +395,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void submitChoosiePost() {
-		Tracker tracker = GoogleAnalytics.getInstance(
-				superController.getActivity()).getDefaultTracker();
-		tracker.trackEvent("Ui action", "Post Screen", "Share", null);
+		
 		if ((mImage1 == null) || (mImage2 == null)) {
 			Toast toast = Toast.makeText(getActivity(),
 					"Please add two photos", Toast.LENGTH_SHORT);
@@ -411,7 +408,10 @@ public class PostScreenController extends ScreenController {
 				Toast toast = Toast.makeText(getActivity(),
 						"Please add a question", Toast.LENGTH_SHORT);
 				toast.show();
-			} else {
+			} else	{
+				Tracker tracker = GoogleAnalytics.getInstance(
+						superController.getActivity()).getDefaultTracker();
+				tracker.trackEvent("Ui action", "Post Screen", "Share", null);
 				final ProgressBar progressBar = (ProgressBar) getActivity()
 						.findViewById(R.id.progressBarPost);
 

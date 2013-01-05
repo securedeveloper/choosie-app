@@ -15,6 +15,7 @@ import com.facebook.Response;
 import com.facebook.Settings;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Tracker;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -214,7 +215,8 @@ public class StartActivity extends Activity {
 							} else {
 								Logger.i("No Push Notification has been added to ChoosieActivity intent");
 							}
-
+							Tracker tracker = GoogleAnalytics.getInstance(getApplicationContext()).getDefaultTracker();
+							tracker.trackEvent("StartActivity", "goToApplication", "", null);
 							Logger.i("Starting ChoosieActivity");
 							startActivityForResult(intent,
 									Constants.RequestCodes.START_ACTIVITY);
@@ -225,8 +227,6 @@ public class StartActivity extends Activity {
 	}
 
 	private void onClickLogin() {
-		GoogleAnalytics ga = GoogleAnalytics.getInstance(this);
-		EasyTracker.getInstance().getTracker().trackEvent("Ui action", "login", "esh", null); 
 		Session session = Session.getActiveSession();
 		if (!session.isOpened() && !session.isClosed()) {
 
