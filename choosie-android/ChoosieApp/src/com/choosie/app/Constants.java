@@ -7,8 +7,10 @@ public class Constants {
 	public static final String LOG_TAG = "Choosie";
 
 	public static class URIs {
-//	public static final String ROOT_URL = "http://choosieapp.appspot.com";
-//		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
+		// public static final String ROOT_URL =
+		// "http://choosieapp.appspot.com";
+		// public static final String ROOT_URL =
+		// "http://choosie-dev.appspot.com";
 		public static final String ROOT_URL = "http://choosieapp.appspot.com";
 		public static final String REGISTER = ROOT_URL + "/register";
 		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
@@ -64,6 +66,8 @@ public class Constants {
 		public static final String intentData = "intentData";
 		public static final String channelingJob = "channelingJob";
 		public static final String isChannelingCose = "isChannelingCose";
+		public static final String isPostByMe = "isPostByMe";
+		public static final String openVotesWindow = "openVotesWindow";
 	}
 
 	public static class Notifications {

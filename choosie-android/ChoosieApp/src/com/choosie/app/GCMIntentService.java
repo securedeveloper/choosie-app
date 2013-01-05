@@ -20,13 +20,24 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public class GCMIntentService extends GCMBaseIntentService {
+	@SuppressWarnings("hiding")
+	private static final String TAG = "GCMIntentService";
+
+	public GCMIntentService() {
+		super(Constants.Notifications.SENDER_ID);
+	}
 
 	@Override
-	protected void onMessage(Context arg0, Intent arg1) {
-		Log.d("GCM", "message " + String.valueOf(arg1));
+	protected void onMessage(Context context, Intent intent) {
+		Log.i(TAG, "Received message. Extras: " + intent.getExtras());
 
-		if (!isAllowedNotifications())
+		generateNotification(context, intent);
+	}
+
+	private void generateNotification(Context context, Intent intent) {
+		if (!AppSettings.getPushNotifications()) {
 			return;
+		}
 
 		if (isApplicationRunningInForeground()) {
 			// TODO: show +1 in notification manager inside the app
@@ -39,31 +50,30 @@ public class GCMIntentService extends GCMBaseIntentService {
 			 * = New Vote
 			 */
 
-			String notificationType = arg1.getStringExtra("type");
-			String text = arg1.getStringExtra("text");
-			String postKey = arg1.getStringExtra("post_key");
-			String deviceId = arg1.getStringExtra("device_id");
+			String notificationType = intent.getStringExtra("type");
+			String text = intent.getStringExtra("text");
+			String postKey = intent.getStringExtra("post_key");
+			String deviceId = intent.getStringExtra("device_id");
 
 			PushNotification notification = new PushNotification(
 					notificationType, text, postKey, deviceId);
-			NotifyStartActivity(notification);
+			notifyStartActivity(context, notification);
 		}
-	}
-
-	private boolean isAllowedNotifications() {
-		return AppSettings.getPushNotifications().equals("true");
 	}
 
 	private boolean isApplicationRunningInForeground() {
 		ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 		// get the info from the currently running task
-		List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+		List<ActivityManager.RunningTaskInfo> runningTasks = am
+				.getRunningTasks(1);
+		if (runningTasks.size() == 0) {
+			return false;
+		}
+		ActivityManager.RunningTaskInfo taskInfo = runningTasks.get(0);
 		Logger.i("current task: "
-				+ taskInfo.get(0).topActivity.getClass().getSimpleName());
+				+ taskInfo.topActivity.getClass().getSimpleName());
 
-		ComponentName componentInfo = taskInfo.get(0).topActivity;
-
-		return componentInfo.getPackageName().equalsIgnoreCase(
+		return taskInfo.topActivity.getPackageName().equalsIgnoreCase(
 				"com.choosie.app");
 	}
 
@@ -72,79 +82,103 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		List<RunningAppProcessInfo> procList = am.getRunningAppProcesses();
 		for (RunningAppProcessInfo proc : procList) {
-			if (proc.processName.equals("com.choosie.app"))
+			if (proc.processName.equals("com.choosie.app")) {
 				return true;
+			}
 		}
 		return false;
 	}
 
-	private void NotifyStartActivity(PushNotification notification) {
+	private void notifyStartActivity(Context context,
+			PushNotification notificationData) {
 		Logger.i("NotifyStartActivity()");
 
-		String contentTitle = notification.getContentTitle();
+		PendingIntent resultPendingIntent = buildPendingIntent(context,
+				notificationData);
+		Notification notification = buildNotification(notificationData,
+				resultPendingIntent);
 
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-				this).setSmallIcon(R.drawable.notification_icon)
-				.setContentTitle(contentTitle)
-				.setContentText(notification.getText());
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// mId allows you to update the notification later on.
+		notificationManager.notify(Constants.Notifications.NOTIFICATION_ID,
+				notification);
+	}
 
+	private PendingIntent buildPendingIntent(Context context,
+			PushNotification notificationData) {
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, StartActivity.class);
-		resultIntent.putExtra("notification", notification);
+		resultIntent.putExtra("notification", notificationData);
+		PendingIntent pendingIntent = null;
 		if (isAppRunning()) {
 			Logger.i("-------------------- Application is running!!");
+			// set intent so it does not start a new activity
 			resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-					| Intent.FLAG_ACTIVITY_NEW_TASK);
+					| Intent.FLAG_ACTIVITY_NEW_TASK
+					| Intent.FLAG_ACTIVITY_CLEAR_TOP
+					| Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			pendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
+					0);
 		} else {
 			Logger.i("---------------------------------- Application is NOT running!!");
 			resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			// The stack builder object will contain an artificial back stack
+			// for
+			// the started Activity.
+			// This ensures that navigating backward from the Activity leads out
+			// of
+			// your application to the Home screen.
+			TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+			// Adds the back stack for the Intent (but not the Intent itself)
+			stackBuilder.addParentStack(StartActivity.class);
+			// Adds the Intent that starts the Activity to the top of the stack
+			stackBuilder.addNextIntent(resultIntent);
+			pendingIntent = stackBuilder.getPendingIntent(0,
+					PendingIntent.FLAG_UPDATE_CURRENT
+							| Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
 		}
 
-		// The stack builder object will contain an artificial back stack for
-		// the started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		return pendingIntent;
+	}
 
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(StartActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
+	private Notification buildNotification(PushNotification notificationData,
+			PendingIntent resultPendingIntent) {
+		// Build the notification, the actual line in the status bar.
+		String contentTitle = notificationData.getContentTitle();
+		Notification notification = new NotificationCompat.Builder(this)
+				.setSmallIcon(R.drawable.logo_purple_large)
+				.setContentTitle(contentTitle)
+				.setContentText(notificationData.getText())
+				.setContentIntent(resultPendingIntent).build();
 
-		PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-				PendingIntent.FLAG_UPDATE_CURRENT
-						| Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notif = mBuilder.build();
-		notif.defaults |= Notification.DEFAULT_SOUND;
-
-		// mId allows you to update the notification later on.
-		mNotificationManager.notify(Constants.Notifications.NOTIFICATION_ID,
-				notif);
+		notification.defaults |= Notification.DEFAULT_SOUND;
+		return notification;
 	}
 
 	@Override
-	protected void onRegistered(Context arg0, String arg1) {
-		Log.d("GCM", "registerd " + arg1);
+	protected void onRegistered(Context context, String registrationId) {
+		Log.i(TAG, "Device registered: regId = " + registrationId);
 
-		Client.getInstance().registerGCM(arg1);
+		Client.getInstance().registerGCM(registrationId);
 	}
 
 	@Override
-	protected void onUnregistered(Context arg0, String arg1) {
-		Log.d("GCM", "unregisetr " + arg1);
+	protected void onUnregistered(Context context, String registrationId) {
+		Log.i(TAG, "Device unregistered");
+
+		Client.getInstance().unregisterGCM(registrationId);
 	}
 
 	@Override
-	protected void onError(Context arg0, String arg1) {
-		Log.d("GCM", "error " + arg1);
-
+	protected void onError(Context context, String errorId) {
+		Log.i(TAG, "Received error: " + errorId);
 	}
 
 	@Override
 	protected boolean onRecoverableError(Context context, String errorId) {
-		Log.d("GCM", "recovable error" + errorId);
-		return false;
+		// log message
+		Log.i(TAG, "Received recoverable error: " + errorId);
+		return super.onRecoverableError(context, errorId);
 	}
 }

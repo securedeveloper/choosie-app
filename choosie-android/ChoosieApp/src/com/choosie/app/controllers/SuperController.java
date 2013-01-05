@@ -34,7 +34,6 @@ public class SuperController {
 	private Screen currentScreen;
 	private ChoosieActivity activity;
 	Map<Screen, ScreenController> screenToController;
-	private final String SENDER_ID = Constants.Notifications.SENDER_ID;
 
 	public SuperController(ChoosieActivity activity) {
 		initializeSuperController(activity);
@@ -138,7 +137,8 @@ public class SuperController {
 				});
 	}
 
-	public void switchToCommentScreen(ChoosiePostData choosiePost) {
+	private void switchToCommentScreen(ChoosiePostData choosiePost,
+			boolean openVotesWindow) {
 		Intent intent = new Intent(screenToController.get(Screen.FEED)
 				.getActivity().getApplicationContext(),
 				CommentScreenActivity.class);
@@ -160,8 +160,11 @@ public class SuperController {
 		intent.putExtra(Constants.IntentsCodes.votes2, choosiePost.getVotes2());
 		intent.putExtra(Constants.IntentsCodes.isAlreadyVoted,
 				choosiePost.isVotedAlready());
+		intent.putExtra(Constants.IntentsCodes.isPostByMe,
+				choosiePost.isPostByMe());
 		intent.putExtra(Constants.IntentsCodes.post_key,
 				choosiePost.getPostKey());
+		intent.putExtra(Constants.IntentsCodes.openVotesWindow, openVotesWindow);
 
 		// create the comments list
 		ArrayList<String> nameList = new ArrayList<String>();
@@ -297,8 +300,10 @@ public class SuperController {
 		// GCMRegistrar.unregister(getActivity());
 		String regId = GCMRegistrar.getRegistrationId(getActivity());
 		if (regId.equals("")) {
-			Logger.i("Registering with sender_id: " + SENDER_ID);
-			GCMRegistrar.register(getActivity(), SENDER_ID);
+			Logger.i("Registering with sender_id: "
+					+ Constants.Notifications.SENDER_ID);
+			GCMRegistrar.register(getActivity(),
+					Constants.Notifications.SENDER_ID);
 			Logger.i("succeeded registering!!!");
 		} else {
 			GCMRegistrar.setRegisteredOnServer(getActivity(), true);
@@ -315,5 +320,33 @@ public class SuperController {
 		VotePopupWindowUtils votesPopupWindowUtils = new VotePopupWindowUtils(
 				getActivity());
 		votesPopupWindowUtils.popUpVotesWindow(postKey);
+	}
+
+	public void switchToCommentScreen(String postKey) {
+		switchToCommentScreen(postKey, false);
+	}
+
+	private void switchToCommentScreen(String postKey, final boolean openVotes) {
+		Caches.getInstance()
+				.getPostsCache()
+				.getValue(postKey,
+						new Callback<Void, Object, ChoosiePostData>() {
+							@Override
+							public void onFinish(ChoosiePostData param) {
+								if (param == null) {
+									Logger.e("ERROR : param is 'null'");
+									// TODO: Handle error
+									// Toast.makeText(getActivity(),
+									// "Failed to update post.",
+									// Toast.LENGTH_SHORT).show();
+									return;
+								}
+								switchToCommentScreen(param, openVotes);
+							}
+						});
+	}
+
+	public void switchToCommentScreenAndOpenVotes(String postKey) {
+		switchToCommentScreen(postKey, true);
 	}
 }

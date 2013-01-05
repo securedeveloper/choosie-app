@@ -637,4 +637,11 @@ public class RealClient extends Client {
 		};
 		registerTask.execute();
 	}
+	
+	@Override
+	public void unregisterGCM(String deviceId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

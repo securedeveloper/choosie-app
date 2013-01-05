@@ -33,8 +33,7 @@ public class AppSettingsWindow {
 				(ViewGroup) activity.findViewById(R.id.settings_element));
 
 		// Initialize push notifications CheckBox
-		boolean checked = (AppSettings.getPushNotifications().equals("true")) ? true
-				: false;
+		boolean checked = AppSettings.getPushNotifications();
 		final CheckBox pushNotificationCb = (CheckBox) layout
 				.findViewById(R.id.push_notifications_cb);
 		pushNotificationCb.setChecked(checked);
@@ -56,8 +55,7 @@ public class AppSettingsWindow {
 
 		public void onCheckedChanged(CompoundButton buttonView,
 				boolean isChecked) {
-			String allow = (isChecked) ? "true" : "false";
-			AppSettings.savePrefrences(Constants.SP.PUSH_NOTIFICATIONS, allow);
+			AppSettings.setPushNotifications(isChecked);
 			Logger.i("SharedPreferences : Setting push_notifications = "
 					+ isChecked);
 		}

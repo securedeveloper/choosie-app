@@ -121,37 +121,21 @@ public class ChoosieActivity extends Activity {
 
 	private void handleCommentNotification(PushNotification notification) {
 		Logger.i("HandleCommentNotification()");
-
-		Caches.getInstance()
-				.getPostsCache()
-				.getValue(notification.getPostKey(),
-						new Callback<Void, Object, ChoosiePostData>() {
-							@Override
-							public void onFinish(ChoosiePostData param) {
-								if (param == null) {
-									Logger.e("ERROR : param is 'null'");
-									// TODO: Handle error
-									// Toast.makeText(getActivity(),
-									// "Failed to update post.",
-									// Toast.LENGTH_SHORT).show();
-									return;
-								}
-								superController.switchToCommentScreen(param);
-							}
-						});
+		// Invalidate the post in cache, so that next time it is asked for
+		// we'll get the updated one with the new comment / vote.
+		Caches.getInstance().getPostsCache()
+				.invalidateKey(notification.getPostKey());
+		superController.switchToCommentScreen(notification.getPostKey());
 	}
 
 	private void handleVoteNotification(PushNotification notification) {
+		// Invalidate the post in cache, so that next time it is asked for
+		// we'll get the updated one with the new comment / vote.
+		Caches.getInstance().getPostsCache()
+				.invalidateKey(notification.getPostKey());
 		Logger.i("HandleVoteNotification()");
-
-		final int position = superController
-				.getControllerForScreen(Screen.FEED).getFeedListAdapter()
-				.findPositionByPostKey(notification.getPostKey());
-
-		superController.handlePopupVoteWindow(notification.getPostKey(),
-				position);
-	
-
+		superController.switchToCommentScreenAndOpenVotes(notification
+				.getPostKey());
 	}
 
 	@Override

@@ -41,11 +41,14 @@ public class CommentScreenActivity extends Activity {
 	int votes1;
 	int votes2;
 	boolean isVotedAlready;
+	boolean isPostByMe;
 	Bitmap image1Bitmap;
 	Bitmap image2Bitmap;
 	ImageView image1View;
 	ImageView image2View;
 	String postKey;
+	private boolean openVotesWindow;
+
 	// RelativeLayout mainCommentLayout;
 
 	// key listener - for: when the user pressing the enter key - sends the
@@ -76,6 +79,7 @@ public class CommentScreenActivity extends Activity {
 		VotePopupWindowUtils voteWindow = new VotePopupWindowUtils(this);
 		voteWindow.popUpVotesWindow(postKey);
 	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Logger.i("in comment screen");
@@ -99,7 +103,11 @@ public class CommentScreenActivity extends Activity {
 		image2Bitmap = BitmapFactory.decodeFile(photo2Path);
 		isVotedAlready = intent.getBooleanExtra(
 				Constants.IntentsCodes.isAlreadyVoted, false);
-		if (isVotedAlready == true) {
+		isPostByMe = intent.getBooleanExtra(Constants.IntentsCodes.isPostByMe,
+				false);
+		openVotesWindow = intent.getBooleanExtra(
+				Constants.IntentsCodes.openVotesWindow, false);
+		if (isVotedAlready || isPostByMe) {
 			votes1 = intent.getIntExtra(Constants.IntentsCodes.votes1, 0);
 			votes2 = intent.getIntExtra(Constants.IntentsCodes.votes2, 0);
 		}
@@ -118,6 +126,20 @@ public class CommentScreenActivity extends Activity {
 			}
 		});
 
+	}
+
+	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		if (openVotesWindow) {
+			this.getWindow().getDecorView().post(new Runnable() {
+				public void run() {
+
+					openVotesWindow();
+				}
+			});
+		}
 	}
 
 	private ArrayAdapter<CommentData> makeCommentScreenAdapter(
@@ -250,7 +272,7 @@ public class CommentScreenActivity extends Activity {
 			commentViewHolder.imageViewPhoto2.setImageBitmap(image2Bitmap);
 			image1View = commentViewHolder.imageViewPhoto1;
 			image2View = commentViewHolder.imageViewPhoto2;
-			if (isVotedAlready == true) {
+			if (isVotedAlready || isPostByMe) {
 				commentViewHolder.votes1.setText(votes1 + " votes");
 				commentViewHolder.votes2.setText(votes2 + " votes");
 				commentViewHolder.votes1.setOnClickListener(votesListenter);

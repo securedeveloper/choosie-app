@@ -22,11 +22,11 @@ public abstract class Client {
 	protected FacebookDetails fbDetails;
 
 	private static Client instance = new RealClient();
-	
+
 	protected Client() {
-		
+
 	}
-	
+
 	public static Client getInstance() {
 		return instance;
 	}
@@ -42,8 +42,7 @@ public abstract class Client {
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
 			Callback<Void, Object, Void> progressCallback) {
 		String urlToLoad = pictureUrl;
-		Logger.i(
-				"getPictureFromServer: Loading URL: " + urlToLoad);
+		Logger.i("getPictureFromServer: Loading URL: " + urlToLoad);
 		URL url;
 		try {
 			url = new URL(urlToLoad);
@@ -79,6 +78,10 @@ public abstract class Client {
 
 	public abstract ChoosiePostData getPostByKey(String param,
 			Callback<Void, Object, Void> progressCallback);
+
+	public boolean isLoggedIn() {
+		return this.fbDetails != null;
+	}
 
 	public FacebookDetails getFacebookDetails() {
 		return this.fbDetails;
@@ -120,5 +123,7 @@ public abstract class Client {
 	}
 
 	public abstract void registerGCM(String deviceId);
+
+	public abstract void unregisterGCM(String registrationId);
 
 }

@@ -12,14 +12,14 @@ public class AppSettings {
 		sp = PreferenceManager.getDefaultSharedPreferences(context);
 	}
 
-	public static void savePrefrences(String key, String value) {
+	public static void setPushNotifications(boolean value) {
 		SharedPreferences.Editor editor = sp.edit();
-		editor.putString(key, value);
+		editor.putBoolean(Constants.SP.PUSH_NOTIFICATIONS, value);
 		editor.commit();
 	}
 
-	public static String getPushNotifications() {
-		return sp.getString(Constants.SP.PUSH_NOTIFICATIONS, "true");
+	public static boolean getPushNotifications() {
+		return sp.getBoolean(Constants.SP.PUSH_NOTIFICATIONS, true);
 	}
 
 }

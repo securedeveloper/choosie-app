@@ -103,4 +103,10 @@ public class MockClient extends Client {
 		
 	}
 
+	@Override
+	public void unregisterGCM(String deviceId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

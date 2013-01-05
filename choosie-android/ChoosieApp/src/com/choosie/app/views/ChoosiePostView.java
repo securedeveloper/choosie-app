@@ -86,7 +86,8 @@ public class ChoosiePostView extends RelativeLayout {
 		this.findViewById(R.id.button_to_comment).setOnClickListener(
 				new OnClickListener() {
 					public void onClick(View arg0) {
-						superController.switchToCommentScreen(choosiePost);
+						superController.switchToCommentScreen(choosiePost
+								.getPostKey());
 					}
 				});
 	}
@@ -187,7 +188,8 @@ public class ChoosiePostView extends RelativeLayout {
 		// listener for handling votes popUpWindow
 		OnClickListener votesListener = new OnClickListener() {
 			public void onClick(View v) {
-				superController.handlePopupVoteWindow(choosiePost.getPostKey(), position);
+				superController.handlePopupVoteWindow(choosiePost.getPostKey(),
+						position);
 			}
 		};
 
@@ -310,7 +312,8 @@ public class ChoosiePostView extends RelativeLayout {
 			tv.setOnClickListener(new OnClickListener() {
 
 				public void onClick(View arg0) {
-					superController.switchToCommentScreen(choosiePost);
+					superController.switchToCommentScreen(choosiePost
+							.getPostKey());
 				}
 			});
 			commentLayout.addView(tv);
