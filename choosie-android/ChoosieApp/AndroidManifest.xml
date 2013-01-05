@@ -91,6 +91,11 @@
             android:label="@string/title_activity_enlarge_photo" >
         </activity>
         <activity
+            android:name="com.choosie.app.NewPostActivity"
+            android:label="@string/title_activity_new_post"
+            android:windowSoftInputMode="stateVisible" >
+        </activity>
+        <activity
             android:name="com.choosie.app.camera.CameraActivity"
             android:label="@string/title_activity_camera" >
         </activity>
