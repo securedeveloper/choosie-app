@@ -26,8 +26,11 @@
     <string name="title_activity_enlarge_photo">EnlargePhoto</string>
     <string name="general_content_description">Widget Content Description</string>
     <string name="feed_is_empty_message">You have no posts on your feed!\nBe the first to upload a Choozie Post!</string>
-    <string name="empty_string"/>
+    <string name="empty_string" />
     <string name="enable_push_notifications">Enable Push Notifications</string>
     <string name="settings">Settings</string>
+    <string name="title_activity_camera">CameraActivity</string>
+    <string name="title_activity_confirmation">ConfirmationActivity</string>
+    <string name="title_activity_gallery">GalleryActivty</string>
 
 </resources>

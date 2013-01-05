@@ -90,6 +90,18 @@
             android:name="com.choosie.app.EnlargePhotoActivity"
             android:label="@string/title_activity_enlarge_photo" >
         </activity>
+        <activity
+            android:name="com.choosie.app.camera.CameraActivity"
+            android:label="@string/title_activity_camera" >
+        </activity>
+        <activity
+            android:name="com.choosie.app.camera.ConfirmationActivity"
+            android:label="@string/title_activity_confirmation" >
+        </activity>
+        <activity
+            android:name="com.choosie.app.camera.GalleryActivity"
+            android:label="@string/title_activity_gallery" >
+        </activity>
     </application>
 
 </manifest>

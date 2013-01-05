@@ -2,6 +2,7 @@ package com.choosie.app;
 
 import com.choosie.app.R;
 import com.choosie.app.caches.Caches;
+import com.choosie.app.camera.CameraActivity;
 import com.choosie.app.client.Client;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.ChoosiePostData;
@@ -132,8 +133,10 @@ public class ChoosieActivity extends Activity {
 		Caches.getInstance().getPostsCache()
 				.invalidateKey(notification.getPostKey());
 		Logger.i("HandleVoteNotification()");
+
 		superController.switchToCommentScreenAndOpenVotes(notification
 				.getPostKey());
+
 	}
 
 	@Override
@@ -150,6 +153,9 @@ public class ChoosieActivity extends Activity {
 			break;
 		case R.id.layout_button_post:
 		case R.id.layout_button_image_post:
+			// Intent intent = new Intent(this.getApplicationContext(),
+			// CameraActivity.class);
+			// startActivity(intent);
 			superController.switchToScreen(Screen.POST);
 			break;
 

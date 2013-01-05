@@ -147,6 +147,7 @@ public class ChoosiePostView extends RelativeLayout {
 
 		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
 
+			
 			public void onClick(View v) {
 				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2,
 						feedViewHolder.imgSelected1,
