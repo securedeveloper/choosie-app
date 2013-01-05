@@ -1,9 +1,15 @@
 package com.choosie.app;
 
+import java.io.Serializable;
+
 import android.graphics.Bitmap;
 
-public class NewChoosiePostData {
+public class NewChoosiePostData implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Bitmap image1;
 	private Bitmap image2;
 	private String question;
