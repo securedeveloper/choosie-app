@@ -37,8 +37,6 @@ public class ChoosieActivity extends Activity {
 		Logger.i("ChoosieActivity: onCreate()");
 
 		Intent intent = getIntent();
-		boolean isItChannelingJob = intent.getBooleanExtra(
-				Constants.IntentsCodes.isChannelingCose, false);
 
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 		setContentView(R.layout.activity_choosie);

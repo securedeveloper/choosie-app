@@ -44,7 +44,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			Logger.i("Application is running in Foreground");
 			Logger.i("No need to send the Push Notification");
 		} else {
-			Logger.i("Application is running in Background");
+			Logger.i("Application is not running in Background");
 			/*
 			 * Handle Push Notification /* 1 = New Post /* 2 = New Comment /* 3
 			 * = New Vote

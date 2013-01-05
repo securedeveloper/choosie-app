@@ -58,6 +58,10 @@ public class FeedScreenController extends ScreenController {
 			}
 
 		});
+		
+		
+		
+		
 	}
 
 	@Override

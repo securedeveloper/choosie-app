@@ -160,6 +160,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			addItemsToList();
 			break;
 		case REFRESHING_FEED:
+			Log.i("bla bla", "fdfd");
 			showLoadingItem();
 			addItemsToList();
 			break;
