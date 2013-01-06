@@ -337,13 +337,19 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		float density = getApplicationContext().getResources()
 				.getDisplayMetrics().density;
-		// topHeight =(screenHeight - bestHeight) / 2; //this is a fixed thing
-		topHeight = 40;
-		bottomHeight = screenHeight - bestHeight - topHeight;
-		topHideHeight = (int) ((bestHeight - bestWidth) / 1.5);
-		bottomHideHeight = bestHeight - bestWidth - topHideHeight;
+		// first set the height of the wrappers - which hold the buttons...
 		topWrapperHeight = Math.round(50 * density);
-		bottomWrapperHeight = Math.max(Math.round(50 * density), bottomHeight);
+		bottomWrapperHeight = Math.round(85 * density);
+		topHeight = topWrapperHeight;
+		bottomHeight = screenHeight - bestHeight - topHeight;
+		topHideHeight = (bottomHeight - screenWidth - bottomWrapperHeight + bestHeight) / 2;
+		bottomHideHeight = topHideHeight + bottomWrapperHeight - bottomHeight;
+		//
+		// bottomHeight = bottomWrapperHeight;//screenHeight - bestHeight -
+		// topHeight;
+		// topHideHeight = (int) ((bestHeight - bestWidth) / 2);
+		// bottomHideHeight = topHideHeight;//bestHeight - bestWidth -
+		// topHideHeight;
 
 		cameraLayoutViewHolder.preview.getLayoutParams().height = bestWidth;
 
