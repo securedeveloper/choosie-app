@@ -2,6 +2,8 @@ package com.choosie.app.camera;
 
 import java.io.File;
 
+import com.choosie.app.Constants;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,10 +30,9 @@ public class GalleryActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		Intent intent = getIntent();
-		path = intent.getStringExtra("path");
+		path = intent.getStringExtra(Constants.IntentsCodes.path);
 
 		startCropingStuff();
-
 	}
 
 	private void startCropingStuff() {
@@ -52,11 +53,12 @@ public class GalleryActivity extends Activity {
 		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
 		intent.putExtra("noFaceDetection", false); // lol, negative boolean
 													// noFaceDetection
-		startActivityForResult(intent, 10);
+		startActivityForResult(intent,
+				Constants.RequestCodes.CAMERA_GALLERY_CROP);
 
 	}
 
-	private void handleCroppedImage() {
+	private void setRresultOk() {
 		Log.i("cameraApi", " in handleCroppedImage");
 		setResult(Activity.RESULT_OK);
 		finish();
@@ -70,15 +72,9 @@ public class GalleryActivity extends Activity {
 		if (resultCode == Activity.RESULT_OK) {
 
 			switch (requestCode) {
-
-			case 1:
-				Log.i("cameraApi", "returned!, code 1");
-				startCropingStuff();
-				break;
-
-			case 10:
-				Log.i("cameraApi", "returned!, code 10");
-				handleCroppedImage();
+			case Constants.RequestCodes.CAMERA_GALLERY_CROP:
+				Log.i("cameraApi", "returned!, code CAMERA_GALLERY_CROP");
+				setRresultOk();
 				break;
 			}
 		} else {

@@ -2,6 +2,7 @@ package com.choosie.app;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
@@ -10,15 +11,23 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import com.choosie.app.caches.Caches;
+import com.choosie.app.camera.GalleryActivity;
 import com.choosie.app.controllers.SuperController;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Debug;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 public class Utils {
 
@@ -85,6 +94,36 @@ public class Utils {
 		if (choosieDirectory.exists() == false) {
 			choosieDirectory.mkdirs();
 		}
+	}
+	
+	public static void writeBitmapToFile(Bitmap bitmap, File file, int quality) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
+		byte[] bitmapdata = bos.toByteArray();
+		writeBytesIntoFile(bitmapdata, file);
+	}
+
+	public static void writeBytesIntoFile(byte[] data, File pictureFile) {		
+		try {
+			FileOutputStream fos = new FileOutputStream(pictureFile);
+			fos.write(data);
+			fos.close();
+			Logger.i("writeBytesIntoFile: path = " + pictureFile.getAbsolutePath());
+
+		} catch (FileNotFoundException e) {
+			Logger.e("File not found: " + e.getMessage());
+		} catch (IOException e) {
+			Logger.e("Error accessing file: " + e.getMessage());
+		}
+	}
+	
+	/*
+	 * writing Bitmap on sd, from URL!!
+	 */
+	public static void saveBitmapOnSdFrom(String photoURL, Bitmap param) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		param.compress(CompressFormat.JPEG, 100, bos);
+		writeByteStreamOnSD(bos, Integer.toString(photoURL.hashCode()));
 	}
 
 	public static void writeByteStreamOnSD(ByteArrayOutputStream bos,
@@ -170,12 +209,6 @@ public class Utils {
 		return inSampleSize;
 	}
 
-	public static void saveBitmapOnSd(String photoURL, Bitmap param) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		param.compress(CompressFormat.JPEG, 100, bos);
-		writeByteStreamOnSD(bos, Integer.toString(photoURL.hashCode()));
-	}
-
 	@SuppressLint("DefaultLocale")
 	public static void dumpMemoryInfoToLog() {
 		Debug.MemoryInfo memoryInfo = new Debug.MemoryInfo();
@@ -215,5 +248,72 @@ public class Utils {
 
 		screenWidth = displaymetrics.widthPixels;
 		screenHeight = displaymetrics.heightPixels;
+	}
+
+	public static void setImageViewSize(View imageView, int height, int width) {
+		imageView.getLayoutParams().height = height;
+		if (width > 0) {
+			imageView.getLayoutParams().width = width;
+		}
+	}
+
+	public static Bitmap getBitmapFromFileByViewSize(String path, int height,
+			int width) {
+
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(path, options);
+
+		options.inSampleSize = calculateInSampleSize(options, width, height);
+
+		options.inJustDecodeBounds = false;
+		Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+		return bitmap;
+	}
+
+	public static File getAlbumDir() {
+		Logger.i("PostScreenController - enter getAlbumDir,path = "
+				+ Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+				+ " " + Constants.URIs.APPLICATION_NAME);
+		File storageDir = new File(
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				Constants.URIs.APPLICATION_NAME);
+		return storageDir;
+	}
+
+	public static File createImageFile(Integer prefix) {
+		File dir = getAlbumDir();
+		if (dir.exists() == false) {
+			Logger.i("Utils - createImageFile: the dir is not exist, path = "
+					+ dir.getAbsolutePath());
+			boolean dirCreated = dir.mkdirs();
+			Logger.i("Utils, dirCreated = " + dirCreated);
+		} else {
+			Logger.i("Utils - createImageFile: dir exists, path = "
+					+ dir.getAbsolutePath());
+		}
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("_yyyyMMdd_HHmmss")
+				.format(new Date());
+		String imageFileName = "image" + prefix.toString() + timeStamp + "_";
+		File imageFile = null;
+		try {
+			imageFile = File.createTempFile(imageFileName, ".jpg", dir);
+		} catch (IOException e) {
+			Log.e("createImageFile", "failed to create temp image file: "
+					+ imageFileName);
+			e.printStackTrace();
+		}
+		return imageFile;
+	}
+
+	public static void galleryAddPic(Uri uri, Context context) {
+		Logger.i("Utils: adding to gallery, path = " + uri.getPath());
+		Intent mediaScanIntent = new Intent(
+				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		mediaScanIntent.setData(uri);
+		context.sendBroadcast(mediaScanIntent);
 	}
 }

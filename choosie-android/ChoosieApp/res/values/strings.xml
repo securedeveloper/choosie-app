@@ -35,5 +35,6 @@
     <string name="title_activity_camera">CameraActivity</string>
     <string name="title_activity_confirmation">ConfirmationActivity</string>
     <string name="title_activity_gallery">GalleryActivty</string>
+    <string name="title_activity_camera_main">CameraMainActivity</string>
 
 </resources>

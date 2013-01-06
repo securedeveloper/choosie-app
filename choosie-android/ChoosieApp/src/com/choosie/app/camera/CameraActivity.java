@@ -1,24 +1,17 @@
 package com.choosie.app.camera;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import com.choosie.app.NewPostActivity;
 import com.choosie.app.Constants;
 import com.choosie.app.R;
+import com.choosie.app.Utils;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -77,10 +70,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private int screenWidth;
 	private int camId;
 	private CameraLayoutViewsHolder cameraLayoutViewHolder;
-
-	private String imagePath1;
-	private String imagePath2;
-
+	private Intent intent;
 	Handler mHandler = new Handler();
 	private Runnable mRunnable = new Runnable() {
 
@@ -152,57 +142,27 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 						return;
 					}
 
-					path = pictureFile.getAbsolutePath();
 					Log.i("cameraApi",
 							"starting startConfirmationActivity with numOfPhotoToTake = "
 									+ numOfPhotoToTake);
 					cameraLayoutViewHolder.takePicButton.setEnabled(true);
 					cameraLayoutViewHolder.preview.setEnabled(true);
-					startConfirmationActivity(numOfPhotoToTake);
+					fillIntentsWithHeightsAndSetResult();
 				}
 			};
-
 			manipulateTask.execute(data);
 		}
 	};
 
-	protected void startConfirmationActivity(int number) {
-		Intent confirmationIntent = new Intent(this.getApplicationContext(),
-				ConfirmationActivity.class);
-		confirmationIntent.putExtra("path", path);
-		confirmationIntent.putExtra("topWrapperHeight", topWrapperHeight);
-		confirmationIntent.putExtra("topHideHeight", topHideHeight + topHeight
-				- topWrapperHeight);
-		confirmationIntent.putExtra("bottomWrapperHeight", bottomWrapperHeight);
-		confirmationIntent.putExtra("bottomHideHeight", bottomHideHeight
-				+ bottomHeight - bottomWrapperHeight);
-		confirmationIntent.putExtra("photoNumber", number);
-
-		startActivityForResult(confirmationIntent, number);
-	}
-
-	private void writeDataIntoFile(byte[] data, File pictureFile) {
-		try {
-			FileOutputStream fos = new FileOutputStream(pictureFile);
-			fos.write(data);
-			fos.close();
-
-		} catch (FileNotFoundException e) {
-			Log.d(TAG, "File not found: " + e.getMessage());
-		} catch (IOException e) {
-			Log.d(TAG, "Error accessing file: " + e.getMessage());
-		}
-	}
-
-	private void writeBitmapToFile(Bitmap bitmap, File file, int quality) {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
-		byte[] bitmapdata = bos.toByteArray();
-		writeDataIntoFile(bitmapdata, file);
+	protected void fillIntentsWithHeightsAndSetResult() {
+		fillIntentWithHeight(intent);
+		setResult(Activity.RESULT_OK, intent);
+		finish();
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.i("cameraApi", "CameraActivity onCreate");
 		super.onCreate(savedInstanceState);
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -214,6 +174,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		// first thing!! getting the camera
 		if ((mCamera = getCameraInstance(CameraInfo.CAMERA_FACING_BACK)) == null) {
 			showErrorDialog("Camera isnotavailable");
+			finish();
 			return;
 		}
 
@@ -239,11 +200,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 					View.GONE);
 		}
 
+		intent = getIntent();
+		path = intent.getStringExtra(Constants.IntentsCodes.path);
+		pictureFile = new File(path);
+
 		// getting the file
-		if ((pictureFile = getOutputMediaFile()) == null) {
-			showErrorDialog("Couldn't create media file");
-			return;
-		}
+		// if ((pictureFile = getOutputMediaFile()) == null) {
+		// showErrorDialog("Couldn't create media file");
+		// return;
+		// }
 
 		// set the height of all the layouts, so it will form a square
 		display = getWindowManager().getDefaultDisplay();
@@ -255,12 +220,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		// initial to the first photo
 		numOfPhotoToTake = 1;
 
+		// on create. set the focus gone, anyway
 		cameraLayoutViewHolder.focusImageView.setVisibility(View.GONE);
-
-		// create preview
-		// mPreview = new CameraPreview(this, mCamera, display);
-		// preview.addView(mPreview);
-
 	}
 
 	private void initializeView() {
@@ -277,6 +238,17 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		cameraLayoutViewHolder.hideTop = (RelativeLayout) findViewById(R.id.hide_layout_top);
 		cameraLayoutViewHolder.hideBottom = (RelativeLayout) findViewById(R.id.hide_layout_bottom);
 		cameraLayoutViewHolder.layoutWrapperBottom = (RelativeLayout) findViewById(R.id.layout_wrapper_bottom);
+	}
+
+	private void fillIntentWithHeight(Intent intent) {
+		intent.putExtra(Constants.IntentsCodes.cameraTopWrapperHeight,
+				topWrapperHeight);
+		intent.putExtra(Constants.IntentsCodes.cameraTopHideHeight,
+				topHideHeight + topHeight - topWrapperHeight);
+		intent.putExtra(Constants.IntentsCodes.cameraBottomWrapperHeight,
+				bottomWrapperHeight);
+		intent.putExtra(Constants.IntentsCodes.cameraBottomHideHeight,
+				bottomHideHeight + bottomHeight - bottomWrapperHeight);
 	}
 
 	private void showErrorDialog(String errorMsg) {
@@ -380,28 +352,31 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				+ " bottomHideHeight = " + bottomHideHeight);
 
 		// after calculating the sizes - setting heights
-		setImageViewSize(cameraLayoutViewHolder.layoutTop, topHeight, 0);
-		setImageViewSize(cameraLayoutViewHolder.layoutBottom, bottomHeight, 0);
-		setImageViewSize(cameraLayoutViewHolder.hideTop, topHideHeight, 0);
+		Utils.setImageViewSize(cameraLayoutViewHolder.layoutTop, topHeight, 0);
+		Utils.setImageViewSize(cameraLayoutViewHolder.layoutBottom,
+				bottomHeight, 0);
+		Utils.setImageViewSize(cameraLayoutViewHolder.hideTop, topHideHeight, 0);
 		cameraLayoutViewHolder.hideTop.bringToFront();
-		setImageViewSize(cameraLayoutViewHolder.hideBottom, bottomHideHeight, 0);
+		Utils.setImageViewSize(cameraLayoutViewHolder.hideBottom,
+				bottomHideHeight, 0);
 		cameraLayoutViewHolder.hideBottom.bringToFront();
-		setImageViewSize(cameraLayoutViewHolder.layoutWrapperTop,
+		Utils.setImageViewSize(cameraLayoutViewHolder.layoutWrapperTop,
 				topWrapperHeight, 0);
 		cameraLayoutViewHolder.layoutWrapperTop.bringToFront();
-		setImageViewSize(cameraLayoutViewHolder.layoutWrapperBottom,
+		Utils.setImageViewSize(cameraLayoutViewHolder.layoutWrapperBottom,
 				bottomWrapperHeight, 0);
 		cameraLayoutViewHolder.layoutWrapperBottom.bringToFront();
-		setImageViewSize(cameraLayoutViewHolder.takePicButton,
+		Utils.setImageViewSize(cameraLayoutViewHolder.takePicButton,
 				bottomWrapperHeight, bottomWrapperHeight);
-		setImageViewSize(cameraLayoutViewHolder.galleryImage,
+		Utils.setImageViewSize(cameraLayoutViewHolder.galleryImage,
 				bottomWrapperHeight, bottomWrapperHeight);
-		setImageViewSize(cameraLayoutViewHolder.flashImage, topWrapperHeight,
-				topWrapperHeight);
-		setImageViewSize(cameraLayoutViewHolder.frontImage, topWrapperHeight,
-				topWrapperHeight);
+		Utils.setImageViewSize(cameraLayoutViewHolder.flashImage,
+				topWrapperHeight, topWrapperHeight);
+		Utils.setImageViewSize(cameraLayoutViewHolder.frontImage,
+				topWrapperHeight, topWrapperHeight);
 
-		setImageViewSize(findViewById(R.id.cameraPreview_focusImage_layout),
+		Utils.setImageViewSize(
+				findViewById(R.id.cameraPreview_focusImage_layout),
 				bottomWrapperHeight, bottomWrapperHeight);
 
 		int topMargin = (screenHeight / 2)
@@ -415,20 +390,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 						topMargin, 0, 0);
 	}
 
-	private void setImageViewSize(View imageView, int height, int width) {
-		imageView.getLayoutParams().height = height;
-		if (width > 0) {
-			imageView.getLayoutParams().width = width;
-		}
-	}
-
 	protected void startGalleryStuff() {
 		path = pictureFile.getAbsolutePath();
 		Log.i("cameraApi", "enterd startGalleryStuff");
 		Intent intent = new Intent(this.getApplicationContext(),
 				GalleryActivity.class);
-		intent.putExtra("path", path);
-		startActivityForResult(intent, 10);
+		intent.putExtra(Constants.IntentsCodes.path, path);
+		startActivityForResult(intent,
+				Constants.RequestCodes.CAMERA_PICURE_GALLERY);
 	}
 
 	// find the optimal size - closest to a square
@@ -512,41 +481,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		return c; // returns null if camera is unavailable
 	}
 
-	/** Create a File for saving an image or video */
-	private static File getOutputMediaFile() {
-		// To be safe, you should check that the SDCard is mounted
-		// using Environment.getExternalStorageState() before doing this.
-
-		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				"MyCameraApp");
-		// This location works best if you want the created images to be shared
-		// between applications and persist after your app has been uninstalled.
-
-		// Create the storage directory if it does not exist
-		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				Log.d("MyCameraApp1", "failed to create directory");
-				return null;
-			}
-		}
-
-		// Create a media file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-				.format(new Date());
-		File mediaFile = new File(mediaStorageDir.getPath() + File.separator
-				+ "IMG_" + timeStamp + ".jpg");
-
-		return mediaFile;
-	}
-
 	private boolean manipulateDataIntoFile(byte[] data, File pictureFile) {
 
 		try {
 			// phase 1: write the date into the file - this is for loading it
 			// efficiently without creating large bitmap
-			writeDataIntoFile(data, pictureFile);
+			Utils.writeBytesIntoFile(data, pictureFile);
 
 			// phase 2: get Bitmap from file
 
@@ -617,7 +557,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 			Log.i("cameraApi", "recycled afterRotation");
 
-			writeBitmapToFile(squareBitmap, pictureFile, 95);
+			Utils.writeBitmapToFile(squareBitmap, pictureFile, 95);
 
 			squareBitmap.recycle();
 			squareBitmap = null;
@@ -629,12 +569,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		return true;
 	}
 
-	private void galleryAddPic(Uri uri) {
-		Intent mediaScanIntent = new Intent(
-				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-		mediaScanIntent.setData(uri);
-		sendBroadcast(mediaScanIntent);
-	}
+	// private void galleryAddPic(Uri uri) {
+	// Intent mediaScanIntent = new Intent(
+	// Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+	// mediaScanIntent.setData(uri);
+	// sendBroadcast(mediaScanIntent);
+	// }
 
 	private Bitmap rotateBitmap(Bitmap source) {
 		CameraInfo cameraInfo = new CameraInfo();
@@ -661,63 +601,18 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i("cameraApi", "entered onActivityResult");
 		switch (requestCode) {
-		case 1:
-			Log.i("cameraApi", "onActivityResult case 1");
+		case Constants.RequestCodes.CAMERA_PICURE_GALLERY:
+			// got back from gallery;
 			if (resultCode == Activity.RESULT_OK) {
-				cameraLayoutViewHolder.textView_takePhoto
-						.setText("Choozie second");
-				numOfPhotoToTake = 2;
-				galleryAddPic(Uri.fromFile(new File(path)));
-				imagePath1 = path;
-				pictureFile = getOutputMediaFile(); // get new media picture
-			}
-			// mCamera.startPreview(); //it starts in onResume()
-			break;
-		case 2:
-			if (resultCode == Activity.RESULT_OK) {
-				cameraLayoutViewHolder.textView_takePhoto
-						.setText("Choozie second");
-				numOfPhotoToTake = 2;
-				galleryAddPic(Uri.fromFile(new File(path)));
-				imagePath2 = path;
-				activatePostActivity();
-				// pictureFile = getOutputMediaFile();
-				// setResult(Activity.RESULT_OK);
-				// finish();
-			}
-			break;
-
-		case 10:
-			if (resultCode == Activity.RESULT_OK) {
-				startConfirmationActivity(numOfPhotoToTake);
+				// nice, lets go start to main camera super controller
+				// activity!
+				fillIntentsWithHeightsAndSetResult();
 				// startCropingStuff();
 				break;
+			} else {
+				// TODO: something??
 			}
-		case 20:
-			if (resultCode == Activity.RESULT_OK) {
-				handleCroppedImage(data);
-			}
-
 		}
-
-	}
-
-	private void activatePostActivity() {
-
-		Intent intent = new Intent(this.getApplicationContext(),
-				NewPostActivity.class);
-		intent.putExtra(Constants.IntentsCodes.photo1Path, imagePath1);
-		intent.putExtra(Constants.IntentsCodes.photo2Path, imagePath2);
-		startActivity(intent);
-	}
-
-	private void handleCroppedImage(Intent data) {
-		final Bundle extras = data.getExtras();
-
-		if (extras != null) {
-			startConfirmationActivity(numOfPhotoToTake);
-		}
-
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
@@ -740,6 +635,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public final boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.i("cameraApi", "cameraActivity - keyDown");
+		setResult(Activity.RESULT_CANCELED);
 		finish();
 		return true;
 	}

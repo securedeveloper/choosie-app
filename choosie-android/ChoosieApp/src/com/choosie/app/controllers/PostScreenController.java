@@ -395,7 +395,7 @@ public class PostScreenController extends ScreenController {
 	}
 
 	private void submitChoosiePost() {
-		
+
 		if ((mImage1 == null) || (mImage2 == null)) {
 			Toast toast = Toast.makeText(getActivity(),
 					"Please add two photos", Toast.LENGTH_SHORT);
@@ -408,7 +408,7 @@ public class PostScreenController extends ScreenController {
 				Toast toast = Toast.makeText(getActivity(),
 						"Please add a question", Toast.LENGTH_SHORT);
 				toast.show();
-			} else	{
+			} else {
 				Tracker tracker = GoogleAnalytics.getInstance(
 						superController.getActivity()).getDefaultTracker();
 				tracker.trackEvent("Ui action", "Post Screen", "Share", null);
@@ -490,16 +490,16 @@ public class PostScreenController extends ScreenController {
 		String timeStamp = new SimpleDateFormat("_yyyyMMdd_HHmmss")
 				.format(new Date());
 		String imageFileName = "image" + prefix.toString() + timeStamp + "_";
-		File image = null;
+		File imageFile = null;
 		try {
-			image = File.createTempFile(imageFileName, ".jpg", dir);
+			imageFile = File.createTempFile(imageFileName, ".jpg", dir);
 		} catch (IOException e) {
 			Log.e("createImageFile", "failed to create temp image file: "
 					+ imageFileName);
 			e.printStackTrace();
 		}
-		mCurrentPhotoPath = image.getAbsolutePath();
-		return image;
+		mCurrentPhotoPath = imageFile.getAbsolutePath();
+		return imageFile;
 	}
 
 	private File getAlbumDir() {

@@ -48,7 +48,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".GCMIntentService" />
+        <service android:name="com.choosie.app.GCMIntentService" />
 
         <activity
             android:name="com.choosie.app.ChoosieActivity"
@@ -91,7 +91,7 @@
             android:label="@string/title_activity_enlarge_photo" >
         </activity>
         <activity
-            android:name="com.choosie.app.NewPostActivity"
+            android:name="com.choosie.app.camera.NewPostActivity"
             android:label="@string/title_activity_new_post"
             android:windowSoftInputMode="stateVisible" >
         </activity>
@@ -106,6 +106,10 @@
         <activity
             android:name="com.choosie.app.camera.GalleryActivity"
             android:label="@string/title_activity_gallery" >
+        </activity>
+        <activity
+            android:name="com.choosie.app.camera.CameraMainSuperControllerActivity"
+            android:label="@string/title_activity_camera_main" >
         </activity>
     </application>
 

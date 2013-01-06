@@ -7,8 +7,9 @@ public class Constants {
 	public static final String LOG_TAG = "Choosie";
 
 	public static class URIs {
-     public static final String ROOT_URL = "http://choosieapp.appspot.com";
-//		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
+		public static final String ROOT_URL = "http://choosieapp.appspot.com";
+		// public static final String ROOT_URL =
+		// "http://choosie-dev.appspot.com";
 		public static final String REGISTER = ROOT_URL + "/register";
 		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
 		public static final String FEED_URI = ROOT_URL + "/feed";
@@ -39,12 +40,23 @@ public class Constants {
 		public static final int FB_REQUEST_PUBLISH_PERMISSION = 64206;
 		public static final int EnalargeImage = 10;
 		public static final int START_ACTIVITY = 11;
+		public static final int CAMERA_PICURE_FIRST = 12;
+		public static final int CAMERA_PICURE_SECOND = 13;
+		public static final int NEW_POST = 14;
+		public static final int CAMERA_PICTURE_CONFIRM = 15;
+		public static final int CAMERA_CONFIRM_FIRST = 16;
+		public static final int CAMERA_CONFIRM_SECOND = 17;
+		public static final int CAMERA_RETAKE_PICTURE = 18;
+		public static final int CAMERA_PICURE_GALLERY = 19;
+		public static final int CAMERA_GALLERY_CROP = 20;
 
 	}
 
 	public static class IntentsCodes {
+		public static final String path = "path";
 		public static final String photo2Path = "photo2Path";
 		public static final String photo1Path = "photo1Path";
+		public static final String photoNumber = "photoNumber";
 		public static final String userPhotoPath = "userPhotoPath";
 		public static final String nameList = "nameList";
 		public static final String commentList = "commentList";
@@ -65,6 +77,10 @@ public class Constants {
 		public static final String isChannelingCose = "isChannelingCose";
 		public static final String isPostByMe = "isPostByMe";
 		public static final String openVotesWindow = "openVotesWindow";
+		public static final String cameraTopWrapperHeight = "cameraTopWrapperHeight";
+		public static final String cameraTopHideHeight = "cameraTopHideHeight";
+		public static final String cameraBottomWrapperHeight = "cameraBottomWrapperHeight";
+		public static final String cameraBottomHideHeight = "cameraBottomHideHeight";
 	}
 
 	public static class Notifications {

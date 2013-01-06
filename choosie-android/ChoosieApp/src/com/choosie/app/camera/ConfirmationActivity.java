@@ -6,7 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.R;
+import com.choosie.app.Utils;
 import com.choosie.app.R.layout;
 import com.choosie.app.R.menu;
 
@@ -42,7 +45,8 @@ public class ConfirmationActivity extends Activity {
 	private int screenWidth;
 	private Bitmap scalledBitmapToShow;
 	private Bitmap rotatedBitmap = null;
-	private int photoNumber;
+
+	// private int photoNumber;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +58,8 @@ public class ConfirmationActivity extends Activity {
 		setContentView(R.layout.activity_confirmation);
 
 		Intent intent = getIntent();
-		path = intent.getStringExtra("path");
-		photoNumber = intent.getIntExtra("photoNumber", 0);
+		path = intent.getStringExtra(Constants.IntentsCodes.path);
+		Logger.i("cameraConfirmation, getting from intent - path = " + path);
 
 		manipulateHeightsAndSetListeners(intent);
 
@@ -84,10 +88,17 @@ public class ConfirmationActivity extends Activity {
 	private void manipulateHeightsAndSetListeners(Intent intent) {
 		float density = getApplicationContext().getResources()
 				.getDisplayMetrics().density;
-		topWrapperHeight = intent.getIntExtra("topWrapperHeight", 0);
-		topHideHeight = intent.getIntExtra("topHideHeight", 0);
-		bottomWrapperHeight = intent.getIntExtra("bottomWrapperHeight", 0);
-		bottomHideHeight = intent.getIntExtra("bottomHideHeight", 0);
+
+		Bundle bundle = intent.getExtras();
+
+		topWrapperHeight = bundle.getInt(
+				Constants.IntentsCodes.cameraTopWrapperHeight, 0);
+		topHideHeight = bundle.getInt(
+				Constants.IntentsCodes.cameraTopHideHeight, 0);
+		bottomWrapperHeight = bundle.getInt(
+				Constants.IntentsCodes.cameraBottomWrapperHeight, 0);
+		bottomHideHeight = bundle.getInt(
+				Constants.IntentsCodes.cameraBottomHideHeight, 0);
 
 		Log.i("orenc", "topHeight = " + topWrapperHeight + " bottomHeight = "
 				+ bottomWrapperHeight + " topHideHeight = " + topHideHeight
@@ -98,22 +109,23 @@ public class ConfirmationActivity extends Activity {
 		RelativeLayout bottomtLayot = (RelativeLayout) findViewById(R.id.confirmation_layout_bottom);
 		RelativeLayout bottomHideLayot = (RelativeLayout) findViewById(R.id.confirmation_hide_layout_bottom);
 
-		topLayot.getLayoutParams().height = topWrapperHeight;
-		topHideLayot.getLayoutParams().height = topHideHeight;
-		bottomtLayot.getLayoutParams().height = bottomWrapperHeight;
-		bottomHideLayot.getLayoutParams().height = bottomHideHeight;
+		Utils.setImageViewSize(topLayot, topWrapperHeight, 0);
+		Utils.setImageViewSize(topHideLayot, topHideHeight, 0);
+
+		Utils.setImageViewSize(bottomtLayot, bottomWrapperHeight, 0);
+		Utils.setImageViewSize(bottomHideLayot, bottomHideHeight, 0);
 
 		ImageView rotateImageView = (ImageView) findViewById(R.id.confirmation_rotateImage1);
-		rotateImageView.getLayoutParams().height = topWrapperHeight;
-		rotateImageView.getLayoutParams().width = topWrapperHeight;
+		Utils.setImageViewSize(rotateImageView, topWrapperHeight,
+				topWrapperHeight);
 
 		ImageView continueImageView = (ImageView) findViewById(R.id.confirmation_continueImage1);
-		continueImageView.getLayoutParams().height = topWrapperHeight;
-		continueImageView.getLayoutParams().width = topWrapperHeight;
+		Utils.setImageViewSize(continueImageView, topWrapperHeight,
+				topWrapperHeight);
 
 		ImageView cancelImageView = (ImageView) findViewById(R.id.confirmation_cancelImage);
-		cancelImageView.getLayoutParams().height = topWrapperHeight;
-		cancelImageView.getLayoutParams().width = topWrapperHeight;
+		Utils.setImageViewSize(cancelImageView, topWrapperHeight,
+				topWrapperHeight);
 
 		rotateImageView.setOnClickListener(new OnClickListener() {
 
@@ -165,36 +177,12 @@ public class ConfirmationActivity extends Activity {
 	protected void handleConfirm() {
 
 		if (rotatedBitmap != null) {
-			// need to save the rotated image
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-			byte[] bitmapdata = bos.toByteArray();
-			writeDataIntoFile(bitmapdata, new File(path));
+			Utils.writeBitmapToFile(rotatedBitmap, new File(path), 100);
 		}
 
 		resetConfirmationActivity();
-
-		if (photoNumber == 1) {
-			showWaitingDialog();
-		} else {
-			setResult(Activity.RESULT_OK);
-			finish();
-		}
-	}
-
-	private void showWaitingDialog() {
-		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-		myAlertDialog.setTitle("");
-		myAlertDialog.setMessage("Picture second photo");
-
-		myAlertDialog.setPositiveButton("OK",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface arg1, int arg3) {
-						setResult(Activity.RESULT_OK);
-						finish();
-					}
-				});
-		myAlertDialog.show();
+		setResult(Activity.RESULT_OK);
+		finish();
 	}
 
 	private void resetConfirmationActivity() {
@@ -247,19 +235,6 @@ public class ConfirmationActivity extends Activity {
 		return true;
 	}
 
-	private void writeDataIntoFile(byte[] data, File pictureFile) {
-		try {
-			FileOutputStream fos = new FileOutputStream(pictureFile);
-			fos.write(data);
-			fos.close();
-
-		} catch (FileNotFoundException e) {
-			Log.d("orenc", "File not found: " + e.getMessage());
-		} catch (IOException e) {
-			Log.d("orenc", "Error accessing file: " + e.getMessage());
-		}
-	}
-
 	protected void cancelIt() {
 		setResult(RESULT_CANCELED, null);
 		resetConfirmationActivity();
@@ -274,6 +249,30 @@ public class ConfirmationActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	protected void onDestroy() {
+		Log.i("cameraApi", "cameraConfirmation cameraActivity onDestroy()");
+		super.onDestroy();
+		this.finish();
+	}
+
+	@Override
+	protected void onRestart() {
+		Log.i("cameraApi", "cameraConfirmation cameraActivity onRestart()");
+		super.onRestart();
+	}
+
+	@Override
+	protected void onStop() {
+		Log.i("cameraApi", "cameraConfirmation cameraActivity onStop()");
+		super.onStop();
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
 	}
 
 }
