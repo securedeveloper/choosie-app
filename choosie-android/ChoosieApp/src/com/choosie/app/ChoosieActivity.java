@@ -154,12 +154,14 @@ public class ChoosieActivity extends Activity {
 			break;
 		case R.id.layout_button_post:
 		case R.id.layout_button_image_post:
-			// Intent intent = new Intent(this.getApplicationContext(),
-			// CameraMainActivity.class);
-			// startActivity(intent);
-			superController.switchToScreen(Screen.POST);
+			if (AppSettings.useChoozieCamera() == true) {
+				Intent intent = new Intent(this.getApplicationContext(),
+						CameraMainSuperControllerActivity.class);
+				startActivity(intent);
+			} else {
+				superController.switchToScreen(Screen.POST);
+			}
 			break;
-
 		}
 	}
 

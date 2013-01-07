@@ -39,6 +39,13 @@ public class AppSettingsWindow {
 		pushNotificationCb.setChecked(checked);
 		pushNotificationCb.setOnCheckedChangeListener(checkChangeListener);
 
+		// Initialize camera type CheckBox
+		boolean cameraTypeChecked = AppSettings.useChoozieCamera();
+		final CheckBox cameraTypeCb = (CheckBox) layout
+				.findViewById(R.id.settings_camera_type_cb);
+		cameraTypeCb.setChecked(cameraTypeChecked);
+		cameraTypeCb.setOnCheckedChangeListener(cameraTypeCheckChangeListener);
+
 		// set view and size
 		pw = new PopupWindow(layout, Utils.getScreenWidth() - 30,
 				Utils.getScreenHeight() / 2, true);
@@ -57,6 +64,16 @@ public class AppSettingsWindow {
 				boolean isChecked) {
 			AppSettings.setPushNotifications(isChecked);
 			Logger.i("SharedPreferences : Setting push_notifications = "
+					+ isChecked);
+		}
+	};
+
+	private OnCheckedChangeListener cameraTypeCheckChangeListener = new OnCheckedChangeListener() {
+
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			AppSettings.setCameraType(isChecked);
+			Logger.i("SharedPreferences : Setting camera type = "
 					+ isChecked);
 		}
 	};

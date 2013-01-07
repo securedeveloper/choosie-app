@@ -40,9 +40,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 public class NewPostActivity extends Activity {
 
 	private int topWrapperHeight;
-	private int topHeight;
-	private int bottomHeight;
-	private int bottomWrapperHeight;
 	private RelativeLayout topLayout;
 	private EditText mQuestion;
 	private ImageView mImage1;
@@ -56,8 +53,6 @@ public class NewPostActivity extends Activity {
 	private String imagePath2;
 	private Bitmap bmp1;
 	private Bitmap bmp2;
-	private byte[] imgByteArray1;
-	private byte[] imgByteArray2;
 	private Bitmap photoBitmap1;
 	private Bitmap photoBitmap2;
 	private Intent intent;
@@ -96,12 +91,6 @@ public class NewPostActivity extends Activity {
 
 		topWrapperHeight = intent.getIntExtra(
 				Constants.IntentsCodes.cameraTopWrapperHeight, 0);
-		topHeight = intent.getIntExtra(
-				Constants.IntentsCodes.cameraTopHideHeight, 0);
-		bottomWrapperHeight = intent.getIntExtra(
-				Constants.IntentsCodes.cameraBottomWrapperHeight, 0);
-		bottomHeight = intent.getIntExtra(
-				Constants.IntentsCodes.cameraBottomHideHeight, 0);
 
 		// set heights and shit
 		Utils.setImageViewSize(topLayout, topWrapperHeight, 0);
@@ -164,19 +153,19 @@ public class NewPostActivity extends Activity {
 
 	protected void sendPostData() {
 
-		// create a new post with all details
-		NewChoosiePostData ncpd = new NewChoosiePostData(bmp1, bmp2, mQuestion
-				.getText().toString());
-
-		// insert it to a bundle
-		Bundle bundle = new Bundle();
-		bundle.putSerializable("post", ncpd);
-
-		// add the bundle to the intent
-		Intent intent = new Intent();
-		intent.putExtras(bundle);
-
-		startActivity(intent);
+//		// create a new post with all details
+//		NewChoosiePostData ncpd = new NewChoosiePostData(bmp1, bmp2, mQuestion
+//				.getText().toString());
+//
+//		// insert it to a bundle
+//		Bundle bundle = new Bundle();
+//		bundle.putSerializable("post", ncpd);
+//
+//		// add the bundle to the intent
+//		Intent intent = new Intent();
+//		intent.putExtras(bundle);
+//
+//		startActivity(intent);
 	}
 
 	private class SessionStatusCallback implements Session.StatusCallback {

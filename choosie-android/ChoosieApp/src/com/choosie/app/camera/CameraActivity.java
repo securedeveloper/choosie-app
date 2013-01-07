@@ -71,6 +71,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private int camId;
 	private CameraLayoutViewsHolder cameraLayoutViewHolder;
 	private Intent intent;
+	private boolean canUseBackKey = false;
 	Handler mHandler = new Handler();
 	private Runnable mRunnable = new Runnable() {
 
@@ -177,6 +178,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			finish();
 			return;
 		}
+		mCamera.setDisplayOrientation(90);
+		mCamera.setDisplayOrientation(90);
 
 		cameraLayoutViewHolder = new CameraLayoutViewsHolder();
 
@@ -244,11 +247,11 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		intent.putExtra(Constants.IntentsCodes.cameraTopWrapperHeight,
 				topWrapperHeight);
 		intent.putExtra(Constants.IntentsCodes.cameraTopHideHeight,
-				topHideHeight + topHeight - topWrapperHeight);
+				topHideHeight + topHeight);
 		intent.putExtra(Constants.IntentsCodes.cameraBottomWrapperHeight,
 				bottomWrapperHeight);
 		intent.putExtra(Constants.IntentsCodes.cameraBottomHideHeight,
-				bottomHideHeight + bottomHeight - bottomWrapperHeight);
+				bottomHideHeight + bottomHeight);
 	}
 
 	private void showErrorDialog(String errorMsg) {
@@ -323,17 +326,17 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		screenWidth = display.getWidth();
 		Size bestSize = findBestSize(previewSupportedSizes, display);
 
-		Log.i("cameraApi", "screen width = " + screenWidth
-				+ " screen height = " + screenHeight + "best width = "
-				+ bestSize.width + "best height = " + bestSize.height);
-
 		bestWidth = bestSize.width;
 		bestHeight = bestSize.height;
 
-		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+		if (bestWidth > bestHeight) {
 			bestWidth = bestSize.height;
 			bestHeight = bestSize.width;
 		}
+
+		Log.i("cameraApi", "screen width = " + screenWidth
+				+ " screen height = " + screenHeight + "best width = "
+				+ bestSize.width + "best height = " + bestSize.height);
 
 		float density = getApplicationContext().getResources()
 				.getDisplayMetrics().density;
@@ -341,19 +344,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		topWrapperHeight = Math.round(50 * density);
 		bottomWrapperHeight = Math.round(85 * density);
 		topHeight = topWrapperHeight;
-		bottomHeight = screenHeight - bestHeight - topHeight;
-		topHideHeight = (bottomHeight - screenWidth - bottomWrapperHeight + bestHeight) / 2;
-		bottomHideHeight = topHideHeight + bottomWrapperHeight - bottomHeight;
-		//
-		// bottomHeight = bottomWrapperHeight;//screenHeight - bestHeight -
-		// topHeight;
-		// topHideHeight = (int) ((bestHeight - bestWidth) / 2);
-		// bottomHideHeight = topHideHeight;//bestHeight - bestWidth -
-		// topHideHeight;
-
+		topHideHeight = (screenHeight - screenWidth - topHeight - bottomWrapperHeight) / 2;
+		bottomHeight = screenHeight - bestHeight - topHideHeight - topHeight;
+		bottomHideHeight = screenHeight - bottomHeight - screenWidth - topHeight - topHideHeight;
+		
 		cameraLayoutViewHolder.preview.getLayoutParams().height = bestWidth;
 
-		Log.i("cameraApi", "topHeight = " + topHeight + " bottomHeight = "
+		Log.i("cameraApi", "topWrapperHeight = " + topWrapperHeight
+				+ " bottomWrapperHeight = " + bottomWrapperHeight
+				+ " topHeight = " + topHeight + " bottomHeight = "
 				+ bottomHeight + " topHideHeight = " + topHideHeight
 				+ " bottomHideHeight = " + bottomHideHeight);
 
@@ -465,7 +464,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				// mPreview.onResume(mCamera);
 			}
 		}
-		manipulateLayoutsHeight(display);
+		canUseBackKey = false;
+		// manipulateLayoutsHeight(display);
 	}
 
 	@Override
@@ -546,8 +546,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			// phase 4: crop it into a square and save it in the file
 			int w = afterRotation.getWidth();
 			int startPixel = ((w * topHideHeight) / screenWidth);
-			Bitmap squareBitmap = Bitmap.createBitmap(afterRotation, 0,
-					startPixel, w, w);
+			Bitmap squareBitmap = Bitmap
+					.createBitmap(afterRotation, 0, 0, w, w);
 
 			Log.i("cameraApi", "cropped into a square = start pixel (y) - "
 					+ startPixel + " width = " + w);
@@ -640,10 +640,16 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	public final boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.i("cameraApi", "cameraActivity - keyDown");
-		setResult(Activity.RESULT_CANCELED);
-		finish();
-		return true;
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+			if (canUseBackKey == true) {
+				Log.i("cameraApi", "cameraActivity - keyDown");
+				setResult(Activity.RESULT_CANCELED);
+				finish();
+			} else {
+				return true;
+			}
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -671,7 +677,25 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		super.onStart();
 	}
 
-	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+	public void surfaceChanged(SurfaceHolder holder, int format, final int w,
+			final int h) {
+
+		AsyncTask<Void, Void, Void> surfaceChangedTask = new AsyncTask<Void, Void, Void>() {
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				surfaceChangedTaskJob(w, h);
+				canUseBackKey = true;
+				return null;
+			}
+
+		};
+
+		surfaceChangedTask.execute();
+
+	}
+
+	private void surfaceChangedTaskJob(int w, int h) {
 		Log.i("cameraApi", "enter surfaceChanged - enter with w = " + w
 				+ " h = " + h + " bestw = " + bestWidth + " bestH = "
 				+ bestHeight);
@@ -703,7 +727,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		if (display.getRotation() == Surface.ROTATION_0) {
 			Log.i("cameraApi", "surfaceChanged rotation = 0");
-			parameters.setPreviewSize(bestHeight, bestWidth);
+			parameters.setPreviewSize(h, w);
 			mCamera.setDisplayOrientation(90);
 		}
 
@@ -757,7 +781,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				}
 			});
 			Log.i("cameraApi", "surfaceCreated - startingpreview in camera");
-			mCamera.startPreview();
+			// mCamera.startPreview();
 
 		} catch (IOException e) {
 			Log.i("cameraApi", "failllllled");
@@ -788,7 +812,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			switchToBack();
 		}
 
-		// mCamera = getCameraInstance((camId + 1) % 2);
 		manipulateLayoutsHeight(display);
 		Log.i("cameraApi",
 				"cameraActivity - entered doSome - calling surface created explicit");

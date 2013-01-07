@@ -17,9 +17,19 @@ public class AppSettings {
 		editor.putBoolean(Constants.SP.PUSH_NOTIFICATIONS, value);
 		editor.commit();
 	}
+	
+	public static void setCameraType(boolean value) {
+		SharedPreferences.Editor editor = sp.edit();
+		editor.putBoolean(Constants.SP.CAMERA_TYPE, value);
+		editor.commit();
+	}
 
 	public static boolean getPushNotifications() {
 		return sp.getBoolean(Constants.SP.PUSH_NOTIFICATIONS, true);
+	}
+	
+	public static boolean useChoozieCamera() {
+		return sp.getBoolean(Constants.SP.CAMERA_TYPE, true);
 	}
 
 }

@@ -1,22 +1,12 @@
 package com.choosie.app.camera;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.choosie.app.Constants;
 import com.choosie.app.Logger;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
-import com.choosie.app.R.layout;
-import com.choosie.app.R.menu;
-
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,8 +35,7 @@ public class ConfirmationActivity extends Activity {
 	private int screenWidth;
 	private Bitmap scalledBitmapToShow;
 	private Bitmap rotatedBitmap = null;
-
-	// private int photoNumber;
+	private boolean isBackKeyPressed = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +61,8 @@ public class ConfirmationActivity extends Activity {
 		// int height = display.getHeight(); // deprecated
 
 		scalledBitmapToShow = Bitmap.createScaledBitmap(
-				BitmapFactory.decodeFile(path), screenWidth + 20,
-				screenWidth + 20, false);
+				BitmapFactory.decodeFile(path), screenWidth,
+				screenWidth, false);
 
 		Log.i("cameraApi",
 				"on confirmation, onCreate, about to show scalled bitmap width = "
@@ -245,8 +234,13 @@ public class ConfirmationActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-			cancelIt();
-			return true;
+			if (isBackKeyPressed == false) {
+				isBackKeyPressed = true;
+				cancelIt();
+			} else {
+				return true;
+			}
+
 		}
 		return super.onKeyDown(keyCode, event);
 	}

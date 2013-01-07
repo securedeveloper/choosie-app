@@ -102,6 +102,7 @@ public class Constants {
 
 	public static class SP {
 		public static final String PUSH_NOTIFICATIONS = "push_notifications";
+		public static final String CAMERA_TYPE = "camera_type";
 	}
 
 }
