@@ -8,7 +8,7 @@
 
             <gradient android:angle="90" android:centerColor="#47759c" android:endColor="#5b768d" android:startColor="#5e89ab" android:type="linear" />
         </shape></item>
-    <item android:state_pressed="true"><shape>
+    <item android:drawable="@drawable/camera" android:state_pressed="true"><shape>
             <stroke android:width="1dp" android:color="@color/Gray" />
 
             <padding android:bottom="1dp" android:left="1dp" android:right="1dp" android:top="1dp" />

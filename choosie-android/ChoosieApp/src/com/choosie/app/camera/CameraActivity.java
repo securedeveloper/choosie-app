@@ -54,6 +54,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	private Display display;
 	private SurfaceHolder mHolder;
+	private boolean needToTakePhoto;
+	private boolean isReturnedFromFocus;
 
 	private File pictureFile;
 	private String path;
@@ -65,7 +67,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private int bestWidth;
 	private int topWrapperHeight;
 	private int bottomWrapperHeight;
-	private int numOfPhotoToTake;
 	private int screenHeight;
 	private int screenWidth;
 	private int camId;
@@ -103,55 +104,52 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 						.setImageResource(R.drawable.focus_crosshair_image_out_of_focus);
 			}
 			Log.i("cameraApi", " exits onAutoFocus, setting isFocusLeft = true");
-			mHandler.postDelayed(mRunnable, 2000);
-			cameraLayoutViewHolder.preview.setEnabled(true);
 
-		}
-	};
-
-	private Camera.AutoFocusCallback myAutoFocusCallbackTakePicture = new AutoFocusCallback() {
-
-		public void onAutoFocus(boolean isFocus, Camera arg1) {
-			Log.i("cameraApi", " enter onAutoFocus");
-			if (isFocus) {
-				cameraLayoutViewHolder.focusImageView
-						.setImageResource(R.drawable.focus_crosshair_image_in_focus);
+			if (needToTakePhoto) {
+				mCamera.takePicture(null, null, mPicture);
+				cameraLayoutViewHolder.takePicButton.setEnabled(false);
+				cameraLayoutViewHolder.preview.setEnabled(false);
 			} else {
-				cameraLayoutViewHolder.focusImageView
-						.setImageResource(R.drawable.focus_crosshair_image_out_of_focus);
+				cameraLayoutViewHolder.preview.setEnabled(true);
+				mHandler.postDelayed(mRunnable, 2000); // makes he focus image
+														// gone
 			}
-			Log.i("cameraApi", " exits onAutoFocus, setting isFocusLeft = true");
-			cameraLayoutViewHolder.preview.setEnabled(true);
 
+			isReturnedFromFocus = true;
 		}
 	};
 
 	private PictureCallback mPicture = new PictureCallback() {
 
 		public void onPictureTaken(byte[] data, Camera camera) {
-			AsyncTask<byte[], Void, Boolean> manipulateTask = new AsyncTask<byte[], Void, Boolean>() {
+			// AsyncTask<byte[], Void, Boolean> manipulateTask = new
+			// AsyncTask<byte[], Void, Boolean>() {
+			//
+			// @Override
+			// protected Boolean doInBackground(byte[]... params) {
+			// return manipulateDataIntoFile(params[0], pictureFile);
+			// }
+			//
+			// @Override
+			// protected void onPostExecute(Boolean result) {
+			// if (result == false) {
+			// showErrorDialog("couldn't manipulate bitmaps");
+			// return;
+			// }
+			//
+			// Log.i("cameraApi",
+			// "starting startConfirmationActivity with numOfPhotoToTake = "
+			// + numOfPhotoToTake);
+			// cameraLayoutViewHolder.takePicButton.setEnabled(true);
+			// cameraLayoutViewHolder.preview.setEnabled(true);
+			// fillIntentsWithHeightsAndSetResult();
+			// }
+			// };
+			// manipulateTask.execute(data);
 
-				@Override
-				protected Boolean doInBackground(byte[]... params) {
-					return manipulateDataIntoFile(params[0], pictureFile);
-				}
+			manipulateDataIntoFile(data, pictureFile);
+			fillIntentsWithHeightsAndSetResult();
 
-				@Override
-				protected void onPostExecute(Boolean result) {
-					if (result == false) {
-						showErrorDialog("couldn't manipulate bitmaps");
-						return;
-					}
-
-					Log.i("cameraApi",
-							"starting startConfirmationActivity with numOfPhotoToTake = "
-									+ numOfPhotoToTake);
-					cameraLayoutViewHolder.takePicButton.setEnabled(true);
-					cameraLayoutViewHolder.preview.setEnabled(true);
-					fillIntentsWithHeightsAndSetResult();
-				}
-			};
-			manipulateTask.execute(data);
 		}
 	};
 
@@ -219,9 +217,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		// set initial text
 		cameraLayoutViewHolder.textView_takePhoto.setText("Choozie first");
-
-		// initial to the first photo
-		numOfPhotoToTake = 1;
 
 		// on create. set the focus gone, anyway
 		cameraLayoutViewHolder.focusImageView.setVisibility(View.GONE);
@@ -346,8 +341,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		topHeight = topWrapperHeight;
 		topHideHeight = (screenHeight - screenWidth - topHeight - bottomWrapperHeight) / 2;
 		bottomHeight = screenHeight - bestHeight - topHideHeight - topHeight;
-		bottomHideHeight = screenHeight - bottomHeight - screenWidth - topHeight - topHideHeight;
-		
+		bottomHideHeight = screenHeight - bottomHeight - screenWidth
+				- topHeight - topHideHeight;
+
 		cameraLayoutViewHolder.preview.getLayoutParams().height = bestWidth;
 
 		Log.i("cameraApi", "topWrapperHeight = " + topWrapperHeight
@@ -464,7 +460,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				// mPreview.onResume(mCamera);
 			}
 		}
-		canUseBackKey = false;
 		// manipulateLayoutsHeight(display);
 	}
 
@@ -489,89 +484,86 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	private boolean manipulateDataIntoFile(byte[] data, File pictureFile) {
 
-		try {
-			// phase 1: write the date into the file - this is for loading it
-			// efficiently without creating large bitmap
-			Utils.writeBytesIntoFile(data, pictureFile);
+		// try {
+		// phase 1: write the date into the file - this is for loading it
+		// efficiently without creating large bitmap
+		Utils.writeBytesIntoFile(data, pictureFile);
 
-			// phase 2: get Bitmap from file
+		// phase 2: get Bitmap from file
 
-			// First decode with inJustDecodeBounds=true to check dimensions
-			final BitmapFactory.Options options = new BitmapFactory.Options();
-			options.inJustDecodeBounds = true;
-			BitmapFactory.decodeFile(pictureFile.getAbsolutePath(), options);
+		// First decode with inJustDecodeBounds=true to check dimensions
+		final BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(pictureFile.getAbsolutePath(), options);
 
-			int normalheight = options.outHeight;
+		int normalheight = options.outHeight;
 
-			// Calculate inSampleSize
-			if (normalheight > screenWidth * 2) {
-				options.inSampleSize = 2; // we deveide it by 2
-				// calculateInSampleSize(options, 1224, 1224);
-			} else {
-				options.inSampleSize = 1;
-			}
-
-			Log.i("cameraApi", "in manipulateDataIntoFile, inSampleSize = "
-					+ options.inSampleSize);
-
-			// Decode bitmap with inSampleSize set
-			options.inJustDecodeBounds = false;
-			Bitmap beforeRotation = BitmapFactory.decodeFile(
-					pictureFile.getAbsolutePath(), options);
-			// Bitmap beforeRotation = BitmapFactory.decodeByteArray(data, 0,
-			// data.length);
-
-			Log.i("cameraApi",
-					"created before rotation, width = "
-							+ beforeRotation.getWidth() + " height = "
-							+ beforeRotation.getHeight() + " size = "
-							+ beforeRotation.getRowBytes()
-							* beforeRotation.getHeight());
-
-			// phase 3: rotate Bitmap
-			Bitmap afterRotation = rotateBitmap(beforeRotation);
-
-			// Log.i("cameraApi",
-			// "created after rotation, width = "
-			// + afterRotation.getWidth() + " height = "
-			// + afterRotation.getHeight() + " size = "
-			// + afterRotation.getRowBytes()
-			// * afterRotation.getHeight());
-
-			beforeRotation.recycle();
-			beforeRotation = null;
-
-			Log.i("cameraApi", "recycled beforeRotation");
-
-			// phase 4: crop it into a square and save it in the file
-			int w = afterRotation.getWidth();
-			int startPixel = ((w * topHideHeight) / screenWidth);
-			Bitmap squareBitmap = Bitmap
-					.createBitmap(afterRotation, 0, 0, w, w);
-
-			Log.i("cameraApi", "cropped into a square = start pixel (y) - "
-					+ startPixel + " width = " + w);
-
-			Log.i("cameraApi",
-					"scalled into asmallersize= " + squareBitmap.getWidth()
-							+ " height = " + squareBitmap.getHeight()
-							+ " size = " + squareBitmap.getRowBytes()
-							* squareBitmap.getHeight());
-
-			afterRotation.recycle();
-			afterRotation = null;
-
-			Log.i("cameraApi", "recycled afterRotation");
-
-			Utils.writeBitmapToFile(squareBitmap, pictureFile, 95);
-
-			squareBitmap.recycle();
-			squareBitmap = null;
-
-			Log.i("cameraApi", "recycled squareBitmap");
-		} catch (Exception e) {
-			return false;
+		// Calculate inSampleSize
+		if (normalheight > screenWidth * 2) {
+			options.inSampleSize = 2; // we deveide it by 2
+			// calculateInSampleSize(options, 1224, 1224);
+		} else {
+			options.inSampleSize = 1;
 		}
+
+		Log.i("cameraApi", "in manipulateDataIntoFile, inSampleSize = "
+				+ options.inSampleSize);
+
+		// Decode bitmap with inSampleSize set
+		options.inJustDecodeBounds = false;
+		Bitmap beforeRotation = BitmapFactory.decodeFile(
+				pictureFile.getAbsolutePath(), options);
+		// Bitmap beforeRotation = BitmapFactory.decodeByteArray(data, 0,
+		// data.length);
+
+		Log.i("cameraApi",
+				"created before rotation, width = " + beforeRotation.getWidth()
+						+ " height = " + beforeRotation.getHeight()
+						+ " size = " + beforeRotation.getRowBytes()
+						* beforeRotation.getHeight());
+
+		// phase 3: rotate Bitmap
+		Bitmap afterRotation = rotateBitmap(beforeRotation);
+
+		// Log.i("cameraApi",
+		// "created after rotation, width = "
+		// + afterRotation.getWidth() + " height = "
+		// + afterRotation.getHeight() + " size = "
+		// + afterRotation.getRowBytes()
+		// * afterRotation.getHeight());
+
+		beforeRotation.recycle();
+		beforeRotation = null;
+
+		Log.i("cameraApi", "recycled beforeRotation");
+
+		// phase 4: crop it into a square and save it in the file
+		int w = afterRotation.getWidth();
+		int startPixel = ((w * topHideHeight) / screenWidth);
+		Bitmap squareBitmap = Bitmap.createBitmap(afterRotation, 0, 0, w, w);
+
+		Log.i("cameraApi", "cropped into a square = start pixel (y) - "
+				+ startPixel + " width = " + w);
+
+		Log.i("cameraApi",
+				"scalled into asmallersize= " + squareBitmap.getWidth()
+						+ " height = " + squareBitmap.getHeight() + " size = "
+						+ squareBitmap.getRowBytes() * squareBitmap.getHeight());
+
+		afterRotation.recycle();
+		afterRotation = null;
+
+		Log.i("cameraApi", "recycled afterRotation");
+
+		Utils.writeBitmapToFile(squareBitmap, pictureFile, 95);
+
+		squareBitmap.recycle();
+		squareBitmap = null;
+
+		Log.i("cameraApi", "recycled squareBitmap");
+		// } catch (Exception e) {
+		// return false;
+		// }
 		return true;
 	}
 
@@ -790,10 +782,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		Log.i("cameraApi", "cameraApi : enter surfaceDestroyed");
-
+		canUseBackKey = false;
 		mCamera.stopPreview();
 		mCamera.release();
-		Log.i("cameraApi", "surfaceDestroyed - only settingcamera=null");
 		mCamera = null;
 	}
 
@@ -844,8 +835,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		CameraListeners cameraListeners = new CameraListeners();
 		// adjust the button click
 		cameraLayoutViewHolder.takePicButton
-				.setOnClickListener(cameraListeners.teakPictureListener);
-		cameraLayoutViewHolder.takePicButton
 				.setOnTouchListener(cameraListeners.clickButtonTouchListener);
 
 		// set on click gallery
@@ -881,58 +870,82 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	private class CameraListeners {
 
-		OnClickListener teakPictureListener = new OnClickListener() {
-
-			public void onClick(View arg0) {
-				if (mp != null) {
-					mp.release();
-				}
-
-				mCamera.cancelAutoFocus();
-				mCamera.takePicture(null, null, mPicture);
-				cameraLayoutViewHolder.takePicButton.setEnabled(false);
-				cameraLayoutViewHolder.preview.setEnabled(false);
-			}
-		};
-
 		OnTouchListener clickButtonTouchListener = new OnTouchListener() {
+
+			// CameraLayoutViewsHoldersetSelected(!volumemuteImageButton.isSelected());
 
 			public boolean onTouch(View arg0, MotionEvent arg1) {
 
-				Runnable mRunnable = new Runnable() {
+				cameraLayoutViewHolder.takePicButton
+						.setSelected(!(cameraLayoutViewHolder.takePicButton
+								.isSelected()));
 
-					public void run() {
+				float y = arg1.getY();
+				float x = arg1.getX();
+
+				// if moved outside the button - make the focus image gone
+				if (arg1.getAction() == MotionEvent.ACTION_MOVE) {
+					if ((x < 0) || (y < 0) || (x > bottomWrapperHeight)
+							|| (y > bottomWrapperHeight)) {
 						cameraLayoutViewHolder.focusImageView
 								.setVisibility(View.GONE);
-						cameraLayoutViewHolder.focusImageView
-								.setVisibility(View.GONE);
-						mCamera.cancelAutoFocus();
-						cameraLayoutViewHolder.takePicButton.performClick();
+						cameraLayoutViewHolder.takePicButton
+								.setBackgroundDrawable(getResources()
+										.getDrawable(R.drawable.camera));
+						return true;
 					}
-				};
+				}
 
 				if (arg1.getAction() == MotionEvent.ACTION_DOWN) {
+
+					// just pressed the button
+					cameraLayoutViewHolder.takePicButton
+							.setBackgroundDrawable(getResources().getDrawable(
+									R.drawable.camera_button_pressed));
+
+					// set - don't take the photo just yet, only on ACTION_UP
+					needToTakePhoto = false;
+
 					if (mCamera == null) {
+						// we don't suppose to get here...
 						return false;
 					}
 
 					if (camId != CameraInfo.CAMERA_FACING_FRONT) {
+						// start the focus only if camera facing front
 						if (mCamera.getParameters().getFocusMode() != null) {
-							return startAutoFocus(myAutoFocusCallbackTakePicture);
+							isReturnedFromFocus = false;
+							return startAutoFocus(myAutoFocusCallback);
 						}
+					} else {
+						isReturnedFromFocus = true;
+						;
 					}
 					return true;
-				} else if ((arg1.getAction() == MotionEvent.ACTION_UP)
-						&& ((arg1.getAction() != MotionEvent.ACTION_OUTSIDE))) {
+				} else if (arg1.getAction() == MotionEvent.ACTION_UP) {
 
-					if (arg1.getAction() == MotionEvent.ACTION_MOVE) {
-						return false;
+					// when ACTION_UP - take picture only if inside the button
+					// area, and if it returned from focus.
+					if ((x > 0) && (y > 0) && (x < bottomWrapperHeight)
+							&& (y < bottomWrapperHeight)) {
+
+						cameraLayoutViewHolder.takePicButton
+								.setBackgroundDrawable(getResources()
+										.getDrawable(R.drawable.camera));
+						if (isReturnedFromFocus == true) {
+							cameraLayoutViewHolder.takePicButton
+									.setEnabled(false);
+							cameraLayoutViewHolder.preview.setEnabled(false);
+							mCamera.takePicture(null, null, mPicture);
+						} else {
+							needToTakePhoto = true;
+						}
+
+					} else {
+						// don't take photo
+						needToTakePhoto = false;
 					}
 
-					cameraLayoutViewHolder.preview.setEnabled(false);
-					cameraLayoutViewHolder.takePicButton.setEnabled(false);
-					Handler mHandler = new Handler();
-					mHandler.postDelayed(mRunnable, 600);
 					return true;
 				}
 				return false;

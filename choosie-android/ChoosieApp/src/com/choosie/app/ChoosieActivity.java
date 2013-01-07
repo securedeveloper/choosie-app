@@ -71,7 +71,7 @@ public class ChoosieActivity extends Activity {
 
 		Utils.setScreenWidth(this);
 
-		superController = new SuperController(this);
+		superController = new SuperController(this);  
 
 		if (notification != null) {
 			handleNotification(notification);

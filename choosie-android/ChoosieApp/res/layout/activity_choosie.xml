@@ -96,7 +96,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/unselected_button"
+            android:background="@drawable/bottom_menu_selector"
             android:clickable="true"
             android:onClick="onBottomNavBarButtonClick"
             android:visibility="visible" >
