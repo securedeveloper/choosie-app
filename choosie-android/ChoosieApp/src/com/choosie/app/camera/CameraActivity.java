@@ -10,9 +10,11 @@ import com.choosie.app.Utils;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -215,7 +217,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		// set the height of all the layouts, so it will form a square
 		display = getWindowManager().getDefaultDisplay();
-		manipulateLayoutsHeight(display);
+		// manipulateLayoutsHeight(display);
 
 		// set initial text
 		cameraLayoutViewHolder.textView_takePhoto.setText("Choozie first");
@@ -393,14 +395,39 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 						topMargin, 0, 0);
 	}
 
-	protected void startGalleryStuff() {
-		path = pictureFile.getAbsolutePath();
-		Log.i("cameraApi", "enterd startGalleryStuff");
-		Intent intent = new Intent(this.getApplicationContext(),
-				GalleryActivity.class);
-		intent.putExtra(Constants.IntentsCodes.path, path);
+	// protected void startGalleryStuff() {
+	// path = pictureFile.getAbsolutePath();
+	// Log.i("cameraApi", "enterd startGalleryStuff");
+	// Intent intent = new Intent(this.getApplicationContext(),
+	// GalleryActivity.class);
+	// intent.putExtra(Constants.IntentsCodes.path, path);
+	// startActivityForResult(intent,
+	// Constants.RequestCodes.CAMERA_PICURE_GALLERY);
+	// }
+
+	private void startGalleryStuff() {
+
+		mCamera.stopPreview();
+		Log.i("cameraApi", "in startCropingStuff");
+
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+		intent.setType("image/*");
+		intent.putExtra("crop", "true");
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
+		intent.putExtra("outputX", getWindowManager().getDefaultDisplay()
+				.getWidth());
+		intent.putExtra("outputY", getWindowManager().getDefaultDisplay()
+				.getWidth());
+		intent.putExtra("scale", true);
+		intent.putExtra("return-data", false);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(path)));
+		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+		intent.putExtra("noFaceDetection", false); // lol, negative boolean
+													// noFaceDetection
 		startActivityForResult(intent,
-				Constants.RequestCodes.CAMERA_PICURE_GALLERY);
+				Constants.RequestCodes.CAMERA_GALLERY_CROP);
+
 	}
 
 	// find the optimal size - closest to a square
@@ -462,7 +489,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				// mPreview.onResume(mCamera);
 			}
 		}
-		// manipulateLayoutsHeight(display);
+		manipulateLayoutsHeight(display);
 	}
 
 	@Override
@@ -601,7 +628,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i("cameraApi", "entered onActivityResult");
 		switch (requestCode) {
-		case Constants.RequestCodes.CAMERA_PICURE_GALLERY:
+		case Constants.RequestCodes.CAMERA_GALLERY_CROP:
 			// got back from gallery;
 			if (resultCode == Activity.RESULT_OK) {
 				// nice, lets go start to main camera super controller
@@ -610,7 +637,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				// startCropingStuff();
 				break;
 			} else {
-				// TODO: something??
+				if (mCamera != null) {
+					mCamera.startPreview();
+				}
 			}
 		}
 	}
@@ -718,6 +747,11 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				.getSupportedPictureSizes();
 		parameters.setPictureSize(supportedPictureSizes.get(0).width,
 				supportedPictureSizes.get(0).height);
+
+		Size bestSize = findBestSize(parameters.getSupportedPreviewSizes(),
+				display);
+		h = bestSize.width;
+		w = bestSize.height;
 
 		if (display.getRotation() == Surface.ROTATION_0) {
 			Log.i("cameraApi", "surfaceChanged rotation = 0");

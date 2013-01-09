@@ -22,7 +22,6 @@ public class GalleryActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Log.i("cameraApi", "in croppppp");
 		super.onCreate(savedInstanceState);
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
