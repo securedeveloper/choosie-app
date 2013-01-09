@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.choosie.app.Callback;
+import com.choosie.app.Logger;
 import com.choosie.app.Utils;
 
 import android.annotation.TargetApi;
@@ -32,16 +33,25 @@ public abstract class PersistentCache<Key, Value> extends Cache<Key, Value> {
 	@Override
 	protected Value fetchData(Key key,
 			Callback<Void, Object, Void> progressCallback) {
+		Logger.d("in persistentache - pething key = " + key.toString());
 		// Check if available on SD
 		if (isPersisted(key)) {
+			Logger.d("in persistentache , key is persisted, reading from SD!! = "
+					+ key.toString());
 			return readFromSdCard(key, progressCallback);
 		}
+		Logger.d("in persistentache , key is NOT persisted, downloading it!! = "
+				+ key.toString());
 		return downloadData(key, progressCallback);
 	}
 
 	@Override
 	protected Value onAfterFetching(Key key, Value result) {
+		Logger.d("in persistentache - onAfterFetching = " + key.toString()
+				+ " result = " + result);
 		if (!isPersisted(key)) {
+			Logger.d("in onAfterFetching , key is not persisted, need to save it = "
+					+ key.toString());
 			savePersistent(key, result);
 		}
 		return beforePutInMemory(result);

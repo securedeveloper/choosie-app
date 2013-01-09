@@ -43,6 +43,8 @@ public class VotePopupWindowUtils {
 	}
 
 	public void popUpVotesWindow(String postKey) {
+		Logger.d("VotePopupWindow: entered popUpVotesWindow, postKey = "
+				+ postKey);
 		Caches.getInstance()
 				.getPostsCache()
 				.getValue(postKey,
@@ -57,12 +59,14 @@ public class VotePopupWindowUtils {
 									// Toast.LENGTH_SHORT).show();
 									return;
 								}
+								Logger.d("popUpVotesWindow: on finish- got choosiePostDat");
 								createAndShowPopup(param);
 							}
 						});
 	}
-	
+
 	private void createAndShowPopup(ChoosiePostData choosiePost) {
+		Logger.d("VotePopupWindow, starting createAndShowPopup");
 		PopupWindow pw;
 
 		// We need to get the instance of the LayoutInflater, use the
@@ -119,6 +123,8 @@ public class VotePopupWindowUtils {
 			ArrayList<String> nameList, ArrayList<String> votersPhotoUrlList,
 			ArrayList<Integer> voteForList) {
 
+		Logger.d("VotePopupWindowe, starting makeVotesScreenAdapter");
+
 		ArrayAdapter<VoteData> adi = new ArrayAdapter<VoteData>(activity,
 				R.layout.view_votes) {
 
@@ -127,12 +133,14 @@ public class VotePopupWindowUtils {
 
 				VoteData item = getItem(position);
 
-				return createViewVotes(item, convertView, parent);
+				return createViewVotes(item, convertView, parent, position);
 			}
 		};
 
 		ArrayList<MiniVoteData> votersToPhoto1 = new ArrayList<MiniVoteData>();
 		ArrayList<MiniVoteData> votersToPhoto2 = new ArrayList<MiniVoteData>();
+
+		// fill each array with its suite votes
 		divideVoters(votersToPhoto1, votersToPhoto2, nameList,
 				votersPhotoUrlList, voteForList);
 
@@ -192,8 +200,11 @@ public class VotePopupWindowUtils {
 		}
 	}
 
-	private View createViewVotes(VoteData item, View convertView,
-			View parentView) {
+	private View createViewVotes(final VoteData item, View convertView,
+			View parentView, int position) {
+
+		Logger.d("VotePopupWindow, starting to createViewVotes, position = "
+				+ position);
 
 		LinearLayout itemView = null;
 		VoteViewHolder voteViewHolder = null;
@@ -234,11 +245,17 @@ public class VotePopupWindowUtils {
 			// set the voter1 names
 			setTextOntv(item.getName1(), voteViewHolder.tv1);
 			// set the voter1 photo
+			Logger.d("createViewVotes - name1 != null, getting from cache, name = "
+					+ item.getName1());
 			Caches.getInstance()
 					.getPhotosCache()
 					.getValue(item.getVoterPhotoUrl1(),
 							new Callback<Void, Object, Bitmap>() {
 								public void onFinish(Bitmap param) {
+									Logger.d("createViewVotes, got param for name = "
+											+ item.getVoterPhotoUrl1()
+											+ "param = "
+											+ param);
 									holder.voterPhotoImageView1
 											.setImageBitmap(param);
 								};
@@ -250,11 +267,17 @@ public class VotePopupWindowUtils {
 			setTextOntv(item.getName2(), voteViewHolder.tv2);
 
 			// set the voter2 photo
+			Logger.d("name2 != null, getting from cache, name = "
+					+ item.getName2());
 			Caches.getInstance()
 					.getPhotosCache()
 					.getValue(item.getVoterPhotoUrl2(),
 							new Callback<Void, Object, Bitmap>() {
 								public void onFinish(Bitmap param) {
+									Logger.d("createViewVotes, got param for name = "
+											+ item.getVoterPhotoUrl2()
+											+ "param = "
+											+ param);
 									holder.voterPhotoImageView2
 											.setImageBitmap(param);
 								};
@@ -292,6 +315,5 @@ public class VotePopupWindowUtils {
 
 		tv.setText(sb);
 	}
-
 
 }

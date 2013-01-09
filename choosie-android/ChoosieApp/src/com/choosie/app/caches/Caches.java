@@ -3,6 +3,7 @@ package com.choosie.app.caches;
 import java.io.ByteArrayOutputStream;
 
 import com.choosie.app.Callback;
+import com.choosie.app.Logger;
 import com.choosie.app.Utils;
 import com.choosie.app.client.Client;
 import com.choosie.app.client.FeedResponse;
@@ -19,11 +20,11 @@ public class Caches {
 	private Cache<String, ChoosiePostData> postsCache;
 
 	private static Caches instance = new Caches();
-	
+
 	private Caches() {
 		initializeCaches();
 	}
-	
+
 	public static Caches getInstance() {
 		return instance;
 	}
@@ -54,17 +55,22 @@ public class Caches {
 			@Override
 			protected Bitmap readFromSdCard(String key,
 					Callback<Void, Object, Void> progressCallback) {
+				Logger.d("in persistent, reading from Sd, key = "
+						+ key.toString());
 				return Utils.getBitmapFromURL(key, progressCallback);
 			}
 
 			@Override
 			protected Bitmap beforePutInMemory(Bitmap result) {
+				Logger.d("in persistent , beforePutInMemory with result = "
+						+ result);
 				return Utils.shrinkBitmapToImageViewSizeIfNeeded(result);
 			}
 
 			@Override
 			protected Bitmap downloadData(String key,
 					Callback<Void, Object, Void> progressCallback) {
+				Logger.d("in persistent, downloading, key = " + key.toString());
 				return Client.getInstance().getPictureFromServerSync(key,
 						progressCallback);
 			}

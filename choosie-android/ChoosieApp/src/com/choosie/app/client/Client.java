@@ -41,8 +41,9 @@ public abstract class Client {
 
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
 			Callback<Void, Object, Void> progressCallback) {
+
 		String urlToLoad = pictureUrl;
-		Logger.i("getPictureFromServer: Loading URL: " + urlToLoad);
+		Logger.d("getPictureFromServer: Loading URL: " + urlToLoad);
 		URL url;
 		try {
 			url = new URL(urlToLoad);
@@ -62,9 +63,11 @@ public abstract class Client {
 			progressCallback.onProgress(Integer.valueOf(99));
 			Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0,
 					buffer.length);
+			Logger.d("getPictureFromServer: returning bitmap = " + bitmap);
 			return bitmap;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			Logger.d("getPictureFromServer: returning null");
 			e.printStackTrace();
 			return null;
 		}

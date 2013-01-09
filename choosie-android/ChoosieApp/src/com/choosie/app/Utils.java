@@ -95,7 +95,7 @@ public class Utils {
 			choosieDirectory.mkdirs();
 		}
 	}
-	
+
 	public static void writeBitmapToFile(Bitmap bitmap, File file, int quality) {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bos);
@@ -103,12 +103,13 @@ public class Utils {
 		writeBytesIntoFile(bitmapdata, file);
 	}
 
-	public static void writeBytesIntoFile(byte[] data, File pictureFile) {		
+	public static void writeBytesIntoFile(byte[] data, File pictureFile) {
 		try {
 			FileOutputStream fos = new FileOutputStream(pictureFile);
 			fos.write(data);
 			fos.close();
-			Logger.i("writeBytesIntoFile: path = " + pictureFile.getAbsolutePath());
+			Logger.i("writeBytesIntoFile: path = "
+					+ pictureFile.getAbsolutePath());
 
 		} catch (FileNotFoundException e) {
 			Logger.e("File not found: " + e.getMessage());
@@ -116,7 +117,7 @@ public class Utils {
 			Logger.e("Error accessing file: " + e.getMessage());
 		}
 	}
-	
+
 	/*
 	 * writing Bitmap on sd, from URL!!
 	 */
@@ -160,6 +161,8 @@ public class Utils {
 		progressCallback.onProgress(5);
 		Bitmap toRet = BitmapFactory.decodeFile(fullPath);
 
+		Logger.d("getBitmapFromURL - URL = " + param + " fullPath = "
+				+ fullPath + " toRet = " + toRet);
 		toRet = shrinkBitmapToImageViewSizeIfNeeded(toRet);
 		// Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " +
 		// toRet.getHeight() + " BC: " +toRet.getByteCount());
@@ -223,6 +226,8 @@ public class Utils {
 	}
 
 	public static Bitmap shrinkBitmapToImageViewSizeIfNeeded(Bitmap inputBitmap) {
+		Logger.d("enterd shrinkBitmapToImageViewSizeIfNeeded, inputBitmap = "
+				+ inputBitmap + screenWidth);
 		if (screenWidth / 2 < inputBitmap.getWidth()) {
 			Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(inputBitmap,
 					screenWidth / 2, screenWidth / 2, false);

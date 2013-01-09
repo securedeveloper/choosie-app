@@ -90,8 +90,10 @@ public class SuperController {
 
 	public void voteFor(final ChoosiePostData post, int whichPhoto) {
 		Logger.i("Issuing vote for: " + post.getPostKey());
-		Tracker tracker = GoogleAnalytics.getInstance(getActivity()).getDefaultTracker();
-		tracker.trackEvent("Ui Action", "Vote", String.valueOf(whichPhoto), null);
+		Tracker tracker = GoogleAnalytics.getInstance(getActivity())
+				.getDefaultTracker();
+		tracker.trackEvent("Ui Action", "Vote", String.valueOf(whichPhoto),
+				null);
 		Client.getInstance().sendVoteToServer(post, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 
@@ -129,7 +131,8 @@ public class SuperController {
 
 	public void CommentFor(final String post_key, String text) {
 		Logger.i("commenting vote for: " + post_key);
-		Tracker tracker = GoogleAnalytics.getInstance(getActivity()).getDefaultTracker();
+		Tracker tracker = GoogleAnalytics.getInstance(getActivity())
+				.getDefaultTracker();
 		tracker.trackEvent("Ui Action", "comment", "text", null);
 		Client.getInstance().sendCommentToServer(post_key, text,
 				new Callback<Void, Void, Boolean>() {
@@ -318,6 +321,8 @@ public class SuperController {
 	}
 
 	public void handlePopupVoteWindow(String postKey, int position) {
+		Logger.d("SuperController: entered handlePopupVoteWindow, postKey = "
+				+ postKey + " position = " + position);
 		// first scroll the positioned item
 		if (position != -1) {
 			getControllerForScreen(Screen.FEED).getFeedListView()

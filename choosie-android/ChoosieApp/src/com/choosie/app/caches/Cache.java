@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.choosie.app.Callback;
+import com.choosie.app.Logger;
 
 import android.annotation.TargetApi;
 import android.os.AsyncTask;
@@ -40,13 +41,19 @@ public abstract class Cache<Key, Value> {
 		synchronized (cacheLock) {
 			fromMemoryCache = memoryCache.get(key);
 			if (fromMemoryCache == null) {
+				Logger.d("in GetValue, key = " + key.toString()
+						+ ", is not in cache");
 				if (!isCurrentlyFetching(key)) {
 					// In case this is the first time this key is encountered,
 					// initiate downloading it (or loading from the sdcard) in
 					// the background.
+					Logger.d("in GetValue, key = " + key.toString()
+							+ ", is not been downloaded");
 					startFetching(key);
 				}
 				addCallback(key, callback);
+			} else {
+				Logger.d("in getValue, key is in cache! " + key.toString());
 			}
 		}
 		if (fromMemoryCache != null) {
@@ -79,6 +86,7 @@ public abstract class Cache<Key, Value> {
 	}
 
 	protected void startFetching(final Key key) {
+		Logger.d("in startFetching, starting fething key = " + key.toString());
 		// This marks that this key is currently being downloaded.
 		callbacksForKey
 				.put(key, new ArrayList<Callback<Void, Object, Value>>());
@@ -89,6 +97,8 @@ public abstract class Cache<Key, Value> {
 				// fetchData() is implemented outside this class, and it allows
 				// the users to decide how to download data that is missing from
 				// the cache.
+				Logger.d("starting doInBackground for StartFetching with key = "
+						+ key.toString());
 				Value result = fetchData(key,
 						new Callback<Void, Object, Void>() {
 							@Override
@@ -96,6 +106,8 @@ public abstract class Cache<Key, Value> {
 								publishProgress(progress);
 							}
 						});
+				Logger.d("in startFetching, starting onAfterFetching for key = "
+						+ key.toString());
 				return onAfterFetching(key, result);
 
 			}

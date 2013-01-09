@@ -24,4 +24,8 @@ public class Logger {
 		// Adding a new Exception prints out the stack trace.
 		Log.e(Constants.LOG_TAG, msg, new Exception());
 	}
+	
+	public static void d(String msg) {
+//		Log.d(Constants.LOG_TAG, msg);
+	}
 }

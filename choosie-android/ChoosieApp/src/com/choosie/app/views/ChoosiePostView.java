@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
@@ -189,6 +190,7 @@ public class ChoosiePostView extends RelativeLayout {
 		// listener for handling votes popUpWindow
 		OnClickListener votesListener = new OnClickListener() {
 			public void onClick(View v) {
+				Logger.d("User click to show votes, choosiePost.getPostKey() = " + choosiePost.getPostKey() + " position = " + position );
 				superController.handlePopupVoteWindow(choosiePost.getPostKey(),
 						position);
 			}
