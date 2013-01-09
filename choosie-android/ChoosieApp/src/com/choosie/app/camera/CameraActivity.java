@@ -56,6 +56,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private SurfaceHolder mHolder;
 	private boolean needToTakePhoto;
 	private boolean isReturnedFromFocus;
+	private boolean canTouchButton = false;
+	private boolean canTouchPreview = false;
 
 	private File pictureFile;
 	private String path;
@@ -752,6 +754,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		} catch (Exception e) {
 			Log.d("OHHHno2", "Error starting camera preview: " + e.getMessage());
 		}
+
+		canTouchButton = true;
+		canTouchPreview = true;
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
@@ -789,6 +794,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	}
 
 	private void switchCamera() {
+
+		canTouchButton = false;
+		canTouchPreview = false;
 
 		Log.i("cameraApi",
 				"cameraActivity - entered doSome - stoping preview ( mCamera.stopPreview)");
@@ -875,6 +883,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			// CameraLayoutViewsHoldersetSelected(!volumemuteImageButton.isSelected());
 
 			public boolean onTouch(View arg0, MotionEvent arg1) {
+
+				if (canTouchButton == false) {
+					return false;
+				}
 
 				cameraLayoutViewHolder.takePicButton
 						.setSelected(!(cameraLayoutViewHolder.takePicButton
@@ -964,6 +976,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 			public boolean onTouch(View v, MotionEvent event) {
 
+				if (canTouchPreview == false) {
+					return false;
+				}
 				if (mCamera == null) {
 					return false;
 				}
