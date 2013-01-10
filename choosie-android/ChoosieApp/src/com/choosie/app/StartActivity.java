@@ -218,8 +218,8 @@ public class StartActivity extends Activity {
 							Tracker tracker = GoogleAnalytics.getInstance(getApplicationContext()).getDefaultTracker();
 							tracker.trackEvent("StartActivity", "goToApplication", "", null);
 							Logger.i("Starting ChoosieActivity");
-							startActivityForResult(intent,
-									Constants.RequestCodes.START_ACTIVITY);
+							startActivity(intent);
+							finish();
 						}
 					}
 				});
