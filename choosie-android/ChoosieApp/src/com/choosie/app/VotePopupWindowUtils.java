@@ -8,10 +8,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,27 +48,10 @@ public class VotePopupWindowUtils {
 	public void popUpVotesWindow(String postKey) {
 		Logger.d("VotePopupWindow: entered popUpVotesWindow, postKey = "
 				+ postKey);
-		Caches.getInstance()
-				.getPostsCache()
-				.getValue(postKey,
-						new Callback<Void, Object, ChoosiePostData>() {
-							@Override
-							public void onFinish(ChoosiePostData param) {
-								if (param == null) {
-									Logger.e("ERROR : param is 'null'");
-									// TODO: Handle error
-									// Toast.makeText(getActivity(),
-									// "Failed to update post.",
-									// Toast.LENGTH_SHORT).show();
-									return;
-								}
-								Logger.d("popUpVotesWindow: on finish- got choosiePostDat");
-								createAndShowPopup(param);
-							}
-						});
+		createAndShowPopup(postKey); // yeah, it kinda stupid, ha??
 	}
 
-	private void createAndShowPopup(ChoosiePostData choosiePost) {
+	private void createAndShowPopup(final String postKey) {
 		Logger.d("VotePopupWindow, starting createAndShowPopup");
 		PopupWindow pw;
 
@@ -74,7 +60,7 @@ public class VotePopupWindowUtils {
 		LayoutInflater inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		RelativeLayout layout = (RelativeLayout) inflater.inflate(
+		final RelativeLayout layout = (RelativeLayout) inflater.inflate(
 				R.layout.popup_layout,
 				(ViewGroup) activity.findViewById(R.id.popup_element));
 
@@ -83,29 +69,28 @@ public class VotePopupWindowUtils {
 				.findViewById(R.id.votesPopupWindow_votes1);
 		final TextView textViewVotes2 = (TextView) layout
 				.findViewById(R.id.votesPopupWindow_votes2);
+		final ProgressBar progressBar = (ProgressBar) layout
+				.findViewById(R.id.votesPopup_progressBar);
 
-		textViewVotes1.setText(choosiePost.getVotes1() + " votes");
-		textViewVotes2.setText(choosiePost.getVotes2() + " votes");
+		AsyncTask<Void, Integer, Void> asyncTask = new AsyncTask<Void, Integer, Void>() {
 
-		// create the votes list
-		ArrayList<String> nameList = new ArrayList<String>();
-		ArrayList<String> votersPhotoUrlList = new ArrayList<String>();
-		ArrayList<Integer> voteForList = new ArrayList<Integer>();
+			@Override
+			protected Void doInBackground(Void... params) {
+				popupJob(postKey, layout, textViewVotes1, textViewVotes2,
+						progressBar);
+				return null;
+			}
 
-		for (Vote vote : choosiePost.getVotes()) {
-			nameList.add(vote.getUsers().getUserName());
-			votersPhotoUrlList.add(vote.getUsers().getPhotoURL());
-			voteForList.add(vote.getVote_for());
-		}
+			@Override
+			protected void onProgressUpdate(Integer... progress) {
+				if (progressBar != null) {
+					progressBar.setProgress(progress[0]);
+					progressBar.setMax(100);
+				}
+			}
+		};
 
-		// create the adapter
-		ArrayAdapter<VoteData> voteScreenAdapter = makeVotesScreenAdapter(
-				nameList, votersPhotoUrlList, voteForList);
-
-		// attache the listView, where the votes will be displayed
-		ListView listView = (ListView) layout
-				.findViewById(R.id.votesPopupWindow_listView);
-		listView.setAdapter(voteScreenAdapter);
+		asyncTask.execute();
 
 		// set view and size
 		pw = new PopupWindow(layout, Utils.getScreenWidth() - 30,
@@ -117,6 +102,54 @@ public class VotePopupWindowUtils {
 
 		// show it!
 		pw.showAtLocation(layout, Gravity.BOTTOM, 0, 10);
+	}
+
+	private void popupJob(String postKey, final RelativeLayout layout,
+			final TextView textViewVotes1, final TextView textViewVotes2,
+			final ProgressBar progressBar) {
+		Caches.getInstance()
+				.getPostsCache()
+				.getValue(postKey,
+						new Callback<Void, Object, ChoosiePostData>() {
+							@Override
+							public void onFinish(ChoosiePostData param) {
+								progressBar.setVisibility(View.GONE);
+								if (param == null) {
+									Logger.e("ERROR : param is 'null'");
+									// TODO: Handle error
+									// Toast.makeText(getActivity(),
+									// "Failed to update post.",
+									// Toast.LENGTH_SHORT).show();
+									return;
+								}
+								Logger.d("popUpVotesWindow: on finish- got choosiePostDat");
+								textViewVotes1.setText(param.getVotes1()
+										+ " votes");
+								textViewVotes2.setText(param.getVotes2()
+										+ " votes");
+
+								// create the votes list
+								ArrayList<String> nameList = new ArrayList<String>();
+								ArrayList<String> votersPhotoUrlList = new ArrayList<String>();
+								ArrayList<Integer> voteForList = new ArrayList<Integer>();
+
+								for (Vote vote : param.getVotes()) {
+									nameList.add(vote.getUsers().getUserName());
+									votersPhotoUrlList.add(vote.getUsers()
+											.getPhotoURL());
+									voteForList.add(vote.getVote_for());
+								}
+								// create the adapter
+								ArrayAdapter<VoteData> voteScreenAdapter = makeVotesScreenAdapter(
+										nameList, votersPhotoUrlList,
+										voteForList);
+								// attache the listView, where the votes will be
+								// displayed
+								ListView listView = (ListView) layout
+										.findViewById(R.id.votesPopupWindow_listView);
+								listView.setAdapter(voteScreenAdapter);
+							}
+						});
 	}
 
 	private ArrayAdapter<VoteData> makeVotesScreenAdapter(
@@ -254,8 +287,7 @@ public class VotePopupWindowUtils {
 								public void onFinish(Bitmap param) {
 									Logger.d("createViewVotes, got param for name = "
 											+ item.getVoterPhotoUrl1()
-											+ "param = "
-											+ param);
+											+ "param = " + param);
 									holder.voterPhotoImageView1
 											.setImageBitmap(param);
 								};
@@ -276,8 +308,7 @@ public class VotePopupWindowUtils {
 								public void onFinish(Bitmap param) {
 									Logger.d("createViewVotes, got param for name = "
 											+ item.getVoterPhotoUrl2()
-											+ "param = "
-											+ param);
+											+ "param = " + param);
 									holder.voterPhotoImageView2
 											.setImageBitmap(param);
 								};

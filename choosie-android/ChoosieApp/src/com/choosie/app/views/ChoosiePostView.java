@@ -148,7 +148,6 @@ public class ChoosiePostView extends RelativeLayout {
 
 		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
 
-			
 			public void onClick(View v) {
 				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2,
 						feedViewHolder.imgSelected1,
@@ -190,7 +189,8 @@ public class ChoosiePostView extends RelativeLayout {
 		// listener for handling votes popUpWindow
 		OnClickListener votesListener = new OnClickListener() {
 			public void onClick(View v) {
-				Logger.d("User click to show votes, choosiePost.getPostKey() = " + choosiePost.getPostKey() + " position = " + position );
+				Logger.d("User click to show votes, choosiePost.getPostKey() = "
+						+ choosiePost.getPostKey() + " position = " + position);
 				superController.handlePopupVoteWindow(choosiePost.getPostKey(),
 						position);
 			}
