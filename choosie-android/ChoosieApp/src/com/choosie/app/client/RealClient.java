@@ -403,6 +403,8 @@ public class RealClient extends Client {
 				+ jsonObject.getString("photo2");
 		String question = jsonObject.getString("question");
 		String postKey = jsonObject.getString("key");
+		int postTypeId = jsonObject.getInt("post_type");
+		PostType postType = postTypeId == 1 ? PostType.TOT : PostType.YesNo;
 		Date createdAtUTC = Utils.convertStringToDateUTC(jsonObject
 				.getString("created_at"));
 
@@ -416,7 +418,7 @@ public class RealClient extends Client {
 		List<Comment> comments = buildCommentsFromJson(postKey, allComments);
 
 		return new ChoosiePostData(fbDetails, postKey, photo1URL, photo2URL,
-				question, author, createdAtUTC, votes, comments);
+				question, author, createdAtUTC, votes, comments, postType);
 	}
 
 	private User buildUserFromJson(JSONObject userJsonObject)

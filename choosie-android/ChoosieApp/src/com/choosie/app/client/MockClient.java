@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 import com.choosie.app.Callback;
 import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
@@ -14,12 +13,13 @@ import com.choosie.app.Models.Comment;
 import com.choosie.app.Models.FacebookDetails;
 import com.choosie.app.Models.User;
 import com.choosie.app.Models.Vote;
+import com.choosie.app.NewChoosiePostData.PostType;
 
 public class MockClient extends Client {
 
 	protected MockClient() {
 	}
-	
+
 	@Override
 	public void sendCommentToServer(String post_key, String text,
 			Callback<Void, Void, Boolean> callback) {
@@ -80,7 +80,7 @@ public class MockClient extends Client {
 		ChoosiePostData mockPost = new ChoosiePostData(fbDetails, postKey,
 				photo1URL, photo2URL, question, new User(userName,
 						userPhotoUrl, fbUID), new Date(),
-				new ArrayList<Vote>(), new ArrayList<Comment>());
+				new ArrayList<Vote>(), new ArrayList<Comment>(), PostType.TOT);
 		return mockPost;
 	}
 
@@ -100,13 +100,13 @@ public class MockClient extends Client {
 	@Override
 	public void registerGCM(String deviceId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void unregisterGCM(String deviceId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

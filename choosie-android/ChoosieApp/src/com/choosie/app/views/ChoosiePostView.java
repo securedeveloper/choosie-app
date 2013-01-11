@@ -7,6 +7,7 @@ import java.util.Map;
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.Logger;
+import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
@@ -109,8 +110,14 @@ public class ChoosiePostView extends RelativeLayout {
 
 		loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
 				feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
-		loadImageToView(post.getPhoto2URL(), feedViewHolder.imgView2,
-				feedViewHolder.progressBar2, feedViewHolder.imgSelected2);
+		if (post.getPostType() == PostType.YesNo) {
+			Logger.i(post.getPhoto2URL());
+			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView2,
+					feedViewHolder.progressBar2, feedViewHolder.imgSelected2);
+		} else {
+			loadImageToView(post.getPhoto2URL(), feedViewHolder.imgView2,
+					feedViewHolder.progressBar2, feedViewHolder.imgSelected2);
+		}
 		loadImageToView(post.getAuthor().getPhotoURL(),
 				feedViewHolder.feed_userimage, null, null);
 		loadCommentsToView(post, feedViewHolder);

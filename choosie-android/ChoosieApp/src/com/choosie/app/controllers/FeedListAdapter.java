@@ -8,6 +8,7 @@ import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.Models.ChoosiePostData;
+import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.views.ChoosiePostView;
 
 import android.content.Context;
@@ -241,7 +242,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		if (loadingItem == null) {
 			// TODO: This is really a bad hack.
 			loadingItem = new ChoosiePostData(null, null, null, null,
-					LOADING_ITEM_TEXT, null, null, null, null);
+					LOADING_ITEM_TEXT, null, null, null, null, PostType.TOT);
 		}
 		Logger.i("Showing 'Loading items...'");
 		if (this.state == State.APPENDING_TO_FEED) {

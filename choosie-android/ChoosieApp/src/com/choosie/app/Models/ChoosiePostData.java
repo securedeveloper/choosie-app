@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.choosie.app.NewChoosiePostData.PostType;
+
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 
@@ -26,10 +28,12 @@ public class ChoosiePostData {
 	private boolean isPostByMe;
 	private SparseIntArray votesCounter;
 	private SparseBooleanArray votedAlready;
+	private PostType postType;
 
 	public ChoosiePostData(FacebookDetails loggedInUser, String postKey,
 			String photo1URL, String photo2URL, String question, User author,
-			Date createdAtUTC, List<Vote> votes, List<Comment> comments) {
+			Date createdAtUTC, List<Vote> votes, List<Comment> comments,
+			PostType postType) {
 		this.loggedInUser = loggedInUser;
 		this.postKey = postKey;
 		this.photo1URL = photo1URL;
@@ -37,6 +41,7 @@ public class ChoosiePostData {
 		this.question = question;
 		this.author = author;
 		this.createdAtUTC = createdAtUTC;
+		this.postType = postType;
 
 		initVotes(votes);
 		initComments(comments);
@@ -71,7 +76,8 @@ public class ChoosiePostData {
 			votesCounter.put(vote_for, votesCounter.get(vote_for) + 1);
 
 			// Remember what the logged in user already voted for
-			if (vote.getUsers().getFbUid().equals(this.loggedInUser.getFb_uid())) {
+			if (vote.getUsers().getFbUid()
+					.equals(this.loggedInUser.getFb_uid())) {
 				votedAlready.put(vote_for, true);
 			}
 
@@ -135,12 +141,16 @@ public class ChoosiePostData {
 	public List<Comment> getComments() {
 		return Collections.unmodifiableList(comments);
 	}
-	
+
 	public List<Vote> getVotes() {
 		return Collections.unmodifiableList(votes);
 	}
 
 	public Date getCreatedAt() {
 		return createdAtUTC;
+	}
+
+	public PostType getPostType() {
+		return postType;
 	}
 }

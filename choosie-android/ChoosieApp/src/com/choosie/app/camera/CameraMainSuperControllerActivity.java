@@ -640,7 +640,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				ncpd = new NewChoosiePostData(image1BitmapTot, image2BitmapTot,
 						mQuestion.getText().toString(), mTbFacebook.isChecked());
 			} else {
-				ncpd = new NewChoosiePostData(image1BitmapYaanaa, mQuestion
+				ncpd = new NewChoosiePostData(image1BitmapTot, mQuestion
 						.getText().toString(), mTbFacebook.isChecked());
 			}
 
