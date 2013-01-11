@@ -60,7 +60,7 @@ class PostsHandler(webapp2.RequestHandler):
 
     photo1_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo1')))
     photo2_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo2')))
-    post_type_id = self.request.get("post_type_id", default_value=1)
+    post_type_id = int(self.request.get("post_type_id", default_value="1"))
     choosie_post = ChoosiePost(question = self.request.get('question'),
                                user_fb_id = self.request.get('fb_uid'),
                                photo1_blob_key = photo1_blob_key,
