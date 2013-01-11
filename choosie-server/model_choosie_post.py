@@ -19,6 +19,11 @@ import datetime
 from StringIO import *
 from notify_handler import NotifyHandler
 
+CHOOSIE_POST_TYPE_DILEMMA = 1
+CHOOSIE_POST_TYPE_YES_NO = 2
+
+CHOOSIE_POST_TYPES = set([CHOOSIE_POST_TYPE_DILEMMA, CHOOSIE_POST_TYPE_YES_NO])
+
 class ChoosiePost(db.Model):
   photo1 = db.BlobProperty(required = False)
   photo2 = db.BlobProperty(required = False)
@@ -34,24 +39,26 @@ class ChoosiePost(db.Model):
   votes = db.StringListProperty()
   fb_post_id = db.StringProperty()
   posted_to_fb = db.BooleanProperty(default=False)
-  post_type_id = db.IntegerProperty(required=True, choices=set([1, 2]), default=1)
+  post_type_id = db.IntegerProperty(required=True, choices=CHOOSIE_POST_TYPES, default=1)
   
   def to_json(self):
+    logging.info('Post type ID = %d' % self.post_type_id )
     return {"key": str(self.key()),
             "user": self.get_user().to_short_json(),
             "votes": self.get_serialized_votes(),
             "comments": self.get_serialized_comments(),
             "photo1": self.photo_path(1),
-            "photo2": self.photo_path(2),
+            "photo2": self.photo_path(2) if self.post_type() == CHOOSIE_POST_TYPE_DILEMMA else '',
             "question": self.question,
             "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at)
+            "updated_at": str(self.updated_at),
+            "post_type": self.post_type()
            }
 
   def post_type(self):
-    if  self.post_type_id is None:
-      return "dillema"
-    return {1:"dillema", 2:"yes_no"}[self.post_type_id]
+    if self.post_type_id is None:
+      return CHOOSIE_POST_TYPE_DILEMMA
+    return self.post_type_id
 
   def get_user(self):
     return CacheController.get_user_by_fb_id(self.user_fb_id)
