@@ -127,8 +127,8 @@ public class ChoosiePostView extends RelativeLayout {
 			ChangeVotingResultsVisibility(feedViewHolder.votes1,
 					feedViewHolder.votes2, View.VISIBLE);
 		} else {
-			feedViewHolder.votes1.setText("?");
-			feedViewHolder.votes2.setText("?");
+			feedViewHolder.votes1.setText("");
+			feedViewHolder.votes2.setText("");
 			// ChangeVotingResultsVisibility(feedViewHolder.votes1,
 			// feedViewHolder.votes2, View.INVISIBLE);
 		}
