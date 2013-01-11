@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,6 +44,32 @@ public class VotePopupWindowUtils {
 	public void popUpVotesWindow(String postKey) {
 		Logger.d("VotePopupWindow: entered popUpVotesWindow, postKey = "
 				+ postKey);
+
+		// We need to get the instance of the LayoutInflater, use the
+		// context of this activity
+		LayoutInflater inflater = (LayoutInflater) activity
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		final RelativeLayout layout = (RelativeLayout) inflater.inflate(
+				R.layout.popup_layout,
+				(ViewGroup) activity.findViewById(R.id.popup_element));
+
+		final ProgressBar progressBar = (ProgressBar) layout
+				.findViewById(R.id.votesPopupWindow_progressBar);
+
+		PopupWindow pw;
+
+		// set view and size
+		pw = new PopupWindow(layout, Utils.getScreenWidth() - 30,
+				Utils.getScreenHeight() / 2, true);
+		pw.setAnimationStyle(R.style.PopupWindowAnimation);
+
+		// for closing when touching outside - set the background not null
+		pw.setBackgroundDrawable(new BitmapDrawable());
+
+		// show it!
+		pw.showAtLocation(layout, Gravity.BOTTOM, 0, 10);
+
 		Caches.getInstance()
 				.getPostsCache()
 				.getValue(postKey,
@@ -59,23 +86,27 @@ public class VotePopupWindowUtils {
 									return;
 								}
 								Logger.d("popUpVotesWindow: on finish- got choosiePostDat");
-								createAndShowPopup(result);
+								progressBar.setVisibility(View.GONE);
+								createAndShowPopup(result, layout);
 							}
 						});
+
+		// createAndShowPopup(null);
 	}
 
-	private void createAndShowPopup(ChoosiePostData choosiePost) {
+	private void createAndShowPopup(ChoosiePostData choosiePost,
+			RelativeLayout layout) {
 		Logger.d("VotePopupWindow, starting createAndShowPopup");
-		PopupWindow pw;
+		// PopupWindow pw;
 
-		// We need to get the instance of the LayoutInflater, use the
-		// context of this activity
-		LayoutInflater inflater = (LayoutInflater) activity
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-		RelativeLayout layout = (RelativeLayout) inflater.inflate(
-				R.layout.popup_layout,
-				(ViewGroup) activity.findViewById(R.id.popup_element));
+		// // We need to get the instance of the LayoutInflater, use the
+		// // context of this activity
+		// LayoutInflater inflater = (LayoutInflater) activity
+		// .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		//
+		// RelativeLayout layout = (RelativeLayout) inflater.inflate(
+		// R.layout.popup_layout,
+		// (ViewGroup) activity.findViewById(R.id.popup_element));
 
 		// set the votes numbers
 		final TextView textViewVotes1 = (TextView) layout
@@ -106,16 +137,16 @@ public class VotePopupWindowUtils {
 				.findViewById(R.id.votesPopupWindow_listView);
 		listView.setAdapter(voteScreenAdapter);
 
-		// set view and size
-		pw = new PopupWindow(layout, Utils.getScreenWidth() - 30,
-				Utils.getScreenHeight() / 2, true);
-		pw.setAnimationStyle(R.style.PopupWindowAnimation);
-
-		// for closing when touching outside - set the background not null
-		pw.setBackgroundDrawable(new BitmapDrawable());
-
-		// show it!
-		pw.showAtLocation(layout, Gravity.BOTTOM, 0, 10);
+		// // set view and size
+		// pw = new PopupWindow(layout, Utils.getScreenWidth() - 30,
+		// Utils.getScreenHeight() / 2, true);
+		// pw.setAnimationStyle(R.style.PopupWindowAnimation);
+		//
+		// // for closing when touching outside - set the background not null
+		// pw.setBackgroundDrawable(new BitmapDrawable());
+		//
+		// // show it!
+		// pw.showAtLocation(layout, Gravity.BOTTOM, 0, 10);
 	}
 
 	private ArrayAdapter<VoteData> makeVotesScreenAdapter(
