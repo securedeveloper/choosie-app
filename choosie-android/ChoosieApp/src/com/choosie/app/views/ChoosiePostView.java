@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData.PostType;
@@ -14,14 +13,12 @@ import com.choosie.app.Utils;
 import com.choosie.app.caches.Cache;
 import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
-import com.choosie.app.camera.YesNoUtils;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.*;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;

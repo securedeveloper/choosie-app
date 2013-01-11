@@ -147,7 +147,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// Build the notification, the actual line in the status bar.
 		String contentTitle = notificationData.getContentTitle();
 		Notification notification = new NotificationCompat.Builder(this)
-				.setSmallIcon(R.drawable.logo_purple_large)
+				.setSmallIcon(R.drawable.logo_purple_less_large)
 				.setContentTitle(contentTitle)
 				.setContentText(notificationData.getText())
 				.setContentIntent(resultPendingIntent).build();
