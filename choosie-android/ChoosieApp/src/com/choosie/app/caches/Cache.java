@@ -105,7 +105,7 @@ public abstract class Cache<Key, Value> {
 								publishProgress(progress);
 							}
 						});
-				Logger.d("in startFetching, starting onAfterFetching for key = "
+				Logger.d("In startFetching, doInBackground, starting onAfterFetching for key = "
 						+ key.toString());
 				return onAfterFetching(key, result);
 

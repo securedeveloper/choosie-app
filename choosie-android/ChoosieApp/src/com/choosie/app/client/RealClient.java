@@ -35,6 +35,7 @@ import com.choosie.app.Constants;
 import com.choosie.app.CustomMultiPartEntity;
 import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
+import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.Utils;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.Models.ChoosiePostData;
@@ -43,6 +44,7 @@ import com.choosie.app.Models.FacebookDetails;
 import com.choosie.app.Models.User;
 import com.choosie.app.Models.Vote;
 
+import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -51,7 +53,7 @@ public class RealClient extends Client {
 
 	protected RealClient() {
 	}
-	
+
 	/**
 	 * Gets a ChoosiePost (photo1, photo2 and a question) and posts it to the
 	 * server.
@@ -117,8 +119,7 @@ public class RealClient extends Client {
 			return null;
 		}
 
-		Logger.i(
-				"Feed converted to posts, and got cursor.");
+		Logger.i("Feed converted to posts, and got cursor.");
 		choosiePostsFromFeed.setAppend(feedRequest.isAppend());
 		return choosiePostsFromFeed;
 	}
@@ -256,30 +257,23 @@ public class RealClient extends Client {
 			NewChoosiePostData data,
 			final Callback<Void, Integer, Void> progressCallback)
 			throws UnsupportedEncodingException {
-		ByteArrayOutputStream bos1 = new ByteArrayOutputStream();
-		ByteArrayOutputStream bos2 = new ByteArrayOutputStream();
-
-		data.getImage1().compress(CompressFormat.JPEG, 80, bos1);
-		data.getImage2().compress(CompressFormat.JPEG, 80, bos2);
-		byte[] data1 = bos1.toByteArray();
-		byte[] data2 = bos2.toByteArray();
-
-		ByteArrayBody bab1 = new ByteArrayBody(data1, "photo1.jpg");
-		ByteArrayBody bab2 = new ByteArrayBody(data2, "photo2.jpg");
-
 		CustomMultiPartEntity multipartContent = new CustomMultiPartEntity(
 				new Callback<Void, Integer, Void>() {
 					public void onProgress(Integer param) {
 						progressCallback.onProgress(param);
 					}
 				});
-		multipartContent.addPart("photo1", bab1);
-		multipartContent.addPart("photo2", bab2);
+		addImageToMultiPartEntity(multipartContent, data.getImage1(), "photo1");
+		if (data.getPostType() == PostType.TOT) {
+			addImageToMultiPartEntity(multipartContent, data.getImage2(),
+					"photo2");
+		}
 		multipartContent.addPart("question", new StringBody(data.getQuestion(),
 				Charset.forName("UTF-8")));
 		multipartContent.addPart("fb_uid",
 				new StringBody(this.fbDetails.getFb_uid()));
-		multipartContent.addPart("post_type_id", new StringBody(data.getPostTypeAsString()));
+		multipartContent.addPart("post_type_id",
+				new StringBody(data.getPostTypeAsString()));
 
 		// Add share on facebook details to server HTTP request
 		if (data.isShareOnFacebook()) {
@@ -290,17 +284,23 @@ public class RealClient extends Client {
 					String.valueOf(this.fbDetails.getAccess_token_expdate())));
 
 			Logger.i("share_to_fb = on");
-			Logger.i(
-					"fb_access_token = " + this.fbDetails.getAccess_token());
-			Logger.i(
-					"fb_access_token_expdate = "
-							+ String.valueOf(this.fbDetails
-									.getAccess_token_expdate()));
+			Logger.i("fb_access_token = " + this.fbDetails.getAccess_token());
+			Logger.i("fb_access_token_expdate = "
+					+ String.valueOf(this.fbDetails.getAccess_token_expdate()));
 		}
 
 		Logger.i("finished building multipart content");
 
 		return multipartContent;
+	}
+
+	private void addImageToMultiPartEntity(
+			CustomMultiPartEntity multipartContent, Bitmap img, String partName) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		img.compress(CompressFormat.JPEG, 80, bos);
+		byte[] data = bos.toByteArray();
+		ByteArrayBody bab = new ByteArrayBody(data, partName + ".jpg");
+		multipartContent.addPart(partName, bab);
 	}
 
 	private AsyncTask<HttpPost, Integer, HttpResponse> createExecuteHttpPostTask(
@@ -328,8 +328,7 @@ public class RealClient extends Client {
 							});
 					totalSize = multipartContent.getContentLength();
 					httpPost.setEntity(multipartContent);
-					Logger.i(
-							"doInBackground(): Executing HTTP Request!");
+					Logger.i("doInBackground(): Executing HTTP Request!");
 					return httpClient.execute(httpPost);
 				} catch (ClientProtocolException e) {
 					Log.e("createExecuteHttpPostTask",
@@ -632,17 +631,17 @@ public class RealClient extends Client {
 
 			@Override
 			protected void onPostExecute(HttpResponse result) {
-				//TODO: chack result or something
+				// TODO: chack result or something
 				Log.i("Register", "result status = " + result.getStatusLine());
 			}
 		};
 		registerTask.execute();
 	}
-	
+
 	@Override
 	public void unregisterGCM(String deviceId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

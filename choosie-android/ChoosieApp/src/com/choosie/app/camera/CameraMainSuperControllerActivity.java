@@ -334,7 +334,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 			public void onAnimationRepeat(Animation animation) {
 				// TODO Auto-generated method stub
 
-		postType = PostType.YesNo;
+				postType = PostType.YesNo;
 			}
 
 			public void onAnimationEnd(Animation animation) {
@@ -635,18 +635,15 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		public void onClick(View v) {
 			NewChoosiePostData ncpd;
-			Bitmap bmp1, bmp2;
-		
+
 			if (postType == PostType.TOT) {
-				bmp1 = image1BitmapTot;
-				bmp2 = image2BitmapTot;
+				ncpd = new NewChoosiePostData(image1BitmapTot, image2BitmapTot,
+						mQuestion.getText().toString(), mTbFacebook.isChecked());
 			} else {
-				bmp1 = image1BitmapYaanaa;
-				bmp2 = image2BitmapYaanaa;
+				ncpd = new NewChoosiePostData(image1BitmapYaanaa, mQuestion
+						.getText().toString(), mTbFacebook.isChecked());
 			}
-				
-			ncpd = new NewChoosiePostData(bmp1, bmp2, mQuestion.getText()
-					.toString(), mTbFacebook.isChecked(), postType);
+
 			submitPost(ncpd);
 		}
 	};

@@ -49,7 +49,7 @@ public abstract class PersistentCache<Key, Value> extends Cache<Key, Value> {
 	protected Value onAfterFetching(Key key, Value result) {
 		Logger.d("in persistentache - onAfterFetching = " + key.toString()
 				+ " result = " + result);
-		if (!isPersisted(key)) {
+		if (!isPersisted(key) && result != null) {
 			Logger.d("in onAfterFetching , key is not persisted, need to save it = "
 					+ key.toString());
 			savePersistent(key, result);

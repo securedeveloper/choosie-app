@@ -383,10 +383,8 @@ public class CommentScreenActivity extends Activity {
 			userPhotoBitmap.recycle();
 		}
 
-		image1View.setImageDrawable(getResources().getDrawable(
-				R.drawable.back_arrow));
-		image2View.setImageDrawable(getResources().getDrawable(
-				R.drawable.back_arrow));
+		image1View.setImageDrawable(null);
+		image2View.setImageDrawable(null);
 
 		if (image1Bitmap != null) {
 			image1Bitmap.recycle();

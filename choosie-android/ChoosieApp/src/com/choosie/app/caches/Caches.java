@@ -15,9 +15,9 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 
 public class Caches {
-	private Cache<String, Bitmap> photosCache;
 	private Cache<FeedCacheKey, FeedResponse> feedCache;
 	private Cache<String, ChoosiePostData> postsCache;
+	private Cache<String, Bitmap> photosCache;
 
 	private static Caches instance = new Caches();
 
@@ -64,6 +64,9 @@ public class Caches {
 			protected Bitmap beforePutInMemory(Bitmap result) {
 				Logger.d("in persistent , beforePutInMemory with result = "
 						+ result);
+				if (result == null) {
+					return null;
+				}
 				return Utils.shrinkBitmapToImageViewSizeIfNeeded(result);
 			}
 

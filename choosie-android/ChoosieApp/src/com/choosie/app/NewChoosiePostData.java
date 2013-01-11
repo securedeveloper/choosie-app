@@ -4,12 +4,12 @@ import java.io.Serializable;
 
 import android.graphics.Bitmap;
 
-public class NewChoosiePostData implements Serializable{
+public class NewChoosiePostData implements Serializable {
 
 	public enum PostType {
 		TOT, YesNo
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -20,22 +20,24 @@ public class NewChoosiePostData implements Serializable{
 	private boolean shareOnFacebook;
 	private PostType postType;
 
-	public NewChoosiePostData(Bitmap image1, Bitmap image2, String question) {
-		this(image1, image2, question, false);
+	public NewChoosiePostData(Bitmap singleImage, String question,
+			boolean shareOnFacebook) {
+		this(singleImage, null, question, shareOnFacebook, PostType.YesNo);
 	}
-	
-	public NewChoosiePostData(Bitmap image1, Bitmap image2, String question, boolean shareOnFacebook) {
+
+	public NewChoosiePostData(Bitmap image1, Bitmap image2, String question,
+			boolean shareOnFacebook) {
 		this(image1, image2, question, shareOnFacebook, PostType.TOT);
 	}
-	
-	public NewChoosiePostData(Bitmap image1, Bitmap image2, String question, boolean shareOnFacebook, PostType postType) {
+
+	private NewChoosiePostData(Bitmap image1, Bitmap image2, String question,
+			boolean shareOnFacebook, PostType postType) {
 		this.setImage1(image1);
 		this.setImage2(image2);
 		this.setQuestion(question);
 		this.setShareOnFacebook(shareOnFacebook);
 		this.setPostType(postType);
 	}
-
 
 	public Bitmap getImage1() {
 		return image1;
@@ -46,6 +48,10 @@ public class NewChoosiePostData implements Serializable{
 	}
 
 	public Bitmap getImage2() {
+		if (getPostType() == PostType.YesNo) {
+			throw new NullPointerException(
+					"Attempted to access image 2 on a YesNo NewChoosiePostData!");
+		}
 		return image2;
 	}
 
