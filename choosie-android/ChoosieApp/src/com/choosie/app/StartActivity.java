@@ -34,25 +34,17 @@ public class StartActivity extends Activity {
 	ImageButton goToApplication;
 	ImageButton buttonLogin;
 	Session.StatusCallback statusCallback = new SessionStatusCallback();
-	PushNotification notification;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
-		
+
 		setContentView(R.layout.activity_start);
 
 		Logger.i("************** Start Application! ****************");
 		Logger.i("StartActivity: onCreate()");
-
-		Intent intent = getIntent();
-		if (intent.getExtras() != null) {
-			notification = intent.getParcelableExtra("notification");
-		} else {
-			notification = null;
-		}
 
 		TextView welcome = (TextView) findViewById(R.id.welcome);
 		welcome.setText(getResources().getString(R.string.welcome) + " "
@@ -90,6 +82,15 @@ public class StartActivity extends Activity {
 		}
 	}
 
+	private PushNotification getNotificationFromIntent() {
+		PushNotification notification = null;
+		Intent intent = getIntent();
+		if (intent.getExtras() != null) {
+			notification = intent.getParcelableExtra("notification");
+		}
+		return notification;
+	}
+
 	private void InitializeComponents() {
 		Logger.i("InitializeComponents()");
 
@@ -108,7 +109,7 @@ public class StartActivity extends Activity {
 	public void onStart() {
 		Logger.i("StartActivity: onStart()");
 		super.onStart();
-		Session.getActiveSession().addCallback(statusCallback);	
+		Session.getActiveSession().addCallback(statusCallback);
 		EasyTracker.getInstance().activityStart(this);
 	}
 
@@ -208,6 +209,7 @@ public class StartActivity extends Activity {
 							Logger.i("creating intent for ChoosieActivity");
 							Intent intent = new Intent(StartActivity.this,
 									ChoosieActivity.class);
+							PushNotification notification = getNotificationFromIntent();
 							if (notification != null) {
 								intent.putExtra("notification", notification);
 								Logger.i("Adding Push Notification to intent for ChoosieActivity "
@@ -215,8 +217,11 @@ public class StartActivity extends Activity {
 							} else {
 								Logger.i("No Push Notification has been added to ChoosieActivity intent");
 							}
-							Tracker tracker = GoogleAnalytics.getInstance(getApplicationContext()).getDefaultTracker();
-							tracker.trackEvent("StartActivity", "goToApplication", "", null);
+							Tracker tracker = GoogleAnalytics.getInstance(
+									getApplicationContext())
+									.getDefaultTracker();
+							tracker.trackEvent("StartActivity",
+									"goToApplication", "", null);
 							Logger.i("Starting ChoosieActivity");
 							startActivity(intent);
 							finish();

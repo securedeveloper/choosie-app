@@ -54,6 +54,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 			String text = intent.getStringExtra("text");
 			String postKey = intent.getStringExtra("post_key");
 			String deviceId = intent.getStringExtra("device_id");
+			Logger.i("GCMINTENTSERVICE: GOT NOTIFICATION. NotificationType = "
+					+ notificationType + ", text = " + text + ", postkey = "
+					+ postKey + ", deviceID = " + deviceId);
 
 			PushNotification notification = new PushNotification(
 					notificationType, text, postKey, deviceId);
@@ -110,34 +113,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Intent resultIntent = new Intent(this, StartActivity.class);
 		resultIntent.putExtra("notification", notificationData);
 		PendingIntent pendingIntent = null;
-		if (isAppRunning()) {
-			Logger.i("-------------------- Application is running!!");
-			// set intent so it does not start a new activity
-			resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-					| Intent.FLAG_ACTIVITY_NEW_TASK
-					| Intent.FLAG_ACTIVITY_CLEAR_TOP
-					| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			pendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
-					0);
-		} else {
-			Logger.i("---------------------------------- Application is NOT running!!");
-			resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			// The stack builder object will contain an artificial back stack
-			// for
-			// the started Activity.
-			// This ensures that navigating backward from the Activity leads out
-			// of
-			// your application to the Home screen.
-			TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		Logger.i("-------------------- Application is running!!");
 
-			// Adds the back stack for the Intent (but not the Intent itself)
-			stackBuilder.addParentStack(StartActivity.class);
-			// Adds the Intent that starts the Activity to the top of the stack
-			stackBuilder.addNextIntent(resultIntent);
-			pendingIntent = stackBuilder.getPendingIntent(0,
-					PendingIntent.FLAG_UPDATE_CURRENT
-							| Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-		}
+		// set intent so it does not start a new activity
+		resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+				| Intent.FLAG_ACTIVITY_NEW_TASK);
+		pendingIntent = PendingIntent.getActivity(context, 0, resultIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		return pendingIntent;
 	}

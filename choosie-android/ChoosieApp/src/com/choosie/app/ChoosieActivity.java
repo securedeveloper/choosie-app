@@ -80,6 +80,11 @@ public class ChoosieActivity extends Activity {
 
 	private void handleNotification(PushNotification notification) {
 		Logger.i("Start HandleNotification()");
+		Logger.i("ChoosieActivity: GOT NOTIFICATION. NotificationType = "
+				+ notification.getNotificationType() + ", text = "
+				+ notification.getText() + ", postkey = "
+				+ notification.getPostKey() + ", deviceID = "
+				+ notification.getDeviceId());
 
 		int notificationType = Integer.parseInt(notification
 				.getNotificationType());
@@ -171,7 +176,7 @@ public class ChoosieActivity extends Activity {
 			Logger.i("onActivityResult. FB Permissions: "
 					+ Session.getActiveSession().getPermissions().toString());
 		}
-		
+
 		Logger.i("ChoosieActivity : onActivityResult returned requestCode = "
 				+ requestCode);
 
@@ -205,7 +210,7 @@ public class ChoosieActivity extends Activity {
 			// refresh
 			// method.
 			superController.getControllerForScreen(Screen.POST).refresh();
-			
+
 		case Constants.RequestCodes.NEW_POST:
 			superController.getControllerForScreen(Screen.FEED).refresh();
 		}
