@@ -129,14 +129,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" >
 
-                    <ImageView
-                        android:id="@+id/votes1_pointing"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:paddingLeft="4dp"
-                        android:src="@drawable/pointing" />
-
                     <TextView
                         android:id="@+id/votes1"
                         android:layout_width="wrap_content"
@@ -195,14 +187,6 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" >
-
-                    <ImageView
-                        android:id="@+id/votes2_pointing"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center_vertical"
-                        android:paddingLeft="4dp"
-                        android:src="@drawable/pointing" />
 
                     <TextView
                         android:id="@+id/votes2"

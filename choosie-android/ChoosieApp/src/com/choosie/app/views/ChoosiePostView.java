@@ -1,6 +1,5 @@
 package com.choosie.app.views;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.choosie.app.Callback;
@@ -47,8 +46,6 @@ public class ChoosiePostView extends RelativeLayout {
 
 		feedViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		feedViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
-		feedViewHolder.votes1Pointing = (ImageView) findViewById(R.id.votes1_pointing);
-		feedViewHolder.votes2Pointing = (ImageView) findViewById(R.id.votes2_pointing);
 		feedViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
 		feedViewHolder.votes2 = (TextView) findViewById(R.id.votes2);
 		feedViewHolder.feedtext = (TextView) findViewById(R.id.feedtext);
@@ -197,13 +194,9 @@ public class ChoosiePostView extends RelativeLayout {
 		};
 
 		if (choosiePost.isVotedAlready()) {
-			feedViewHolder.votes1Pointing.setOnClickListener(votesListener);
-			feedViewHolder.votes2Pointing.setOnClickListener(votesListener);
 			feedViewHolder.votes1.setOnClickListener(votesListener);
 			feedViewHolder.votes2.setOnClickListener(votesListener);
 		} else {
-			feedViewHolder.votes1Pointing.setOnClickListener(null);
-			feedViewHolder.votes2Pointing.setOnClickListener(null);
 			feedViewHolder.votes1.setOnClickListener(null);
 			feedViewHolder.votes2.setOnClickListener(null);
 		}
@@ -254,11 +247,9 @@ public class ChoosiePostView extends RelativeLayout {
 		if (isBorderVisable) {
 			imgView.setImageDrawable(getResources().getDrawable(
 					R.drawable.image_selected_v));
-			// imgView.setBackgroundResource(R.drawable.image_selected);
 		} else {
 			imgView.setImageDrawable(getResources().getDrawable(
 					R.drawable.image_not_selected_v));
-			// imgView.setBackgroundResource(R.drawable.image_not_selected);
 		}
 	}
 
@@ -392,8 +383,6 @@ public class ChoosiePostView extends RelativeLayout {
 		public RelativeLayout layoutForLeftPhoto;
 		public LinearLayout commentLayout;
 		public LinearLayout commentLayoutMain;
-		public ImageView votes1Pointing;
-		public ImageView votes2Pointing;
 		public TextView votes1;
 		public TextView votes2;
 		public TextView feedtext;
