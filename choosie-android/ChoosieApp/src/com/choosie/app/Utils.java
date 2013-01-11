@@ -15,6 +15,7 @@ import com.choosie.app.camera.GalleryActivity;
 import com.choosie.app.controllers.SuperController;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Environment;
 import android.util.DisplayMetrics;
@@ -560,4 +563,18 @@ public class Utils {
 
 		return (bitmap);
 	}
+
+	public static void executeTaskOnThreadPoolExecutor(AsyncTask<?, ?, ?> task) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			executeOnThreadPoolExecutor(task);
+		} else {
+			task.execute();
+		}
+	}
+
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private static void executeOnThreadPoolExecutor(AsyncTask<?, ?, ?> task) {
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+	}
+
 }

@@ -113,16 +113,9 @@
                         android:layout_height="match_parent" />
 
                     <ImageView
-                        android:id="@+id/feed_imageSelect1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginTop="3dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="matrix"
-                        android:src="@drawable/ic_action_search" />
+                        android:id="@+id/feed_image_vote_icon1"
+                        style="@style/VotingButtonOnChoosiePostView"
+                        android:src="@drawable/thumbs_up_unpressed" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -172,16 +165,9 @@
                         android:layout_height="match_parent" />
 
                     <ImageView
-                        android:id="@+id/feed_imageSelect2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginLeft="1dp"
-                        android:layout_marginTop="3dp"
-                        android:adjustViewBounds="true"
-                        android:scaleType="matrix"
-                        android:src="@drawable/ic_action_search" />
+                        android:id="@+id/feed_image_vote_icon2"
+                        style="@style/VotingButtonOnChoosiePostView"
+                        android:src="@drawable/thumbs_up_unpressed" />
                 </RelativeLayout>
 
                 <LinearLayout

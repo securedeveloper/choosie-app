@@ -11,14 +11,17 @@ import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
+import com.choosie.app.caches.Cache;
 import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
+import com.choosie.app.camera.YesNoUtils;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.*;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -58,8 +61,8 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
 		feedViewHolder.imgView1 = (ImageView) findViewById(R.id.feedimage1);
 		feedViewHolder.imgView2 = (ImageView) findViewById(R.id.feedimage2);
-		feedViewHolder.imgSelected1 = (ImageView) findViewById(R.id.feed_imageSelect1);
-		feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_imageSelect2);
+		feedViewHolder.imgSelected1 = (ImageView) findViewById(R.id.feed_image_vote_icon1);
+		feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_image_vote_icon2);
 		feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
 		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
 		feedViewHolder.layoutForLeftPhoto = (RelativeLayout) findViewById(R.id.layout_for_left_photo);
@@ -108,13 +111,17 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected2.setVisibility(View.GONE);
 		feedViewHolder.feed_userimage.setVisibility(View.GONE);
 
-		loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
-				feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
 		if (post.getPostType() == PostType.YesNo) {
 			Logger.i(post.getPhoto2URL());
+			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
+					feedViewHolder.progressBar1, feedViewHolder.imgSelected1,
+					true, false);
 			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView2,
-					feedViewHolder.progressBar2, feedViewHolder.imgSelected2);
+					feedViewHolder.progressBar2, feedViewHolder.imgSelected2,
+					true, true);
 		} else {
+			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
+					feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
 			loadImageToView(post.getPhoto2URL(), feedViewHolder.imgView2,
 					feedViewHolder.progressBar2, feedViewHolder.imgSelected2);
 		}
@@ -134,10 +141,10 @@ public class ChoosiePostView extends RelativeLayout {
 		}
 
 		// Set border for voted image
-		setImageBorder(feedViewHolder.imgSelected1,
-				choosiePost.isVotedAlready(1));
-		setImageBorder(feedViewHolder.imgSelected2,
-				choosiePost.isVotedAlready(2));
+		setVoteButtonIcon(feedViewHolder.imgSelected1,
+				choosiePost.isVotedAlready(1), 1);
+		setVoteButtonIcon(feedViewHolder.imgSelected2,
+				choosiePost.isVotedAlready(2), 2);
 
 		// TODO: Merge both listeners below to a single one that accepts an
 		// argument.
@@ -226,8 +233,8 @@ public class ChoosiePostView extends RelativeLayout {
 
 			// Set border for relevant image
 			Log.i(Constants.LOG_TAG, "Setting border for image 2");
-			setImageBorder(imgSelected2, true);
-			setImageBorder(imgSelected1, false);
+			setVoteButtonIcon(imgSelected2, true, 2);
+			setVoteButtonIcon(imgSelected1, false, 1);
 			return true;
 		}
 		Log.i(Constants.LOG_TAG, "Already voted for 2. vote not sent");
@@ -245,21 +252,32 @@ public class ChoosiePostView extends RelativeLayout {
 
 			// Set border for relevant image
 			Log.i(Constants.LOG_TAG, "Setting border for image 1");
-			setImageBorder(imgSelected1, true);
-			setImageBorder(imgSelected2, false);
+			setVoteButtonIcon(imgSelected1, true, 1);
+			setVoteButtonIcon(imgSelected2, false, 2);
 			return true;
 		}
 		Log.i(Constants.LOG_TAG, "Already voted for 1. vote not sent");
 		return false;
 	}
 
-	private void setImageBorder(ImageView imgView, boolean isBorderVisable) {
-		if (isBorderVisable) {
-			imgView.setImageDrawable(getResources().getDrawable(
-					R.drawable.image_selected_v));
+	private void setVoteButtonIcon(ImageView imgView, boolean isVoted,
+			int photoNumber) {
+		if (choosiePost.getPostType() == PostType.YesNo && photoNumber == 2) {
+			if (isVoted) {
+				imgView.setImageDrawable(getResources().getDrawable(
+						R.drawable.thumbdown_voted));
+			} else {
+				imgView.setImageDrawable(getResources().getDrawable(
+						R.drawable.thumbdown_not_voted));
+			}
 		} else {
-			imgView.setImageDrawable(getResources().getDrawable(
-					R.drawable.image_not_selected_v));
+			if (isVoted) {
+				imgView.setImageDrawable(getResources().getDrawable(
+						R.drawable.thumbup_voted));
+			} else {
+				imgView.setImageDrawable(getResources().getDrawable(
+						R.drawable.thumbup_not_voted));
+			}
 		}
 	}
 
@@ -360,35 +378,45 @@ public class ChoosiePostView extends RelativeLayout {
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
 			final ProgressBar progressBar, final ImageView img) {
+		loadImageToView(urlToLoad, imageView, progressBar, img, false, false);
+	}
+
+	private void loadImageToView(String urlToLoad, final ImageView imageView,
+			final ProgressBar progressBar, final ImageView img,
+			final boolean isYesNo, final boolean isSecond) {
 
 		lastRequestOnImageView.put(imageView, urlToLoad);
+		Cache<String, Bitmap> cache;
+		if (isYesNo && isSecond) {
+			cache = Caches.getInstance().getBlurredPhotosCache();
+		} else {
+			cache = Caches.getInstance().getPhotosCache();
+		}
+		cache.getValue(urlToLoad, new CacheCallback<String, Bitmap>() {
+			@Override
+			public void onValueReady(final String key, final Bitmap result) {
+				if (!key.equals(lastRequestOnImageView.get(imageView))) {
+					return;
+				}
+				imageView.setImageBitmap(result);
+				imageView.setVisibility(View.VISIBLE);
+				if (progressBar != null) {
+					progressBar.setVisibility(View.GONE);
+				}
+				if (img != null) {
+					img.setVisibility(View.VISIBLE);
+					img.bringToFront();
+				}
+			}
 
-		Caches.getInstance().getPhotosCache()
-				.getValue(urlToLoad, new CacheCallback<String, Bitmap>() {
-					@Override
-					public void onValueReady(String key, Bitmap result) {
-						if (!key.equals(lastRequestOnImageView.get(imageView))) {
-							return;
-						}
-						imageView.setImageBitmap(result);
-						imageView.setVisibility(View.VISIBLE);
-						if (progressBar != null) {
-							progressBar.setVisibility(View.GONE);
-						}
-						if (img != null) {
-							img.setVisibility(View.VISIBLE);
-							img.bringToFront();
-						}
-					}
-
-					@Override
-					public void onProgress(int percent) {
-						if (progressBar != null) {
-							progressBar.setProgress(percent);
-							progressBar.setMax(100);
-						}
-					}
-				});
+			@Override
+			public void onProgress(int percent) {
+				if (progressBar != null) {
+					progressBar.setProgress(percent);
+					progressBar.setMax(100);
+				}
+			}
+		});
 	}
 
 	private class FeedViewHolder {

@@ -15,9 +15,54 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 
 public class Caches {
+	private class PhotosCache extends PersistentCache<String, Bitmap> {
+		private PhotosCache(int maxSize) {
+			super(maxSize);
+		}
+
+		@Override
+		protected ByteArrayOutputStream serialize(Bitmap value) {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			value.compress(CompressFormat.JPEG, 100, bos);
+			return bos;
+		}
+
+		@Override
+		protected Bitmap readFromSdCard(String key,
+				Callback<Void, Integer, Void> progressCallback) {
+			Logger.d("in persistent, reading from Sd, key = " + key.toString());
+			return Utils.getBitmapFromURL(key, progressCallback);
+		}
+
+		@Override
+		protected Bitmap beforePutInMemory(Bitmap result) {
+			Logger.d("in persistent , beforePutInMemory with result = "
+					+ result);
+			if (result == null) {
+				return null;
+			}
+			return Utils.shrinkBitmapToImageViewSizeIfNeeded(result);
+		}
+
+		@Override
+		protected Bitmap downloadData(String key,
+				Callback<Void, Integer, Void> progressCallback) {
+			Logger.d("in persistent, downloading, key = " + key.toString());
+			return Client.getInstance().getPictureFromServerSync(key,
+					progressCallback);
+		}
+
+		@Override
+		protected int calcSizeOf(String key, Bitmap value) {
+			return value.getRowBytes() * value.getHeight();
+		}
+	}
+
 	private Cache<FeedCacheKey, FeedResponse> feedCache;
 	private Cache<String, ChoosiePostData> postsCache;
 	private Cache<String, Bitmap> photosCache;
+	private Cache<String, Bitmap> blurredCache;
+	private PhotosCache blurredPhotosCache;
 
 	private static Caches instance = new Caches();
 
@@ -33,6 +78,10 @@ public class Caches {
 		return photosCache;
 	}
 
+	public Cache<String, Bitmap> getBlurredPhotosCache() {
+		return blurredPhotosCache;
+	}
+
 	public Cache<FeedCacheKey, FeedResponse> getFeedCache() {
 		return feedCache;
 	}
@@ -42,45 +91,15 @@ public class Caches {
 	}
 
 	private void initializeCaches() {
-		int photoCacheMaxSize = 10 * 1024 * 1024; // 10 MB
-		photosCache = new PersistentCache<String, Bitmap>(photoCacheMaxSize) {
+		int photoCacheMaxSize = 8 * 1024 * 1024; // 10 MB
+		photosCache = new PhotosCache(photoCacheMaxSize);
 
-			@Override
-			protected ByteArrayOutputStream serialize(Bitmap value) {
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				value.compress(CompressFormat.JPEG, 100, bos);
-				return bos;
-			}
-
-			@Override
-			protected Bitmap readFromSdCard(String key,
-					Callback<Void, Integer, Void> progressCallback) {
-				Logger.d("in persistent, reading from Sd, key = "
-						+ key.toString());
-				return Utils.getBitmapFromURL(key, progressCallback);
-			}
-
+		int blurredPhotoCacheMaxSize = 2 * 1024 * 1024; // 10 MB
+		blurredPhotosCache = new PhotosCache(blurredPhotoCacheMaxSize) {
 			@Override
 			protected Bitmap beforePutInMemory(Bitmap result) {
-				Logger.d("in persistent , beforePutInMemory with result = "
-						+ result);
-				if (result == null) {
-					return null;
-				}
-				return Utils.shrinkBitmapToImageViewSizeIfNeeded(result);
-			}
-
-			@Override
-			protected Bitmap downloadData(String key,
-					Callback<Void, Integer, Void> progressCallback) {
-				Logger.d("in persistent, downloading, key = " + key.toString());
-				return Client.getInstance().getPictureFromServerSync(key,
-						progressCallback);
-			}
-
-			@Override
-			protected int calcSizeOf(String key, Bitmap value) {
-				return value.getRowBytes() * value.getHeight();
+				result = Utils.fastblur(result, 20);
+				return super.beforePutInMemory(result);
 			}
 		};
 
@@ -105,6 +124,7 @@ public class Caches {
 					Callback<Void, Integer, Void> progressCallback) {
 				return Client.getInstance().getPostByKey(key, progressCallback);
 			}
+
 		};
 	}
 

@@ -49,7 +49,6 @@ public class Constants {
 		public static final int CAMERA_RETAKE_PICTURE = 18;
 		public static final int CAMERA_PICURE_GALLERY = 19;
 		public static final int CAMERA_GALLERY_CROP = 20;
-
 	}
 
 	public static class IntentsCodes {

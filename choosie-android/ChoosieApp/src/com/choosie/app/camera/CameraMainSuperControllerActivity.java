@@ -516,10 +516,9 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		// set image 1 and 2 yaanaa
 
-		image1BitmapYaanaa = Utils.combine(image1BitmapTot, getResources()
-				.getDrawable(R.drawable.yaa));
-		image2BitmapYaanaa = Utils.combine(Utils.fastblur(image1BitmapTot, 20),
-				getResources().getDrawable(R.drawable.naa));
+		Bitmap image = image1BitmapTot;
+		image1BitmapYaanaa = YesNoUtils.generateVoteUpImage(this, image1BitmapTot);
+		image2BitmapYaanaa = YesNoUtils.generateVoteDownImage(this, image1BitmapTot);
 	}
 
 	private void goBackToChoosieActivity(int result) {
