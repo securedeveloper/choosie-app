@@ -220,7 +220,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		// manipulateLayoutsHeight(display);
 
 		// set initial text
-		cameraLayoutViewHolder.textView_takePhoto.setText("Choozie first");
+		cameraLayoutViewHolder.textView_takePhoto.setText("Choozie.");
 
 		// on create. set the focus gone, anyway
 		cameraLayoutViewHolder.focusImageView.setVisibility(View.GONE);

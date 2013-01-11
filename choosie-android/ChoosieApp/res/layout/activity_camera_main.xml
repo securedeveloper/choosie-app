@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/LightGrey"
+    tools:context=".MainActivity" >
+
+    <RelativeLayout
+        android:id="@+id/post_layout_top"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/camera_header_selector" >
+
+        <TextView
+            android:id="@+id/post_textView_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:text="Choozie Post."
+            android:textColor="@color/LightGrey"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/post_tvQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/post_layout_top"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/post_box_border"
+        android:ems="10"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="top|left"
+        android:hint="@string/editTextQuestion"
+        android:inputType="textMultiLine"
+        android:lines="2"
+        android:maxLines="2"
+        android:minLines="2"
+        android:paddingLeft="10dp" >
+
+        <requestFocus android:layout_width="wrap_content" />
+    </EditText>
+
+    <ImageButton
+        android:id="@+id/post_btnSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/button_selector"
+        android:contentDescription="@string/desc"
+        android:src="@drawable/image_selected_v" />
+
+    <LinearLayout
+        android:id="@+id/post_imagesLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/post_tvQuestion"
+        android:layout_margin="10dp"
+        android:background="@drawable/post_box_border"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/image_photo1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:contentDescription="@string/desc"
+            android:paddingLeft="11dp"
+            android:paddingRight="2dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/camera" />
+
+        <ImageView
+            android:id="@+id/image_photo2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:contentDescription="@string/desc"
+            android:paddingLeft="2dp"
+            android:paddingRight="11dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/plus" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvModes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/post_imagesLayout"
+        android:paddingLeft="10dp"
+        android:text="MODES"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/post_layout_stateButtons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvModes"
+        android:layout_margin="10dp"
+        android:background="@drawable/post_box_border"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/post_totButton_image"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:padding="5dp"
+            android:src="@drawable/tot_pressed" />
+
+        <ImageView
+            android:id="@+id/post_yaanaaButton_image"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:contentDescription="@string/desc"
+            android:padding="5dp"
+            android:src="@drawable/yaa_naa" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/post_layout_stateButtons"
+        android:paddingLeft="10dp"
+        android:text="@string/share"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textStyle="bold" />
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvShare"
+        android:layout_margin="10dp"
+        android:background="@drawable/post_box_border"
+        android:padding="10dp" >
+
+        <ToggleButton
+            android:id="@+id/tbFacebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/facebook_square_bw"
+            android:textOff="@string/empty_string"
+            android:textOn="@string/empty_string" />
+
+        <TextView
+            android:id="@+id/tvFacebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:text="@string/facebook"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </TableRow>
+
+</RelativeLayout>
