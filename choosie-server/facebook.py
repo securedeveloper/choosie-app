@@ -217,7 +217,7 @@ class GraphAPI(object):
                               data=body)
         req.add_header('Content-Type', content_type)
         try:
-            data = urllib2.urlopen(req).read()
+            data = urllib2.urlopen(req, timeout=20).read()
         #For Python 3 use this:
         #except urllib2.HTTPError as e:
         except urllib2.HTTPError, e:
