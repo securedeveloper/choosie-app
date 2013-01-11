@@ -105,4 +105,11 @@ public class Constants {
 		public static final String CAMERA_TYPE = "camera_type";
 	}
 
+	public static class DialogId {
+
+		public static final int EXIT_ALERT_DIALOG = 0;
+		public static final int WAIT_LOADING = 1;
+
+	}
+
 }

@@ -24,6 +24,9 @@ import com.google.analytics.tracking.android.Tracker;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -69,13 +72,12 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private EditText mQuestion;
 	private ImageView mImage1;
 	private ImageView mImage2;
-	private TextView mTvFacebook;
 	private ToggleButton mTbFacebook;
 	private TableRow mTrFacebook;
 	private Session session;
 	// private StatusCallback statusCallback = new SessionStatusCallback();
 	private ImageButton mBtnSubmit;
-	//private ProgressBar mProgressBar;
+	// private ProgressBar mProgressBar;
 
 	private File imageFile1;
 	private File imageFile2;
@@ -84,6 +86,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private Bitmap image2BitmapTot;
 	private Bitmap image1BitmapYaanaa;
 	private Bitmap image2BitmapYaanaa;
+	private boolean isFirstTimeReturnFromCamera;
 
 	private StatusCallback statusCallback = new SessionStatusCallback();
 	private OnClickListener listener = new OnClickListener() {
@@ -109,6 +112,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		imagePath2 = imageFile2.getAbsolutePath();
 		Logger.i("CameraMainActivity - onCreate - about to startNewCameraActivity, imaggePath1 = "
 				+ imagePath1 + " imagePath2 = " + imagePath2);
+		isFirstTimeReturnFromCamera = true;
 		startNewCameraActivity(Constants.RequestCodes.CAMERA_PICURE_FIRST,
 				imagePath1);
 	}
@@ -120,19 +124,18 @@ public class CameraMainSuperControllerActivity extends Activity {
 		this.mQuestion = (EditText) findViewById(R.id.post_tvQuestion);
 		this.mImage1 = (ImageView) findViewById(R.id.image_photo1);
 		this.mImage2 = (ImageView) findViewById(R.id.image_photo2);
-		this.mTvFacebook = (TextView) findViewById(R.id.tvFacebook);
 		this.mTbFacebook = (ToggleButton) findViewById(R.id.tbFacebook);
 		this.mBtnSubmit = (ImageButton) findViewById(R.id.post_btnSubmit);
 		this.session = Session.getActiveSession();
 		this.yaanaaImageView = (ImageView) findViewById(R.id.post_yaanaaButton_image);
 		this.totImageView = (ImageView) findViewById(R.id.post_totButton_image);
 		this.mTrFacebook = (TableRow) findViewById(R.id.tableRowShareFB);
-		//this.mProgressBar = (ProgressBar) findViewById(R.id.post_progressBar);
+		// this.mProgressBar = (ProgressBar)
+		// findViewById(R.id.post_progressBar);
 
 		this.mTrFacebook.setOnClickListener(listener);
 		this.mTbFacebook.setOnCheckedChangeListener(checkChangedListener);
 		this.mBtnSubmit.setOnClickListener(onClickListenter);
-
 		float density = getApplicationContext().getResources()
 				.getDisplayMetrics().density;
 		int topHeight = Math.round(50 * density);
@@ -385,6 +388,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 						+ imagePath2);
 				saveImage1Bitmap();
 				setImages();
+				isFirstTimeReturnFromCamera = false;
+			} else if (resultCode == Activity.RESULT_CANCELED) {
+				if (isFirstTimeReturnFromCamera == true) {
+					goBackToChoosieActivity(Activity.RESULT_OK);
+				}
 			}
 			break;
 
@@ -549,12 +557,9 @@ public class CameraMainSuperControllerActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-			setResult(Activity.RESULT_CANCELED);
-			this.finish();
-			return true;
+			showDialog(Constants.DialogId.EXIT_ALERT_DIALOG);
 		}
-		return super.onKeyDown(keyCode, event);
+		return true;
 	}
 
 	private OnCheckedChangeListener checkChangedListener = new OnCheckedChangeListener() {
@@ -634,7 +639,6 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		public void onClick(View v) {
 			NewChoosiePostData ncpd;
-
 			if (postType == PostType.TOT) {
 				ncpd = new NewChoosiePostData(image1BitmapTot, image2BitmapTot,
 						mQuestion.getText().toString(), mTbFacebook.isChecked());
@@ -642,7 +646,6 @@ public class CameraMainSuperControllerActivity extends Activity {
 				ncpd = new NewChoosiePostData(image1BitmapTot, mQuestion
 						.getText().toString(), mTbFacebook.isChecked());
 			}
-
 			submitPost(ncpd);
 		}
 	};
@@ -673,7 +676,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 						public void onPre(Void param) {
 
 							// TODO: change to 'DialogFragment'
-							showDialog(1);
+							showDialog(Constants.DialogId.WAIT_LOADING);
 
 							// progressBar.setProgress(0);
 							// progressBar.setMax(100);
@@ -697,11 +700,28 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	@Override
 	protected Dialog onCreateDialog(int id) {
-		ProgressDialog dialog = new ProgressDialog(this);
-		dialog.setMessage("Please wait while uploading...");
-		dialog.setIndeterminate(true);
-		dialog.setCancelable(false);
-		return dialog;
+		switch (id) {
+		case Constants.DialogId.EXIT_ALERT_DIALOG:
+			// Create out AlterDialog
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+			builder.setMessage("Are you sure you want to exit?");
+			builder.setCancelable(true);
+			builder.setPositiveButton("Yaa", new OkOnClickListener());
+			builder.setNegativeButton("Naa", new CancelOnClickListener());
+			AlertDialog dialog = builder.create();
+			dialog.show();
+			break;
+
+		case Constants.DialogId.WAIT_LOADING:
+			ProgressDialog dialog1 = new ProgressDialog(this);
+			dialog1.setMessage("Please wait while uploading...");
+			dialog1.setIndeterminate(true);
+			dialog1.setCancelable(false);
+			return dialog1;
+		}
+
+		return super.onCreateDialog(id);
 	}
 
 	private boolean isPostValid() {
@@ -731,20 +751,18 @@ public class CameraMainSuperControllerActivity extends Activity {
 		return true;
 	}
 
-	// private void showErrorDialog(String errorMsg) {
-	// AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this,
-	// R.style.);
-	// myAlertDialog.setTitle("");
-	// myAlertDialog.setMessage(errorMsg);
-	//
-	// myAlertDialog.setPositiveButton("OK",
-	// new DialogInterface.OnClickListener() {
-	// public void onClick(DialogInterface arg1, int arg3) {
-	// setResult(Activity.RESULT_CANCELED);
-	// finish();
-	// }
-	// });
-	// myAlertDialog.show();
+	private final class CancelOnClickListener implements
+			DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
 
-	// }
+		}
+	}
+
+	private final class OkOnClickListener implements
+			DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			setResult(Activity.RESULT_OK);
+			CameraMainSuperControllerActivity.this.finish();
+		}
+	}
 }

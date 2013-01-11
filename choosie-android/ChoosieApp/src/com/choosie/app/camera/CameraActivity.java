@@ -111,6 +111,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			Log.i("cameraApi", " exits onAutoFocus, setting isFocusLeft = true");
 
 			if (needToTakePhoto) {
+				cameraLayoutViewHolder.galleryImage.setEnabled(false);
 				mCamera.takePicture(null, null, mPicture);
 				cameraLayoutViewHolder.takePicButton.setEnabled(false);
 				cameraLayoutViewHolder.preview.setEnabled(false);
@@ -408,6 +409,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	private void startGalleryStuff() {
 
+		cameraLayoutViewHolder.takePicButton.setEnabled(false);
+
 		mCamera.stopPreview();
 		Log.i("cameraApi", "in startCropingStuff");
 
@@ -648,12 +651,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				// nice, lets go start to main camera super controller
 				// activity!
 				fillIntentsWithHeightsAndSetResult();
-				// startCropingStuff();
 				break;
 			} else {
 				if (mCamera != null) {
 					mCamera.startPreview();
 				}
+				cameraLayoutViewHolder.takePicButton.setEnabled(true);
 			}
 		}
 	}
@@ -996,6 +999,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 							cameraLayoutViewHolder.takePicButton
 									.setEnabled(false);
 							cameraLayoutViewHolder.preview.setEnabled(false);
+							cameraLayoutViewHolder.galleryImage
+									.setEnabled(false);
 							mCamera.takePicture(null, null, mPicture);
 						} else {
 							needToTakePhoto = true;
