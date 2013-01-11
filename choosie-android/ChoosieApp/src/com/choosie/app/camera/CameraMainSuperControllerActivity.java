@@ -12,9 +12,11 @@ import com.choosie.app.R;
 import com.choosie.app.Utils;
 import com.choosie.app.client.Client;
 import com.facebook.Session;
+
 import com.facebook.SessionState;
 import com.facebook.Session.ReauthorizeRequest;
 import com.facebook.Session.StatusCallback;
+
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 
@@ -34,8 +36,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
+
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CompoundButton;
+
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -79,17 +87,15 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private Bitmap image2BitmapTot;
 	private Bitmap image1BitmapYaanaa;
 	private Bitmap image2BitmapYaanaa;
-	
+
 	private StatusCallback statusCallback = new SessionStatusCallback();
 	private OnClickListener listener = new OnClickListener() {
-		
+
 		public void onClick(View v) {
 			mTbFacebook.setChecked(!mTbFacebook.isChecked());
 		}
 	};
-	
-	
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -124,7 +130,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		this.yaanaaImageView = (ImageView) findViewById(R.id.post_yaanaaButton_image);
 		this.totImageView = (ImageView) findViewById(R.id.post_totButton_image);
 		this.mTrFacebook = (TableRow) findViewById(R.id.tableRowShareFB);
-		
+
 		this.mTrFacebook.setOnClickListener(listener);
 		this.mTbFacebook.setOnCheckedChangeListener(checkChangedListener);
 		this.mBtnSubmit.setOnClickListener(onClickListenter);
@@ -286,12 +292,36 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		mImage1.setImageBitmap(image1BitmapTot);
 
-		if (image2BitmapTot != null) {
-			mImage2.setImageBitmap(image2BitmapTot);
-		} else {
-			mImage2.setImageDrawable(getResources()
-					.getDrawable(R.drawable.plus));
-		}
+		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.fadein);
+
+		Animation fadeInAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.push_left_out);
+		fadeInAnimation.setAnimationListener(new AnimationListener() {
+
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void onAnimationEnd(Animation animation) {
+				if (image2BitmapTot != null) {
+					mImage2.setImageBitmap(image2BitmapTot);
+
+				} else {
+					mImage2.setImageDrawable(getResources().getDrawable(
+							R.drawable.plus));
+				}
+				mImage2.startAnimation(fadeOutAnimation);
+
+			}
+		});
+		mImage2.startAnimation(fadeInAnimation);
 
 		currentMode = MODE.TOT;
 
@@ -305,16 +335,76 @@ public class CameraMainSuperControllerActivity extends Activity {
 		yaanaaImageView.setImageResource(R.drawable.yaa_naa_pressed);
 		totImageView.setImageResource(R.drawable.tot);
 
+		final Animation fadeInAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.push_right_in);
+		fadeInAnimation.setAnimationListener(new AnimationListener() {
+
+			public void onAnimationStart(Animation animation) {
+
+				mImage2.setImageBitmap(image2BitmapYaanaa);
+
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void onAnimationEnd(Animation animation) {
+				mImage2.setImageBitmap(image2BitmapYaanaa);
+
+			}
+		});
+
+		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.fadeout);
+		fadeOutAnimation.setAnimationListener(new AnimationListener() {
+
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void onAnimationEnd(Animation animation) {
+				mImage2.setImageBitmap(null);
+				mImage2.startAnimation(fadeInAnimation);
+			}
+		});
+
+		mImage2.startAnimation(fadeOutAnimation);
+		// mImage1.startAnimation(fadeInAnimation);
+
 		mImage1.setImageBitmap(image1BitmapYaanaa);
-		mImage2.setImageBitmap(image2BitmapYaanaa);
+		// mImage2.setAnimation(null);
 
-		// Utils.writeBitmapToFile(bluredBitmap, pictureFile, 100);
-
-		// makeNo();
-
-		// startNewPostActivity(Constants.RequestCodes.NEW_POST);
-
-		// set image2 as the blured image
+		// Animation fadeInAnimation = AnimationUtils.loadAnimation(this,
+		// R.anim.push_right_in);
+		// fadeInAnimation.setAnimationListener(new AnimationListener() {
+		//
+		// public void onAnimationStart(Animation animation) {
+		//
+		// mImage2.setImageBitmap(image2BitmapYaanaa);
+		//
+		// }
+		//
+		// public void onAnimationRepeat(Animation animation) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		//
+		// public void onAnimationEnd(Animation animation) {
+		// mImage2.setImageBitmap(image2BitmapYaanaa);
+		//
+		// }
+		// });
+		// mImage2.setAnimation(fadeInAnimation);
+		// fadeInAnimation.startNow();
+		// mImage2.startAnimation(fadeInAnimation);
 
 		currentMode = MODE.YAA_NAA;
 	}
@@ -325,14 +415,34 @@ public class CameraMainSuperControllerActivity extends Activity {
 		switch (requestCode) {
 		case Constants.RequestCodes.CAMERA_PICURE_FIRST:
 			// get back from camera with first file
-			handleResultFromCamera(resultCode, data,
-					Constants.RequestCodes.CAMERA_CONFIRM_FIRST, imagePath1);
+			// handleResultFromCamera(resultCode, data,
+			// Constants.RequestCodes.CAMERA_CONFIRM_FIRST, imagePath1);
+			if (resultCode == Activity.RESULT_OK) {
+				// user confirmed, save it in the gallery, and starting
+				// cmaeraActivity with second image
+				bundle = data.getExtras();
+				Utils.galleryAddPic(Uri.fromFile(imageFile1), this);
+				Logger.i("CameraMainActivity - got back from first confirm, startNewCameraActivity, imaggePath2 = "
+						+ imagePath2);
+				saveImage1Bitmap();
+				setImages();
+			}
 			break;
 
 		case Constants.RequestCodes.CAMERA_PICURE_SECOND:
 			// get back from camera with first file
-			handleResultFromCamera(resultCode, data,
-					Constants.RequestCodes.CAMERA_CONFIRM_SECOND, imagePath2);
+			// handleResultFromCamera(resultCode, data,
+			// Constants.RequestCodes.CAMERA_CONFIRM_SECOND, imagePath2);
+			if (resultCode == Activity.RESULT_OK) {
+				// user confirmed. starting NewPostActivity
+				bundle = data.getExtras();
+				Utils.galleryAddPic(Uri.fromFile(imageFile2), this);
+
+				saveImage2Bitmap();
+				mImage2.setBackgroundDrawable(null);
+				mImage2.setImageBitmap(image2BitmapTot);
+
+			}
 			break;
 
 		case Constants.RequestCodes.CAMERA_CONFIRM_FIRST:
@@ -383,13 +493,13 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 			}
 			break;
-			
+
 		case Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION:
 			Log.i(Constants.LOG_TAG, "after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
 		}
-	
+
 	}
 
 	private void setImages() {
@@ -443,7 +553,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		image1BitmapYaanaa = combine(image1BitmapTot, getResources()
 				.getDrawable(R.drawable.yaa));
-		image2BitmapYaanaa = combine(fastblur(image1BitmapTot, 30),
+		image2BitmapYaanaa = combine(fastblur(image1BitmapTot, 20),
 				getResources().getDrawable(R.drawable.naa));
 	}
 
@@ -735,9 +845,12 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	private Bitmap combine(Bitmap bitmap1, Drawable drawable2) {
 
+		int width = bitmap1.getWidth();
+		int height = bitmap1.getHeight();
+
 		Bitmap bitmap = null;
 		try {
-			bitmap = Bitmap.createBitmap(1224, 1224, Config.ARGB_8888);
+			bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 			Canvas c = new Canvas(bitmap);
 			// Resources res = getResources();
 
@@ -749,8 +862,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 			Drawable drawable1 = new BitmapDrawable(bitmap1);
 			// Drawable drawable2 = new BitmapDrawable(bitmap2);
 
-			drawable1.setBounds(0, 0, 1224, 1224);
-			drawable2.setBounds(0, 0, 1224, 1224);
+			drawable1.setBounds(0, 0, width, height);
+			drawable2.setBounds(0, 0, width, height);
 			drawable1.draw(c);
 			drawable2.draw(c);
 
@@ -759,28 +872,28 @@ public class CameraMainSuperControllerActivity extends Activity {
 		}
 		return bitmap;
 	}
-	
+
 	private OnCheckedChangeListener checkChangedListener = new OnCheckedChangeListener() {
 
 		public void onCheckedChanged(CompoundButton buttonView,
 				boolean isChecked) {
 			if (isChecked) {
-				
+
 				boolean userHasPublishPermissions = isUserHasPublishPermissions();
-				
+
 				if (userHasPublishPermissions) {
 					Logger.i("Already have publish permissions: "
 							+ session.getPermissions().toString());
 					mTbFacebook.setChecked(true);
 					mTbFacebook
-					.setBackgroundResource(R.drawable.facebook_square_blue);
+							.setBackgroundResource(R.drawable.facebook_square_blue);
 
 				} else {
 					askForPublishPermissions();
 					if (isUserHasPublishPermissions()) {
 						mTbFacebook.setChecked(true);
 						mTbFacebook
-						.setBackgroundResource(R.drawable.facebook_square_blue);
+								.setBackgroundResource(R.drawable.facebook_square_blue);
 					}
 				}
 			} else {
@@ -790,7 +903,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 			}
 		}
 	};
-	
+
 	protected boolean isUserHasPublishPermissions() {
 		boolean userHasPublishPermissions = false;
 		Session session = Session.getActiveSession();
@@ -802,7 +915,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		}
 		return userHasPublishPermissions;
 	}
-	
+
 	protected void askForPublishPermissions() {
 		Session session = Session.getActiveSession();
 		if (session.isOpened()) {
@@ -825,29 +938,29 @@ public class CameraMainSuperControllerActivity extends Activity {
 					+ session.getPermissions().toString());
 		}
 	}
-	
+
 	private class SessionStatusCallback implements Session.StatusCallback {
 		public void call(Session session, SessionState state,
 				Exception exception) {
 			Logger.i("Entered SessionStatusCallback()");
 		}
 	}
-	
+
 	private OnClickListener onClickListenter = new OnClickListener() {
-		
+
 		public void onClick(View v) {
 			NewChoosiePostData ncpd;
 			if (currentMode.equals(MODE.TOT))
 				ncpd = new NewChoosiePostData(image1BitmapTot, image2BitmapTot,
 						mQuestion.getText().toString(), mTbFacebook.isChecked());
 			else
-				ncpd = new NewChoosiePostData(image1BitmapYaanaa, image2BitmapYaanaa,
-						mQuestion.getText().toString(), mTbFacebook.isChecked());
-			
+				ncpd = new NewChoosiePostData(image1BitmapYaanaa,
+						image2BitmapYaanaa, mQuestion.getText().toString(),
+						mTbFacebook.isChecked());
+
 			submitPost(ncpd);
 		}
 	};
-
 
 	protected void submitPost(NewChoosiePostData ncpd) {
 		if (ncpd.isShareOnFacebook() && !isUserHasPublishPermissions()) {
@@ -862,8 +975,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		boolean isPostValid = isPostValid();
 		if (isPostValid) {
-			Tracker tracker = GoogleAnalytics.getInstance(
-					this).getDefaultTracker();
+			Tracker tracker = GoogleAnalytics.getInstance(this)
+					.getDefaultTracker();
 			tracker.trackEvent("Ui action", "Post Screen", "Share", null);
 
 			Client.getInstance().sendChoosiePostToServer(ncpd,
@@ -871,12 +984,12 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 						@Override
 						public void onPre(Void param) {
-							//open progress bar
+							// open progress bar
 						}
 
 						@Override
 						public void onProgress(Integer param) {
-							//show progress
+							// show progress
 						}
 
 						@Override
@@ -895,7 +1008,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 						Toast.LENGTH_SHORT);
 				toast.show();
 				return false;
-			}	
+			}
 		} else {
 			if ((image2BitmapYaanaa == null) || (image1BitmapYaanaa == null)) {
 				Toast toast = Toast.makeText(this, "Please add two photos",
@@ -904,7 +1017,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				return false;
 			}
 		}
-		
+
 		if (mQuestion.getText().toString().equals("")) {
 			Toast toast = Toast.makeText(this, "Please add a question",
 					Toast.LENGTH_SHORT);

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.choosie.app.Constants;
+import com.choosie.app.Logger;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
 
@@ -561,8 +562,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		// + afterRotation.getRowBytes()
 		// * afterRotation.getHeight());
 
-		beforeRotation.recycle();
-		beforeRotation = null;
+		if (beforeRotation != null) {
+			beforeRotation.recycle();
+			beforeRotation = null;
+		}
 
 		Log.i("cameraApi", "recycled beforeRotation");
 
@@ -596,13 +599,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		return true;
 	}
 
-	// private void galleryAddPic(Uri uri) {
-	// Intent mediaScanIntent = new Intent(
-	// Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-	// mediaScanIntent.setData(uri);
-	// sendBroadcast(mediaScanIntent);
-	// }
-
 	private Bitmap rotateBitmap(Bitmap source) {
 		CameraInfo cameraInfo = new CameraInfo();
 		Camera.getCameraInfo(camId, cameraInfo);
@@ -618,8 +614,26 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		}
 
 		matrix.postRotate(result);
-		Bitmap resizedBitmap = Bitmap.createBitmap(source, 0, 0, width, height,
-				matrix, true);
+		Bitmap resizedBitmap = null;
+		try {
+			resizedBitmap = Bitmap.createBitmap(source, 0, 0, width, height,
+					matrix, true);
+		} catch (OutOfMemoryError e) {
+
+			Log.i("cameraApi", "rotateBitmap - trying to set smaller bitmap");
+
+			// try to load smaller size
+			Bitmap smallerBitmap = Bitmap.createScaledBitmap(source, width / 2,
+					height / 2, true);
+
+			source.recycle();
+			source = null;
+
+			resizedBitmap = Bitmap.createBitmap(smallerBitmap, 0, 0, width / 2,
+					height / 2, matrix, true);
+			smallerBitmap.recycle();
+			smallerBitmap = null;
+		}
 
 		return resizedBitmap;
 	}
