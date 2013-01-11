@@ -14,6 +14,7 @@ public class IntentData implements Parcelable {
 	private final String userName;
 	private final String question;
 	private final boolean isVotedAlready;
+	private final boolean noSecondPhoto;
 
 	public IntentData(Parcel source) {
 		/*
@@ -30,11 +31,13 @@ public class IntentData implements Parcelable {
 		userName = source.readString();
 		question = source.readString();
 		isVotedAlready = source.readByte() == 1;
+		noSecondPhoto = source.readByte() == 1;
 	}
 
 	public IntentData(int startingImage, int votes1, int votes2,
 			String photo1Path, String photo2Path, String userPhotoPath,
-			String userName, String question, boolean isVotedAlready) {
+			String userName, String question, boolean isVotedAlready,
+			boolean noSecondPhoto) {
 		this.startingImage = startingImage;
 		this.votes1 = votes1;
 		this.votes2 = votes2;
@@ -44,44 +47,45 @@ public class IntentData implements Parcelable {
 		this.userName = userName;
 		this.question = question;
 		this.isVotedAlready = isVotedAlready;
+		this.noSecondPhoto = noSecondPhoto;
 	}
-	
-	public int getStartingImage(){
+
+	public int getStartingImage() {
 		return startingImage;
 	}
-	
-	public int getVotes1(){
+
+	public int getVotes1() {
 		return votes1;
 	}
-	
-	public int getVotes2(){
+
+	public int getVotes2() {
 		return votes2;
 	}
-	
-	public String getphoto1Path(){
+
+	public String getphoto1Path() {
 		return photo1Path;
 	}
-	
-	public String getphoto2Path(){
+
+	public String getphoto2Path() {
 		return photo2Path;
 	}
-	
-	public String getUserPhotoPath(){
+
+	public String getUserPhotoPath() {
 		return userPhotoPath;
 	}
-	
-	public String getUserName(){
+
+	public String getUserName() {
 		return userName;
 	}
-	
-	public String getQuestion(){
+
+	public String getQuestion() {
 		return question;
 	}
 
-	public boolean checkIfVotedAlready(){
+	public boolean checkIfVotedAlready() {
 		return isVotedAlready;
 	}
-	
+
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(startingImage);
 		dest.writeInt(votes1);
@@ -92,7 +96,7 @@ public class IntentData implements Parcelable {
 		dest.writeString(userName);
 		dest.writeString(question);
 		dest.writeByte((byte) (isVotedAlready ? 1 : 0));
-
+		dest.writeByte((byte) (noSecondPhoto ? 1 : 0));
 	}
 
 	public int describeContents() {
@@ -110,5 +114,9 @@ public class IntentData implements Parcelable {
 			return new IntentData[size];
 		}
 	};
+
+	public boolean getNoSecondPhoto() {
+		return noSecondPhoto;
+	}
 
 }

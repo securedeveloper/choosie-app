@@ -3,9 +3,11 @@ package com.choosie.app;
 import java.util.ArrayList;
 
 import com.choosie.app.R;
+import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.CommentData;
 import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
+import com.choosie.app.camera.YesNoUtils;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -100,7 +102,12 @@ public class CommentScreenActivity extends Activity {
 		postKey = intent.getStringExtra(Constants.IntentsCodes.post_key);
 		// make this global for recycling later
 		image1Bitmap = BitmapFactory.decodeFile(photo1Path);
-		image2Bitmap = BitmapFactory.decodeFile(photo2Path);
+		if (intent.getBooleanExtra("no_second_photo", false)) {
+			image2Bitmap = YesNoUtils.generateVoteDownImage(this, image1Bitmap);
+			image1Bitmap = YesNoUtils.generateVoteUpImage(this, image1Bitmap);
+		} else {
+			image2Bitmap = BitmapFactory.decodeFile(photo2Path);
+		}
 		isVotedAlready = intent.getBooleanExtra(
 				Constants.IntentsCodes.isAlreadyVoted, false);
 		isPostByMe = intent.getBooleanExtra(Constants.IntentsCodes.isPostByMe,
@@ -112,7 +119,7 @@ public class CommentScreenActivity extends Activity {
 			votes2 = intent.getIntExtra(Constants.IntentsCodes.votes2, 0);
 		}
 
-		fillCommentView(intent);
+		fillUpperArea(intent);
 
 		ArrayAdapter<CommentData> commentScreenAdapter = makeCommentScreenAdapter(intent);
 
@@ -187,7 +194,7 @@ public class CommentScreenActivity extends Activity {
 		return adi;
 	}
 
-	private void fillCommentView(Intent intent) {
+	private void fillUpperArea(Intent intent) {
 		final ImageView imageViewUserPhoto = (ImageView) findViewById(R.id.userPhoto_commetns);
 
 		String userPhotoPath = intent

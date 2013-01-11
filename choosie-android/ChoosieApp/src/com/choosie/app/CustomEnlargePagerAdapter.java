@@ -24,7 +24,7 @@ public class CustomEnlargePagerAdapter extends PagerAdapter {
 	}
 
 	public int getCount() {
-		return 2;
+		return data.getNoSecondPhoto() ? 1 : 2;
 	}
 
 	public Object instantiateItem(View collection, int position) {

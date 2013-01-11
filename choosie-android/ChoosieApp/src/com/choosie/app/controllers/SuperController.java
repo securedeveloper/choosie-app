@@ -11,6 +11,7 @@ import com.choosie.app.CommentScreenActivity;
 import com.choosie.app.Constants;
 import com.choosie.app.IntentData;
 import com.choosie.app.Logger;
+import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.VotePopupWindowUtils;
 import com.choosie.app.EnlargePhotoActivity;
 import com.choosie.app.R;
@@ -154,7 +155,9 @@ public class SuperController {
 				.getActivity().getApplicationContext(),
 				CommentScreenActivity.class);
 
+		// intent.putExtra("choosie_post", choosiePost);
 		intent.putExtra("post_key", choosiePost.getPostKey());
+		intent.putExtra("no_second_photo", choosiePost.getPostType() == PostType.YesNo);
 		intent.putExtra("question", choosiePost.getQuestion());
 
 		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
@@ -287,6 +290,7 @@ public class SuperController {
 
 		int votes1 = choosiePost.getVotes1();
 		int votes2 = choosiePost.getVotes2();
+		boolean noSecondPhoto = choosiePost.getPostType() == PostType.YesNo;
 		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
 		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
 		String userPhotoPath = Utils.getFileNameForURL(choosiePost.getAuthor()
@@ -297,7 +301,7 @@ public class SuperController {
 
 		IntentData intentData = new IntentData(startingImage, votes1, votes2,
 				photo1Path, photo2Path, userPhotoPath, userName, question,
-				isVotedAlready);
+				isVotedAlready, noSecondPhoto);
 
 		intent.putExtra(Constants.IntentsCodes.intentData, intentData);
 
