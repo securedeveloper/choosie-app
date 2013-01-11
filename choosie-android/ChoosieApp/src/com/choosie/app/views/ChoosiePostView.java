@@ -203,7 +203,7 @@ public class ChoosiePostView extends RelativeLayout {
 			}
 		};
 
-		if (choosiePost.isVotedAlready()) {
+		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
 			feedViewHolder.votes1.setOnClickListener(votesListener);
 			feedViewHolder.votes2.setOnClickListener(votesListener);
 		} else {
