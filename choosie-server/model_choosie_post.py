@@ -34,7 +34,8 @@ class ChoosiePost(db.Model):
   votes = db.StringListProperty()
   fb_post_id = db.StringProperty()
   posted_to_fb = db.BooleanProperty(default=False)
-
+  post_type_id = db.IntegerProperty(required=True, choices=set([1, 2]), default=1)
+  
   def to_json(self):
     return {"key": str(self.key()),
             "user": self.get_user().to_short_json(),
@@ -46,6 +47,11 @@ class ChoosiePost(db.Model):
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at)
            }
+
+  def post_type(self):
+    if  self.post_type_id is None:
+      return "dillema"
+    return {1:"dillema", 2:"yes_no"}[self.post_type_id]
 
   def get_user(self):
     return CacheController.get_user_by_fb_id(self.user_fb_id)
