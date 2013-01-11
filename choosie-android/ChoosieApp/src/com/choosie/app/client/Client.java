@@ -40,7 +40,7 @@ public abstract class Client {
 	public abstract void login(final Callback<Void, Void, Void> onLoginComplete);
 
 	public Bitmap getPictureFromServerSync(final String pictureUrl,
-			Callback<Void, Object, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 
 		String urlToLoad = pictureUrl;
 		Logger.d("getPictureFromServer: Loading URL: " + urlToLoad);
@@ -74,13 +74,13 @@ public abstract class Client {
 	}
 
 	public abstract FeedResponse getFeedByCursor(FeedCacheKey feedRequest,
-			Callback<Void, Object, Void> progressCallback);
+			Callback<Void, Integer, Void> progressCallback);
 
 	public abstract void sendChoosiePostToServer(NewChoosiePostData data,
 			Callback<Void, Integer, Void> progressCallback);
 
 	public abstract ChoosiePostData getPostByKey(String param,
-			Callback<Void, Object, Void> progressCallback);
+			Callback<Void, Integer, Void> progressCallback);
 
 	public boolean isLoggedIn() {
 		return this.fbDetails != null;
@@ -94,7 +94,7 @@ public abstract class Client {
 		this.fbDetails = fbDetails;
 	}
 
-	private byte[] downloadFile(Callback<Void, Object, Void> progressCallback,
+	private byte[] downloadFile(Callback<Void, Integer, Void> progressCallback,
 			HttpURLConnection connection) throws IOException {
 		int imageSize = connection.getContentLength();
 		// Sometimes the size isn't known: just read the stream.

@@ -53,6 +53,7 @@ public class FeedScreenController extends ScreenController {
 				/* maybe add a padding */
 				boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount - 3;
 				if (loadMore) {
+					Logger.i("LOADMORE");
 					choosiePostsItemAdapter.appendToList();
 				}
 			}

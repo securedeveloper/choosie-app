@@ -154,7 +154,7 @@ public class Utils {
 
 	@SuppressLint("NewApi")
 	public static Bitmap getBitmapFromURL(String param,
-			Callback<Void, Object, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 
 		String fullPath = getFileNameForURL(param);
 

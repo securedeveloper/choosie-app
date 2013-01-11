@@ -19,12 +19,12 @@ public abstract class PersistentCache<Key, Value> extends Cache<Key, Value> {
 	protected abstract ByteArrayOutputStream serialize(Value value);
 
 	protected abstract Value readFromSdCard(Key key,
-			Callback<Void, Object, Void> progressCallback);
+			Callback<Void, Integer, Void> progressCallback);
 
 	protected abstract Value beforePutInMemory(Value result);
 
 	protected abstract Value downloadData(Key key,
-			Callback<Void, Object, Void> progressCallback);
+			Callback<Void, Integer, Void> progressCallback);
 
 	public PersistentCache(int maxSize) {
 		super(maxSize);
@@ -32,7 +32,7 @@ public abstract class PersistentCache<Key, Value> extends Cache<Key, Value> {
 
 	@Override
 	protected Value fetchData(Key key,
-			Callback<Void, Object, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 		Logger.d("in persistentache - pething key = " + key.toString());
 		// Check if available on SD
 		if (isPersisted(key)) {

@@ -72,7 +72,7 @@ public class RealClient extends Client {
 
 	@Override
 	public FeedResponse getFeedByCursor(FeedCacheKey feedRequest,
-			Callback<Void, Object, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 		// Creates the GET HTTP request
 		String feedUri = Constants.URIs.FEED_URI + "?limit=8";
 		if (feedRequest.getCursor() != null && feedRequest.isAppend()) {
@@ -125,7 +125,7 @@ public class RealClient extends Client {
 
 	@Override
 	public ChoosiePostData getPostByKey(String postKey,
-			Callback<Void, Object, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 		// Creates the GET HTTP request
 		String postUri = Constants.URIs.POSTS_URI + "/" + postKey;
 

@@ -1,6 +1,8 @@
 package com.choosie.app.views;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
@@ -8,6 +10,7 @@ import com.choosie.app.Logger;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
+import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.*;
@@ -145,7 +148,6 @@ public class ChoosiePostView extends RelativeLayout {
 
 		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
 
-			
 			public void onClick(View v) {
 				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2,
 						feedViewHolder.imgSelected1,
@@ -187,7 +189,8 @@ public class ChoosiePostView extends RelativeLayout {
 		// listener for handling votes popUpWindow
 		OnClickListener votesListener = new OnClickListener() {
 			public void onClick(View v) {
-				Logger.d("User click to show votes, choosiePost.getPostKey() = " + choosiePost.getPostKey() + " position = " + position );
+				Logger.d("User click to show votes, choosiePost.getPostKey() = "
+						+ choosiePost.getPostKey() + " position = " + position);
 				superController.handlePopupVoteWindow(choosiePost.getPostKey(),
 						position);
 			}
@@ -346,14 +349,21 @@ public class ChoosiePostView extends RelativeLayout {
 		return tv;
 	}
 
+	Map<ImageView, String> lastRequestOnImageView = new HashMap<ImageView, String>();
+
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
 			final ProgressBar progressBar, final ImageView img) {
-		Caches.getInstance().getPhotosCache()
-				.getValue(urlToLoad, new Callback<Void, Object, Bitmap>() {
-					@Override
-					public void onFinish(Bitmap param) {
 
-						imageView.setImageBitmap(param);
+		lastRequestOnImageView.put(imageView, urlToLoad);
+
+		Caches.getInstance().getPhotosCache()
+				.getValue(urlToLoad, new CacheCallback<String, Bitmap>() {
+					@Override
+					public void onValueReady(String key, Bitmap result) {
+						if (!key.equals(lastRequestOnImageView.get(imageView))) {
+							return;
+						}
+						imageView.setImageBitmap(result);
 						imageView.setVisibility(View.VISIBLE);
 						if (progressBar != null) {
 							progressBar.setVisibility(View.GONE);
@@ -365,13 +375,9 @@ public class ChoosiePostView extends RelativeLayout {
 					}
 
 					@Override
-					public void onProgress(Object progress) {
-						if (!(progress instanceof Integer)) {
-							Log.e(Constants.LOG_TAG, "Y u no integer???");
-							return;
-						}
+					public void onProgress(int percent) {
 						if (progressBar != null) {
-							progressBar.setProgress((Integer) progress);
+							progressBar.setProgress(percent);
 							progressBar.setMax(100);
 						}
 					}

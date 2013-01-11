@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import com.choosie.app.R;
 import com.choosie.app.Models.CommentData;
+import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
-import com.choosie.app.controllers.SuperController;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -230,10 +230,6 @@ public class CommentScreenActivity extends Activity {
 					.findViewById(R.id.viewComment_votes1);
 			commentViewHolder.votes2 = (TextView) itemView
 					.findViewById(R.id.viewComment_votes2);
-			commentViewHolder.votes1Pointing = (ImageView) itemView
-					.findViewById(R.id.viewComment_votes1_pointing);
-			commentViewHolder.votes2Pointing = (ImageView) itemView
-					.findViewById(R.id.viewComment_votes2_pointing);
 			commentViewHolder.imageViewPhoto1 = (ImageView) itemView
 					.findViewById(R.id.photo1_comment_screen);
 			commentViewHolder.imageViewPhoto2 = (ImageView) itemView
@@ -296,11 +292,12 @@ public class CommentScreenActivity extends Activity {
 			Caches.getInstance()
 					.getPhotosCache()
 					.getValue(item.getCommentierPhotoUrl(),
-							new Callback<Void, Object, Bitmap>() {
+							new CacheCallback<String, Bitmap>() {
 								@Override
-								public void onFinish(Bitmap param) {
+								public void onValueReady(String key,
+										Bitmap result) {
 									holder.commentierPhotoImageView
-											.setImageBitmap(param);
+											.setImageBitmap(result);
 								}
 							});
 
@@ -413,8 +410,6 @@ public class CommentScreenActivity extends Activity {
 		LinearLayout viewComment_votes_layout;
 		ImageView imageViewPhoto1;
 		ImageView imageViewPhoto2;
-		ImageView votes1Pointing;
-		ImageView votes2Pointing;
 		TextView votes1;
 		TextView votes2;
 		TextView tv;

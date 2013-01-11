@@ -54,7 +54,7 @@ public class Caches {
 
 			@Override
 			protected Bitmap readFromSdCard(String key,
-					Callback<Void, Object, Void> progressCallback) {
+					Callback<Void, Integer, Void> progressCallback) {
 				Logger.d("in persistent, reading from Sd, key = "
 						+ key.toString());
 				return Utils.getBitmapFromURL(key, progressCallback);
@@ -69,7 +69,7 @@ public class Caches {
 
 			@Override
 			protected Bitmap downloadData(String key,
-					Callback<Void, Object, Void> progressCallback) {
+					Callback<Void, Integer, Void> progressCallback) {
 				Logger.d("in persistent, downloading, key = " + key.toString());
 				return Client.getInstance().getPictureFromServerSync(key,
 						progressCallback);
@@ -87,7 +87,7 @@ public class Caches {
 
 			@Override
 			protected FeedResponse fetchData(FeedCacheKey key,
-					Callback<Void, Object, Void> progressCallback) {
+					Callback<Void, Integer, Void> progressCallback) {
 				return Client.getInstance().getFeedByCursor(key,
 						progressCallback);
 			}
@@ -99,7 +99,7 @@ public class Caches {
 
 			@Override
 			protected ChoosiePostData fetchData(String key,
-					Callback<Void, Object, Void> progressCallback) {
+					Callback<Void, Integer, Void> progressCallback) {
 				return Client.getInstance().getPostByKey(key, progressCallback);
 			}
 		};

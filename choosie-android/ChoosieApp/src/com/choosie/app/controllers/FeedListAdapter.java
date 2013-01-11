@@ -3,6 +3,8 @@ package com.choosie.app.controllers;
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.Logger;
+import com.choosie.app.caches.Cache;
+import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
 import com.choosie.app.client.FeedResponse;
 import com.choosie.app.Models.ChoosiePostData;
@@ -192,11 +194,8 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		FeedCacheKey request = null;
 		if (this.state == State.REFRESHING_FEED) {
 			request = new FeedCacheKey(null, false);
-			// In case feed needs refreshing, make sure an actual request
-			// to the server is made.
-			// TODO: Don't cache that result in the first place.
-			Caches.getInstance().getFeedCache().invalidateKey(request);
 		} else if (this.state == State.APPENDING_TO_FEED) {
+			Logger.i("feedCursor = " + feedCursor);
 			request = new FeedCacheKey(this.feedCursor, true);
 		}
 
@@ -211,16 +210,22 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 	}
 
-	private class AdapterUpdater extends Callback<Void, Object, FeedResponse> {
+	private class AdapterUpdater extends
+			CacheCallback<FeedCacheKey, FeedResponse> {
 		@Override
-		public void onFinish(FeedResponse param) {
+		public void onValueReady(FeedCacheKey key, FeedResponse result) {
 			Logger.i("onFINISH!!!");
-			if (param == null) {
+			if (result == null) {
 				changeState(State.ERROR);
 			} else {
-				feedCursor = param.getCursor();
-				update(param);
-				if (param.isAppend() && param.getPosts().size() == 0) {
+				if (key.getCursor() == null) {
+					// HACK: We don't want to cache the 'refresh' requests
+					// (where cursor was null)
+					Caches.getInstance().getFeedCache().invalidateKey(key);
+				}
+				feedCursor = result.getCursor();
+				update(result);
+				if (result.isAppend() && result.getPosts().size() == 0) {
 					changeState(State.FEED_COMPLETE);
 				} else {
 					changeState(State.FEED_UPDATED);

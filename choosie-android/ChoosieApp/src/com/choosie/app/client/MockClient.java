@@ -42,7 +42,7 @@ public class MockClient extends Client {
 
 	@Override
 	public FeedResponse getFeedByCursor(FeedCacheKey feedRequest,
-			Callback<Void, Object, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 		String cursor = feedRequest.getCursor();
 		if (cursor == null) {
 			cursor = "";
@@ -86,7 +86,7 @@ public class MockClient extends Client {
 
 	@Override
 	public ChoosiePostData getPostByKey(String param,
-			Callback<Void, Object, Void> progressCallback) {
+			Callback<Void, Integer, Void> progressCallback) {
 		return getMockPost(0);
 	}
 

@@ -17,6 +17,7 @@ import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
 import com.choosie.app.VotesScreenActivity;
+import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
 import com.choosie.app.client.Client;
 import com.choosie.app.Models.ChoosiePostData;
@@ -112,10 +113,11 @@ public class SuperController {
 		Caches.getInstance()
 				.getPostsCache()
 				.getValue(postKey,
-						new Callback<Void, Object, ChoosiePostData>() {
+						new CacheCallback<String, ChoosiePostData>() {
 							@Override
-							public void onFinish(ChoosiePostData param) {
-								if (param == null) {
+							public void onValueReady(String key,
+									ChoosiePostData result) {
+								if (result == null) {
 									// TODO: Handle error
 									Toast.makeText(getActivity(),
 											"Failed to update post.",
@@ -123,7 +125,7 @@ public class SuperController {
 									return;
 								}
 								((FeedScreenController) screenToController
-										.get(Screen.FEED)).refreshPost(param);
+										.get(Screen.FEED)).refreshPost(result);
 							}
 						});
 
@@ -341,10 +343,11 @@ public class SuperController {
 		Caches.getInstance()
 				.getPostsCache()
 				.getValue(postKey,
-						new Callback<Void, Object, ChoosiePostData>() {
+						new CacheCallback<String, ChoosiePostData>() {
 							@Override
-							public void onFinish(ChoosiePostData param) {
-								if (param == null) {
+							public void onValueReady(String key,
+									ChoosiePostData result) {
+								if (result == null) {
 									Logger.e("ERROR : param is 'null'");
 									// TODO: Handle error
 									// Toast.makeText(getActivity(),
@@ -352,7 +355,7 @@ public class SuperController {
 									// Toast.LENGTH_SHORT).show();
 									return;
 								}
-								switchToCommentScreen(param, openVotes);
+								switchToCommentScreen(result, openVotes);
 							}
 						});
 	}

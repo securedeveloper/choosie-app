@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.text.Spannable;
@@ -27,15 +26,14 @@ import android.widget.TextView;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Vote;
 import com.choosie.app.Models.VoteData;
+import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
-import com.choosie.app.controllers.SuperController;
 
 /*
  * class VotePopupWindowUtils: basic utils for poping a window for votes
  * for activate - create new instance and activate popUpVotesWindow
  */
 public class VotePopupWindowUtils {
-
 	Activity activity;
 
 	public VotePopupWindowUtils(Activity activity) {
@@ -48,10 +46,11 @@ public class VotePopupWindowUtils {
 		Caches.getInstance()
 				.getPostsCache()
 				.getValue(postKey,
-						new Callback<Void, Object, ChoosiePostData>() {
+						new CacheCallback<String, ChoosiePostData>() {
 							@Override
-							public void onFinish(ChoosiePostData param) {
-								if (param == null) {
+							public void onValueReady(String key,
+									ChoosiePostData result) {
+								if (result == null) {
 									Logger.e("ERROR : param is 'null'");
 									// TODO: Handle error
 									// Toast.makeText(getActivity(),
@@ -60,7 +59,7 @@ public class VotePopupWindowUtils {
 									return;
 								}
 								Logger.d("popUpVotesWindow: on finish- got choosiePostDat");
-								createAndShowPopup(param);
+								createAndShowPopup(result);
 							}
 						});
 	}
@@ -250,15 +249,16 @@ public class VotePopupWindowUtils {
 			Caches.getInstance()
 					.getPhotosCache()
 					.getValue(item.getVoterPhotoUrl1(),
-							new Callback<Void, Object, Bitmap>() {
-								public void onFinish(Bitmap param) {
+							new CacheCallback<String, Bitmap>() {
+								@Override
+								public void onValueReady(String key,
+										Bitmap result) {
 									Logger.d("createViewVotes, got param for name = "
 											+ item.getVoterPhotoUrl1()
-											+ "param = "
-											+ param);
+											+ "param = " + result);
 									holder.voterPhotoImageView1
-											.setImageBitmap(param);
-								};
+											.setImageBitmap(result);
+								}
 							});
 		}
 
@@ -272,14 +272,15 @@ public class VotePopupWindowUtils {
 			Caches.getInstance()
 					.getPhotosCache()
 					.getValue(item.getVoterPhotoUrl2(),
-							new Callback<Void, Object, Bitmap>() {
-								public void onFinish(Bitmap param) {
+							new CacheCallback<String, Bitmap>() {
+								@Override
+								public void onValueReady(String key,
+										Bitmap result) {
 									Logger.d("createViewVotes, got param for name = "
 											+ item.getVoterPhotoUrl2()
-											+ "param = "
-											+ param);
+											+ "param = " + result);
 									holder.voterPhotoImageView2
-											.setImageBitmap(param);
+											.setImageBitmap(result);
 								};
 							});
 		}

@@ -16,10 +16,10 @@ import android.support.v4.util.LruCache;
 public abstract class Cache<Key, Value> {
 	final Object cacheLock = new Object();
 	final LruCache<Key, Value> memoryCache;
-	final Map<Key, List<Callback<Void, Object, Value>>> callbacksForKey = new HashMap<Key, List<Callback<Void, Object, Value>>>();
+	final Map<Key, List<CacheCallback<Key, Value>>> callbacksForKey = new HashMap<Key, List<CacheCallback<Key, Value>>>();
 
 	protected abstract Value fetchData(Key key,
-			Callback<Void, Object, Void> progressCallback);
+			Callback<Void, Integer, Void> progressCallback);
 
 	public Cache(int maxSize) {
 		this.memoryCache = new LruCache<Key, Value>(maxSize) {
@@ -36,7 +36,7 @@ public abstract class Cache<Key, Value> {
 		return 1;
 	}
 
-	public void getValue(Key key, Callback<Void, Object, Value> callback) {
+	public void getValue(Key key, CacheCallback<Key, Value> callback) {
 		Value fromMemoryCache = null;
 		synchronized (cacheLock) {
 			fromMemoryCache = memoryCache.get(key);
@@ -57,7 +57,7 @@ public abstract class Cache<Key, Value> {
 			}
 		}
 		if (fromMemoryCache != null) {
-			callback.onFinish(fromMemoryCache);
+			callback.onValueReady(key, fromMemoryCache);
 		}
 	}
 
@@ -81,17 +81,16 @@ public abstract class Cache<Key, Value> {
 		return callbacksForKey.containsKey(key);
 	}
 
-	private void addCallback(Key key, Callback<Void, Object, Value> callback) {
+	private void addCallback(Key key, CacheCallback<Key, Value> callback) {
 		callbacksForKey.get(key).add(callback);
 	}
 
 	protected void startFetching(final Key key) {
 		Logger.d("in startFetching, starting fething key = " + key.toString());
 		// This marks that this key is currently being downloaded.
-		callbacksForKey
-				.put(key, new ArrayList<Callback<Void, Object, Value>>());
+		callbacksForKey.put(key, new ArrayList<CacheCallback<Key, Value>>());
 
-		AsyncTask<Void, ?, Value> task = new AsyncTask<Void, Object, Value>() {
+		AsyncTask<Void, Integer, Value> task = new AsyncTask<Void, Integer, Value>() {
 			@Override
 			protected Value doInBackground(Void... params) {
 				// fetchData() is implemented outside this class, and it allows
@@ -100,9 +99,9 @@ public abstract class Cache<Key, Value> {
 				Logger.d("starting doInBackground for StartFetching with key = "
 						+ key.toString());
 				Value result = fetchData(key,
-						new Callback<Void, Object, Void>() {
+						new Callback<Void, Integer, Void>() {
 							@Override
-							public void onProgress(Object progress) {
+							public void onProgress(Integer progress) {
 								publishProgress(progress);
 							}
 						});
@@ -118,7 +117,7 @@ public abstract class Cache<Key, Value> {
 			}
 
 			@Override
-			protected void onProgressUpdate(Object... progress) {
+			protected void onProgressUpdate(Integer... progress) {
 				runProgressCallbacks(key, progress[0]);
 			}
 
@@ -147,28 +146,30 @@ public abstract class Cache<Key, Value> {
 	}
 
 	protected void runOnPreCallbacks(Key key) {
-		List<Callback<Void, Object, Value>> callbacks;
+		List<CacheCallback<Key, Value>> callbacks;
 		synchronized (cacheLock) {
 			callbacks = callbacksForKey.get(key);
-			for (Callback<Void, Object, Value> callback : callbacks) {
-				callback.onPre(null);
+			for (CacheCallback<Key, Value> callback : callbacks) {
+				// TODO: Are we using this??
+				// callback.onPre(null);
+
 			}
 		}
 	}
 
-	protected void runProgressCallbacks(Key key, Object progress) {
-		List<Callback<Void, Object, Value>> callbacks;
+	protected void runProgressCallbacks(Key key, int progress) {
+		List<CacheCallback<Key, Value>> callbacks;
 		synchronized (cacheLock) {
 			callbacks = callbacksForKey.get(key);
 			assert (callbacks != null);
-			for (Callback<Void, Object, Value> callback : callbacks) {
+			for (CacheCallback<Key, Value> callback : callbacks) {
 				callback.onProgress(progress);
 			}
 		}
 	}
 
 	private void putInMemoryCacheAndRunCallbacks(final Key key, Value result) {
-		List<Callback<Void, Object, Value>> callbacks;
+		List<CacheCallback<Key, Value>> callbacks;
 		synchronized (cacheLock) {
 			if (result != null) {
 				memoryCache.put(key, result);
@@ -176,13 +177,14 @@ public abstract class Cache<Key, Value> {
 			callbacks = callbacksForKey.get(key);
 			callbacksForKey.remove(key);
 		}
-		for (Callback<Void, ?, Value> callback : callbacks) {
-			callback.onFinish(result);
+		for (CacheCallback<Key, Value> callback : callbacks) {
+			callback.onValueReady(key, result);
 		}
 	}
 
 	protected Value onAfterFetching(Key key, Value result) {
-		// Do nothing by defaut; persistent cache does additional things here.
+		// Do nothing by default; persistent cache does additional things here.
 		return result;
 	}
+
 }
