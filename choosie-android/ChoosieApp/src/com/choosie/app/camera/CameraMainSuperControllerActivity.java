@@ -24,14 +24,10 @@ import com.google.analytics.tracking.android.Tracker;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -50,6 +46,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -78,6 +75,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private Session session;
 	// private StatusCallback statusCallback = new SessionStatusCallback();
 	private ImageButton mBtnSubmit;
+	//private ProgressBar mProgressBar;
 
 	private File imageFile1;
 	private File imageFile2;
@@ -129,6 +127,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		this.yaanaaImageView = (ImageView) findViewById(R.id.post_yaanaaButton_image);
 		this.totImageView = (ImageView) findViewById(R.id.post_totButton_image);
 		this.mTrFacebook = (TableRow) findViewById(R.id.tableRowShareFB);
+		//this.mProgressBar = (ProgressBar) findViewById(R.id.post_progressBar);
 
 		this.mTrFacebook.setOnClickListener(listener);
 		this.mTbFacebook.setOnCheckedChangeListener(checkChangedListener);
@@ -665,25 +664,44 @@ public class CameraMainSuperControllerActivity extends Activity {
 					.getDefaultTracker();
 			tracker.trackEvent("Ui action", "Post Screen", "Share", null);
 
+			// final ProgressBar progressBar = (ProgressBar)
+			// findViewById(R.id.post_progressBar);
 			Client.getInstance().sendChoosiePostToServer(ncpd,
 					new Callback<Void, Integer, Void>() {
 
 						@Override
 						public void onPre(Void param) {
-							// open progress bar
+
+							// TODO: change to 'DialogFragment'
+							showDialog(1);
+
+							// progressBar.setProgress(0);
+							// progressBar.setMax(100);
+							// progressBar.setVisibility(View.VISIBLE);
+							// progressBar.bringToFront();
 						}
 
 						@Override
 						public void onProgress(Integer param) {
-							// show progress
+							// progressBar.setProgress(param);
 						}
 
 						@Override
 						public void onFinish(Void param) {
+							// progressBar.setVisibility(View.GONE);
 							goBackToChoosieActivity(Activity.RESULT_OK);
 						}
 					});
 		}
+	}
+
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		ProgressDialog dialog = new ProgressDialog(this);
+		dialog.setMessage("Please wait while uploading...");
+		dialog.setIndeterminate(true);
+		dialog.setCancelable(false);
+		return dialog;
 	}
 
 	private boolean isPostValid() {

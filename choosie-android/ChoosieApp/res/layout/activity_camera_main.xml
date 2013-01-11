@@ -23,6 +23,26 @@
             android:text="Choozie Post."
             android:textColor="@color/LightGrey"
             android:textSize="30sp" />
+
+        <ProgressBar
+            android:id="@+id/post_progressBar"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/post_btnSubmit"
+            android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/post_btnSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_selector"
+            android:contentDescription="@string/desc"
+            android:src="@drawable/image_selected_v"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true" />
+
     </RelativeLayout>
 
     <EditText
@@ -47,15 +67,6 @@
 
         <requestFocus android:layout_width="wrap_content" />
     </EditText>
-
-    <ImageButton
-        android:id="@+id/post_btnSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/button_selector"
-        android:contentDescription="@string/desc"
-        android:src="@drawable/image_selected_v" />
 
     <LinearLayout
         android:id="@+id/post_imagesLayout"
