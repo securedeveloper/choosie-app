@@ -10,6 +10,7 @@ import com.choosie.app.Logger;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
+import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.client.Client;
 import com.facebook.Session;
 
@@ -55,16 +56,12 @@ import android.widget.ToggleButton;
 
 public class CameraMainSuperControllerActivity extends Activity {
 
-	private enum MODE {
-		TOT, YAA_NAA
-	}
-
 	// private File pictureFile;
 	private String imagePath1;
 	private String imagePath2;
 	private Bundle bundle;
 
-	private MODE currentMode = MODE.TOT;
+	private PostType postType = PostType.TOT;
 
 	private ImageView totImageView;
 	private ImageView yaanaaImageView;
@@ -160,7 +157,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 			public boolean onTouch(View arg0, MotionEvent arg1) {
 
-				if (currentMode == MODE.YAA_NAA) {
+				if (postType == PostType.YesNo) {
 					return true;
 				}
 
@@ -200,7 +197,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 			public boolean onTouch(View arg0, MotionEvent arg1) {
 
-				if (currentMode == MODE.TOT) {
+				if (postType == PostType.TOT) {
 					return true;
 				}
 
@@ -265,7 +262,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 	}
 
 	protected void handleImage2Click() {
-		if (currentMode == MODE.TOT) {
+		if (postType == PostType.TOT) {
 
 			if (image2BitmapTot != null) {
 				startConfirmActivity(
@@ -275,7 +272,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				startNewCameraActivity(
 						Constants.RequestCodes.CAMERA_PICURE_SECOND, imagePath2);
 			}
-		} else if (currentMode == MODE.YAA_NAA) {
+		} else if (postType == PostType.YesNo) {
 			startConfirmActivity(Constants.RequestCodes.CAMERA_CONFIRM_FIRST,
 					imagePath1);
 		}
@@ -283,7 +280,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	protected void switchToTotMode() {
 
-		if (currentMode == MODE.TOT) {
+		if (postType == PostType.TOT) {
 			return;
 		}
 
@@ -294,6 +291,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(this,
 				R.anim.fadein);
+
+		postType = PostType.TOT;
 
 		Animation fadeInAnimation = AnimationUtils.loadAnimation(this,
 				R.anim.push_left_out);
@@ -323,13 +322,13 @@ public class CameraMainSuperControllerActivity extends Activity {
 		});
 		mImage2.startAnimation(fadeInAnimation);
 
-		currentMode = MODE.TOT;
+		postType = PostType.TOT;
 
 	}
 
 	protected void switchToYaanaaMode() {
 
-		if (currentMode == MODE.YAA_NAA) {
+		if (postType == PostType.YesNo) {
 			return;
 		}
 		yaanaaImageView.setImageResource(R.drawable.yaa_naa_pressed);
@@ -348,6 +347,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 			public void onAnimationRepeat(Animation animation) {
 				// TODO Auto-generated method stub
 
+		postType = PostType.YesNo;
 			}
 
 			public void onAnimationEnd(Animation animation) {
@@ -406,7 +406,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		// fadeInAnimation.startNow();
 		// mImage2.startAnimation(fadeInAnimation);
 
-		currentMode = MODE.YAA_NAA;
+		postType = PostType.YesNo;
 	}
 
 	@Override
@@ -503,9 +503,9 @@ public class CameraMainSuperControllerActivity extends Activity {
 	}
 
 	private void setImages() {
-		if (currentMode == MODE.TOT) {
+		if (postType == PostType.TOT) {
 			mImage1.setImageBitmap(image1BitmapTot);
-		} else if (currentMode == MODE.YAA_NAA) {
+		} else if (postType == PostType.YesNo) {
 			mImage1.setImageBitmap(image1BitmapYaanaa);
 			mImage2.setImageBitmap(image2BitmapYaanaa);
 		}
@@ -950,14 +950,18 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		public void onClick(View v) {
 			NewChoosiePostData ncpd;
-			if (currentMode.equals(MODE.TOT))
-				ncpd = new NewChoosiePostData(image1BitmapTot, image2BitmapTot,
-						mQuestion.getText().toString(), mTbFacebook.isChecked());
-			else
-				ncpd = new NewChoosiePostData(image1BitmapYaanaa,
-						image2BitmapYaanaa, mQuestion.getText().toString(),
-						mTbFacebook.isChecked());
-
+			Bitmap bmp1, bmp2;
+		
+			if (postType == PostType.TOT) {
+				bmp1 = image1BitmapTot;
+				bmp2 = image2BitmapTot;
+			} else {
+				bmp1 = image1BitmapYaanaa;
+				bmp2 = image2BitmapYaanaa;
+			}
+				
+			ncpd = new NewChoosiePostData(bmp1, bmp2, mQuestion.getText()
+					.toString(), mTbFacebook.isChecked(), postType);
 			submitPost(ncpd);
 		}
 	};
@@ -1002,7 +1006,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	private boolean isPostValid() {
 
-		if (currentMode.equals(MODE.TOT)) {
+		if (postType == PostType.TOT) {
 			if ((image1BitmapTot == null) || (image2BitmapTot == null)) {
 				Toast toast = Toast.makeText(this, "Please add two photos",
 						Toast.LENGTH_SHORT);

@@ -6,6 +6,10 @@ import android.graphics.Bitmap;
 
 public class NewChoosiePostData implements Serializable{
 
+	public enum PostType {
+		TOT, YesNo
+	}
+	
 	/**
 	 * 
 	 */
@@ -14,16 +18,22 @@ public class NewChoosiePostData implements Serializable{
 	private Bitmap image2;
 	private String question;
 	private boolean shareOnFacebook;
+	private PostType postType;
 
 	public NewChoosiePostData(Bitmap image1, Bitmap image2, String question) {
 		this(image1, image2, question, false);
 	}
 	
 	public NewChoosiePostData(Bitmap image1, Bitmap image2, String question, boolean shareOnFacebook) {
+		this(image1, image2, question, shareOnFacebook, PostType.TOT);
+	}
+	
+	public NewChoosiePostData(Bitmap image1, Bitmap image2, String question, boolean shareOnFacebook, PostType postType) {
 		this.setImage1(image1);
 		this.setImage2(image2);
 		this.setQuestion(question);
 		this.setShareOnFacebook(shareOnFacebook);
+		this.setPostType(postType);
 	}
 
 
@@ -57,5 +67,25 @@ public class NewChoosiePostData implements Serializable{
 
 	public void setShareOnFacebook(boolean shareOnFacebook) {
 		this.shareOnFacebook = shareOnFacebook;
+	}
+
+	public PostType getPostType() {
+		return postType;
+	}
+
+	public void setPostType(PostType postType) {
+		this.postType = postType;
+	}
+
+	public String getPostTypeAsString() {
+
+		switch (this.postType) {
+		case TOT:
+			return "1";
+		case YesNo:
+			return "2";
+		default:
+			return "-1";
+		}
 	}
 }

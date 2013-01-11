@@ -279,6 +279,7 @@ public class RealClient extends Client {
 				Charset.forName("UTF-8")));
 		multipartContent.addPart("fb_uid",
 				new StringBody(this.fbDetails.getFb_uid()));
+		multipartContent.addPart("post_type_id", new StringBody(data.getPostTypeAsString()));
 
 		// Add share on facebook details to server HTTP request
 		if (data.isShareOnFacebook()) {
