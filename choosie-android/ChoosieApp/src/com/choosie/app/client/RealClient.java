@@ -403,8 +403,13 @@ public class RealClient extends Client {
 				+ jsonObject.getString("photo2");
 		String question = jsonObject.getString("question");
 		String postKey = jsonObject.getString("key");
-		int postTypeId = jsonObject.getInt("post_type");
-		PostType postType = postTypeId == 1 ? PostType.TOT : PostType.YesNo;
+		PostType postType;
+		if (jsonObject.has("post_type")) {
+			int postTypeId = jsonObject.getInt("post_type");
+			postType = postTypeId == 1 ? PostType.TOT : PostType.YesNo;
+		} else {
+			postType = PostType.TOT;
+		}
 		Date createdAtUTC = Utils.convertStringToDateUTC(jsonObject
 				.getString("created_at"));
 
