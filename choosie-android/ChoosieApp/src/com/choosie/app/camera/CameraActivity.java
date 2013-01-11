@@ -128,40 +128,25 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private PictureCallback mPicture = new PictureCallback() {
 
 		public void onPictureTaken(byte[] data, Camera camera) {
-			// AsyncTask<byte[], Void, Boolean> manipulateTask = new
-			// AsyncTask<byte[], Void, Boolean>() {
-			//
-			// @Override
-			// protected Boolean doInBackground(byte[]... params) {
-			// return manipulateDataIntoFile(params[0], pictureFile);
-			// }
-			//
-			// @Override
-			// protected void onPostExecute(Boolean result) {
-			// if (result == false) {
-			// showErrorDialog("couldn't manipulate bitmaps");
-			// return;
-			// }
-			//
-			// Log.i("cameraApi",
-			// "starting startConfirmationActivity with numOfPhotoToTake = "
-			// + numOfPhotoToTake);
-			// cameraLayoutViewHolder.takePicButton.setEnabled(true);
-			// cameraLayoutViewHolder.preview.setEnabled(true);
-			// fillIntentsWithHeightsAndSetResult();
-			// }
-			// };
-			// manipulateTask.execute(data);
 
-			manipulateDataIntoFile(data, pictureFile);
+			boolean result = manipulateDataIntoFile(data, pictureFile);
+			if (result == false) {
+				cancelWothError();
+			}
 			fillIntentsWithHeightsAndSetResult();
-
 		}
 	};
 
 	protected void fillIntentsWithHeightsAndSetResult() {
 		fillIntentWithHeight(intent);
 		setResult(Activity.RESULT_OK, intent);
+		finish();
+	}
+
+	protected void cancelWothError() {
+		Intent intent = new Intent();
+		intent.putExtra(Constants.IntentsCodes.error, true);
+		setResult(Activity.RESULT_CANCELED, intent);
 		finish();
 	}
 
@@ -178,7 +163,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		// first thing!! getting the camera
 		if ((mCamera = getCameraInstance(CameraInfo.CAMERA_FACING_BACK)) == null) {
-			showErrorDialog("Camera isnotavailable");
+			// showErrorDialog("Camera isnotavailable");
+			cancelWothError();
 			finish();
 			return;
 		}
@@ -210,12 +196,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		intent = getIntent();
 		path = intent.getStringExtra(Constants.IntentsCodes.path);
 		pictureFile = new File(path);
-
-		// getting the file
-		// if ((pictureFile = getOutputMediaFile()) == null) {
-		// showErrorDialog("Couldn't create media file");
-		// return;
-		// }
 
 		// set the height of all the layouts, so it will form a square
 		display = getWindowManager().getDefaultDisplay();
@@ -517,88 +497,91 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	private boolean manipulateDataIntoFile(byte[] data, File pictureFile) {
 
-		// try {
-		// phase 1: write the date into the file - this is for loading it
-		// efficiently without creating large bitmap
-		Utils.writeBytesIntoFile(data, pictureFile);
+		try {
+			// phase 1: write the date into the file - this is for loading it
+			// efficiently without creating large bitmap
+			Utils.writeBytesIntoFile(data, pictureFile);
 
-		// phase 2: get Bitmap from file
+			// phase 2: get Bitmap from file
 
-		// First decode with inJustDecodeBounds=true to check dimensions
-		final BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(pictureFile.getAbsolutePath(), options);
+			// First decode with inJustDecodeBounds=true to check dimensions
+			final BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = true;
+			BitmapFactory.decodeFile(pictureFile.getAbsolutePath(), options);
 
-		int normalheight = options.outHeight;
+			int normalheight = options.outHeight;
 
-		// Calculate inSampleSize
-		if (normalheight > screenWidth * 2) {
-			options.inSampleSize = 2; // we deveide it by 2
-			// calculateInSampleSize(options, 1224, 1224);
-		} else {
-			options.inSampleSize = 1;
+			// Calculate inSampleSize
+			if (normalheight > screenWidth * 2) {
+				options.inSampleSize = 2; // we deveide it by 2
+				// calculateInSampleSize(options, 1224, 1224);
+			} else {
+				options.inSampleSize = 1;
+			}
+
+			Log.i("cameraApi", "in manipulateDataIntoFile, inSampleSize = "
+					+ options.inSampleSize);
+
+			// Decode bitmap with inSampleSize set
+			options.inJustDecodeBounds = false;
+			Bitmap beforeRotation = BitmapFactory.decodeFile(
+					pictureFile.getAbsolutePath(), options);
+			// Bitmap beforeRotation = BitmapFactory.decodeByteArray(data, 0,
+			// data.length);
+
+			Log.i("cameraApi",
+					"created before rotation, width = "
+							+ beforeRotation.getWidth() + " height = "
+							+ beforeRotation.getHeight() + " size = "
+							+ beforeRotation.getRowBytes()
+							* beforeRotation.getHeight());
+
+			// phase 3: rotate Bitmap
+			Bitmap afterRotation = rotateBitmap(beforeRotation);
+
+			// Log.i("cameraApi",
+			// "created after rotation, width = "
+			// + afterRotation.getWidth() + " height = "
+			// + afterRotation.getHeight() + " size = "
+			// + afterRotation.getRowBytes()
+			// * afterRotation.getHeight());
+
+			if (beforeRotation != null) {
+				beforeRotation.recycle();
+				beforeRotation = null;
+			}
+
+			Log.i("cameraApi", "recycled beforeRotation");
+
+			// phase 4: crop it into a square and save it in the file
+			int w = afterRotation.getWidth();
+			int startPixel = ((w * topHideHeight) / screenWidth);
+			Bitmap squareBitmap = Bitmap
+					.createBitmap(afterRotation, 0, 0, w, w);
+
+			Log.i("cameraApi", "cropped into a square = start pixel (y) - "
+					+ startPixel + " width = " + w);
+
+			Log.i("cameraApi",
+					"scalled into asmallersize= " + squareBitmap.getWidth()
+							+ " height = " + squareBitmap.getHeight()
+							+ " size = " + squareBitmap.getRowBytes()
+							* squareBitmap.getHeight());
+
+			afterRotation.recycle();
+			afterRotation = null;
+
+			Log.i("cameraApi", "recycled afterRotation");
+
+			Utils.writeBitmapToFile(squareBitmap, pictureFile, 95);
+
+			squareBitmap.recycle();
+			squareBitmap = null;
+
+			Log.i("cameraApi", "recycled squareBitmap");
+		} catch (Exception e) {
+			return false;
 		}
-
-		Log.i("cameraApi", "in manipulateDataIntoFile, inSampleSize = "
-				+ options.inSampleSize);
-
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-		Bitmap beforeRotation = BitmapFactory.decodeFile(
-				pictureFile.getAbsolutePath(), options);
-		// Bitmap beforeRotation = BitmapFactory.decodeByteArray(data, 0,
-		// data.length);
-
-		Log.i("cameraApi",
-				"created before rotation, width = " + beforeRotation.getWidth()
-						+ " height = " + beforeRotation.getHeight()
-						+ " size = " + beforeRotation.getRowBytes()
-						* beforeRotation.getHeight());
-
-		// phase 3: rotate Bitmap
-		Bitmap afterRotation = rotateBitmap(beforeRotation);
-
-		// Log.i("cameraApi",
-		// "created after rotation, width = "
-		// + afterRotation.getWidth() + " height = "
-		// + afterRotation.getHeight() + " size = "
-		// + afterRotation.getRowBytes()
-		// * afterRotation.getHeight());
-
-		if (beforeRotation != null) {
-			beforeRotation.recycle();
-			beforeRotation = null;
-		}
-
-		Log.i("cameraApi", "recycled beforeRotation");
-
-		// phase 4: crop it into a square and save it in the file
-		int w = afterRotation.getWidth();
-		int startPixel = ((w * topHideHeight) / screenWidth);
-		Bitmap squareBitmap = Bitmap.createBitmap(afterRotation, 0, 0, w, w);
-
-		Log.i("cameraApi", "cropped into a square = start pixel (y) - "
-				+ startPixel + " width = " + w);
-
-		Log.i("cameraApi",
-				"scalled into asmallersize= " + squareBitmap.getWidth()
-						+ " height = " + squareBitmap.getHeight() + " size = "
-						+ squareBitmap.getRowBytes() * squareBitmap.getHeight());
-
-		afterRotation.recycle();
-		afterRotation = null;
-
-		Log.i("cameraApi", "recycled afterRotation");
-
-		Utils.writeBitmapToFile(squareBitmap, pictureFile, 95);
-
-		squareBitmap.recycle();
-		squareBitmap = null;
-
-		Log.i("cameraApi", "recycled squareBitmap");
-		// } catch (Exception e) {
-		// return false;
-		// }
 		return true;
 	}
 

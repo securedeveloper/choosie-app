@@ -390,6 +390,12 @@ public class CameraMainSuperControllerActivity extends Activity {
 				setImages();
 				isFirstTimeReturnFromCamera = false;
 			} else if (resultCode == Activity.RESULT_CANCELED) {
+				if (data != null){
+					if (data.getBooleanExtra(Constants.IntentsCodes.error, false) == true){
+						showDialog(Constants.DialogId.ERROR);
+					}
+				}
+				
 				if (isFirstTimeReturnFromCamera == true) {
 					goBackToChoosieActivity(Activity.RESULT_OK);
 				}
@@ -517,8 +523,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 		// set image 1 and 2 yaanaa
 
 		Bitmap image = image1BitmapTot;
-		image1BitmapYaanaa = YesNoUtils.generateVoteUpImage(this, image1BitmapTot);
-		image2BitmapYaanaa = YesNoUtils.generateVoteDownImage(this, image1BitmapTot);
+		image1BitmapYaanaa = YesNoUtils.generateVoteUpImage(this,
+				image1BitmapTot);
+		image2BitmapYaanaa = YesNoUtils.generateVoteDownImage(this,
+				image1BitmapTot);
 	}
 
 	private void goBackToChoosieActivity(int result) {
@@ -718,6 +726,15 @@ public class CameraMainSuperControllerActivity extends Activity {
 			dialog1.setIndeterminate(true);
 			dialog1.setCancelable(false);
 			return dialog1;
+
+		case Constants.DialogId.ERROR:
+			AlertDialog.Builder builderError = new AlertDialog.Builder(this);
+			builderError.setMessage("Camera is having issues");
+			builderError.setCancelable(false);
+			builderError.setPositiveButton("OK", new OkOnClickListener());
+			AlertDialog dialogError = builderError.create();
+			dialogError.show();
+			break;
 		}
 
 		return super.onCreateDialog(id);
@@ -761,6 +778,14 @@ public class CameraMainSuperControllerActivity extends Activity {
 			DialogInterface.OnClickListener {
 		public void onClick(DialogInterface dialog, int which) {
 			setResult(Activity.RESULT_OK);
+			CameraMainSuperControllerActivity.this.finish();
+		}
+	}
+
+	private final class ErrorOnClickListener implements
+			DialogInterface.OnClickListener {
+		public void onClick(DialogInterface dialog, int which) {
+			setResult(Activity.RESULT_CANCELED);
 			CameraMainSuperControllerActivity.this.finish();
 		}
 	}

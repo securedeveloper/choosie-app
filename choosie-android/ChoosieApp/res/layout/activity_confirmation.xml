@@ -26,7 +26,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:background="@drawable/button_selector"
-            android:padding="5dp"
+            android:padding="10dp"
             android:src="@drawable/cancel_icon" />
 
         <ImageView
@@ -46,8 +46,8 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/confirmation_continueImage1"
             android:background="@drawable/button_selector"
-            android:padding="5dp"
-            android:paddingRight="10dp"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp"
             android:src="@drawable/rotate_icon2" />
     </RelativeLayout>
 
