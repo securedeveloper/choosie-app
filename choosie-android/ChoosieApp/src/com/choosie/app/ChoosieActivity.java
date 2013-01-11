@@ -71,7 +71,7 @@ public class ChoosieActivity extends Activity {
 
 		Utils.setScreenWidth(this);
 
-		superController = new SuperController(this);  
+		superController = new SuperController(this);
 
 		if (notification != null) {
 			handleNotification(notification);
@@ -157,7 +157,7 @@ public class ChoosieActivity extends Activity {
 			if (AppSettings.useChoozieCamera() == true) {
 				Intent intent = new Intent(this.getApplicationContext(),
 						CameraMainSuperControllerActivity.class);
-				startActivity(intent);
+				startActivityForResult(intent, Constants.RequestCodes.NEW_POST);
 			} else {
 				superController.switchToScreen(Screen.POST);
 			}
@@ -168,9 +168,12 @@ public class ChoosieActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (Session.getActiveSession() != null
 				&& Session.getActiveSession().getPermissions() != null) {
-			Log.i(Constants.LOG_TAG, "onActivityResult. FB Permissions: "
+			Logger.i("onActivityResult. FB Permissions: "
 					+ Session.getActiveSession().getPermissions().toString());
 		}
+		
+		Logger.i("ChoosieActivity : onActivityResult returned requestCode = "
+				+ requestCode);
 
 		switch (requestCode) {
 
@@ -202,6 +205,9 @@ public class ChoosieActivity extends Activity {
 			// refresh
 			// method.
 			superController.getControllerForScreen(Screen.POST).refresh();
+			
+		case Constants.RequestCodes.NEW_POST:
+			superController.getControllerForScreen(Screen.FEED).refresh();
 		}
 	}
 

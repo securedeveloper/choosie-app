@@ -1,14 +1,22 @@
 package com.choosie.app.camera;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.Logger;
+import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
+import com.choosie.app.client.Client;
 import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.Session.ReauthorizeRequest;
 import com.facebook.Session.StatusCallback;
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Tracker;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,11 +34,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class CameraMainSuperControllerActivity extends Activity {
@@ -55,6 +67,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private ImageView mImage2;
 	private TextView mTvFacebook;
 	private ToggleButton mTbFacebook;
+	private TableRow mTrFacebook;
 	private Session session;
 	// private StatusCallback statusCallback = new SessionStatusCallback();
 	private ImageButton mBtnSubmit;
@@ -66,7 +79,17 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private Bitmap image2BitmapTot;
 	private Bitmap image1BitmapYaanaa;
 	private Bitmap image2BitmapYaanaa;
-
+	
+	private StatusCallback statusCallback = new SessionStatusCallback();
+	private OnClickListener listener = new OnClickListener() {
+		
+		public void onClick(View v) {
+			mTbFacebook.setChecked(!mTbFacebook.isChecked());
+		}
+	};
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,6 +123,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 		this.session = Session.getActiveSession();
 		this.yaanaaImageView = (ImageView) findViewById(R.id.post_yaanaaButton_image);
 		this.totImageView = (ImageView) findViewById(R.id.post_totButton_image);
+		this.mTrFacebook = (TableRow) findViewById(R.id.tableRowShareFB);
+		
+		this.mTrFacebook.setOnClickListener(listener);
+		this.mTbFacebook.setOnCheckedChangeListener(checkChangedListener);
+		this.mBtnSubmit.setOnClickListener(onClickListenter);
 
 		float density = getApplicationContext().getResources()
 				.getDisplayMetrics().density;
@@ -291,18 +319,6 @@ public class CameraMainSuperControllerActivity extends Activity {
 		currentMode = MODE.YAA_NAA;
 	}
 
-	protected boolean isUserHasPublishPermissions() {
-		boolean userHasPublishPermissions = false;
-		Session session = Session.getActiveSession();
-		if (session.isOpened()) {
-			List<String> perms = session.getPermissions();
-			userHasPublishPermissions = perms.contains("publish_stream");
-		} else {
-			Logger.i("isUserHasPublishPermissions(): session is not opened!");
-		}
-		return userHasPublishPermissions;
-	}
-
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -367,7 +383,13 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 			}
 			break;
+			
+		case Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION:
+			Log.i(Constants.LOG_TAG, "after activity fb");
+			Session.getActiveSession().onActivityResult(this, requestCode,
+					resultCode, data);
 		}
+	
 	}
 
 	private void setImages() {
@@ -737,5 +759,158 @@ public class CameraMainSuperControllerActivity extends Activity {
 		}
 		return bitmap;
 	}
+	
+	private OnCheckedChangeListener checkChangedListener = new OnCheckedChangeListener() {
 
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			if (isChecked) {
+				
+				boolean userHasPublishPermissions = isUserHasPublishPermissions();
+				
+				if (userHasPublishPermissions) {
+					Logger.i("Already have publish permissions: "
+							+ session.getPermissions().toString());
+					mTbFacebook.setChecked(true);
+					mTbFacebook
+					.setBackgroundResource(R.drawable.facebook_square_blue);
+
+				} else {
+					askForPublishPermissions();
+					if (isUserHasPublishPermissions()) {
+						mTbFacebook.setChecked(true);
+						mTbFacebook
+						.setBackgroundResource(R.drawable.facebook_square_blue);
+					}
+				}
+			} else {
+				mTbFacebook.setChecked(false);
+				mTbFacebook
+						.setBackgroundResource(R.drawable.facebook_square_bw);
+			}
+		}
+	};
+	
+	protected boolean isUserHasPublishPermissions() {
+		boolean userHasPublishPermissions = false;
+		Session session = Session.getActiveSession();
+		if (session.isOpened()) {
+			List<String> perms = session.getPermissions();
+			userHasPublishPermissions = perms.contains("publish_stream");
+		} else {
+			Logger.i("isUserHasPublishPermissions(): session is not opened!");
+		}
+		return userHasPublishPermissions;
+	}
+	
+	protected void askForPublishPermissions() {
+		Session session = Session.getActiveSession();
+		if (session.isOpened()) {
+			List<String> permissions = new ArrayList<String>();
+			permissions.add("publish_stream");
+
+			ReauthorizeRequest request = new ReauthorizeRequest(this,
+					permissions);
+			request.setCallback(statusCallback);
+
+			try {
+				session.reauthorizeForPublish(request);
+			} catch (Exception ex) {
+				Log.e(Constants.LOG_TAG,
+						"Exception in reauthorizeForPublish() : "
+								+ ex.toString());
+			}
+			Session.setActiveSession(session);
+			Logger.i("on set active session permissions: "
+					+ session.getPermissions().toString());
+		}
+	}
+	
+	private class SessionStatusCallback implements Session.StatusCallback {
+		public void call(Session session, SessionState state,
+				Exception exception) {
+			Logger.i("Entered SessionStatusCallback()");
+		}
+	}
+	
+	private OnClickListener onClickListenter = new OnClickListener() {
+		
+		public void onClick(View v) {
+			NewChoosiePostData ncpd;
+			if (currentMode.equals(MODE.TOT))
+				ncpd = new NewChoosiePostData(image1BitmapTot, image2BitmapTot,
+						mQuestion.getText().toString(), mTbFacebook.isChecked());
+			else
+				ncpd = new NewChoosiePostData(image1BitmapYaanaa, image2BitmapYaanaa,
+						mQuestion.getText().toString(), mTbFacebook.isChecked());
+			
+			submitPost(ncpd);
+		}
+	};
+
+
+	protected void submitPost(NewChoosiePostData ncpd) {
+		if (ncpd.isShareOnFacebook() && !isUserHasPublishPermissions()) {
+			Logger.i("Share on facebook is checked!");
+			askForPublishPermissions();
+		}
+		Logger.i("executing submitChoosiePost()");
+		submitChoosiePost(ncpd);
+	}
+
+	private void submitChoosiePost(NewChoosiePostData ncpd) {
+
+		boolean isPostValid = isPostValid();
+		if (isPostValid) {
+			Tracker tracker = GoogleAnalytics.getInstance(
+					this).getDefaultTracker();
+			tracker.trackEvent("Ui action", "Post Screen", "Share", null);
+
+			Client.getInstance().sendChoosiePostToServer(ncpd,
+					new Callback<Void, Integer, Void>() {
+
+						@Override
+						public void onPre(Void param) {
+							//open progress bar
+						}
+
+						@Override
+						public void onProgress(Integer param) {
+							//show progress
+						}
+
+						@Override
+						public void onFinish(Void param) {
+							goBackToChoosieActivity(Activity.RESULT_OK);
+						}
+					});
+		}
+	}
+
+	private boolean isPostValid() {
+
+		if (currentMode.equals(MODE.TOT)) {
+			if ((image1BitmapTot == null) || (image2BitmapTot == null)) {
+				Toast toast = Toast.makeText(this, "Please add two photos",
+						Toast.LENGTH_SHORT);
+				toast.show();
+				return false;
+			}	
+		} else {
+			if ((image2BitmapYaanaa == null) || (image1BitmapYaanaa == null)) {
+				Toast toast = Toast.makeText(this, "Please add two photos",
+						Toast.LENGTH_SHORT);
+				toast.show();
+				return false;
+			}
+		}
+		
+		if (mQuestion.getText().toString().equals("")) {
+			Toast toast = Toast.makeText(this, "Please add a question",
+					Toast.LENGTH_SHORT);
+			toast.show();
+			return false;
+		}
+		return true;
+	}
 }
