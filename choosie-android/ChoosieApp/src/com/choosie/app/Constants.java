@@ -7,9 +7,11 @@ public class Constants {
 	public static final String LOG_TAG = "Choosie";
 
 	public static class URIs {
-		// public static final String ROOT_URL =
-		// "http://choosieapp.appspot.com";
-		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
+
+		public static final String ROOT_URL = "http://choosieapp.appspot.com";
+//		 public static final String ROOT_URL =
+//		 "http://choosie-dev.appspot.com";
+
 		public static final String REGISTER = ROOT_URL + "/register";
 		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
 		public static final String FEED_URI = ROOT_URL + "/feed";
@@ -38,6 +40,8 @@ public class Constants {
 		public static final int GALLERY = 8;
 		public static final int VOTES = 9;
 		public static final int FB_REQUEST_PUBLISH_PERMISSION = 64206;
+		public static final int FB_PERMISSIONS_GRANTED = -1;
+		public static final int FB_PERMISSIONS_DENIED = 0;
 		public static final int EnalargeImage = 10;
 		public static final int START_ACTIVITY = 11;
 		public static final int CAMERA_PICURE_FIRST = 12;

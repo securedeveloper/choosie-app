@@ -75,9 +75,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private ToggleButton mTbFacebook;
 	private TableRow mTrFacebook;
 	private Session session;
-	// private StatusCallback statusCallback = new SessionStatusCallback();
 	private ImageButton mBtnSubmit;
-	// private ProgressBar mProgressBar;
+
 
 	private File imageFile1;
 	private File imageFile2;
@@ -374,6 +373,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+		Logger.i("onActivityResult");
+		Logger.i("requestCode = " + requestCode);
+		Logger.i("resultCode = " + resultCode);
+		
 		switch (requestCode) {
 		case Constants.RequestCodes.CAMERA_PICURE_FIRST:
 			// get back from camera with first file
@@ -469,6 +472,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 			Log.i(Constants.LOG_TAG, "after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
+			if (resultCode == Constants.RequestCodes.FB_PERMISSIONS_GRANTED) {
+				changeFacebookShareState(true);
+			} else if (resultCode == Constants.RequestCodes.FB_PERMISSIONS_DENIED) {
+				changeFacebookShareState(false);
+			}
 		}
 
 	}
@@ -580,22 +588,13 @@ public class CameraMainSuperControllerActivity extends Activity {
 				if (userHasPublishPermissions) {
 					Logger.i("Already have publish permissions: "
 							+ session.getPermissions().toString());
-					mTbFacebook.setChecked(true);
-					mTbFacebook
-							.setBackgroundResource(R.drawable.facebook_square_blue);
+					changeFacebookShareState(true);
 
 				} else {
 					askForPublishPermissions();
-					if (isUserHasPublishPermissions()) {
-						mTbFacebook.setChecked(true);
-						mTbFacebook
-								.setBackgroundResource(R.drawable.facebook_square_blue);
-					}
 				}
 			} else {
-				mTbFacebook.setChecked(false);
-				mTbFacebook
-						.setBackgroundResource(R.drawable.facebook_square_bw);
+				changeFacebookShareState(false);
 			}
 		}
 	};
@@ -610,6 +609,18 @@ public class CameraMainSuperControllerActivity extends Activity {
 			Logger.i("isUserHasPublishPermissions(): session is not opened!");
 		}
 		return userHasPublishPermissions;
+	}
+
+	protected void changeFacebookShareState(boolean enable) {
+		mTbFacebook.setChecked(enable);
+		
+		if (enable) {
+			mTbFacebook
+					.setBackgroundResource(R.drawable.facebook_square_blue);
+		} else {
+			mTbFacebook
+			.setBackgroundResource(R.drawable.facebook_square_bw);
+		}
 	}
 
 	protected void askForPublishPermissions() {
@@ -638,7 +649,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private class SessionStatusCallback implements Session.StatusCallback {
 		public void call(Session session, SessionState state,
 				Exception exception) {
+			
 			Logger.i("Entered SessionStatusCallback()");
+			Logger.i("session = " + session.toString());
+			Logger.i("state = " + state.toString());
+			Logger.i("exception = " + exception.toString());
 		}
 	}
 
