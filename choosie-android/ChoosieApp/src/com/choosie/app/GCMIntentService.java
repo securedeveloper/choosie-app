@@ -15,6 +15,7 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -134,7 +135,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setContentText(notificationData.getText())
 				.setContentIntent(resultPendingIntent).build();
 
-		notification.defaults |= Notification.DEFAULT_SOUND;
+//		notification.defaults |= Notification.DEFAULT_SOUND;
+		notification.sound = Uri.parse("android.resource://com.choosie.app/"+R.raw.notification_sound);
 		return notification;
 	}
 
