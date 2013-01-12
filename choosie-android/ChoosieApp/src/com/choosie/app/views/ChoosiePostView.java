@@ -71,7 +71,11 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.progressBarCenter = (ProgressBar) findViewById(R.id.progressBarCenter);
 		feedViewHolder.imgViewCenter = (ImageView) findViewById(R.id.feedimageCenter);
 		feedViewHolder.voteImageAnimationCenter = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_center);
+		feedViewHolder.voteImageAnimationLeft = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_left);
+		feedViewHolder.voteImageAnimationRight = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_right);
 
+		feedViewHolder.voteImageAnimationLeft.setImageBitmap(null);
+		feedViewHolder.voteImageAnimationRight.setImageBitmap(null);
 		feedViewHolder.voteImageAnimationCenter.setImageBitmap(null);
 
 		// set the size of the image view to be a square sized half of the
@@ -203,6 +207,10 @@ public class ChoosiePostView extends RelativeLayout {
 					setAndStartAnimationForCenter(
 							feedViewHolder.voteImageAnimationCenter,
 							R.drawable.thumbs_up, R.anim.enter_from_left);
+				} else {
+					setAndStartAnimationForCenter(
+							feedViewHolder.voteImageAnimationLeft,
+							R.drawable.thumbs_up, R.anim.enter_from_left);
 				}
 			}
 		});
@@ -232,6 +240,10 @@ public class ChoosiePostView extends RelativeLayout {
 					setAndStartAnimationForCenter(
 							feedViewHolder.voteImageAnimationCenter,
 							R.drawable.thumbs_down, R.anim.enter_from_right);
+				} else {
+					setAndStartAnimationForCenter(
+							feedViewHolder.voteImageAnimationRight,
+							R.drawable.thumbs_up, R.anim.enter_from_right);
 				}
 			}
 		});
@@ -504,6 +516,8 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private class FeedViewHolder {
+		public ImageView voteImageAnimationLeft;
+		public ImageView voteImageAnimationRight;
 		public ImageView voteImageAnimationCenter;
 		public ImageView imgViewCenter;
 		public ProgressBar progressBarCenter;

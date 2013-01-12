@@ -131,6 +131,11 @@
                         android:background="#F5F5FF"
                         android:orientation="vertical" >
 
+                        <ImageView
+                            android:id="@+id/choosiePost_voteImage_animation_left"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
                         <ProgressBar
                             android:id="@+id/progressBar1"
                             style="?android:attr/progressBarStyleHorizontal"
@@ -171,6 +176,11 @@
                         android:layout_height="wrap_content"
                         android:background="#F5F5FF"
                         android:orientation="vertical" >
+                        
+                         <ImageView
+                            android:id="@+id/choosiePost_voteImage_animation_right"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
 
                         <ProgressBar
                             android:id="@+id/progressBar2"
@@ -198,8 +208,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-
-            
         </RelativeLayout>
 
         <RelativeLayout
