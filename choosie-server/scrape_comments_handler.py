@@ -41,7 +41,7 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
       return (None, None, "Couldn't scraped comments for post with ID [%s] (user FB UID = [%s]). Error: %s"
                           % (fb_post_id, choosie_post.fb_post_id, error))
 
-    comments, votes = ScrapeCommentsHandler.parse_facebook_comments(json_comments)
+    comments, votes = ScrapeCommentsHandler.parse_facebook_comments(json_comments, choosie_post.post_type_id)
 
     if choosie_post_key and (len(comments) > 0 or len(votes) > 0):
       choosie_post = CacheController.get_model(choosie_post_key)
@@ -52,7 +52,7 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
 
 
   @staticmethod
-  def parse_facebook_comments(json_comments):
+  def parse_facebook_comments(json_comments, post_type):
     data = json.loads(json_comments)
     logging.info("parsed data: " + str(data))
 
@@ -63,7 +63,7 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
     votes = []
     for json_comment in json_data:
       comment = ScrapeCommentsHandler.build_comment_model_from_fb_comment(json_comment)
-      vote = ScrapeCommentsHandler.try_parse_vote(comment)
+      vote = ScrapeCommentsHandler.try_parse_vote(comment, post_type)
       if vote:
         votes.append(vote)
       logging.info("Added new comment: %s", comment.to_string_for_choosie_post())
@@ -83,11 +83,11 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
     return comment
 
   @staticmethod
-  def try_parse_vote(choosie_comment):
+  def try_parse_vote(choosie_comment, post_type):
     # If comment is something like: 'A is nicer' or 'B: because it is better' create a Vote object too.
     words = re.findall(r"[\w']+", choosie_comment.text)
     if len(words) > 0:
-      vote = ScrapeCommentsHandler.vote_from_comment(words)
+      vote = ScrapeCommentsHandler.vote_from_comment(words, post_type)
 
       if vote:
         return Vote(user_fb_id=choosie_comment.user_fb_id,
@@ -99,9 +99,14 @@ class ScrapeCommentsHandler(webapp2.RequestHandler):
       return None
 
   @staticmethod
-  def vote_from_comment(comment_words):
-    user_string_to_photo_number = {'1': 1,
-                                   '2': 2}
+  def vote_from_comment(comment_words, post_type):
+
+    if post_type == 1:
+      user_string_to_photo_number = {'1': 1,
+                                     '2': 2}
+    elif post_type == 2:
+      user_string_to_photo_number = {'yes': 1,
+                                     'no': 2}
     for word in comment_words:
       if word in user_string_to_photo_number:
         return user_string_to_photo_number[word]

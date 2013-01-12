@@ -115,9 +115,15 @@ class ChoosiePost(db.Model):
       logging.info("publishing on wall")
       logging.info("publishing with access_token " + choosie_post.get_user().fb_access_token)
       graph = facebook.GraphAPI(choosie_post.get_user().fb_access_token)
-      pic = Utils.create_post_image(self)
+      logging.info("type = " + str(choosie_post.post_type()))
+      if choosie_post.post_type() == CHOOSIE_POST_TYPE_DILEMMA:
+        pic = Utils.create_dillema_post_image(self)
+        question = choosie_post.question + '\n(Start your comment with #1 or #2 to help me choose.)'
+      else:
+        pic = Utils.create_yesno_post_image(self)
+        img1_blob_reader = blobstore.BlobReader(choosie_post.photo1_blob_key)
+        question = choosie_post.question + '\n(Start your comment with #yes or #no to help me choose.)'
       picIO = StringIO(pic)
-      question = choosie_post.question + '\n(Start your comment with #1 or #2 to help me choose.)'
       response = graph.put_photo(picIO, question.encode('utf-8'))
       logging.info(str(response))
       choosie_post.fb_post_id = response['post_id']

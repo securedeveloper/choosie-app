@@ -35,12 +35,18 @@ class Utils():
       return datetime.fromtimestamp(long(request.get('fb_access_token_expdate')) / 1e3)
 
     @staticmethod
-    def create_post_image(choosie_post):
+    def create_dillema_post_image(choosie_post):
       img1_blob_reader = blobstore.BlobReader(choosie_post.photo1_blob_key)
       img2_blob_reader = blobstore.BlobReader(choosie_post.photo2_blob_key)
       img1 = images.Image(image_data=img1_blob_reader.read())
       img2 = images.Image(image_data=img2_blob_reader.read())
       return Utils.compose_two_images(img1, img2)
+
+    @staticmethod
+    def create_yesno_post_image(choosie_post):
+      img1_blob_reader = blobstore.BlobReader(choosie_post.photo1_blob_key)
+      img1 = images.Image(image_data=img1_blob_reader.read())
+      return Utils.compose_yes_no_image(img1)
 
     @staticmethod
     def load_image(file_name):
@@ -85,11 +91,21 @@ class Utils():
       return composite
 
     @staticmethod
+    def compose_yes_no_image(img1):
+      composite = images.composite(
+          [(img1, 0, 0, 1.0, images.TOP_LEFT),
+           (img1, 0, 0, 1.0, images.TOP_LEFT)],
+          img1.width,
+          img1.height)
+      logging.info('created image')
+      return composite
+
+    @staticmethod
     def get_json_comments_from_fb_post(fb_post_id, access_token):
       url = "https://graph.facebook.com/" + fb_post_id + "/comments?access_token=" + access_token
       logging.info('URL to fetch: ' + url)
       result = urlfetch.fetch(url)
-      logging.info('result: ' + str(result.content))
+      # logging.info('result: ' + str(result.content))
       if result.status_code != 200:
         return None, result.content
       return result.content, None
