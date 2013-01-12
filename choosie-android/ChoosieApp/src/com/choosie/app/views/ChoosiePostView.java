@@ -31,6 +31,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
@@ -67,6 +70,9 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.layoutForCenterPhoto = (RelativeLayout) findViewById(R.id.layout_for_center_photo);
 		feedViewHolder.progressBarCenter = (ProgressBar) findViewById(R.id.progressBarCenter);
 		feedViewHolder.imgViewCenter = (ImageView) findViewById(R.id.feedimageCenter);
+		feedViewHolder.voteImageAnimationCenter = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_center);
+
+		feedViewHolder.voteImageAnimationCenter.setImageBitmap(null);
 
 		// set the size of the image view to be a square sized half of the
 		// screen width
@@ -74,21 +80,21 @@ public class ChoosiePostView extends RelativeLayout {
 		resizeViews(screenWidth / 2, screenWidth / 2, feedViewHolder.imgView1,
 				feedViewHolder.imgView2, feedViewHolder.layoutForLeftPhoto,
 				feedViewHolder.layoutForRightPhoto);
-		
+
 		resizeViews(screenWidth, screenWidth, feedViewHolder.imgViewCenter,
 				feedViewHolder.layoutForCenterPhoto);
 	}
-	
+
 	private void handleLayoutsVisibilityByPostType(PostType postType) {
 		if (postType == PostType.TOT) {
 			feedViewHolder.layoutForCenterPhoto.setVisibility(View.GONE);
-			
+
 		} else {
 
 			feedViewHolder.progressBar1.setVisibility(View.GONE);
 			feedViewHolder.progressBar2.setVisibility(View.GONE);
 		}
-		
+
 	}
 
 	private void resizeViews(int width, int height, View... views) {
@@ -128,18 +134,22 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.feed_userimage.setVisibility(View.GONE);
 
 		handleLayoutsVisibilityByPostType(post.getPostType());
-		
+
 		if (post.getPostType() == PostType.YesNo) {
 			feedViewHolder.layoutForCenterPhoto.setVisibility(View.VISIBLE);
-			feedViewHolder.layoutForLeftPhoto.setBackgroundColor(getResources().getColor(R.color.Transparent));
-			feedViewHolder.layoutForRightPhoto.setBackgroundColor(getResources().getColor(R.color.Transparent));
-			
+			feedViewHolder.layoutForLeftPhoto.setBackgroundColor(getResources()
+					.getColor(R.color.Transparent));
+			feedViewHolder.layoutForRightPhoto
+					.setBackgroundColor(getResources().getColor(
+							R.color.Transparent));
+
 			Logger.i(post.getPhoto2URL());
 			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgViewCenter,
-					feedViewHolder.progressBarCenter, feedViewHolder.imgSelected1);
+					feedViewHolder.progressBarCenter,
+					feedViewHolder.imgSelected1);
 			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgViewCenter,
-					feedViewHolder.progressBarCenter, feedViewHolder.imgSelected2);
-			
+					feedViewHolder.progressBarCenter,
+					feedViewHolder.imgSelected2);
 
 		} else {
 			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
@@ -185,9 +195,15 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+
 				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2,
 						feedViewHolder.imgSelected1,
 						feedViewHolder.imgSelected2);
+				if (choosiePost.getPostType() == PostType.YesNo) {
+					setAndStartAnimationForCenter(
+							feedViewHolder.voteImageAnimationCenter,
+							R.drawable.thumbs_up, R.anim.enter_from_left);
+				}
 			}
 		});
 
@@ -208,9 +224,15 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.imgSelected2.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+
 				handleVote2(feedViewHolder.votes1, feedViewHolder.votes2,
 						feedViewHolder.imgSelected1,
 						feedViewHolder.imgSelected2);
+				if (choosiePost.getPostType() == PostType.YesNo) {
+					setAndStartAnimationForCenter(
+							feedViewHolder.voteImageAnimationCenter,
+							R.drawable.thumbs_down, R.anim.enter_from_right);
+				}
 			}
 		});
 
@@ -242,6 +264,46 @@ public class ChoosiePostView extends RelativeLayout {
 
 		feedViewHolder.imgView1.setOnClickListener(enlargeListener);
 		feedViewHolder.imgView2.setOnClickListener(enlargeListener);
+	}
+
+	protected void setAndStartAnimationForCenter(final ImageView imageView,
+			final int resourceId, int animationId) {
+
+		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
+				superController.getActivity(), R.anim.fadeout);
+
+		fadeOutAnimation.setAnimationListener(new AnimationListener() {
+
+			public void onAnimationStart(Animation animation) {
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			public void onAnimationEnd(Animation animation) {
+				imageView.setImageBitmap(null);
+			}
+		});
+
+		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
+				superController.getActivity(), animationId);
+
+		fadeInAnimation.setAnimationListener(new AnimationListener() {
+
+			public void onAnimationStart(Animation animation) {
+				imageView.bringToFront();
+				imageView.setImageResource(resourceId);
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+			}
+
+			public void onAnimationEnd(Animation animation) {
+				imageView.startAnimation(fadeOutAnimation);
+			}
+		});
+		imageView.startAnimation(fadeInAnimation);
+
 	}
 
 	private boolean handleVote2(final TextView votes1, final TextView votes2,
@@ -442,6 +504,7 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private class FeedViewHolder {
+		public ImageView voteImageAnimationCenter;
 		public ImageView imgViewCenter;
 		public ProgressBar progressBarCenter;
 		public RelativeLayout layoutForCenterPhoto;
