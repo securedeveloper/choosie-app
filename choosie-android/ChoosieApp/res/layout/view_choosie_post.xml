@@ -77,116 +77,154 @@
             android:textColor="@color/Black"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/photos"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:orientation="horizontal" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <RelativeLayout
+                android:id="@+id/layout_for_center_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="#F5F5FF"
+                android:orientation="vertical" >
+
+                <ProgressBar
+                    android:id="@+id/progressBarCenter"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="5dp" />
+
+                <ImageView
+                    android:id="@+id/feedimageCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/desc" />
+            </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/photos"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingRight="1dp" >
-
-                <RelativeLayout
-                    android:id="@+id/layout_for_left_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#F5F5FF"
-                    android:orientation="vertical" >
-
-                    <ProgressBar
-                        android:id="@+id/progressBar1"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="32dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_margin="5dp" />
-
-                    <ImageView
-                        android:id="@+id/feedimage1"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <ImageView
-                        android:id="@+id/feed_image_vote_icon1"
-                        style="@style/VotingButtonOnChoosiePostView"
-                        android:src="@drawable/thumbs_up_unpressed" />
-                </RelativeLayout>
+                android:orientation="horizontal" >
 
                 <LinearLayout
+                    android:id="@+id/container_for_left_photo"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingRight="1dp" >
 
-                    <TextView
-                        android:id="@+id/votes1"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:id="@+id/layout_for_left_photo"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="4dp"
-                        android:text="1,000 votes"
-                        android:textColor="#2A1EB0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:background="#F5F5FF"
+                        android:orientation="vertical" >
+
+                        <ProgressBar
+                            android:id="@+id/progressBar1"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_margin="5dp" />
+
+                        <ImageView
+                            android:id="@+id/feedimage1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/feed_image_vote_icon1"
+                            style="@style/VotingButtonOnChoosiePostView"
+                            android:src="@drawable/thumbs_up_unpressed" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/container_for_right_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="1dp" >
+
+                    <RelativeLayout
+                        android:id="@+id/layout_for_right_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#F5F5FF"
+                        android:orientation="vertical" >
+
+                        <ProgressBar
+                            android:id="@+id/progressBar2"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="32dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_margin="5dp" />
+
+                        <ImageView
+                            android:id="@+id/feedimage2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <ImageView
+                            android:id="@+id/feed_image_vote_icon2"
+                            style="@style/VotingButtonOnChoosiePostViewRight"
+                            android:src="@drawable/thumbs_up_unpressed" />
+                    </RelativeLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_votes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/votes1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:paddingLeft="1dp" >
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:text="1,000 votes"
+                android:textColor="#2A1EB0"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-                <RelativeLayout
-                    android:id="@+id/layout_for_right_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#F5F5FF"
-                    android:orientation="vertical" >
-
-                    <ProgressBar
-                        android:id="@+id/progressBar2"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="32dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:layout_margin="5dp" />
-
-                    <ImageView
-                        android:id="@+id/feedimage2"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <ImageView
-                        android:id="@+id/feed_image_vote_icon2"
-                        style="@style/VotingButtonOnChoosiePostView"
-                        android:src="@drawable/thumbs_up_unpressed" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
-
-                    <TextView
-                        android:id="@+id/votes2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:gravity="right"
-                        android:text="1,000,000 votes"
-                        android:textColor="#2A1EB0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
+            <TextView
+                android:id="@+id/votes2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="4dp"
+                android:gravity="right"
+                android:text="1,000,000 votes"
+                android:textColor="#2A1EB0"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/layout_comments_main"

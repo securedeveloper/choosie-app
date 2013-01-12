@@ -64,6 +64,9 @@ public class ChoosiePostView extends RelativeLayout {
 		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
 		feedViewHolder.layoutForLeftPhoto = (RelativeLayout) findViewById(R.id.layout_for_left_photo);
 		feedViewHolder.layoutForRightPhoto = (RelativeLayout) findViewById(R.id.layout_for_right_photo);
+		feedViewHolder.layoutForCenterPhoto = (RelativeLayout) findViewById(R.id.layout_for_center_photo);
+		feedViewHolder.progressBarCenter = (ProgressBar) findViewById(R.id.progressBarCenter);
+		feedViewHolder.imgViewCenter = (ImageView) findViewById(R.id.feedimageCenter);
 
 		// set the size of the image view to be a square sized half of the
 		// screen width
@@ -71,6 +74,21 @@ public class ChoosiePostView extends RelativeLayout {
 		resizeViews(screenWidth / 2, screenWidth / 2, feedViewHolder.imgView1,
 				feedViewHolder.imgView2, feedViewHolder.layoutForLeftPhoto,
 				feedViewHolder.layoutForRightPhoto);
+		
+		resizeViews(screenWidth, screenWidth, feedViewHolder.imgViewCenter,
+				feedViewHolder.layoutForCenterPhoto);
+	}
+	
+	private void handleLayoutsVisibilityByPostType(PostType postType) {
+		if (postType == PostType.TOT) {
+			feedViewHolder.layoutForCenterPhoto.setVisibility(View.GONE);
+			
+		} else {
+
+			feedViewHolder.progressBar1.setVisibility(View.GONE);
+			feedViewHolder.progressBar2.setVisibility(View.GONE);
+		}
+		
 	}
 
 	private void resizeViews(int width, int height, View... views) {
@@ -104,18 +122,25 @@ public class ChoosiePostView extends RelativeLayout {
 
 		feedViewHolder.imgView1.setVisibility(View.GONE);
 		feedViewHolder.imgView2.setVisibility(View.GONE);
+		feedViewHolder.imgViewCenter.setVisibility(View.GONE);
 		feedViewHolder.imgSelected1.setVisibility(View.GONE);
 		feedViewHolder.imgSelected2.setVisibility(View.GONE);
 		feedViewHolder.feed_userimage.setVisibility(View.GONE);
 
+		handleLayoutsVisibilityByPostType(post.getPostType());
+		
 		if (post.getPostType() == PostType.YesNo) {
+			feedViewHolder.layoutForCenterPhoto.setVisibility(View.VISIBLE);
+			feedViewHolder.layoutForLeftPhoto.setBackgroundColor(getResources().getColor(R.color.Transparent));
+			feedViewHolder.layoutForRightPhoto.setBackgroundColor(getResources().getColor(R.color.Transparent));
+			
 			Logger.i(post.getPhoto2URL());
-			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
-					feedViewHolder.progressBar1, feedViewHolder.imgSelected1,
-					true, false);
-			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView2,
-					feedViewHolder.progressBar2, feedViewHolder.imgSelected2,
-					true, true);
+			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgViewCenter,
+					feedViewHolder.progressBarCenter, feedViewHolder.imgSelected1);
+			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgViewCenter,
+					feedViewHolder.progressBarCenter, feedViewHolder.imgSelected2);
+			
+
 		} else {
 			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
 					feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
@@ -417,6 +442,9 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private class FeedViewHolder {
+		public ImageView imgViewCenter;
+		public ProgressBar progressBarCenter;
+		public RelativeLayout layoutForCenterPhoto;
 		public RelativeLayout layoutForRightPhoto;
 		public RelativeLayout layoutForLeftPhoto;
 		public LinearLayout commentLayout;
