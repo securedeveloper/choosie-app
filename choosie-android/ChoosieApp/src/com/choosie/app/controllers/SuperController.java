@@ -30,6 +30,7 @@ import com.google.android.gcm.GCMRegistrar;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Toast;
@@ -151,13 +152,14 @@ public class SuperController {
 
 	private void switchToCommentScreen(ChoosiePostData choosiePost,
 			boolean openVotesWindow) {
-		Intent intent = new Intent(screenToController.get(Screen.FEED)
+		final Intent intent = new Intent(screenToController.get(Screen.FEED)
 				.getActivity().getApplicationContext(),
 				CommentScreenActivity.class);
 
 		// intent.putExtra("choosie_post", choosiePost);
 		intent.putExtra("post_key", choosiePost.getPostKey());
-		intent.putExtra("no_second_photo", choosiePost.getPostType() == PostType.YesNo);
+		intent.putExtra("no_second_photo",
+				choosiePost.getPostType() == PostType.YesNo);
 		intent.putExtra("question", choosiePost.getQuestion());
 
 		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
@@ -204,8 +206,21 @@ public class SuperController {
 		intent.putCharSequenceArrayListExtra(
 				Constants.IntentsCodes.createdAtList, createdAtList);
 
-		screenToController.get(Screen.FEED).getActivity()
-				.startActivityForResult(intent, Constants.RequestCodes.COMMENT);
+		// this is to make sure that the user has the photos in his sd
+		Caches.getInstance()
+				.getPhotosCache()
+				.getValue(choosiePost.getPostKey(),
+						new CacheCallback<String, Bitmap>() {
+
+							public void onValueReady(String key, Bitmap result) {
+								screenToController
+										.get(Screen.FEED)
+										.getActivity()
+										.startActivityForResult(intent,
+												Constants.RequestCodes.COMMENT);
+							}
+						});
+
 	}
 
 	public void switchToVotesScreen(ChoosiePostData choosiePost) {
