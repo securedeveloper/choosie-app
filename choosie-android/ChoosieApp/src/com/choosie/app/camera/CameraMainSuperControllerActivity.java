@@ -49,6 +49,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
@@ -69,14 +70,15 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private ImageView yaanaaImageView;
 
 	private RelativeLayout topLayout;
+	private LinearLayout images12Layout;
 	private EditText mQuestion;
 	private ImageView mImage1;
 	private ImageView mImage2;
+	private ImageView mImageMiddle;
 	private ToggleButton mTbFacebook;
 	private TableRow mTrFacebook;
 	private Session session;
 	private ImageButton mBtnSubmit;
-
 
 	private File imageFile1;
 	private File imageFile2;
@@ -120,9 +122,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 		// initialize all components
 		this.topLayout = (RelativeLayout) findViewById(R.id.post_layout_top);
+		this.images12Layout = (LinearLayout) findViewById(R.id.postCamera_images12_layout);
 		this.mQuestion = (EditText) findViewById(R.id.post_tvQuestion);
 		this.mImage1 = (ImageView) findViewById(R.id.image_photo1);
-		this.mImage2 = (ImageView) findViewById(R.id.image_photo2);
+		this.mImage2 = (ImageView) findViewById(R.id.postCamera_image_photo2);
+		this.mImageMiddle = (ImageView) findViewById(R.id.image_photoMiddle);
 		this.mTbFacebook = (ToggleButton) findViewById(R.id.tbFacebook);
 		this.mBtnSubmit = (ImageButton) findViewById(R.id.post_btnSubmit);
 		this.session = Session.getActiveSession();
@@ -132,6 +136,9 @@ public class CameraMainSuperControllerActivity extends Activity {
 		// this.mProgressBar = (ProgressBar)
 		// findViewById(R.id.post_progressBar);
 
+		images12Layout.bringToFront();
+		mImageMiddle.setEnabled(false);
+
 		this.mTrFacebook.setOnClickListener(listener);
 		this.mTbFacebook.setOnCheckedChangeListener(checkChangedListener);
 		this.mBtnSubmit.setOnClickListener(onClickListenter);
@@ -140,6 +147,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 		int topHeight = Math.round(50 * density);
 
 		// set heights and shit
+		Utils.setImageViewSize(mImageMiddle, Utils.getScreenWidth() / 2,
+				Utils.getScreenWidth() / 2);
 		Utils.setImageViewSize(mImage1, Utils.getScreenWidth() / 2,
 				Utils.getScreenWidth() / 2);
 		Utils.setImageViewSize(mImage2, Utils.getScreenWidth() / 2,
@@ -209,6 +218,14 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 			}
 		});
+
+		mImageMiddle.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View arg0) {
+				handleImage1Click();
+
+			}
+		});
 	}
 
 	protected void handleOnTouch(ImageView view, MotionEvent motion,
@@ -275,19 +292,17 @@ public class CameraMainSuperControllerActivity extends Activity {
 		yaanaaImageView.setImageResource(R.drawable.yaa_naa);
 		totImageView.setImageResource(R.drawable.tot_pressed);
 
-		mImage1.setImageBitmap(image1BitmapTot);
+		final Animation image2fadeInAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.fadein);
 
-		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.fadein);
-
-		postType = PostType.TOT;
-
-		Animation fadeInAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.push_left_out);
-		fadeInAnimation.setAnimationListener(new AnimationListener() {
+		image2fadeInAnimation.setAnimationListener(new AnimationListener() {
 
 			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
+				if (image2BitmapTot == null) {
+					mImage2.setImageResource(R.drawable.plus);
+				} else {
+					mImage2.setImageBitmap(image2BitmapTot);
+				}
 
 			}
 
@@ -297,19 +312,39 @@ public class CameraMainSuperControllerActivity extends Activity {
 			}
 
 			public void onAnimationEnd(Animation animation) {
-				if (image2BitmapTot != null) {
-					mImage2.setImageBitmap(image2BitmapTot);
-
-				} else {
-					mImage2.setImageDrawable(getResources().getDrawable(
-							R.drawable.plus));
-				}
-				mImage2.startAnimation(fadeOutAnimation);
 
 			}
 		});
-		mImage2.startAnimation(fadeInAnimation);
 
+		final Animation image1PushLeftAnimation = AnimationUtils.loadAnimation(
+				this, R.anim.push_left_in);
+
+		image1PushLeftAnimation.setAnimationListener(new AnimationListener() {
+
+			public void onAnimationStart(Animation animation) {
+				mImageMiddle.setImageBitmap(null);
+				mImage1.setImageBitmap(image1BitmapTot);
+
+			}
+
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+
+			}
+
+			public void onAnimationEnd(Animation animation) {
+				mImage2.startAnimation(image2fadeInAnimation);
+
+			}
+		});
+
+		mImage1.startAnimation(image1PushLeftAnimation);
+
+		images12Layout.bringToFront();
+		images12Layout.setEnabled(true);
+		mImageMiddle.setEnabled(false);
+		mImage1.setEnabled(true);
+		mImage1.setEnabled(true);
 		postType = PostType.TOT;
 
 	}
@@ -322,51 +357,58 @@ public class CameraMainSuperControllerActivity extends Activity {
 		yaanaaImageView.setImageResource(R.drawable.yaa_naa_pressed);
 		totImageView.setImageResource(R.drawable.tot);
 
-		final Animation fadeInAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.push_right_in);
-		fadeInAnimation.setAnimationListener(new AnimationListener() {
+		final Animation image2FadeOutAnimationAndThatsIt = AnimationUtils
+				.loadAnimation(this, R.anim.fadeout);
 
-			public void onAnimationStart(Animation animation) {
+		final Animation imageMiddlePushRightAnimation = AnimationUtils
+				.loadAnimation(this, R.anim.push_right_in);
 
-				mImage2.setImageBitmap(image2BitmapYaanaa);
+		imageMiddlePushRightAnimation
+				.setAnimationListener(new AnimationListener() {
 
-			}
+					public void onAnimationStart(Animation animation) {
+						mImage1.setImageBitmap(null);
+						// mImageMiddle.setVisibility(View.VISIBLE);
+						mImageMiddle.setImageBitmap(image1BitmapTot);
+					}
 
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
+					public void onAnimationRepeat(Animation animation) {
+						// TODO Auto-generated method stub
 
-				postType = PostType.YesNo;
-			}
+					}
 
-			public void onAnimationEnd(Animation animation) {
-				mImage2.setImageBitmap(image2BitmapYaanaa);
+					public void onAnimationEnd(Animation animation) {
 
-			}
-		});
+					}
+				});
 
-		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.fadeout);
-		fadeOutAnimation.setAnimationListener(new AnimationListener() {
+		image2FadeOutAnimationAndThatsIt
+				.setAnimationListener(new AnimationListener() {
 
-			public void onAnimationEnd(Animation animation) {
-				mImage2.setImageBitmap(null);
-				mImage2.startAnimation(fadeInAnimation);
-			}
+					public void onAnimationStart(Animation animation) {
 
-			public void onAnimationRepeat(Animation animation) {
-				// TODO Auto-generated method stub
+					}
 
-			}
+					public void onAnimationRepeat(Animation animation) {
+						// TODO Auto-generated method stub
 
-			public void onAnimationStart(Animation animation) {
-				// TODO Auto-generated method stub
+					}
 
-			}
-		});
+					public void onAnimationEnd(Animation animation) {
+						mImage2.setImageBitmap(null);
+						mImageMiddle
+								.startAnimation(imageMiddlePushRightAnimation);
 
-		mImage2.startAnimation(fadeOutAnimation);
-		mImage1.setImageBitmap(image1BitmapYaanaa);
+					}
+				});
 
+		mImage2.startAnimation(image2FadeOutAnimationAndThatsIt);
+
+		mImageMiddle.bringToFront();
+		mImageMiddle.setEnabled(true);
+		images12Layout.setEnabled(false);
+		mImage1.setEnabled(false);
+		mImage1.setEnabled(false);
 		postType = PostType.YesNo;
 	}
 
@@ -376,7 +418,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		Logger.i("onActivityResult");
 		Logger.i("requestCode = " + requestCode);
 		Logger.i("resultCode = " + resultCode);
-		
+
 		switch (requestCode) {
 		case Constants.RequestCodes.CAMERA_PICURE_FIRST:
 			// get back from camera with first file
@@ -393,12 +435,13 @@ public class CameraMainSuperControllerActivity extends Activity {
 				setImages();
 				isFirstTimeReturnFromCamera = false;
 			} else if (resultCode == Activity.RESULT_CANCELED) {
-				if (data != null){
-					if (data.getBooleanExtra(Constants.IntentsCodes.error, false) == true){
+				if (data != null) {
+					if (data.getBooleanExtra(Constants.IntentsCodes.error,
+							false) == true) {
 						showDialog(Constants.DialogId.ERROR);
 					}
 				}
-				
+
 				if (isFirstTimeReturnFromCamera == true) {
 					goBackToChoosieActivity(Activity.RESULT_OK);
 				}
@@ -485,8 +528,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		if (postType == PostType.TOT) {
 			mImage1.setImageBitmap(image1BitmapTot);
 		} else if (postType == PostType.YesNo) {
-			mImage1.setImageBitmap(image1BitmapYaanaa);
-			mImage2.setImageBitmap(image2BitmapYaanaa);
+			mImageMiddle.setImageBitmap(image1BitmapTot);
 		}
 	}
 
@@ -527,14 +569,13 @@ public class CameraMainSuperControllerActivity extends Activity {
 		// get images bitmaps
 		image1BitmapTot = Utils.getBitmapFromFileByViewSize(imagePath1,
 				Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
-
 		// set image 1 and 2 yaanaa
 
 		Bitmap image = image1BitmapTot;
-		image1BitmapYaanaa = YesNoUtils.generateVoteUpImage(this,
-				image1BitmapTot);
-		image2BitmapYaanaa = YesNoUtils.generateVoteDownImage(this,
-				image1BitmapTot);
+		image1BitmapYaanaa = image1BitmapTot;// YesNoUtils.generateVoteUpImage(this,
+		// image1BitmapTot);
+		image2BitmapYaanaa = image1BitmapTot;// YesNoUtils.generateVoteDownImage(this,
+		// image1BitmapTot);
 	}
 
 	private void goBackToChoosieActivity(int result) {
@@ -613,13 +654,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	protected void changeFacebookShareState(boolean enable) {
 		mTbFacebook.setChecked(enable);
-		
+
 		if (enable) {
-			mTbFacebook
-					.setBackgroundResource(R.drawable.facebook_square_blue);
+			mTbFacebook.setBackgroundResource(R.drawable.facebook_square_blue);
 		} else {
-			mTbFacebook
-			.setBackgroundResource(R.drawable.facebook_square_bw);
+			mTbFacebook.setBackgroundResource(R.drawable.facebook_square_bw);
 		}
 	}
 
@@ -649,7 +688,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 	private class SessionStatusCallback implements Session.StatusCallback {
 		public void call(Session session, SessionState state,
 				Exception exception) {
-			
+
 			Logger.i("Entered SessionStatusCallback()");
 			Logger.i("session = " + session.toString());
 			Logger.i("state = " + state.toString());
