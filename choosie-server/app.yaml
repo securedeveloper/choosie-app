@@ -4,7 +4,12 @@ runtime: python27
 api_version: 1
 threadsafe: true
 
+
+
 handlers:
+- url: /images
+  static_dir: images
+
 - url: /.*
   script: main.app
 

@@ -48,7 +48,7 @@ class ChoosiePost(db.Model):
             "votes": self.get_serialized_votes(),
             "comments": self.get_serialized_comments(),
             "photo1": self.photo_path(1),
-            "photo2": self.photo_path(2) if self.post_type() == CHOOSIE_POST_TYPE_DILEMMA else '',
+            "photo2": self.photo2_path(),
             "question": self.question,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at),
@@ -59,6 +59,12 @@ class ChoosiePost(db.Model):
     if self.post_type_id is None:
       return CHOOSIE_POST_TYPE_DILEMMA
     return self.post_type_id
+
+  def photo2_path(self):
+    if self.post_type() == CHOOSIE_POST_TYPE_DILEMMA:
+      return self.photo_path(2)
+    else:
+      return "/images/update_choozie.png"
 
   def get_user(self):
     return CacheController.get_user_by_fb_id(self.user_fb_id)
