@@ -55,6 +55,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			String text = intent.getStringExtra("text");
 			String postKey = intent.getStringExtra("post_key");
 			String deviceId = intent.getStringExtra("device_id");
+			String is_friend = intent.getStringExtra("is_friend");
 			Logger.i("GCMINTENTSERVICE: GOT NOTIFICATION. NotificationType = "
 					+ notificationType + ", text = " + text + ", postkey = "
 					+ postKey + ", deviceID = " + deviceId);
