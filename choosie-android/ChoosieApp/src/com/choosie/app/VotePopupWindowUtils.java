@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.Vote;
 import com.choosie.app.Models.VoteData;
+import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
 
@@ -107,6 +108,22 @@ public class VotePopupWindowUtils {
 		// RelativeLayout layout = (RelativeLayout) inflater.inflate(
 		// R.layout.popup_layout,
 		// (ViewGroup) activity.findViewById(R.id.popup_element));
+
+		if (choosiePost.getPostType() == PostType.YesNo) {
+			((ImageView) layout
+					.findViewById(R.id.votesPopupWindow_votes1_image))
+					.setImageResource(R.drawable.thumbs_up);
+			((ImageView) layout
+					.findViewById(R.id.votesPopupWindow_votes2_image))
+					.setImageResource(R.drawable.thumbs_down);
+		} else {
+			((ImageView) layout
+					.findViewById(R.id.votesPopupWindow_votes1_image))
+					.setVisibility(View.GONE);
+			((ImageView) layout
+					.findViewById(R.id.votesPopupWindow_votes2_image))
+					.setVisibility(View.GONE);
+		}
 
 		// set the votes numbers
 		final TextView textViewVotes1 = (TextView) layout

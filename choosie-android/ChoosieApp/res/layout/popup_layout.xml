@@ -14,24 +14,46 @@
         android:paddingLeft="4dp"
         android:paddingRight="4dp" >
 
-        <TextView
-            android:id="@+id/votesPopupWindow_votes1"
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="#2A1EB0"
-            android:textStyle="bold" />
+            android:layout_weight="1" >
 
-        <TextView
-            android:id="@+id/votesPopupWindow_votes2"
+            <ImageView
+                android:id="@+id/votesPopupWindow_votes1_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_toLeftOf="@+id/votesPopupWindow_votes1" />
+
+            <TextView
+                android:id="@+id/votesPopupWindow_votes1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="#2A1EB0"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:gravity="center"
-            android:textColor="#2A1EB0"
-            android:textStyle="bold" />
+            android:layout_weight="1" >
+
+            <ImageView
+                android:id="@+id/votesPopupWindow_votes2_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_toLeftOf="@+id/votesPopupWindow_votes2" />
+
+            <TextView
+                android:id="@+id/votesPopupWindow_votes2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:enabled="false"
+                android:textColor="#2A1EB0"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </LinearLayout>
 
     <ListView

@@ -5,48 +5,71 @@
     android:layout_marginBottom="10dp"
     android:background="#FFFFFFFF" >
 
-    <LinearLayout
-        android:id="@+id/layout_images_comment"
+    <RelativeLayout
+        android:id="@+id/commentView_main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_user_comments"
-        android:orientation="horizontal" >
+        android:layout_height="wrap_content" >
 
-        <ImageView
-            android:id="@+id/photo1_comment_screen"
-            android:layout_width="fill_parent"
+        <RelativeLayout
+            android:id="@+id/commentView_middle_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingRight="1dp"
-            android:src="@android:drawable/divider_horizontal_dark" />
+            android:layout_centerInParent="true"
+            android:background="@drawable/post_box_border" >
 
-        <ImageView
-            android:id="@+id/photo2_comment_screen"
-            android:layout_width="fill_parent"
+            <ImageView
+                android:id="@+id/commentView_photo_midle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="5dp"
+                android:src="@android:drawable/divider_horizontal_dark" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_images_comment"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingLeft="1dp"
-            android:src="@android:drawable/divider_horizontal_dark" />
-    </LinearLayout>
+            android:background="@drawable/post_box_border"
+            android:orientation="horizontal" >
 
-    <LinearLayout
+            <ImageView
+                android:id="@+id/photo1_comment_screen"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="1dp"
+                android:src="@android:drawable/divider_horizontal_dark" />
+
+            <ImageView
+                android:id="@+id/photo2_comment_screen"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="1dp"
+                android:paddingRight="5dp"
+                android:src="@android:drawable/divider_horizontal_dark" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/viewComment_votes_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_images_comment"
-        android:layout_marginBottom="10dp" >
+        android:layout_below="@+id/commentView_main_layout"
+        android:padding="5dp" >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_alignParentLeft="true" >
 
             <ImageView
                 android:id="@+id/viewComment_votes1_pointing"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="4dp"
                 android:src="@drawable/pointing" />
 
             <TextView
@@ -62,16 +85,15 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:layout_alignParentRight="true" >
 
             <ImageView
                 android:id="@+id/viewComment_votes2_pointing"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="4dp"
                 android:src="@drawable/pointing" />
 
             <TextView
@@ -85,7 +107,7 @@
                 android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/LinearLayout_view_comment"

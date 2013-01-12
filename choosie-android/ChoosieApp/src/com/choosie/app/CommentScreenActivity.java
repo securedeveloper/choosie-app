@@ -50,6 +50,7 @@ public class CommentScreenActivity extends Activity {
 	ImageView image2View;
 	String postKey;
 	private boolean openVotesWindow;
+	private boolean noSecondPhoto;
 
 	// RelativeLayout mainCommentLayout;
 
@@ -94,6 +95,7 @@ public class CommentScreenActivity extends Activity {
 		questionEditText.setOnKeyListener(sendKeyListener);
 
 		intent = getIntent();
+		noSecondPhoto = intent.getBooleanExtra("no_second_photo", false);
 
 		String photo1Path = intent
 				.getStringExtra(Constants.IntentsCodes.photo1Path);
@@ -102,10 +104,9 @@ public class CommentScreenActivity extends Activity {
 		postKey = intent.getStringExtra(Constants.IntentsCodes.post_key);
 		// make this global for recycling later
 		image1Bitmap = BitmapFactory.decodeFile(photo1Path);
-		if (intent.getBooleanExtra("no_second_photo", false)) {
-			image2Bitmap = YesNoUtils.generateVoteDownImage(this, image1Bitmap);
-			image1Bitmap = YesNoUtils.generateVoteUpImage(this, image1Bitmap);
-		} else {
+
+		// decode second picture only if exist
+		if (noSecondPhoto == false) {
 			image2Bitmap = BitmapFactory.decodeFile(photo2Path);
 		}
 		isVotedAlready = intent.getBooleanExtra(
@@ -231,7 +232,7 @@ public class CommentScreenActivity extends Activity {
 			// initialize the holder
 			commentViewHolder.imagesLayout = (LinearLayout) itemView
 					.findViewById(R.id.layout_images_comment);
-			commentViewHolder.viewComment_votes_layout = (LinearLayout) itemView
+			commentViewHolder.viewComment_votes_layout = (RelativeLayout) itemView
 					.findViewById(R.id.viewComment_votes_layout);
 			commentViewHolder.votes1 = (TextView) itemView
 					.findViewById(R.id.viewComment_votes1);
@@ -247,11 +248,32 @@ public class CommentScreenActivity extends Activity {
 					.findViewById(R.id.commentScreen_commentierPhoto);
 			commentViewHolder.commentTime = (TextView) itemView
 					.findViewById(R.id.commentScreen_commentTime);
+			commentViewHolder.photoMiddle = (ImageView) itemView
+					.findViewById(R.id.commentView_photo_midle);
+			commentViewHolder.layoutMiddle = (RelativeLayout) itemView
+					.findViewById(R.id.commentView_middle_layout);
+			commentViewHolder.votesImageView1 = (ImageView) itemView
+					.findViewById(R.id.viewComment_votes1_pointing);
+			commentViewHolder.votesImageView2 = (ImageView) itemView
+					.findViewById(R.id.viewComment_votes2_pointing);
+
+			// commentViewHolder.layoutTwoPhotos = (RelativeLayout) itemView
+			// .findViewById(R.id.commentView_two_photos_layout);
+
+			Utils.setImageViewSize(commentViewHolder.layoutMiddle,
+					Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
+			Utils.setImageViewSize(commentViewHolder.photoMiddle,
+					Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
+			// commentViewHolder.layoutTwoPhotos.setVisibility(View.GONE);
+			commentViewHolder.layoutMiddle.setVisibility(View.GONE);
+			commentViewHolder.photoMiddle.setImageBitmap(null);
 
 			// set the size of the image view to be a square sized half of the
 			// screen width
 			int screenWidth = Utils.getScreenWidth();
 			if (screenWidth != -1) {
+				// commentViewHolder.layoutTwoPhotos.getLayoutParams().height =
+				// screenWidth / 2;
 				commentViewHolder.imageViewPhoto1.getLayoutParams().height = screenWidth / 2;
 				commentViewHolder.imageViewPhoto1.getLayoutParams().width = screenWidth / 2;
 				commentViewHolder.imageViewPhoto2.getLayoutParams().height = screenWidth / 2;
@@ -271,10 +293,27 @@ public class CommentScreenActivity extends Activity {
 			commentViewHolder.viewComment_votes_layout
 					.setVisibility(View.VISIBLE);
 
-			commentViewHolder.imageViewPhoto1.setImageBitmap(image1Bitmap);
-			commentViewHolder.imageViewPhoto2.setImageBitmap(image2Bitmap);
-			image1View = commentViewHolder.imageViewPhoto1;
-			image2View = commentViewHolder.imageViewPhoto2;
+			if (noSecondPhoto == false) {
+				// two photos mode
+				commentViewHolder.votesImageView1.setVisibility(View.GONE);
+				commentViewHolder.votesImageView2.setVisibility(View.GONE);
+				commentViewHolder.imageViewPhoto1.setImageBitmap(image1Bitmap);
+				commentViewHolder.imageViewPhoto2.setImageBitmap(image2Bitmap);
+				image1View = commentViewHolder.imageViewPhoto1;
+				image2View = commentViewHolder.imageViewPhoto2;
+			} else {
+				// only one photo
+				commentViewHolder.votesImageView1
+						.setImageResource(R.drawable.thumbs_up);
+				commentViewHolder.votesImageView2
+						.setImageResource(R.drawable.thumbs_down);
+
+				commentViewHolder.imagesLayout.setVisibility(View.GONE);
+				commentViewHolder.layoutMiddle.setVisibility(View.VISIBLE);
+				commentViewHolder.photoMiddle.setVisibility(View.VISIBLE);
+				commentViewHolder.photoMiddle.setImageBitmap(image1Bitmap);
+				commentViewHolder.photoMiddle.bringToFront();
+			}
 			if (isVotedAlready || isPostByMe) {
 				commentViewHolder.votes1.setText(votes1 + " votes");
 				commentViewHolder.votes2.setText(votes2 + " votes");
@@ -285,6 +324,9 @@ public class CommentScreenActivity extends Activity {
 				commentViewHolder.votes2.setText("?");
 			}
 		} else {
+			// commentViewHolder.layoutTwoPhotos.setVisibility(View.GONE);
+			commentViewHolder.layoutMiddle.setVisibility(View.GONE);
+			commentViewHolder.photoMiddle.setVisibility(View.GONE);
 			commentViewHolder.viewComment_votes_layout.setVisibility(View.GONE);
 			commentViewHolder.imagesLayout.setVisibility(View.GONE);
 		}
@@ -390,16 +432,19 @@ public class CommentScreenActivity extends Activity {
 			userPhotoBitmap.recycle();
 		}
 
-		image1View.setImageDrawable(null);
-		image2View.setImageDrawable(null);
+		if (noSecondPhoto == false) {
 
-		if (image1Bitmap != null) {
-			image1Bitmap.recycle();
-			image1Bitmap = null;
-		}
-		if (image2Bitmap != null) {
-			image2Bitmap.recycle();
-			image2Bitmap = null;
+			image1View.setImageDrawable(null);
+			image2View.setImageDrawable(null);
+
+			if (image1Bitmap != null) {
+				image1Bitmap.recycle();
+				image1Bitmap = null;
+			}
+			if (image2Bitmap != null) {
+				image2Bitmap.recycle();
+				image2Bitmap = null;
+			}
 		}
 
 	}
@@ -411,8 +456,13 @@ public class CommentScreenActivity extends Activity {
 	}
 
 	private class CommentViewHolder {
+		public ImageView votesImageView1;
+		public ImageView votesImageView2;
+		// public RelativeLayout layoutTwoPhotos;
+		public RelativeLayout layoutMiddle;
+		public ImageView photoMiddle;
 		LinearLayout imagesLayout;
-		LinearLayout viewComment_votes_layout;
+		RelativeLayout viewComment_votes_layout;
 		ImageView imageViewPhoto1;
 		ImageView imageViewPhoto2;
 		TextView votes1;
