@@ -38,6 +38,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -230,6 +231,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	protected void handleOnTouch(ImageView view, MotionEvent motion,
 			int drawable, int drawablePressed) {
+
+		// for the conflict with the scrollView
+		view.getParent().requestDisallowInterceptTouchEvent(true);
+
 		int maxX = view.getWidth();
 		int maxY = view.getHeight();
 
