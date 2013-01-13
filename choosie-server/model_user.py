@@ -5,7 +5,7 @@ import facebook
 import datetime
 import json
 import logging
-
+import facebook
 
 class User(db.Model):
     fb_uid = db.StringProperty(required=True)
@@ -19,7 +19,7 @@ class User(db.Model):
     fb_access_token_expdate = db.DateTimeProperty(required=True)
     device_id = db.StringProperty()
     email = db.StringProperty()
-  
+
     def name(self):
       return self.first_name + " " + self.last_name
 
@@ -30,6 +30,7 @@ class User(db.Model):
       if (user_json is not None):
         logging.info('user_json is not None: %s' % user_json)
         user = User.fb_user_to_choosie_user(user_json, fb_access_token, fb_access_token_expdate)
+        # user.set_friends()
         user.put()
 
     @staticmethod
@@ -52,5 +53,10 @@ class User(db.Model):
               "first_name": self.first_name,
               "last_name": self.last_name,
               "avatar": Utils.get_avatar(self.username)}
-    
+
+    # def set_friends(self):
+    #   graph = facebook.GraphAPI(self.fb_access_token)
+    #   h = graph.get_connections("me", "friends")
+    #   logging.info(h["data"])
+    #   self.friends  = [item["id"] for item in h["data"]]
 

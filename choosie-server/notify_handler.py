@@ -38,7 +38,6 @@ class NotifyHandler(webapp2.RequestHandler):
 
   @staticmethod
   def send_notifiction(notification_type, text, post_key, recipients):
-
     device_ids_array = [user.device_id for user in recipients]
 
     logging.info("Sending notification to devices: %s", ", ".join(device_ids_array))
@@ -67,7 +66,7 @@ class NotifyHandler(webapp2.RequestHandler):
 
     logging.info(result_data)
 
-    if result_data.get("canonical_ids") is 0:
+    if result_data.get("canonical_ids") is not 0:
       for index, result in enumerate(result_data["results"]):
         if result.get("registration_id") is not None:
           logging.info("Need to change device_id for user [%s]. New ID: %s",
