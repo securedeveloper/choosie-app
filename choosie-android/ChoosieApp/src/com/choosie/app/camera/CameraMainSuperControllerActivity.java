@@ -798,8 +798,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 			builder.setMessage("Are you sure you want to exit?");
 			builder.setCancelable(true);
-			builder.setPositiveButton("Yaa", new OkOnClickListener());
-			builder.setNegativeButton("Naa", new CancelOnClickListener());
+			builder.setPositiveButton("Yes", new OkOnClickListener());
+			builder.setNegativeButton("No", new CancelOnClickListener());
 			AlertDialog dialog = builder.create();
 			dialog.show();
 			break;
