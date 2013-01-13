@@ -48,10 +48,6 @@ public class StartActivity extends Activity {
 		Logger.i("************** Start Application! ****************");
 		Logger.i("StartActivity: onCreate()");
 
-		TextView welcome = (TextView) findViewById(R.id.welcome);
-		welcome.setText(getResources().getString(R.string.welcome) + " "
-				+ getResources().getString(R.string.app_name) + "!");
-
 		isFirstTimeToStartChoozieActivity = true;
 
 		// Initialize all buttons
@@ -197,9 +193,6 @@ public class StartActivity extends Activity {
 					public void onCompleted(GraphUser user, Response response) {
 						Logger.i("onCompleted");
 						if (user != null) {
-							TextView welcome = (TextView) findViewById(R.id.welcome);
-							welcome.setText("Hello " + user.getName() + "!");
-
 							// Update Client that there's a logged in user.
 							FacebookDetails details = new FacebookDetails(user
 									.getId(), Session.getActiveSession()
