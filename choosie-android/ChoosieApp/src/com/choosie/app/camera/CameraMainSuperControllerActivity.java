@@ -119,13 +119,13 @@ public class CameraMainSuperControllerActivity extends Activity {
 		startNewCameraActivity(Constants.RequestCodes.CAMERA_PICURE_FIRST,
 				imagePath1);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
 		EasyTracker.getInstance().activityStart(this);
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -573,8 +573,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 		}
 
 		// get images bitmaps
-		image2BitmapTot = Utils.getBitmapFromFileByViewSize(imagePath2,
-				Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
+		image2BitmapTot = Utils.getBitmapFromFileByViewSize(imagePath2, 350,
+				350);
 
 	}
 
@@ -598,8 +598,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 		}
 
 		// get images bitmaps
-		image1BitmapTot = Utils.getBitmapFromFileByViewSize(imagePath1,
-				Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
+		image1BitmapTot = Utils.getBitmapFromFileByViewSize(imagePath1, 350,
+				350);
 		// set image 1 and 2 yaanaa
 
 		Bitmap image = image1BitmapTot;
@@ -706,8 +706,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 			try {
 				session.reauthorizeForPublish(request);
 			} catch (Exception ex) {
-				L.e("Exception in reauthorizeForPublish() : "
-						+ ex.toString());
+				L.e("Exception in reauthorizeForPublish() : " + ex.toString());
 			}
 			Session.setActiveSession(session);
 			L.i("on set active session permissions: "
@@ -799,7 +798,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 			builder.setMessage("This will discard the pictures you have taken.");
 			builder.setCancelable(true);
 			builder.setPositiveButton("OK", new OkOnClickListener());
-			builder.setNegativeButton("Back to camera", new CancelOnClickListener());
+			builder.setNegativeButton("Back to camera",
+					new CancelOnClickListener());
 			AlertDialog dialog = builder.create();
 			dialog.show();
 			break;
