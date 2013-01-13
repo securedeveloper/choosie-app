@@ -12,29 +12,25 @@
     </style>
 
     <style name="VotingButtonOnChoosiePostView">
-        <item name="android:layout_width">75dp</item>
-        <item name="android:layout_height">75dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:scaleType">fitStart</item>
-        <item name="android:cropToPadding">false</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:cropToPadding">false</item>
-        <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:layout_marginRight">6dp</item>
         <item name="android:layout_marginTop">3dp</item>
     </style>
 
     <style name="VotingButtonOnChoosiePostViewRight">
-        <item name="android:layout_width">80dp</item>
-        <item name="android:layout_height">80dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:scaleType">fitStart</item>
-        <item name="android:cropToPadding">false</item>
-        <item name="android:paddingRight">2dp</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:cropToPadding">false</item>
-        <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginTop">3dp</item>
     </style>
 

@@ -38,7 +38,7 @@ import android.view.animation.AnimationUtils;
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
 	private SuperController superController;
-	private FeedViewHolder feedViewHolder;
+	private FeedViewHolder postViewHolder;
 
 	public ChoosiePostView(Context context, SuperController superController,
 			int position) {
@@ -49,54 +49,54 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void initializeHolder() {
-		feedViewHolder = new FeedViewHolder();
+		postViewHolder = new FeedViewHolder();
 
-		feedViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
-		feedViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
-		feedViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
-		feedViewHolder.votes2 = (TextView) findViewById(R.id.votes2);
-		feedViewHolder.feedtext = (TextView) findViewById(R.id.feedtext);
-		feedViewHolder.feed_name = (TextView) findViewById(R.id.feed_name);
-		feedViewHolder.time_text = (TextView) findViewById(R.id.time_text);
-		feedViewHolder.feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
-		feedViewHolder.imgView1 = (ImageView) findViewById(R.id.feedimage1);
-		feedViewHolder.imgView2 = (ImageView) findViewById(R.id.feedimage2);
-		feedViewHolder.imgSelected1 = (ImageView) findViewById(R.id.feed_image_vote_icon1);
-		feedViewHolder.imgSelected2 = (ImageView) findViewById(R.id.feed_image_vote_icon2);
-		feedViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
-		feedViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
-		feedViewHolder.layoutForLeftPhoto = (RelativeLayout) findViewById(R.id.layout_for_left_photo);
-		feedViewHolder.layoutForRightPhoto = (RelativeLayout) findViewById(R.id.layout_for_right_photo);
-		feedViewHolder.layoutForCenterPhoto = (RelativeLayout) findViewById(R.id.layout_for_center_photo);
-		feedViewHolder.progressBarCenter = (ProgressBar) findViewById(R.id.progressBarCenter);
-		feedViewHolder.imgViewCenter = (ImageView) findViewById(R.id.feedimageCenter);
-		feedViewHolder.voteImageAnimationCenter = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_center);
-		feedViewHolder.voteImageAnimationLeft = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_left);
-		feedViewHolder.voteImageAnimationRight = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_right);
+		postViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
+		postViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
+		postViewHolder.votes1 = (TextView) findViewById(R.id.votes1);
+		postViewHolder.votes2 = (TextView) findViewById(R.id.votes2);
+		postViewHolder.feedtext = (TextView) findViewById(R.id.feedtext);
+		postViewHolder.feed_name = (TextView) findViewById(R.id.feed_name);
+		postViewHolder.time_text = (TextView) findViewById(R.id.time_text);
+		postViewHolder.feed_userimage = (ImageView) findViewById(R.id.feed_userimage);
+		postViewHolder.imgView1 = (ImageView) findViewById(R.id.feedimage1);
+		postViewHolder.imgView2 = (ImageView) findViewById(R.id.feedimage2);
+		postViewHolder.voteButton1 = (ImageView) findViewById(R.id.feed_image_vote_icon1);
+		postViewHolder.voteButton2 = (ImageView) findViewById(R.id.feed_image_vote_icon2);
+		postViewHolder.progressBar1 = (ProgressBar) findViewById(R.id.progressBar1);
+		postViewHolder.progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
+		postViewHolder.layoutForLeftPhoto = (RelativeLayout) findViewById(R.id.layout_for_left_photo);
+		postViewHolder.layoutForRightPhoto = (RelativeLayout) findViewById(R.id.layout_for_right_photo);
+		postViewHolder.layoutForCenterPhoto = (RelativeLayout) findViewById(R.id.layout_for_center_photo);
+		postViewHolder.progressBarCenter = (ProgressBar) findViewById(R.id.progressBarCenter);
+		postViewHolder.imgViewCenter = (ImageView) findViewById(R.id.feedimageCenter);
+		postViewHolder.voteImageAnimationCenter = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_center);
+		postViewHolder.voteImageAnimationLeft = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_left);
+		postViewHolder.voteImageAnimationRight = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_right);
 
-		feedViewHolder.voteImageAnimationLeft.setImageBitmap(null);
-		feedViewHolder.voteImageAnimationRight.setImageBitmap(null);
-		feedViewHolder.voteImageAnimationCenter.setImageBitmap(null);
+		postViewHolder.voteImageAnimationLeft.setImageBitmap(null);
+		postViewHolder.voteImageAnimationRight.setImageBitmap(null);
+		postViewHolder.voteImageAnimationCenter.setImageBitmap(null);
 
 		// set the size of the image view to be a square sized half of the
 		// screen width
 		int screenWidth = Utils.getScreenWidth();
-		resizeViews(screenWidth / 2, screenWidth / 2, feedViewHolder.imgView1,
-				feedViewHolder.imgView2, feedViewHolder.layoutForLeftPhoto,
-				feedViewHolder.layoutForRightPhoto);
+		resizeViews(screenWidth / 2, screenWidth / 2, postViewHolder.imgView1,
+				postViewHolder.imgView2, postViewHolder.layoutForLeftPhoto,
+				postViewHolder.layoutForRightPhoto);
 
-		resizeViews(screenWidth, screenWidth, feedViewHolder.imgViewCenter,
-				feedViewHolder.layoutForCenterPhoto);
+		resizeViews(screenWidth, screenWidth, postViewHolder.imgViewCenter,
+				postViewHolder.layoutForCenterPhoto);
 	}
 
 	private void handleLayoutsVisibilityByPostType(PostType postType) {
 		if (postType == PostType.TOT) {
-			feedViewHolder.layoutForCenterPhoto.setVisibility(View.GONE);
+			postViewHolder.layoutForCenterPhoto.setVisibility(View.GONE);
 
 		} else {
 
-			feedViewHolder.progressBar1.setVisibility(View.GONE);
-			feedViewHolder.progressBar2.setVisibility(View.GONE);
+			postViewHolder.progressBar1.setVisibility(View.GONE);
+			postViewHolder.progressBar2.setVisibility(View.GONE);
 		}
 
 	}
@@ -125,124 +125,128 @@ public class ChoosiePostView extends RelativeLayout {
 	public void loadChoosiePost(final ChoosiePostData post, final int position) {
 		this.choosiePost = post;
 
-		feedViewHolder.feedtext.setText(post.getQuestion());
-		feedViewHolder.feed_name.setText(post.getAuthor().getUserName());
-		feedViewHolder.time_text.setText(Utils
+		postViewHolder.feedtext.setText(post.getQuestion());
+		postViewHolder.feed_name.setText(post.getAuthor().getUserName());
+		postViewHolder.time_text.setText(Utils
 				.getTimeDifferenceTextFromNow(post.getCreatedAt()));
 
-		feedViewHolder.imgView1.setVisibility(View.GONE);
-		feedViewHolder.imgView2.setVisibility(View.GONE);
-		feedViewHolder.imgViewCenter.setVisibility(View.GONE);
-		feedViewHolder.imgSelected1.setVisibility(View.GONE);
-		feedViewHolder.imgSelected2.setVisibility(View.GONE);
-		feedViewHolder.feed_userimage.setVisibility(View.GONE);
+		postViewHolder.imgView1.setVisibility(View.GONE);
+		postViewHolder.imgView2.setVisibility(View.GONE);
+		postViewHolder.imgViewCenter.setVisibility(View.GONE);
+		postViewHolder.voteButton1.setVisibility(View.GONE);
+		postViewHolder.voteButton2.setVisibility(View.GONE);
+		postViewHolder.feed_userimage.setVisibility(View.GONE);
 
 		handleLayoutsVisibilityByPostType(post.getPostType());
 
 		if (post.getPostType() == PostType.YesNo) {
-			feedViewHolder.layoutForCenterPhoto.setVisibility(View.VISIBLE);
-			feedViewHolder.layoutForLeftPhoto.setBackgroundColor(getResources()
+			postViewHolder.layoutForCenterPhoto.setVisibility(View.VISIBLE);
+			postViewHolder.layoutForLeftPhoto.setBackgroundColor(getResources()
 					.getColor(R.color.Transparent));
-			feedViewHolder.layoutForRightPhoto
+			postViewHolder.layoutForRightPhoto
 					.setBackgroundColor(getResources().getColor(
 							R.color.Transparent));
 
 			Logger.i(post.getPhoto2URL());
-			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgViewCenter,
-					feedViewHolder.progressBarCenter,
-					feedViewHolder.imgSelected1);
-			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgViewCenter,
-					feedViewHolder.progressBarCenter,
-					feedViewHolder.imgSelected2);
-
+			loadImageToView(post.getPhoto1URL(), postViewHolder.imgViewCenter,
+					postViewHolder.progressBarCenter,
+					postViewHolder.voteButton1);
+			loadImageToView(post.getPhoto1URL(), postViewHolder.imgViewCenter,
+					postViewHolder.progressBarCenter,
+					postViewHolder.voteButton2);
+			int screenWidth = Utils.getScreenWidth();
+			resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
+					postViewHolder.voteButton1, postViewHolder.voteButton2);
 		} else {
-			loadImageToView(post.getPhoto1URL(), feedViewHolder.imgView1,
-					feedViewHolder.progressBar1, feedViewHolder.imgSelected1);
-			loadImageToView(post.getPhoto2URL(), feedViewHolder.imgView2,
-					feedViewHolder.progressBar2, feedViewHolder.imgSelected2);
+			loadImageToView(post.getPhoto1URL(), postViewHolder.imgView1,
+					postViewHolder.progressBar1, postViewHolder.voteButton1);
+			loadImageToView(post.getPhoto2URL(), postViewHolder.imgView2,
+					postViewHolder.progressBar2, postViewHolder.voteButton2);
+			int screenWidth = Utils.getScreenWidth();
+			resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
+					postViewHolder.voteButton1, postViewHolder.voteButton2);
+
 		}
 		loadImageToView(post.getAuthor().getPhotoURL(),
-				feedViewHolder.feed_userimage, null, null);
-		loadCommentsToView(post, feedViewHolder);
+				postViewHolder.feed_userimage, null, null);
+		loadCommentsToView(post, postViewHolder);
 
 		// DECIDE IF SHOW RESUTLS OR NOT
 		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
-			ChangeVotingResultsVisibility(feedViewHolder.votes1,
-					feedViewHolder.votes2, View.VISIBLE);
+			ChangeVotingResultsVisibility(postViewHolder.votes1,
+					postViewHolder.votes2, View.VISIBLE);
 		} else {
-			feedViewHolder.votes1.setText("");
-			feedViewHolder.votes2.setText("");
+			postViewHolder.votes1.setText("");
+			postViewHolder.votes2.setText("");
 			// ChangeVotingResultsVisibility(feedViewHolder.votes1,
 			// feedViewHolder.votes2, View.INVISIBLE);
 		}
 
 		// Set border for voted image
-		setVoteButtonIcon(feedViewHolder.imgSelected1,
+		setVoteButtonIcon(postViewHolder.voteButton1,
 				choosiePost.isVotedAlready(1), 1);
-		setVoteButtonIcon(feedViewHolder.imgSelected2,
+		setVoteButtonIcon(postViewHolder.voteButton2,
 				choosiePost.isVotedAlready(2), 2);
 
 		// TODO: Merge both listeners below to a single one that accepts an
 		// argument.
-		feedViewHolder.imgView1
+		postViewHolder.imgView1
 				.setOnLongClickListener(new OnLongClickListener() {
 					public boolean onLongClick(View v) {
 						Log.i(Constants.LOG_TAG,
 								"onLongClick signaled for voting 1");
-						return handleVote1(feedViewHolder.votes1,
-								feedViewHolder.votes2,
-								feedViewHolder.imgSelected1,
-								feedViewHolder.imgSelected2);
+						return handleVote1(postViewHolder.votes1,
+								postViewHolder.votes2,
+								postViewHolder.voteButton1,
+								postViewHolder.voteButton2);
 					}
 				});
 
-		feedViewHolder.imgSelected1.setOnClickListener(new OnClickListener() {
+		postViewHolder.voteButton1.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 
-				handleVote1(feedViewHolder.votes1, feedViewHolder.votes2,
-						feedViewHolder.imgSelected1,
-						feedViewHolder.imgSelected2);
+				handleVote1(postViewHolder.votes1, postViewHolder.votes2,
+						postViewHolder.voteButton1, postViewHolder.voteButton2);
 				if (choosiePost.getPostType() == PostType.YesNo) {
 					setAndStartAnimationForCenter(
-							feedViewHolder.voteImageAnimationCenter,
+							postViewHolder.voteImageAnimationCenter,
 							R.drawable.thumbs_up, R.anim.enter_from_left);
 				} else {
 					setAndStartAnimationForCenter(
-							feedViewHolder.voteImageAnimationLeft,
+							postViewHolder.voteImageAnimationLeft,
 							R.drawable.thumbs_up, R.anim.enter_from_left);
 				}
 			}
 		});
 
-		feedViewHolder.imgView2
+		postViewHolder.imgView2
 				.setOnLongClickListener(new OnLongClickListener() {
 
 					public boolean onLongClick(View v) {
 						Log.i(Constants.LOG_TAG,
 								"onLongClick signaled for voting 2");
-						return handleVote2(feedViewHolder.votes1,
-								feedViewHolder.votes2,
-								feedViewHolder.imgSelected1,
-								feedViewHolder.imgSelected2);
+						return handleVote2(postViewHolder.votes1,
+								postViewHolder.votes2,
+								postViewHolder.voteButton1,
+								postViewHolder.voteButton2);
 					}
 
 				});
 
-		feedViewHolder.imgSelected2.setOnClickListener(new OnClickListener() {
+		postViewHolder.voteButton2.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 
-				handleVote2(feedViewHolder.votes1, feedViewHolder.votes2,
-						feedViewHolder.imgSelected1,
-						feedViewHolder.imgSelected2);
+				handleVote2(postViewHolder.votes1, postViewHolder.votes2,
+						postViewHolder.voteButton1, postViewHolder.voteButton2);
 				if (choosiePost.getPostType() == PostType.YesNo) {
 					setAndStartAnimationForCenter(
-							feedViewHolder.voteImageAnimationCenter,
+							postViewHolder.voteImageAnimationCenter,
 							R.drawable.thumbs_down, R.anim.enter_from_right);
 				} else {
 					setAndStartAnimationForCenter(
-							feedViewHolder.voteImageAnimationRight,
+							postViewHolder.voteImageAnimationRight,
 							R.drawable.thumbs_up, R.anim.enter_from_right);
 				}
 			}
@@ -267,15 +271,15 @@ public class ChoosiePostView extends RelativeLayout {
 		};
 
 		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
-			feedViewHolder.votes1.setOnClickListener(votesListener);
-			feedViewHolder.votes2.setOnClickListener(votesListener);
+			postViewHolder.votes1.setOnClickListener(votesListener);
+			postViewHolder.votes2.setOnClickListener(votesListener);
 		} else {
-			feedViewHolder.votes1.setOnClickListener(null);
-			feedViewHolder.votes2.setOnClickListener(null);
+			postViewHolder.votes1.setOnClickListener(null);
+			postViewHolder.votes2.setOnClickListener(null);
 		}
 
-		feedViewHolder.imgView1.setOnClickListener(enlargeListener);
-		feedViewHolder.imgView2.setOnClickListener(enlargeListener);
+		postViewHolder.imgView1.setOnClickListener(enlargeListener);
+		postViewHolder.imgView2.setOnClickListener(enlargeListener);
 	}
 
 	protected void setAndStartAnimationForCenter(final ImageView imageView,
@@ -534,8 +538,8 @@ public class ChoosiePostView extends RelativeLayout {
 		public ImageView feed_userimage;
 		public ImageView imgView1;
 		public ImageView imgView2;
-		public ImageView imgSelected1;
-		public ImageView imgSelected2;
+		public ImageView voteButton1;
+		public ImageView voteButton2;
 		public ProgressBar progressBar1;
 		public ProgressBar progressBar2;
 	}

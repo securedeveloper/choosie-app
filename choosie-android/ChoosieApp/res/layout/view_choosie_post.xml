@@ -153,7 +153,8 @@
                         <ImageView
                             android:id="@+id/feed_image_vote_icon1"
                             style="@style/VotingButtonOnChoosiePostView"
-                            android:src="@drawable/thumbs_up_unpressed" />
+                            android:layout_alignParentLeft="true"
+                            android:src="@drawable/thumbsupuntouched" />
                     </RelativeLayout>
 
                     <LinearLayout
@@ -176,8 +177,8 @@
                         android:layout_height="wrap_content"
                         android:background="#F5F5FF"
                         android:orientation="vertical" >
-                        
-                         <ImageView
+
+                        <ImageView
                             android:id="@+id/choosiePost_voteImage_animation_right"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
@@ -198,8 +199,9 @@
 
                         <ImageView
                             android:id="@+id/feed_image_vote_icon2"
-                            style="@style/VotingButtonOnChoosiePostViewRight"
-                            android:src="@drawable/thumbs_up_unpressed" />
+                            style="@style/VotingButtonOnChoosiePostView"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/thumbsupuntouched" />
                     </RelativeLayout>
 
                     <LinearLayout
