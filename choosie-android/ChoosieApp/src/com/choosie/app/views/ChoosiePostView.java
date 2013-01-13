@@ -140,6 +140,7 @@ public class ChoosiePostView extends RelativeLayout {
 		postViewHolder.feed_userimage.setVisibility(View.GONE);
 
 		handleLayoutsVisibilityByPostType(post.getPostType());
+		setThumbsIconsNextToVoteTextVisibility();
 
 		if (post.getPostType() == PostType.YesNo) {
 			postViewHolder.layoutForCenterPhoto.setVisibility(View.VISIBLE);
@@ -160,8 +161,6 @@ public class ChoosiePostView extends RelativeLayout {
 			resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
 					postViewHolder.voteButton1, postViewHolder.voteButton2);
 		} else {
-			postViewHolder.voteThumbDownIcon.setVisibility(View.GONE);
-			postViewHolder.voteThumbUpIcon.setVisibility(View.GONE);
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgView1,
 					postViewHolder.progressBar1, postViewHolder.voteButton1);
 			loadImageToView(post.getPhoto2URL(), postViewHolder.imgView2,
@@ -182,6 +181,8 @@ public class ChoosiePostView extends RelativeLayout {
 		} else {
 			postViewHolder.votes1.setText("");
 			postViewHolder.votes2.setText("");
+			postViewHolder.voteThumbUpIcon.setVisibility(View.GONE);
+			postViewHolder.voteThumbDownIcon.setVisibility(View.GONE);
 			// ChangeVotingResultsVisibility(feedViewHolder.votes1,
 			// feedViewHolder.votes2, View.INVISIBLE);
 		}
@@ -282,6 +283,9 @@ public class ChoosiePostView extends RelativeLayout {
 
 		postViewHolder.imgView1.setOnClickListener(enlargeListener);
 		postViewHolder.imgView2.setOnClickListener(enlargeListener);
+	}
+
+	private void setThumbsIconsNextToVoteTextVisibility() {
 	}
 
 	protected void setAndStartAnimationForCenter(final ImageView imageView,
@@ -397,6 +401,14 @@ public class ChoosiePostView extends RelativeLayout {
 		}
 		votes1.setVisibility(visibility);
 		votes2.setVisibility(visibility);
+		if (choosiePost.getPostType() == PostType.TOT) {
+			postViewHolder.voteThumbUpIcon.setVisibility(View.VISIBLE);
+			postViewHolder.voteThumbDownIcon.setVisibility(View.GONE);
+		} else {
+			postViewHolder.voteThumbUpIcon.setVisibility(View.VISIBLE);
+			postViewHolder.voteThumbDownIcon.setVisibility(View.VISIBLE);
+		}
+
 	}
 
 	private void loadCommentsToView(ChoosiePostData post,

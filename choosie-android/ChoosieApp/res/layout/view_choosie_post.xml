@@ -219,8 +219,10 @@
 
             <ImageView
                 android:id="@+id/votes_thumbs_up_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginLeft="-1dp"
+                android:layout_marginTop="4dp"
                 android:layout_alignParentLeft="true"
                 android:src="@drawable/thumbs_up" />
 
@@ -238,9 +240,9 @@
 
             <ImageView
                 android:id="@+id/votes_thumbs_down_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="3dp"
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:layout_marginTop="6dp"
                 android:layout_toLeftOf="@+id/votes2"
                 android:src="@drawable/thumbs_down" />
 
