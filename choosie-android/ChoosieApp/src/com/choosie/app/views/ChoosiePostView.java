@@ -48,7 +48,7 @@ public class ChoosiePostView extends RelativeLayout {
 		initializeHolder();
 	}
 
-	private void initializeHolder() {
+	private void initializeHolder() { 
 		postViewHolder = new FeedViewHolder();
 
 		postViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);

@@ -33,6 +33,8 @@ public class StartActivity extends Activity {
 	Button buttonLogout;
 	ImageButton goToApplication;
 	ImageButton buttonLogin;
+	private boolean isFirstTimeToStartChoozieActivity;
+
 	Session.StatusCallback statusCallback = new SessionStatusCallback();
 
 	@Override
@@ -50,7 +52,7 @@ public class StartActivity extends Activity {
 		welcome.setText(getResources().getString(R.string.welcome) + " "
 				+ getResources().getString(R.string.app_name) + "!");
 
-		Log.i("oernlog", "daasdadasdasd");
+		isFirstTimeToStartChoozieActivity = true;
 
 		// Initialize all buttons
 		InitializeComponents();
@@ -223,7 +225,10 @@ public class StartActivity extends Activity {
 							tracker.trackEvent("StartActivity",
 									"goToApplication", "", null);
 							Logger.i("Starting ChoosieActivity");
-							startActivity(intent);
+							if (isFirstTimeToStartChoozieActivity == true) {
+								isFirstTimeToStartChoozieActivity = false;
+								startActivity(intent);
+							}
 							finish();
 						}
 					}

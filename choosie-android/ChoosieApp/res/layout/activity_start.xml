@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="98dp"
+        android:layout_marginTop="40dp"
         android:text="@string/welcome"
         android:textAppearance="?android:attr/textAppearanceLarge"
         tools:context=".StartActivity" />
@@ -19,9 +19,8 @@
         android:id="@+id/fbLoginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/welcome"
+        android:layout_above="@+id/goToApplication"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="38dp"
         android:background="@color/White"
         android:contentDescription="@string/com_facebook_loginview_log_in_button"
         android:scaleType="center"
@@ -34,16 +33,17 @@
         android:layout_below="@+id/fbLoginButton"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="53dp"
-        android:visibility="invisible"
-        android:text="@string/logout" />
+        android:text="@string/logout"
+        android:visibility="invisible" />
 
     <ImageButton
         android:id="@+id/goToApplication"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fbLogoutButton"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="62dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
         android:background="@color/White"
         android:contentDescription="@string/app_name"
         android:src="@drawable/go_to_app"
