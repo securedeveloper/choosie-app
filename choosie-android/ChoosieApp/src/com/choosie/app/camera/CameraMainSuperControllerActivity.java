@@ -31,7 +31,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -531,7 +531,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 			break;
 
 		case Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION:
-			Log.i(Constants.LOG_TAG, "after activity fb");
+			Logger.i("after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
 			if (resultCode == Constants.RequestCodes.FB_PERMISSIONS_GRANTED) {
@@ -694,9 +694,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 			try {
 				session.reauthorizeForPublish(request);
 			} catch (Exception ex) {
-				Log.e(Constants.LOG_TAG,
-						"Exception in reauthorizeForPublish() : "
-								+ ex.toString());
+				Logger.e("Exception in reauthorizeForPublish() : "
+						+ ex.toString());
 			}
 			Session.setActiveSession(session);
 			Logger.i("on set active session permissions: "

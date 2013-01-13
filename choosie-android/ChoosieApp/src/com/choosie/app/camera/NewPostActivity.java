@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -142,9 +142,8 @@ public class NewPostActivity extends Activity {
 			try {
 				session.reauthorizeForPublish(request);
 			} catch (Exception ex) {
-				Log.e(Constants.LOG_TAG,
-						"Exception in reauthorizeForPublish() : "
-								+ ex.toString());
+				Logger.e("Exception in reauthorizeForPublish() : "
+						+ ex.toString());
 			}
 			Logger.i("on set active session permissions: "
 					+ session.getPermissions().toString());
@@ -153,19 +152,20 @@ public class NewPostActivity extends Activity {
 
 	protected void sendPostData() {
 
-//		// create a new post with all details
-//		NewChoosiePostData ncpd = new NewChoosiePostData(bmp1, bmp2, mQuestion
-//				.getText().toString());
-//
-//		// insert it to a bundle
-//		Bundle bundle = new Bundle();
-//		bundle.putSerializable("post", ncpd);
-//
-//		// add the bundle to the intent
-//		Intent intent = new Intent();
-//		intent.putExtras(bundle);
-//
-//		startActivity(intent);
+		// // create a new post with all details
+		// NewChoosiePostData ncpd = new NewChoosiePostData(bmp1, bmp2,
+		// mQuestion
+		// .getText().toString());
+		//
+		// // insert it to a bundle
+		// Bundle bundle = new Bundle();
+		// bundle.putSerializable("post", ncpd);
+		//
+		// // add the bundle to the intent
+		// Intent intent = new Intent();
+		// intent.putExtras(bundle);
+		//
+		// startActivity(intent);
 	}
 
 	private class SessionStatusCallback implements Session.StatusCallback {

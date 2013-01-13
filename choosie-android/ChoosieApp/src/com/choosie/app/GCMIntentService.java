@@ -19,7 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
+
 
 public class GCMIntentService extends GCMBaseIntentService {
 	@SuppressWarnings("hiding")
@@ -31,7 +31,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-		Log.i(TAG, "Received message. Extras: " + intent.getExtras());
+		Logger.i(TAG + " Received message. Extras: " + intent.getExtras());
 
 		generateNotification(context, intent);
 	}
@@ -152,27 +152,27 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onRegistered(Context context, String registrationId) {
-		Log.i(TAG, "Device registered: regId = " + registrationId);
+		Logger.i(TAG + " Device registered: regId = " + registrationId);
 
 		Client.getInstance().registerGCM(registrationId);
 	}
 
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
-		Log.i(TAG, "Device unregistered");
+		Logger.i(TAG + " Device unregistered");
 
 		Client.getInstance().unregisterGCM(registrationId);
 	}
 
 	@Override
 	protected void onError(Context context, String errorId) {
-		Log.i(TAG, "Received error: " + errorId);
+		Logger.i(TAG + " Received error: " + errorId);
 	}
 
 	@Override
 	protected boolean onRecoverableError(Context context, String errorId) {
 		// log message
-		Log.i(TAG, "Received recoverable error: " + errorId);
+		Logger.i(TAG + " Received recoverable error: " + errorId);
 		return super.onRecoverableError(context, errorId);
 	}
 }

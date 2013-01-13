@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -197,7 +197,7 @@ public class ChoosieActivity extends Activity {
 			break;
 
 		case Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION:
-			Log.i(Constants.LOG_TAG, "after activity fb");
+			Logger.i("after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
 			// NOTE: Special handling: In case user presses on 'Share on

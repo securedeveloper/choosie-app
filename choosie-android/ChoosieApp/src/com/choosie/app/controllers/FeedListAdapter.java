@@ -12,7 +12,7 @@ import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.views.ChoosiePostView;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -123,8 +123,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return;
 		}
 		if (param.isAppend() && lastCursor == param.getCursor()) {
-			Log.w(Constants.LOG_TAG,
-					"Not supposed to get here: an update that was "
+			Logger.w("Not supposed to get here: an update that was "
 							+ "recevied twice.");
 			return;
 		}
@@ -163,7 +162,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			addItemsToList();
 			break;
 		case REFRESHING_FEED:
-			Log.i("bla bla", "fdfd");
+			Logger.i("bla bla", "fdfd");
 			showLoadingItem();
 			addItemsToList();
 			break;

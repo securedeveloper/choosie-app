@@ -2,7 +2,7 @@ package com.choosie.app;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+
 
 public class IntentData implements Parcelable {
 	private final int startingImage;
@@ -20,7 +20,7 @@ public class IntentData implements Parcelable {
 		/*
 		 * Reconstruct from the Parcel
 		 */
-		Log.v("parcel ota",
+		Logger.v("parcel ota",
 				"ParcelData(Parcel source): time to put back parcel data");
 		startingImage = source.readInt();
 		votes1 = source.readInt();

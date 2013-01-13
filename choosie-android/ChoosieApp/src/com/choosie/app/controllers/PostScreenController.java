@@ -25,7 +25,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -132,9 +132,8 @@ public class PostScreenController extends ScreenController {
 			try {
 				session.reauthorizeForPublish(request);
 			} catch (Exception ex) {
-				Log.e(Constants.LOG_TAG,
-						"Exception in reauthorizeForPublish() : "
-								+ ex.toString());
+				Logger.e("Exception in reauthorizeForPublish() : "
+						+ ex.toString());
 			}
 			Logger.i("on set active session permissions: "
 					+ session.getPermissions().toString());
@@ -213,8 +212,7 @@ public class PostScreenController extends ScreenController {
 							Logger.i("Opening new ReauthorizeRequest");
 							session.reauthorizeForPublish(openRequest);
 						} catch (Exception ex) {
-							Log.e(Constants.LOG_TAG,
-									"EXCEPTION!!! : " + ex.toString());
+							Logger.e("EXCEPTION!!! : " + ex.toString());
 						}
 					}
 				}
@@ -494,7 +492,7 @@ public class PostScreenController extends ScreenController {
 		try {
 			imageFile = File.createTempFile(imageFileName, ".jpg", dir);
 		} catch (IOException e) {
-			Log.e("createImageFile", "failed to create temp image file: "
+			Logger.e("createImageFile", "failed to create temp image file: "
 					+ imageFileName);
 			e.printStackTrace();
 		}

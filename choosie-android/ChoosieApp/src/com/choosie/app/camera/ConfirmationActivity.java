@@ -12,7 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
-import android.util.Log;
+
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -64,7 +64,7 @@ public class ConfirmationActivity extends Activity {
 				.createScaledBitmap(BitmapFactory.decodeFile(path),
 						screenWidth, screenWidth, false);
 
-		Log.i("cameraApi",
+		Logger.i("cameraApi",
 				"on confirmation, onCreate, about to show scalled bitmap width = "
 						+ scalledBitmapToShow.getWidth() + " height = "
 						+ scalledBitmapToShow.getWidth() + " size = "
@@ -89,7 +89,7 @@ public class ConfirmationActivity extends Activity {
 		bottomHideHeight = bundle.getInt(
 				Constants.IntentsCodes.cameraBottomHideHeight, 0);
 
-		Log.i("orenc", "topHeight = " + topWrapperHeight + " bottomHeight = "
+		Logger.i("orenc", "topHeight = " + topWrapperHeight + " bottomHeight = "
 				+ bottomWrapperHeight + " topHideHeight = " + topHideHeight
 				+ " bottomHideHeight = " + bottomHideHeight);
 
@@ -254,20 +254,20 @@ public class ConfirmationActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		Log.i("cameraApi", "cameraConfirmation cameraActivity onDestroy()");
+		Logger.i("cameraApi", "cameraConfirmation cameraActivity onDestroy()");
 		super.onDestroy();
 		this.finish();
 	}
 
 	@Override
 	protected void onRestart() {
-		Log.i("cameraApi", "cameraConfirmation cameraActivity onRestart()");
+		Logger.i("cameraApi", "cameraConfirmation cameraActivity onRestart()");
 		super.onRestart();
 	}
 
 	@Override
 	protected void onStop() {
-		Log.i("cameraApi", "cameraConfirmation cameraActivity onStop()");
+		Logger.i("cameraApi", "cameraConfirmation cameraActivity onStop()");
 		super.onStop();
 	}
 

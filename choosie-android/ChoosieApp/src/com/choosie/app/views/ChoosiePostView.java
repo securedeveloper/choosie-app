@@ -23,7 +23,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -193,8 +193,7 @@ public class ChoosiePostView extends RelativeLayout {
 		postViewHolder.imgView1
 				.setOnLongClickListener(new OnLongClickListener() {
 					public boolean onLongClick(View v) {
-						Log.i(Constants.LOG_TAG,
-								"onLongClick signaled for voting 1");
+						Logger.i("onLongClick signaled for voting 1");
 						return handleVote1(postViewHolder.votes1,
 								postViewHolder.votes2,
 								postViewHolder.voteButton1,
@@ -224,8 +223,7 @@ public class ChoosiePostView extends RelativeLayout {
 				.setOnLongClickListener(new OnLongClickListener() {
 
 					public boolean onLongClick(View v) {
-						Log.i(Constants.LOG_TAG,
-								"onLongClick signaled for voting 2");
+						Logger.i("onLongClick signaled for voting 2");
 						return handleVote2(postViewHolder.votes1,
 								postViewHolder.votes2,
 								postViewHolder.voteButton1,
@@ -325,38 +323,38 @@ public class ChoosiePostView extends RelativeLayout {
 	private boolean handleVote2(final TextView votes1, final TextView votes2,
 			final ImageView imgSelected1, final ImageView imgSelected2) {
 		if (!choosiePost.isVotedAlready(2)) {
-			Log.i(Constants.LOG_TAG, "voting 2 (Not voted 2 yet)");
+			Logger.i("voting 2 (Not voted 2 yet)");
 			superController.voteFor(choosiePost, 2);
 
 			// SHOW VOTES RESULTS
 			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 
 			// Set border for relevant image
-			Log.i(Constants.LOG_TAG, "Setting border for image 2");
+			Logger.i("Setting border for image 2");
 			setVoteButtonIcon(imgSelected2, true, 2);
 			setVoteButtonIcon(imgSelected1, false, 1);
 			return true;
 		}
-		Log.i(Constants.LOG_TAG, "Already voted for 2. vote not sent");
+		Logger.i("Already voted for 2. vote not sent");
 		return false;
 	}
 
 	private boolean handleVote1(final TextView votes1, final TextView votes2,
 			final ImageView imgSelected1, final ImageView imgSelected2) {
 		if (!choosiePost.isVotedAlready(1)) {
-			Log.i(Constants.LOG_TAG, "voting 1 (Not voted 1 yet)");
+			Logger.i("voting 1 (Not voted 1 yet)");
 			superController.voteFor(choosiePost, 1);
 
 			// SHOW VOTES RESULTS
 			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 
 			// Set border for relevant image
-			Log.i(Constants.LOG_TAG, "Setting border for image 1");
+			Logger.i("Setting border for image 1");
 			setVoteButtonIcon(imgSelected1, true, 1);
 			setVoteButtonIcon(imgSelected2, false, 2);
 			return true;
 		}
-		Log.i(Constants.LOG_TAG, "Already voted for 1. vote not sent");
+		Logger.i("Already voted for 1. vote not sent");
 		return false;
 	}
 

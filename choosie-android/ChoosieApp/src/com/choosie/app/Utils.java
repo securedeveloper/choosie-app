@@ -32,7 +32,7 @@ import android.os.Build;
 import android.os.Debug;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.ImageView;
 
@@ -49,7 +49,8 @@ public class Utils {
 		try {
 			date = df.parse(str_date);
 		} catch (ParseException e) {
-			Log.e("convertStringToDateUTC", "failed parsing SimpleDateFormat");
+			Logger.e("convertStringToDateUTC",
+					"failed parsing SimpleDateFormat");
 			e.printStackTrace();
 			return null;
 		}
@@ -63,7 +64,7 @@ public class Utils {
 
 		if (milliseconds < 0) {
 			// In case the time difference is negative: probably an error.
-			Log.w(Constants.LOG_TAG, "Got a picture from the future.");
+			Logger.w("Got a picture from the future.");
 			return "";
 		}
 		long seconds = milliseconds / 1000;
@@ -148,7 +149,8 @@ public class Utils {
 			fo.write(bos.toByteArray());
 			fo.close();
 		} catch (IOException e) {
-			Log.e("writeByteStreamOnSD", "failed to wirte on file: " + fullPath);
+			Logger.e("writeByteStreamOnSD", "failed to wirte on file: "
+					+ fullPath);
 			e.printStackTrace();
 		}
 	}
@@ -229,7 +231,7 @@ public class Utils {
 				memoryInfo.getTotalPss() / 1024.0,
 				memoryInfo.getTotalPrivateDirty() / 1024.0,
 				memoryInfo.getTotalSharedDirty() / 1024.0);
-		Log.d("Utils", memMessage);
+		Logger.d("Utils: " + memMessage);
 	}
 
 	public static Bitmap shrinkBitmapToImageViewSizeIfNeeded(Bitmap inputBitmap) {
@@ -314,7 +316,7 @@ public class Utils {
 		try {
 			imageFile = File.createTempFile(imageFileName, ".jpg", dir);
 		} catch (IOException e) {
-			Log.e("createImageFile", "failed to create temp image file: "
+			Logger.e("createImageFile", "failed to create temp image file: "
 					+ imageFileName);
 			e.printStackTrace();
 		}
@@ -371,7 +373,7 @@ public class Utils {
 		int h = bitmap.getHeight();
 
 		int[] pix = new int[w * h];
-		Log.e("pix", w + " " + h + " " + pix.length);
+		Logger.e("pix", w + " " + h + " " + pix.length);
 		bitmap.getPixels(pix, 0, w, 0, 0, w, h);
 
 		int wm = w - 1;
@@ -558,7 +560,7 @@ public class Utils {
 			}
 		}
 
-		Log.e("pix", w + " " + h + " " + pix.length);
+		Logger.e("pix", w + " " + h + " " + pix.length);
 		bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
 		return (bitmap);
