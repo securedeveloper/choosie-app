@@ -41,7 +41,7 @@ public class Caches {
 			if (result == null) {
 				return null;
 			}
-			return Utils.shrinkBitmapToImageViewSizeIfNeeded(result);
+			return Utils.shrinkBitmapToImageViewSizeIfNeeded(result, false);
 		}
 
 		@Override
@@ -62,7 +62,7 @@ public class Caches {
 	private Cache<String, ChoosiePostData> postsCache;
 	private Cache<String, Bitmap> photosCache;
 	private Cache<String, Bitmap> blurredCache;
-	private PhotosCache blurredPhotosCache;
+	private PhotosCache bigPhotosCache;
 
 	private static Caches instance = new Caches();
 
@@ -78,8 +78,8 @@ public class Caches {
 		return photosCache;
 	}
 
-	public Cache<String, Bitmap> getBlurredPhotosCache() {
-		return blurredPhotosCache;
+	public Cache<String, Bitmap> getBigPhotosCache() {
+		return bigPhotosCache;
 	}
 
 	public Cache<FeedCacheKey, FeedResponse> getFeedCache() {
@@ -94,12 +94,14 @@ public class Caches {
 		int photoCacheMaxSize = 8 * 1024 * 1024; // 10 MB
 		photosCache = new PhotosCache(photoCacheMaxSize);
 
-		int blurredPhotoCacheMaxSize = 2 * 1024 * 1024; // 10 MB
-		blurredPhotosCache = new PhotosCache(blurredPhotoCacheMaxSize) {
+		int bigPhotoCacheMaxSize = 2 * 1024 * 1024; // 10 MB
+		bigPhotosCache = new PhotosCache(bigPhotoCacheMaxSize) {
 			@Override
 			protected Bitmap beforePutInMemory(Bitmap result) {
-				result = Utils.fastblur(result, 20);
-				return super.beforePutInMemory(result);
+				if (result == null) {
+					return null;
+				}
+				return Utils.shrinkBitmapToImageViewSizeIfNeeded(result, true);
 			}
 		};
 

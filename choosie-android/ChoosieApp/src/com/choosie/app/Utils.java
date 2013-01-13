@@ -49,8 +49,7 @@ public class Utils {
 		try {
 			date = df.parse(str_date);
 		} catch (ParseException e) {
-			L.e("convertStringToDateUTC",
-					"failed parsing SimpleDateFormat");
+			L.e("convertStringToDateUTC", "failed parsing SimpleDateFormat");
 			e.printStackTrace();
 			return null;
 		}
@@ -116,8 +115,7 @@ public class Utils {
 			FileOutputStream fos = new FileOutputStream(pictureFile);
 			fos.write(data);
 			fos.close();
-			L.i("writeBytesIntoFile: path = "
-					+ pictureFile.getAbsolutePath());
+			L.i("writeBytesIntoFile: path = " + pictureFile.getAbsolutePath());
 
 		} catch (FileNotFoundException e) {
 			L.e("File not found: " + e.getMessage());
@@ -149,8 +147,7 @@ public class Utils {
 			fo.write(bos.toByteArray());
 			fo.close();
 		} catch (IOException e) {
-			L.e("writeByteStreamOnSD", "failed to wirte on file: "
-					+ fullPath);
+			L.e("writeByteStreamOnSD", "failed to wirte on file: " + fullPath);
 			e.printStackTrace();
 		}
 	}
@@ -170,9 +167,9 @@ public class Utils {
 		progressCallback.onProgress(5);
 		Bitmap toRet = BitmapFactory.decodeFile(fullPath);
 
-		L.d("getBitmapFromURL - URL = " + param + " fullPath = "
-				+ fullPath + " toRet = " + toRet);
-		toRet = shrinkBitmapToImageViewSizeIfNeeded(toRet);
+		L.d("getBitmapFromURL - URL = " + param + " fullPath = " + fullPath
+				+ " toRet = " + toRet);
+		//toRet = shrinkBitmapToImageViewSizeIfNeeded(toRet);
 		// Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " +
 		// toRet.getHeight() + " BC: " +toRet.getByteCount());
 		progressCallback.onProgress(100);
@@ -234,12 +231,14 @@ public class Utils {
 		L.d("Utils: " + memMessage);
 	}
 
-	public static Bitmap shrinkBitmapToImageViewSizeIfNeeded(Bitmap inputBitmap) {
+	public static Bitmap shrinkBitmapToImageViewSizeIfNeeded(
+			Bitmap inputBitmap, boolean fullScreen) {
 		L.d("enterd shrinkBitmapToImageViewSizeIfNeeded, inputBitmap = "
 				+ inputBitmap + screenWidth);
-		if (screenWidth / 2 < inputBitmap.getWidth()) {
+		int newMaxSize = fullScreen ? screenWidth : screenWidth / 2;
+		if (newMaxSize < inputBitmap.getWidth()) {
 			Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(inputBitmap,
-					screenWidth / 2, screenWidth / 2, false);
+					newMaxSize, newMaxSize, false);
 
 			inputBitmap.recycle();
 			return shrinkedBitmap;

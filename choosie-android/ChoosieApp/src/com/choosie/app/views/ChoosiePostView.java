@@ -153,10 +153,10 @@ public class ChoosiePostView extends RelativeLayout {
 			L.i(post.getPhoto2URL());
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgViewCenter,
 					postViewHolder.progressBarCenter,
-					postViewHolder.voteButton1);
+					postViewHolder.voteButton1, true);
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgViewCenter,
 					postViewHolder.progressBarCenter,
-					postViewHolder.voteButton2);
+					postViewHolder.voteButton2, true);
 			int screenWidth = Utils.getScreenWidth();
 			resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
 					postViewHolder.voteButton1, postViewHolder.voteButton2);
@@ -492,17 +492,16 @@ public class ChoosiePostView extends RelativeLayout {
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
 			final ProgressBar progressBar, final ImageView img) {
-		loadImageToView(urlToLoad, imageView, progressBar, img, false, false);
+		loadImageToView(urlToLoad, imageView, progressBar, img, false);
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
-			final ProgressBar progressBar, final ImageView img,
-			final boolean isYesNo, final boolean isSecond) {
+			final ProgressBar progressBar, final ImageView img, boolean bigPhoto) {
 
 		lastRequestOnImageView.put(imageView, urlToLoad);
 		Cache<String, Bitmap> cache;
-		if (isYesNo && isSecond) {
-			cache = Caches.getInstance().getBlurredPhotosCache();
+		if (bigPhoto) {
+			cache = Caches.getInstance().getBigPhotosCache();
 		} else {
 			cache = Caches.getInstance().getPhotosCache();
 		}
