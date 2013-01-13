@@ -8,9 +8,9 @@ public class Constants {
 
 	public static class URIs {
 
+		public static final String ROOT_URL = "http://choosieapp.appspot.com";
 		// public static final String ROOT_URL =
-		// "http://choosieapp.appspot.com";
-		public static final String ROOT_URL = "http://choosie-dev.appspot.com";
+		// "http://choosie-dev.appspot.com";
 
 		public static final String REGISTER = ROOT_URL + "/register";
 		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
@@ -106,8 +106,8 @@ public class Constants {
 	}
 
 	public static class SP {
-//		public static final String PUSH_NOTIFICATIONS = "push_notifications";
-//		public static final String CAMERA_TYPE = "camera_type";
+		// public static final String PUSH_NOTIFICATIONS = "push_notifications";
+		// public static final String CAMERA_TYPE = "camera_type";
 		public static final String PREF_NOTIFICATION = "pref_notification";
 		public static final String PREF_CAMERA = "pref_camera";
 	}

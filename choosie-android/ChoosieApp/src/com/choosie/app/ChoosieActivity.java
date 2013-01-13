@@ -17,7 +17,9 @@ import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 import com.nullwire.trace.ExceptionHandler;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -28,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
@@ -77,6 +80,25 @@ public class ChoosieActivity extends Activity {
 
 		if (notification != null) {
 			handleNotification(notification);
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			showSettingsButtonIfNoHardwareKey();
+		}
+
+	}
+
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	private void showSettingsButtonIfNoHardwareKey() {
+		if (!ViewConfiguration.get(getApplicationContext())
+				.hasPermanentMenuKey()) {
+			View settingsButton = findViewById(R.id.settings_button);
+			settingsButton.setVisibility(View.VISIBLE);
+			settingsButton.setOnClickListener(new OnClickListener() {
+				
+				public void onClick(View v) {
+					openSettingsActivity();
+				}
+			});
 		}
 	}
 
@@ -166,7 +188,7 @@ public class ChoosieActivity extends Activity {
 			break;
 		case R.id.layout_button_post:
 		case R.id.layout_button_image_post:
-			if (AppSettings.isUseAdvancedCamera()){
+			if (AppSettings.isUseAdvancedCamera()) {
 				Intent intent = new Intent(this.getApplicationContext(),
 						CameraMainSuperControllerActivity.class);
 				startActivityForResult(intent, Constants.RequestCodes.NEW_POST);
@@ -247,13 +269,17 @@ public class ChoosieActivity extends Activity {
 				break;
 			}
 		}
-		
+
 		if (keyCode == KeyEvent.KEYCODE_MENU) {
-			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
+			openSettingsActivity();
 		}
 
 		return true;
+	}
+
+	private void openSettingsActivity() {
+		Intent intent = new Intent(this, SettingsActivity.class);
+		startActivity(intent);
 	}
 
 	private OnClickListener refreshClickListener = new OnClickListener() {
@@ -267,9 +293,9 @@ public class ChoosieActivity extends Activity {
 
 		public void onClick(View v) {
 			L.i("Clicked settings button");
-//			AppSettingsWindow settingsWindow = new AppSettingsWindow(
-//					superController.getActivity());
-//			settingsWindow.show();
+			// AppSettingsWindow settingsWindow = new AppSettingsWindow(
+			// superController.getActivity());
+			// settingsWindow.show();
 		}
 	};
 
