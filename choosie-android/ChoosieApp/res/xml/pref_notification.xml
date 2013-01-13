@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!--
+         A 'parent' preference, which enables/disables child preferences (below)
+         when checked/unchecked.
+    -->
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/pref_camera"
+        android:summary="@string/pref_camera_description"
+        android:title="@string/pref_camera_title" /><ListPreference android:defaultValue="0" android:entries="@array/pref_notification_titles" android:entryValues="@array/pref_notification_values" android:key="@string/pref_notification" android:negativeButtonText="@null" android:positiveButtonText="@null" android:title="@string/pref_notification_title" />
+
+    <!-- Allows the user to choose a ringtone in the 'notification' category. -->
+    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+    <!-- NOTE: RingtonePreference's summary should be set to its value by the activity code. -->
+
+    <!-- NOTE: This preference will be enabled only when the checkbox above is checked. -->
+
+</PreferenceScreen>

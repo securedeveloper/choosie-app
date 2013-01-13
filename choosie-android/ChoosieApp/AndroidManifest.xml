@@ -120,6 +120,10 @@
             android:label="@string/title_activity_camera_main"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.choosie.app.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
     </application>
 
 </manifest>

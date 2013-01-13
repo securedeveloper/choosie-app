@@ -240,6 +240,11 @@ public class ChoosieActivity extends Activity {
 				break;
 			}
 		}
+		
+		if (keyCode == KeyEvent.KEYCODE_MENU) {
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+		}
 
 		return true;
 	}
