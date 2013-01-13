@@ -73,7 +73,8 @@
                 android:lines="2"
                 android:maxLines="2"
                 android:minLines="2"
-                android:paddingLeft="10dp" >
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" >
 
                 <requestFocus android:layout_width="wrap_content" />
             </EditText>
@@ -88,7 +89,7 @@
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                     android:id="@+id/postCamera_images12_layout"
+                    android:id="@+id/postCamera_images12_layout"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_centerInParent="true" >
@@ -100,8 +101,8 @@
                         android:layout_weight="1"
                         android:clickable="true"
                         android:contentDescription="@string/desc"
-                        android:paddingLeft="11dp"
-                        android:paddingRight="3dp"
+                        android:paddingLeft="6dp"
+                        android:paddingRight="2dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/camera" />
 
@@ -112,8 +113,8 @@
                         android:layout_weight="1"
                         android:clickable="true"
                         android:contentDescription="@string/desc"
-                        android:paddingLeft="3dp"
-                        android:paddingRight="11dp"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="6dp"
                         android:scaleType="centerInside"
                         android:src="@drawable/plus" />
                 </LinearLayout>
@@ -125,8 +126,8 @@
                     android:layout_centerInParent="true"
                     android:clickable="true"
                     android:contentDescription="@string/desc"
-                    android:paddingBottom="8dp"
                     android:paddingTop="8dp"
+                    android:paddingBottom="10dp"
                     android:scaleType="centerInside" />
             </RelativeLayout>
 

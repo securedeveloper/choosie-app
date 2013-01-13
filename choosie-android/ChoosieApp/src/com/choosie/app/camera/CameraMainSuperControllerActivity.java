@@ -317,13 +317,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 		});
 
 		final Animation image1PushLeftAnimation = AnimationUtils.loadAnimation(
-				this, R.anim.push_left_in);
+				this, R.anim.push_left_out);
 
 		image1PushLeftAnimation.setAnimationListener(new AnimationListener() {
 
 			public void onAnimationStart(Animation animation) {
-				mImageMiddle.setImageBitmap(null);
-				mImage1.setImageBitmap(image1BitmapTot);
 
 			}
 
@@ -333,12 +331,14 @@ public class CameraMainSuperControllerActivity extends Activity {
 			}
 
 			public void onAnimationEnd(Animation animation) {
+				mImage1.setImageBitmap(image1BitmapTot);
+				mImageMiddle.setImageBitmap(null);
 				mImage2.startAnimation(image2fadeInAnimation);
 
 			}
 		});
 
-		mImage1.startAnimation(image1PushLeftAnimation);
+		mImageMiddle.startAnimation(image1PushLeftAnimation);
 
 		images12Layout.bringToFront();
 		images12Layout.setEnabled(true);
@@ -361,15 +361,15 @@ public class CameraMainSuperControllerActivity extends Activity {
 				.loadAnimation(this, R.anim.fadeout);
 
 		final Animation imageMiddlePushRightAnimation = AnimationUtils
-				.loadAnimation(this, R.anim.push_right_in);
+				.loadAnimation(this, R.anim.push_right_out);
 
 		imageMiddlePushRightAnimation
 				.setAnimationListener(new AnimationListener() {
 
 					public void onAnimationStart(Animation animation) {
-						mImage1.setImageBitmap(null);
+
 						// mImageMiddle.setVisibility(View.VISIBLE);
-						mImageMiddle.setImageBitmap(image1BitmapTot);
+
 					}
 
 					public void onAnimationRepeat(Animation animation) {
@@ -378,6 +378,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 					}
 
 					public void onAnimationEnd(Animation animation) {
+						mImageMiddle.setImageBitmap(image1BitmapTot);
+						mImage1.setImageBitmap(null);
 
 					}
 				});
@@ -396,8 +398,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 					public void onAnimationEnd(Animation animation) {
 						mImage2.setImageBitmap(null);
-						mImageMiddle
-								.startAnimation(imageMiddlePushRightAnimation);
+						mImage1.startAnimation(imageMiddlePushRightAnimation);
 
 					}
 				});
