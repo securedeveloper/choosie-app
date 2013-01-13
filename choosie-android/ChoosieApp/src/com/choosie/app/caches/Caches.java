@@ -103,7 +103,8 @@ public class Caches {
 			}
 		};
 
-		int numberOfFeedResponsesToKeepInCache = 15;
+		// Temp: feedCache is disabled by changing this to 1.
+		int numberOfFeedResponsesToKeepInCache = 1;
 		feedCache = new Cache<FeedCacheKey, FeedResponse>(
 				numberOfFeedResponsesToKeepInCache) {
 
@@ -112,6 +113,16 @@ public class Caches {
 					Callback<Void, Integer, Void> progressCallback) {
 				return Client.getInstance().getFeedByCursor(key,
 						progressCallback);
+			}
+
+			@Override
+			protected void onDataReadyBeforeRunCallbacks(FeedCacheKey key,
+					FeedResponse result) {
+				if (result != null && result.getPosts() != null) {
+					for (ChoosiePostData post : result.getPosts()) {
+						postsCache.putInCache(post.getPostKey(), post);
+					}
+				}
 			}
 		};
 

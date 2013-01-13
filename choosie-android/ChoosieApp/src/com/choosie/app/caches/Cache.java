@@ -123,6 +123,7 @@ public abstract class Cache<Key, Value> {
 
 			@Override
 			protected void onPostExecute(Value result) {
+				onDataReadyBeforeRunCallbacks(key, result);
 				putInMemoryCacheAndRunCallbacks(key, result);
 			}
 		};
@@ -180,6 +181,17 @@ public abstract class Cache<Key, Value> {
 		for (CacheCallback<Key, Value> callback : callbacks) {
 			callback.onValueReady(key, result);
 		}
+	}
+
+	protected void putInCache(Key key, Value result) {
+		synchronized (cacheLock) {
+			if (result != null) {
+				memoryCache.put(key, result);
+			}
+		}
+	}
+
+	protected void onDataReadyBeforeRunCallbacks(Key key, Value result) {
 	}
 
 	protected Value onAfterFetching(Key key, Value result) {
