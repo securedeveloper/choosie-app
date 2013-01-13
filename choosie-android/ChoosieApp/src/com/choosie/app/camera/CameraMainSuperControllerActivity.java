@@ -796,10 +796,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 			// Create out AlterDialog
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-			builder.setMessage("Are you sure you want to exit?");
+			builder.setMessage("This will discard the pictures you have taken.");
 			builder.setCancelable(true);
-			builder.setPositiveButton("Yes", new OkOnClickListener());
-			builder.setNegativeButton("No", new CancelOnClickListener());
+			builder.setPositiveButton("OK", new OkOnClickListener());
+			builder.setNegativeButton("Back to camera", new CancelOnClickListener());
 			AlertDialog dialog = builder.create();
 			dialog.show();
 			break;
