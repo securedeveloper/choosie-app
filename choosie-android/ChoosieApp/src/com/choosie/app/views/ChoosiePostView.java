@@ -38,7 +38,7 @@ import android.view.animation.AnimationUtils;
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
 	private SuperController superController;
-	private FeedViewHolder postViewHolder;
+	private ChoosiePostViewHolder postViewHolder;
 
 	public ChoosiePostView(Context context, SuperController superController,
 			int position) {
@@ -48,8 +48,8 @@ public class ChoosiePostView extends RelativeLayout {
 		initializeHolder();
 	}
 
-	private void initializeHolder() { 
-		postViewHolder = new FeedViewHolder();
+	private void initializeHolder() {
+		postViewHolder = new ChoosiePostViewHolder();
 
 		postViewHolder.commentLayout = (LinearLayout) findViewById(R.id.layout_comments);
 		postViewHolder.commentLayoutMain = (LinearLayout) findViewById(R.id.layout_comments_main);
@@ -73,6 +73,8 @@ public class ChoosiePostView extends RelativeLayout {
 		postViewHolder.voteImageAnimationCenter = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_center);
 		postViewHolder.voteImageAnimationLeft = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_left);
 		postViewHolder.voteImageAnimationRight = (ImageView) findViewById(R.id.choosiePost_voteImage_animation_right);
+		postViewHolder.voteThumbUpIcon = (ImageView) findViewById(R.id.votes_thumbs_up_icon);
+		postViewHolder.voteThumbDownIcon = (ImageView) findViewById(R.id.votes_thumbs_down_icon);
 
 		postViewHolder.voteImageAnimationLeft.setImageBitmap(null);
 		postViewHolder.voteImageAnimationRight.setImageBitmap(null);
@@ -158,6 +160,8 @@ public class ChoosiePostView extends RelativeLayout {
 			resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
 					postViewHolder.voteButton1, postViewHolder.voteButton2);
 		} else {
+			postViewHolder.voteThumbDownIcon.setVisibility(View.GONE);
+			postViewHolder.voteThumbUpIcon.setVisibility(View.GONE);
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgView1,
 					postViewHolder.progressBar1, postViewHolder.voteButton1);
 			loadImageToView(post.getPhoto2URL(), postViewHolder.imgView2,
@@ -396,7 +400,7 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void loadCommentsToView(ChoosiePostData post,
-			FeedViewHolder feedViewHolder) {
+			ChoosiePostViewHolder feedViewHolder) {
 
 		feedViewHolder.commentLayout.removeAllViews();
 		List<Comment> lstComment = post.getComments();
@@ -517,7 +521,9 @@ public class ChoosiePostView extends RelativeLayout {
 		});
 	}
 
-	private class FeedViewHolder {
+	private class ChoosiePostViewHolder {
+		public ImageView voteThumbDownIcon;
+		public ImageView voteThumbUpIcon;
 		public ImageView voteImageAnimationLeft;
 		public ImageView voteImageAnimationRight;
 		public ImageView voteImageAnimationCenter;
