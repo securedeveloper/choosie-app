@@ -2,6 +2,8 @@ package com.choosie.app;
 
 import java.io.File;
 
+import com.choozie.app.R;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcelable;

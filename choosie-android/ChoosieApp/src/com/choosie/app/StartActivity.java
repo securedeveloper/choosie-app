@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.choosie.app.Models.FacebookDetails;
 import com.choosie.app.client.Client;
+import com.choozie.app.R;
 import com.facebook.GraphUser;
 import com.facebook.LoggingBehaviors;
 import com.facebook.Request;

@@ -30,6 +30,7 @@ import com.choosie.app.Models.VoteData;
 import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
+import com.choozie.app.R;
 
 /*
  * class VotePopupWindowUtils: basic utils for poping a window for votes

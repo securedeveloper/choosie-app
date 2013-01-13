@@ -7,7 +7,7 @@ import java.util.Map;
 import com.choosie.app.Constants;
 import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData.PostType;
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
 import com.choosie.app.caches.Cache;

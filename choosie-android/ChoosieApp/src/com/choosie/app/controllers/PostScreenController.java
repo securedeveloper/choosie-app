@@ -11,7 +11,7 @@ import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData;
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.client.Client;
 

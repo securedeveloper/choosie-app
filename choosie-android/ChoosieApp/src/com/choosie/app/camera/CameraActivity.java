@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.choosie.app.Constants;
 import com.choosie.app.L;
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Utils;
 
 import android.media.MediaPlayer;

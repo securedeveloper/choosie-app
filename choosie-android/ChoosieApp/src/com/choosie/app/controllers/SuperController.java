@@ -14,7 +14,7 @@ import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.VotePopupWindowUtils;
 import com.choosie.app.EnlargePhotoActivity;
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Utils;
 import com.choosie.app.VotesScreenActivity;

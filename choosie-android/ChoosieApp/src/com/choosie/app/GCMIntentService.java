@@ -6,6 +6,7 @@ import java.util.Random;
 import com.choosie.app.client.Client;
 import com.choosie.app.controllers.SuperController;
 import com.choosie.app.PushNotification;
+import com.choozie.app.R;
 import com.google.android.gcm.GCMBaseIntentService;
 
 import android.app.ActivityManager;

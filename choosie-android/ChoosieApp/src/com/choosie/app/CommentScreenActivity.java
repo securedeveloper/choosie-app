@@ -2,7 +2,7 @@ package com.choosie.app;
 
 import java.util.ArrayList;
 
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.CommentData;
 import com.choosie.app.caches.CacheCallback;

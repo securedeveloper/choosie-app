@@ -1,7 +1,7 @@
 package com.choosie.app.controllers;
 
 import com.choosie.app.L;
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Models.ChoosiePostData;
 

@@ -1,6 +1,6 @@
 package com.choosie.app;
 
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.caches.Caches;
 import com.choosie.app.camera.CameraActivity;
 import com.choosie.app.camera.CameraMainSuperControllerActivity;
@@ -9,8 +9,8 @@ import com.choosie.app.controllers.SuperController;
 import com.choosie.app.Models.ChoosiePostData;
 import com.choosie.app.Models.FacebookDetails;
 import com.choosie.app.Constants.Notifications;
-import com.choosie.app.R.id;
-import com.choosie.app.R.layout;
+import com.choozie.app.R.id;
+import com.choozie.app.R.layout;
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
@@ -94,7 +94,7 @@ public class ChoosieActivity extends Activity {
 			View settingsButton = findViewById(R.id.settings_button);
 			settingsButton.setVisibility(View.VISIBLE);
 			settingsButton.setOnClickListener(new OnClickListener() {
-				
+
 				public void onClick(View v) {
 					openSettingsActivity();
 				}
@@ -116,19 +116,19 @@ public class ChoosieActivity extends Activity {
 
 		switch (notificationType) {
 		case Notifications.NEW_POST_NOTIFICATION_TYPE:
-			tracker.trackEvent("Push Notification", "New Post","", null);
+			tracker.trackEvent("Push Notification", "New Post", "", null);
 			handleNewPostNotification(notification);
 			break;
 		case Notifications.NEW_COMMENT_NOTIFICATION_TYPE:
-			tracker.trackEvent("Push Notification", "Comment","", null);
+			tracker.trackEvent("Push Notification", "Comment", "", null);
 			handleCommentNotification(notification);
 			break;
 		case Notifications.NEW_VOTE_NOTIFICATION_TYPE:
-			tracker.trackEvent("Push Notification", "Vote","", null);
+			tracker.trackEvent("Push Notification", "Vote", "", null);
 			handleVoteNotification(notification);
 			break;
 		case Notifications.REGISTER_NOTIFICATION_TYPE:
-			tracker.trackEvent("Push Notification", "Register","", null);
+			tracker.trackEvent("Push Notification", "Register", "", null);
 			handleRegisterNotification(notification);
 			break;
 		}

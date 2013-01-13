@@ -3,7 +3,7 @@ package com.choosie.app.camera;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Utils;
 
 public class YesNoUtils {

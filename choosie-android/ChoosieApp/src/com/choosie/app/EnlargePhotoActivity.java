@@ -1,5 +1,6 @@
 package com.choosie.app;
 
+import com.choozie.app.R;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;

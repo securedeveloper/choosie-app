@@ -3,7 +3,7 @@ package com.choosie.app.camera;
 import java.io.File;
 import com.choosie.app.Constants;
 import com.choosie.app.L;
-import com.choosie.app.R;
+import com.choozie.app.R;
 import com.choosie.app.Utils;
 import android.os.Bundle;
 import android.app.Activity;
