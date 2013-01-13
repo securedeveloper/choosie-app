@@ -43,7 +43,7 @@ public class VotePopupWindowUtils {
 	}
 
 	public void popUpVotesWindow(String postKey) {
-		Logger.d("VotePopupWindow: entered popUpVotesWindow, postKey = "
+		L.d("VotePopupWindow: entered popUpVotesWindow, postKey = "
 				+ postKey);
 
 		// We need to get the instance of the LayoutInflater, use the
@@ -79,14 +79,14 @@ public class VotePopupWindowUtils {
 							public void onValueReady(String key,
 									ChoosiePostData result) {
 								if (result == null) {
-									Logger.e("ERROR : param is 'null'");
+									L.e("ERROR : param is 'null'");
 									// TODO: Handle error
 									// Toast.makeText(getActivity(),
 									// "Failed to update post.",
 									// Toast.LENGTH_SHORT).show();
 									return;
 								}
-								Logger.d("popUpVotesWindow: on finish- got choosiePostDat");
+								L.d("popUpVotesWindow: on finish- got choosiePostDat");
 								progressBar.setVisibility(View.GONE);
 								createAndShowPopup(result, layout);
 							}
@@ -97,7 +97,7 @@ public class VotePopupWindowUtils {
 
 	private void createAndShowPopup(ChoosiePostData choosiePost,
 			RelativeLayout layout) {
-		Logger.d("VotePopupWindow, starting createAndShowPopup");
+		L.d("VotePopupWindow, starting createAndShowPopup");
 		// PopupWindow pw;
 
 		// // We need to get the instance of the LayoutInflater, use the
@@ -170,7 +170,7 @@ public class VotePopupWindowUtils {
 			ArrayList<String> nameList, ArrayList<String> votersPhotoUrlList,
 			ArrayList<Integer> voteForList) {
 
-		Logger.d("VotePopupWindowe, starting makeVotesScreenAdapter");
+		L.d("VotePopupWindowe, starting makeVotesScreenAdapter");
 
 		ArrayAdapter<VoteData> adi = new ArrayAdapter<VoteData>(activity,
 				R.layout.view_votes) {
@@ -250,7 +250,7 @@ public class VotePopupWindowUtils {
 	private View createViewVotes(final VoteData item, View convertView,
 			View parentView, int position) {
 
-		Logger.d("VotePopupWindow, starting to createViewVotes, position = "
+		L.d("VotePopupWindow, starting to createViewVotes, position = "
 				+ position);
 
 		LinearLayout itemView = null;
@@ -292,7 +292,7 @@ public class VotePopupWindowUtils {
 			// set the voter1 names
 			setTextOntv(item.getName1(), voteViewHolder.tv1);
 			// set the voter1 photo
-			Logger.d("createViewVotes - name1 != null, getting from cache, name = "
+			L.d("createViewVotes - name1 != null, getting from cache, name = "
 					+ item.getName1());
 			Caches.getInstance()
 					.getPhotosCache()
@@ -301,7 +301,7 @@ public class VotePopupWindowUtils {
 								@Override
 								public void onValueReady(String key,
 										Bitmap result) {
-									Logger.d("createViewVotes, got param for name = "
+									L.d("createViewVotes, got param for name = "
 											+ item.getVoterPhotoUrl1()
 											+ "param = " + result);
 									holder.voterPhotoImageView1
@@ -315,7 +315,7 @@ public class VotePopupWindowUtils {
 			setTextOntv(item.getName2(), voteViewHolder.tv2);
 
 			// set the voter2 photo
-			Logger.d("name2 != null, getting from cache, name = "
+			L.d("name2 != null, getting from cache, name = "
 					+ item.getName2());
 			Caches.getInstance()
 					.getPhotosCache()
@@ -324,7 +324,7 @@ public class VotePopupWindowUtils {
 								@Override
 								public void onValueReady(String key,
 										Bitmap result) {
-									Logger.d("createViewVotes, got param for name = "
+									L.d("createViewVotes, got param for name = "
 											+ item.getVoterPhotoUrl2()
 											+ "param = " + result);
 									holder.voterPhotoImageView2

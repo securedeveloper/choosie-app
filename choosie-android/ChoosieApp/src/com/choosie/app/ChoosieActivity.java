@@ -36,7 +36,7 @@ public class ChoosieActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Logger.i("ChoosieActivity: onCreate()");
+		L.i("ChoosieActivity: onCreate()");
 
 		Intent intent = getIntent();
 
@@ -79,8 +79,8 @@ public class ChoosieActivity extends Activity {
 	}
 
 	private void handleNotification(PushNotification notification) {
-		Logger.i("Start HandleNotification()");
-		Logger.i("ChoosieActivity: GOT NOTIFICATION. NotificationType = "
+		L.i("Start HandleNotification()");
+		L.i("ChoosieActivity: GOT NOTIFICATION. NotificationType = "
 				+ notification.getNotificationType() + ", text = "
 				+ notification.getText() + ", postkey = "
 				+ notification.getPostKey() + ", deviceID = "
@@ -110,13 +110,13 @@ public class ChoosieActivity extends Activity {
 
 	private void handleRegisterNotification(PushNotification notification) {
 		// TODO Auto-generated method stub
-		Logger.i("handleRegisterNotification()");
+		L.i("handleRegisterNotification()");
 		Client.getInstance().registerGCM(notification.getDeviceId());
 	}
 
 	private void handleNewPostNotification(PushNotification notification) {
 		// TODO Auto-generated method stub
-		Logger.i("HandleNewPostNotification()");
+		L.i("HandleNewPostNotification()");
 
 		// TODO Switch to the Post's screen
 
@@ -125,7 +125,7 @@ public class ChoosieActivity extends Activity {
 	}
 
 	private void handleCommentNotification(PushNotification notification) {
-		Logger.i("HandleCommentNotification()");
+		L.i("HandleCommentNotification()");
 		// Invalidate the post in cache, so that next time it is asked for
 		// we'll get the updated one with the new comment / vote.
 		Caches.getInstance().getPostsCache()
@@ -138,7 +138,7 @@ public class ChoosieActivity extends Activity {
 		// we'll get the updated one with the new comment / vote.
 		Caches.getInstance().getPostsCache()
 				.invalidateKey(notification.getPostKey());
-		Logger.i("HandleVoteNotification()");
+		L.i("HandleVoteNotification()");
 
 		superController.switchToCommentScreenAndOpenVotes(notification
 				.getPostKey());
@@ -173,11 +173,11 @@ public class ChoosieActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (Session.getActiveSession() != null
 				&& Session.getActiveSession().getPermissions() != null) {
-			Logger.i("onActivityResult. FB Permissions: "
+			L.i("onActivityResult. FB Permissions: "
 					+ Session.getActiveSession().getPermissions().toString());
 		}
 
-		Logger.i("ChoosieActivity : onActivityResult returned requestCode = "
+		L.i("ChoosieActivity : onActivityResult returned requestCode = "
 				+ requestCode);
 
 		switch (requestCode) {
@@ -197,7 +197,7 @@ public class ChoosieActivity extends Activity {
 			break;
 
 		case Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION:
-			Logger.i("after activity fb");
+			L.i("after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
 			// NOTE: Special handling: In case user presses on 'Share on
@@ -218,7 +218,7 @@ public class ChoosieActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		Logger.i("ChoosieActivity: onResume()");
+		L.i("ChoosieActivity: onResume()");
 		super.onResume();
 		switch (superController.getCurrentScreen()) {
 		case POST:
@@ -235,7 +235,7 @@ public class ChoosieActivity extends Activity {
 						keyCode, event);
 				break;
 			case FEED:
-				Logger.i("onKeyDown() - calling finish() to choosieActivity");
+				L.i("onKeyDown() - calling finish() to choosieActivity");
 				finish();
 				break;
 			}
@@ -251,7 +251,7 @@ public class ChoosieActivity extends Activity {
 
 	private OnClickListener refreshClickListener = new OnClickListener() {
 		public void onClick(View v) {
-			Logger.i("Clicked refresh feed button");
+			L.i("Clicked refresh feed button");
 			superController.getControllerForScreen(Screen.FEED).refresh();
 		}
 	};
@@ -259,7 +259,7 @@ public class ChoosieActivity extends Activity {
 	private OnClickListener settingsClickListener = new OnClickListener() {
 
 		public void onClick(View v) {
-			Logger.i("Clicked settings button");
+			L.i("Clicked settings button");
 //			AppSettingsWindow settingsWindow = new AppSettingsWindow(
 //					superController.getActivity());
 //			settingsWindow.show();
@@ -268,34 +268,34 @@ public class ChoosieActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		Logger.i("ChoosieActivity: onDestroy()");
+		L.i("ChoosieActivity: onDestroy()");
 		super.onDestroy();
 		this.finish();
 	}
 
 	@Override
 	protected void onStart() {
-		Logger.i("ChoosieActivity: onStart()");
+		L.i("ChoosieActivity: onStart()");
 		super.onStart();
 		EasyTracker.getInstance().activityStart(this);
 	}
 
 	@Override
 	protected void onPause() {
-		Logger.i("ChoosieActivity: onPause()");
+		L.i("ChoosieActivity: onPause()");
 		super.onPause();
 	}
 
 	@Override
 	protected void onStop() {
-		Logger.i("ChoosieActivity: onStop()");
+		L.i("ChoosieActivity: onStop()");
 		super.onStop();
 		EasyTracker.getInstance().activityStop(this);
 	}
 
 	@Override
 	protected void onRestart() {
-		Logger.i("ChoosieActivity: onRestart()");
+		L.i("ChoosieActivity: onRestart()");
 		super.onRestart();
 	}
 

@@ -2,7 +2,7 @@ package com.choosie.app.controllers;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.caches.Cache;
 import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
@@ -109,34 +109,34 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private ChoosiePostData loadingItem;
 
 	private void update(FeedResponse param) {
-		Logger.i("FeedListAdapter: update. Posts count: "
+		L.i("FeedListAdapter: update. Posts count: "
 				+ param.getPosts().size() + ". Append: " + param.isAppend());
 		if (param.getPosts().size() == 0) {
-			Logger.i("No images in feed.");
+			L.i("No images in feed.");
 		}
 		State relevantState = param.isAppend() ? State.APPENDING_TO_FEED
 				: State.REFRESHING_FEED;
 		if (relevantState != this.state) {
-			Logger.i("FeedListAdapter: update. Got new posts, but not updating"
+			L.i("FeedListAdapter: update. Got new posts, but not updating"
 					+ " because not in relevant state. " + "Relevant = "
 					+ relevantState + ", Real state = " + this.state);
 			return;
 		}
 		if (param.isAppend() && lastCursor == param.getCursor()) {
-			Logger.w("Not supposed to get here: an update that was "
+			L.w("Not supposed to get here: an update that was "
 							+ "recevied twice.");
 			return;
 		}
 		if (this.state == State.REFRESHING_FEED) {
-			Logger.i("Clearing feed (cause in Refresh state)");
+			L.i("Clearing feed (cause in Refresh state)");
 			this.clear();
 		}
-		Logger.i("Adding posts.");
+		L.i("Adding posts.");
 		for (ChoosiePostData item : param.getPosts()) {
 			this.add(item);
 		}
 		lastCursor = param.getCursor();
-		Logger.i("Last cursor is now = " + lastCursor);
+		L.i("Last cursor is now = " + lastCursor);
 	}
 
 	public void refreshFeed() {
@@ -155,14 +155,14 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			return;
 		}
 		this.state = newState;
-		Logger.i("Changing to state " + this.state);
+		L.i("Changing to state " + this.state);
 		switch (this.state) {
 		case APPENDING_TO_FEED:
 			showLoadingItem();
 			addItemsToList();
 			break;
 		case REFRESHING_FEED:
-			Logger.i("bla bla", "fdfd");
+			L.i("bla bla", "fdfd");
 			showLoadingItem();
 			addItemsToList();
 			break;
@@ -177,7 +177,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			showErrorToast();
 			break;
 		}
-		Logger.i("Finished changing to state " + this.state);
+		L.i("Finished changing to state " + this.state);
 
 	}
 
@@ -189,13 +189,13 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	private void addItemsToList() {
-		Logger.i("addItemsToList. state = " + state);
+		L.i("addItemsToList. state = " + state);
 
 		FeedCacheKey request = null;
 		if (this.state == State.REFRESHING_FEED) {
 			request = new FeedCacheKey(null, false);
 		} else if (this.state == State.APPENDING_TO_FEED) {
-			Logger.i("feedCursor = " + feedCursor);
+			L.i("feedCursor = " + feedCursor);
 			request = new FeedCacheKey(this.feedCursor, true);
 		}
 
@@ -214,7 +214,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			CacheCallback<FeedCacheKey, FeedResponse> {
 		@Override
 		public void onValueReady(FeedCacheKey key, FeedResponse result) {
-			Logger.i("onFINISH!!!");
+			L.i("onFINISH!!!");
 			if (result == null) {
 				changeState(State.ERROR);
 			} else {
@@ -243,7 +243,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			loadingItem = new ChoosiePostData(null, null, null, null,
 					LOADING_ITEM_TEXT, null, null, null, null, PostType.TOT);
 		}
-		Logger.i("Showing 'Loading items...'");
+		L.i("Showing 'Loading items...'");
 		if (this.state == State.APPENDING_TO_FEED) {
 			this.add(loadingItem);
 		} else if (this.state == State.REFRESHING_FEED) {
@@ -261,7 +261,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			if (++i > 3) {
 				break;
 			}
-			Logger.i("Hiding 'Loading items...'");
+			L.i("Hiding 'Loading items...'");
 			this.remove(loadingItem);
 		}
 	}
@@ -277,7 +277,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 	public int findPositionByPostKey(String postKey) {
 		if (postKey == null) {
-			Logger.e("Got to findPositionByPostKey with null postKey.");
+			L.e("Got to findPositionByPostKey with null postKey.");
 			return -1;
 		}
 		for (int i = 0; i < this.getCount(); ++i) {
@@ -285,11 +285,11 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			// for example when this.getItem(0) is the Loading item.
 			String postKeyAtI = this.getItem(i).getPostKey();
 			if (postKeyAtI != null && postKeyAtI.equals(postKey)) {
-				Logger.i("findPoitionByPostKey: post is found! position = " + i);
+				L.i("findPoitionByPostKey: post is found! position = " + i);
 				return i;
 			}
 		}
-		Logger.i("findPoitionByPostKey: did not find the position of post \""
+		L.i("findPoitionByPostKey: did not find the position of post \""
 				+ postKey + "\"");
 		return -1;
 	}

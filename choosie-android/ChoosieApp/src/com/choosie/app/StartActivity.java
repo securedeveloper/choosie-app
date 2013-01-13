@@ -45,8 +45,8 @@ public class StartActivity extends Activity {
 
 		setContentView(R.layout.activity_start);
 
-		Logger.i("************** Start Application! ****************");
-		Logger.i("StartActivity: onCreate()");
+		L.i("************** Start Application! ****************");
+		L.i("StartActivity: onCreate()");
 
 		isFirstTimeToStartChoozieActivity = true;
 
@@ -74,7 +74,7 @@ public class StartActivity extends Activity {
 			}
 		} else {
 
-			Logger.i("on start permissions: "
+			L.i("on start permissions: "
 					+ session.getPermissions().toString());
 			updateView();
 		}
@@ -90,7 +90,7 @@ public class StartActivity extends Activity {
 	}
 
 	private void InitializeComponents() {
-		Logger.i("InitializeComponents()");
+		L.i("InitializeComponents()");
 
 		// find all buttons
 		buttonLogout = (Button) findViewById(R.id.fbLogoutButton);
@@ -105,7 +105,7 @@ public class StartActivity extends Activity {
 
 	@Override
 	public void onStart() {
-		Logger.i("StartActivity: onStart()");
+		L.i("StartActivity: onStart()");
 		super.onStart();
 		Session.getActiveSession().addCallback(statusCallback);
 		EasyTracker.getInstance().activityStart(this);
@@ -113,7 +113,7 @@ public class StartActivity extends Activity {
 
 	@Override
 	public void onStop() {
-		Logger.i("StartActivity: onStop()");
+		L.i("StartActivity: onStop()");
 		super.onStop();
 		Session.getActiveSession().removeCallback(statusCallback);
 		EasyTracker.getInstance().activityStop(this);
@@ -121,21 +121,21 @@ public class StartActivity extends Activity {
 
 	@Override
 	public void onResume() {
-		Logger.i("StartActivity: onResume()");
+		L.i("StartActivity: onResume()");
 		super.onResume();
 		Session.getActiveSession().addCallback(statusCallback);
 	}
 
 	@Override
 	public void onPause() {
-		Logger.i("StartActivity: onPause()");
+		L.i("StartActivity: onPause()");
 		super.onPause();
 		Session.getActiveSession().removeCallback(statusCallback);
 	}
 
 	@Override
 	public void onDestroy() {
-		Logger.i("StartActivity: onDestroy()");
+		L.i("StartActivity: onDestroy()");
 		super.onDestroy();
 		Session.getActiveSession().removeCallback(statusCallback);
 	}
@@ -160,11 +160,11 @@ public class StartActivity extends Activity {
 	private void updateView() {
 
 		Session session = Session.getActiveSession();
-		Logger.i("Session: " + session.getState().toString());
+		L.i("Session: " + session.getState().toString());
 
 		// Show "Logout" and go to application main screen
 		if (session.isOpened()) {
-			Logger.i("Session is opened");
+			L.i("Session is opened");
 
 			goToApplication.setVisibility(View.VISIBLE);
 			// buttonLogout.setVisibility(View.VISIBLE);
@@ -174,7 +174,7 @@ public class StartActivity extends Activity {
 
 			// Show "Login" and let user to login
 		} else {
-			Logger.i("Session is closed");
+			L.i("Session is closed");
 
 			goToApplication.setVisibility(View.INVISIBLE);
 			// buttonLogout.setVisibility(View.INVISIBLE);
@@ -184,14 +184,14 @@ public class StartActivity extends Activity {
 
 	private void goToApplication() {
 
-		Logger.i("goToApplication()");
+		L.i("goToApplication()");
 
 		// make request to the /me API
 		Request request = Request.newMeRequest(Session.getActiveSession(),
 				new Request.GraphUserCallback() {
 
 					public void onCompleted(GraphUser user, Response response) {
-						Logger.i("onCompleted");
+						L.i("onCompleted");
 						if (user != null) {
 							// Update Client that there's a logged in user.
 							FacebookDetails details = new FacebookDetails(user
@@ -201,23 +201,23 @@ public class StartActivity extends Activity {
 									.getTime());
 							Client.getInstance().setFacebookDetails(details);
 
-							Logger.i("creating intent for ChoosieActivity");
+							L.i("creating intent for ChoosieActivity");
 							Intent intent = new Intent(StartActivity.this,
 									ChoosieActivity.class);
 							PushNotification notification = getNotificationFromIntent();
 							if (notification != null) {
 								intent.putExtra("notification", notification);
-								Logger.i("Adding Push Notification to intent for ChoosieActivity "
+								L.i("Adding Push Notification to intent for ChoosieActivity "
 										+ notification.toString());
 							} else {
-								Logger.i("No Push Notification has been added to ChoosieActivity intent");
+								L.i("No Push Notification has been added to ChoosieActivity intent");
 							}
 							Tracker tracker = GoogleAnalytics.getInstance(
 									getApplicationContext())
 									.getDefaultTracker();
 							tracker.trackEvent("StartActivity",
 									"goToApplication", "", null);
-							Logger.i("Starting ChoosieActivity");
+							L.i("Starting ChoosieActivity");
 							if (isFirstTimeToStartChoozieActivity == true) {
 								isFirstTimeToStartChoozieActivity = false;
 								startActivity(intent);
@@ -238,7 +238,7 @@ public class StartActivity extends Activity {
 			read_permission.add("read_stream");
 			read_permission.add("read_friendlists");
 			read_permission.add("email");
-			Logger.i("Permission: " + read_permission);
+			L.i("Permission: " + read_permission);
 
 			// Create the request for login
 			OpenRequest req = new Session.OpenRequest(this);
@@ -248,7 +248,7 @@ public class StartActivity extends Activity {
 
 			// Show login to Facebook screen
 			session.openForRead(req);
-			Logger.i("session.getPermission(): "
+			L.i("session.getPermission(): "
 					+ session.getPermissions().toString());
 		} else {
 			Session.openActiveSession(this, true, statusCallback);
@@ -268,14 +268,14 @@ public class StartActivity extends Activity {
 
 			// If session was opened - go to application main screen
 			if (state == SessionState.OPENED) {
-				Logger.i("CallBack: SessionState = " + state.toString());
-				Logger.i("Starting ChoosieActivity");
+				L.i("CallBack: SessionState = " + state.toString());
+				L.i("Starting ChoosieActivity");
 
 				goToApplication();
 
 				// Else - show login screen
 			} else {
-				Logger.i("CallBack: SessionState = " + state.toString());
+				L.i("CallBack: SessionState = " + state.toString());
 				updateView();
 			}
 		}

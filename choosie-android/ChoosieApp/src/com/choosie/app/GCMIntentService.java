@@ -31,7 +31,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onMessage(Context context, Intent intent) {
-		Logger.i(TAG + " Received message. Extras: " + intent.getExtras());
+		L.i(TAG + " Received message. Extras: " + intent.getExtras());
 
 		generateNotification(context, intent);
 	}
@@ -39,10 +39,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 	private void generateNotification(Context context, Intent intent) {
 		if (isApplicationRunningInForeground()) {
 			// TODO: show +1 in notification manager inside the app
-			Logger.i("Application is running in Foreground");
-			Logger.i("No need to send the Push Notification");
+			L.i("Application is running in Foreground");
+			L.i("No need to send the Push Notification");
 		} else {
-			Logger.i("Application is not running in Background");
+			L.i("Application is not running in Background");
 			/*
 			 * Handle Push Notification /* 1 = New Post /* 2 = New Comment /* 3
 			 * = New Vote
@@ -52,7 +52,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			String text = intent.getStringExtra("text");
 			String postKey = intent.getStringExtra("post_key");
 			String deviceId = intent.getStringExtra("device_id");
-			Logger.i("GCMINTENTSERVICE: GOT NOTIFICATION. NotificationType = "
+			L.i("GCMINTENTSERVICE: GOT NOTIFICATION. NotificationType = "
 					+ notificationType + ", text = " + text + ", postkey = "
 					+ postKey + ", deviceID = " + deviceId);
 
@@ -84,7 +84,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			return false;
 		}
 		ActivityManager.RunningTaskInfo taskInfo = runningTasks.get(0);
-		Logger.i("current task: "
+		L.i("current task: "
 				+ taskInfo.topActivity.getClass().getSimpleName());
 
 		return taskInfo.topActivity.getPackageName().equalsIgnoreCase(
@@ -105,7 +105,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	private void notifyStartActivity(Context context,
 			PushNotification notificationData) {
-		Logger.i("NotifyStartActivity()");
+		L.i("NotifyStartActivity()");
 
 		PendingIntent resultPendingIntent = buildPendingIntent(context,
 				notificationData);
@@ -124,7 +124,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		Intent resultIntent = new Intent(this, StartActivity.class);
 		resultIntent.putExtra("notification", notificationData);
 		PendingIntent pendingIntent = null;
-		Logger.i("-------------------- Application is running!!");
+		L.i("-------------------- Application is running!!");
 
 		// set intent so it does not start a new activity
 		resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -152,27 +152,27 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	@Override
 	protected void onRegistered(Context context, String registrationId) {
-		Logger.i(TAG + " Device registered: regId = " + registrationId);
+		L.i(TAG + " Device registered: regId = " + registrationId);
 
 		Client.getInstance().registerGCM(registrationId);
 	}
 
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
-		Logger.i(TAG + " Device unregistered");
+		L.i(TAG + " Device unregistered");
 
 		Client.getInstance().unregisterGCM(registrationId);
 	}
 
 	@Override
 	protected void onError(Context context, String errorId) {
-		Logger.i(TAG + " Received error: " + errorId);
+		L.i(TAG + " Received error: " + errorId);
 	}
 
 	@Override
 	protected boolean onRecoverableError(Context context, String errorId) {
 		// log message
-		Logger.i(TAG + " Received recoverable error: " + errorId);
+		L.i(TAG + " Received recoverable error: " + errorId);
 		return super.onRecoverableError(context, errorId);
 	}
 }

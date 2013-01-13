@@ -2,7 +2,7 @@ package com.choosie.app.camera;
 
 import java.io.File;
 import com.choosie.app.Constants;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
 import android.os.Bundle;
@@ -48,7 +48,7 @@ public class ConfirmationActivity extends Activity {
 
 		Intent intent = getIntent();
 		path = intent.getStringExtra(Constants.IntentsCodes.path);
-		Logger.i("cameraConfirmation, getting from intent - path = " + path);
+		L.i("cameraConfirmation, getting from intent - path = " + path);
 
 		manipulateHeightsAndSetListeners(intent);
 
@@ -64,7 +64,7 @@ public class ConfirmationActivity extends Activity {
 				.createScaledBitmap(BitmapFactory.decodeFile(path),
 						screenWidth, screenWidth, false);
 
-		Logger.i("cameraApi",
+		L.i("cameraApi",
 				"on confirmation, onCreate, about to show scalled bitmap width = "
 						+ scalledBitmapToShow.getWidth() + " height = "
 						+ scalledBitmapToShow.getWidth() + " size = "
@@ -89,7 +89,7 @@ public class ConfirmationActivity extends Activity {
 		bottomHideHeight = bundle.getInt(
 				Constants.IntentsCodes.cameraBottomHideHeight, 0);
 
-		Logger.i("orenc", "topHeight = " + topWrapperHeight + " bottomHeight = "
+		L.i("orenc", "topHeight = " + topWrapperHeight + " bottomHeight = "
 				+ bottomWrapperHeight + " topHideHeight = " + topHideHeight
 				+ " bottomHideHeight = " + bottomHideHeight);
 
@@ -254,20 +254,20 @@ public class ConfirmationActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		Logger.i("cameraApi", "cameraConfirmation cameraActivity onDestroy()");
+		L.i("cameraApi", "cameraConfirmation cameraActivity onDestroy()");
 		super.onDestroy();
 		this.finish();
 	}
 
 	@Override
 	protected void onRestart() {
-		Logger.i("cameraApi", "cameraConfirmation cameraActivity onRestart()");
+		L.i("cameraApi", "cameraConfirmation cameraActivity onRestart()");
 		super.onRestart();
 	}
 
 	@Override
 	protected void onStop() {
-		Logger.i("cameraApi", "cameraConfirmation cameraActivity onStop()");
+		L.i("cameraApi", "cameraConfirmation cameraActivity onStop()");
 		super.onStop();
 	}
 

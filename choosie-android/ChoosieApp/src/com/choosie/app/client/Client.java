@@ -11,7 +11,7 @@ import org.apache.http.util.ByteArrayBuffer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import com.choosie.app.Callback;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.Models.ChoosiePostData;
@@ -43,7 +43,7 @@ public abstract class Client {
 			Callback<Void, Integer, Void> progressCallback) {
 
 		String urlToLoad = pictureUrl;
-		Logger.d("getPictureFromServer: Loading URL: " + urlToLoad);
+		L.d("getPictureFromServer: Loading URL: " + urlToLoad);
 		URL url;
 		try {
 			url = new URL(urlToLoad);
@@ -63,11 +63,11 @@ public abstract class Client {
 			progressCallback.onProgress(Integer.valueOf(99));
 			Bitmap bitmap = BitmapFactory.decodeByteArray(buffer, 0,
 					buffer.length);
-			Logger.d("getPictureFromServer: returning bitmap = " + bitmap);
+			L.d("getPictureFromServer: returning bitmap = " + bitmap);
 			return bitmap;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			Logger.d("getPictureFromServer: returning null");
+			L.d("getPictureFromServer: returning null");
 			e.printStackTrace();
 			return null;
 		}

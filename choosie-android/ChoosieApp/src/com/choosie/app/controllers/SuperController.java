@@ -10,7 +10,7 @@ import com.choosie.app.ChoosieActivity;
 import com.choosie.app.CommentScreenActivity;
 import com.choosie.app.Constants;
 import com.choosie.app.IntentData;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.VotePopupWindowUtils;
 import com.choosie.app.EnlargePhotoActivity;
@@ -92,7 +92,7 @@ public class SuperController {
 	}
 
 	public void voteFor(final ChoosiePostData post, int whichPhoto) {
-		Logger.i("Issuing vote for: " + post.getPostKey());
+		L.i("Issuing vote for: " + post.getPostKey());
 		Tracker tracker = GoogleAnalytics.getInstance(getActivity())
 				.getDefaultTracker();
 		tracker.trackEvent("Ui Action", "Vote", String.valueOf(whichPhoto),
@@ -134,7 +134,7 @@ public class SuperController {
 	}
 
 	public void CommentFor(final String post_key, String text) {
-		Logger.i("commenting vote for: " + post_key);
+		L.i("commenting vote for: " + post_key);
 		Tracker tracker = GoogleAnalytics.getInstance(getActivity())
 				.getDefaultTracker();
 		tracker.trackEvent("Ui Action", "comment", "text", null);
@@ -330,19 +330,19 @@ public class SuperController {
 		// GCMRegistrar.unregister(getActivity());
 		String regId = GCMRegistrar.getRegistrationId(getActivity());
 		if (regId.equals("")) {
-			Logger.i("Registering with sender_id: "
+			L.i("Registering with sender_id: "
 					+ Constants.Notifications.SENDER_ID);
 			GCMRegistrar.register(getActivity(),
 					Constants.Notifications.SENDER_ID);
-			Logger.i("succeeded registering!!!");
+			L.i("succeeded registering!!!");
 		} else {
 			GCMRegistrar.setRegisteredOnServer(getActivity(), true);
-			Logger.i("Already registered");
+			L.i("Already registered");
 		}
 	}
 
 	public void handlePopupVoteWindow(String postKey, int position) {
-		Logger.d("SuperController: entered handlePopupVoteWindow, postKey = "
+		L.d("SuperController: entered handlePopupVoteWindow, postKey = "
 				+ postKey + " position = " + position);
 		// first scroll the positioned item
 		if (position != -1) {
@@ -367,7 +367,7 @@ public class SuperController {
 							public void onValueReady(String key,
 									ChoosiePostData result) {
 								if (result == null) {
-									Logger.e("ERROR : param is 'null'");
+									L.e("ERROR : param is 'null'");
 									// TODO: Handle error
 									// Toast.makeText(getActivity(),
 									// "Failed to update post.",

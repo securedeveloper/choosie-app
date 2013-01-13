@@ -1,6 +1,6 @@
 package com.choosie.app.controllers;
 
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
 import com.choosie.app.Models.ChoosiePostData;
@@ -26,7 +26,7 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onCreate() {
-		Logger.i("Feed.onShow()");
+		L.i("Feed.onShow()");
 		// Create a progress bar to display while the list loads
 		TextView textView = new TextView(this.getActivity());
 		textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
@@ -53,7 +53,7 @@ public class FeedScreenController extends ScreenController {
 				/* maybe add a padding */
 				boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount - 3;
 				if (loadMore) {
-					Logger.i("LOADMORE");
+					L.i("LOADMORE");
 					choosiePostsItemAdapter.appendToList();
 				}
 			}

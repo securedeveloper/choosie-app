@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
@@ -112,7 +112,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 		imageFile2 = Utils.createImageFile(2);
 		imagePath1 = imageFile1.getAbsolutePath();
 		imagePath2 = imageFile2.getAbsolutePath();
-		Logger.i("CameraMainActivity - onCreate - about to startNewCameraActivity, imaggePath1 = "
+		L.i("CameraMainActivity - onCreate - about to startNewCameraActivity, imaggePath1 = "
 				+ imagePath1 + " imagePath2 = " + imagePath2);
 		isFirstTimeReturnFromCamera = true;
 		startNewCameraActivity(Constants.RequestCodes.CAMERA_PICURE_FIRST,
@@ -421,9 +421,9 @@ public class CameraMainSuperControllerActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		Logger.i("onActivityResult");
-		Logger.i("requestCode = " + requestCode);
-		Logger.i("resultCode = " + resultCode);
+		L.i("onActivityResult");
+		L.i("requestCode = " + requestCode);
+		L.i("resultCode = " + resultCode);
 
 		switch (requestCode) {
 		case Constants.RequestCodes.CAMERA_PICURE_FIRST:
@@ -435,7 +435,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				// cmaeraActivity with second image
 				bundle = data.getExtras();
 				Utils.galleryAddPic(Uri.fromFile(imageFile1), this);
-				Logger.i("CameraMainActivity - got back from first confirm, startNewCameraActivity, imaggePath2 = "
+				L.i("CameraMainActivity - got back from first confirm, startNewCameraActivity, imaggePath2 = "
 						+ imagePath2);
 				saveImage1Bitmap();
 				setImages();
@@ -476,7 +476,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				// user confirmed, save it in the gallery, and starting
 				// cmaeraActivity with second image
 				Utils.galleryAddPic(Uri.fromFile(imageFile1), this);
-				Logger.i("CameraMainActivity - got back from first confirm, startNewCameraActivity, imaggePath2 = "
+				L.i("CameraMainActivity - got back from first confirm, startNewCameraActivity, imaggePath2 = "
 						+ imagePath2);
 				saveImage1Bitmap();
 				setImages();
@@ -531,7 +531,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 			break;
 
 		case Constants.RequestCodes.FB_REQUEST_PUBLISH_PERMISSION:
-			Logger.i("after activity fb");
+			L.i("after activity fb");
 			Session.getActiveSession().onActivityResult(this, requestCode,
 					resultCode, data);
 			if (resultCode == Constants.RequestCodes.FB_PERMISSIONS_GRANTED) {
@@ -606,14 +606,14 @@ public class CameraMainSuperControllerActivity extends Activity {
 		Intent intent = new Intent(this.getApplication(),
 				ConfirmationActivity.class);
 		bundle.remove(Constants.IntentsCodes.path);
-		Logger.i("CameraMain - inserting to intent path = " + path);
+		L.i("CameraMain - inserting to intent path = " + path);
 		intent.putExtra(Constants.IntentsCodes.path, path);
 		intent.putExtras(bundle);
 		startActivityForResult(intent, requestCode);
 	}
 
 	private void startNewCameraActivity(int requestCode, String path) {
-		Logger.i("CameraMainActivity - startNewCameraActivity, path = " + path);
+		L.i("CameraMainActivity - startNewCameraActivity, path = " + path);
 		Intent cameraIntent = new Intent(this.getApplication(),
 				CameraActivity.class);
 
@@ -646,7 +646,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				boolean userHasPublishPermissions = isUserHasPublishPermissions();
 
 				if (userHasPublishPermissions) {
-					Logger.i("Already have publish permissions: "
+					L.i("Already have publish permissions: "
 							+ session.getPermissions().toString());
 					changeFacebookShareState(true);
 
@@ -666,7 +666,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 			List<String> perms = session.getPermissions();
 			userHasPublishPermissions = perms.contains("publish_stream");
 		} else {
-			Logger.i("isUserHasPublishPermissions(): session is not opened!");
+			L.i("isUserHasPublishPermissions(): session is not opened!");
 		}
 		return userHasPublishPermissions;
 	}
@@ -694,11 +694,11 @@ public class CameraMainSuperControllerActivity extends Activity {
 			try {
 				session.reauthorizeForPublish(request);
 			} catch (Exception ex) {
-				Logger.e("Exception in reauthorizeForPublish() : "
+				L.e("Exception in reauthorizeForPublish() : "
 						+ ex.toString());
 			}
 			Session.setActiveSession(session);
-			Logger.i("on set active session permissions: "
+			L.i("on set active session permissions: "
 					+ session.getPermissions().toString());
 		}
 	}
@@ -707,10 +707,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 		public void call(Session session, SessionState state,
 				Exception exception) {
 
-			Logger.i("Entered SessionStatusCallback()");
-			Logger.i("session = " + session.toString());
-			Logger.i("state = " + state.toString());
-			Logger.i("exception = " + exception.toString());
+			L.i("Entered SessionStatusCallback()");
+			L.i("session = " + session.toString());
+			L.i("state = " + state.toString());
+			L.i("exception = " + exception.toString());
 		}
 	}
 
@@ -731,10 +731,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	protected void submitPost(NewChoosiePostData ncpd) {
 		if (ncpd.isShareOnFacebook() && !isUserHasPublishPermissions()) {
-			Logger.i("Share on facebook is checked!");
+			L.i("Share on facebook is checked!");
 			askForPublishPermissions();
 		}
-		Logger.i("executing submitChoosiePost()");
+		L.i("executing submitChoosiePost()");
 		submitChoosiePost(ncpd);
 	}
 

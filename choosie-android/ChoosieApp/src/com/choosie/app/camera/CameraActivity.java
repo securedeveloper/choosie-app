@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.choosie.app.Constants;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
 
@@ -99,7 +99,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				}
 			});
 
-			Logger.i("cameraApi", " enter onAutoFocus");
+			L.i("cameraApi", " enter onAutoFocus");
 			if (isFocus) {
 				mp.start();
 				cameraLayoutViewHolder.focusImageView
@@ -108,7 +108,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				cameraLayoutViewHolder.focusImageView
 						.setImageResource(R.drawable.focus_crosshair_image_out_of_focus);
 			}
-			Logger.i("cameraApi",
+			L.i("cameraApi",
 					" exits onAutoFocus, setting isFocusLeft = true");
 
 			if (needToTakePhoto) {
@@ -153,14 +153,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		Logger.i("cameraApi", "CameraActivity onCreate");
+		L.i("cameraApi", "CameraActivity onCreate");
 		super.onCreate(savedInstanceState);
 		getWindow().setFormat(PixelFormat.TRANSLUCENT);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_camera);
-		Logger.i(TAG, "onCreate");
+		L.i(TAG, "onCreate");
 
 		// first thing!! getting the camera
 		if ((mCamera = getCameraInstance(CameraInfo.CAMERA_FACING_BACK)) == null) {
@@ -187,7 +187,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		mHolder.addCallback(this);
 		// deprecated setting, but required on Android versions prior to 3.0
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-		Logger.i(TAG, "after constructor");
+		L.i(TAG, "after constructor");
 
 		if (Camera.getNumberOfCameras() == 1) {
 			findViewById(R.id.cameraPreview_frontImage1).setVisibility(
@@ -296,7 +296,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	private void manipulateLayoutsHeight(Display display) {
 
-		Logger.i("cameraApi", "entered manipulateLayoutsHeight");
+		L.i("cameraApi", "entered manipulateLayoutsHeight");
 
 		Camera.Parameters parameters = mCamera.getParameters();
 		List<Size> previewSupportedSizes = parameters
@@ -316,7 +316,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			bestHeight = bestSize.width;
 		}
 
-		Logger.i("cameraApi", "screen width = " + screenWidth
+		L.i("cameraApi", "screen width = " + screenWidth
 				+ " screen height = " + screenHeight + "best width = "
 				+ bestSize.width + "best height = " + bestSize.height);
 
@@ -333,7 +333,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		cameraLayoutViewHolder.preview.getLayoutParams().height = bestWidth;
 
-		Logger.i("cameraApi", "topWrapperHeight = " + topWrapperHeight
+		L.i("cameraApi", "topWrapperHeight = " + topWrapperHeight
 				+ " bottomWrapperHeight = " + bottomWrapperHeight
 				+ " topHeight = " + topHeight + " bottomHeight = "
 				+ bottomHeight + " topHideHeight = " + topHideHeight
@@ -393,7 +393,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		cameraLayoutViewHolder.takePicButton.setEnabled(false);
 
 		mCamera.stopPreview();
-		Logger.i("cameraApi", "in startCropingStuff");
+		L.i("cameraApi", "in startCropingStuff");
 
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
 		intent.setType("image/*");
@@ -456,14 +456,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	protected void onPause() {
-		Logger.i("cameraApi", "cameraActivity onPause");
+		L.i("cameraApi", "cameraActivity onPause");
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Logger.i("cameraApi", "cameraActivity onResume, camId = " + camId);
+		L.i("cameraApi", "cameraActivity onResume, camId = " + camId);
 
 		// Open the default i.e. the first rear facing camera.
 		if (mCamera == null) {
@@ -520,7 +520,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				options.inSampleSize = 1;
 			}
 
-			Logger.i("cameraApi", "in manipulateDataIntoFile, inSampleSize = "
+			L.i("cameraApi", "in manipulateDataIntoFile, inSampleSize = "
 					+ options.inSampleSize);
 
 			// Decode bitmap with inSampleSize set
@@ -530,7 +530,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			// Bitmap beforeRotation = BitmapFactory.decodeByteArray(data, 0,
 			// data.length);
 
-			Logger.i(
+			L.i(
 					"cameraApi",
 					"created before rotation, width = "
 							+ beforeRotation.getWidth() + " height = "
@@ -553,7 +553,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 				beforeRotation = null;
 			}
 
-			Logger.i("cameraApi", "recycled beforeRotation");
+			L.i("cameraApi", "recycled beforeRotation");
 
 			// phase 4: crop it into a square and save it in the file
 			int w = afterRotation.getWidth();
@@ -561,10 +561,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			Bitmap squareBitmap = Bitmap
 					.createBitmap(afterRotation, 0, 0, w, w);
 
-			Logger.i("cameraApi", "cropped into a square = start pixel (y) - "
+			L.i("cameraApi", "cropped into a square = start pixel (y) - "
 					+ startPixel + " width = " + w);
 
-			Logger.i("cameraApi",
+			L.i("cameraApi",
 					"scalled into asmallersize= " + squareBitmap.getWidth()
 							+ " height = " + squareBitmap.getHeight()
 							+ " size = " + squareBitmap.getRowBytes()
@@ -573,14 +573,14 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			afterRotation.recycle();
 			afterRotation = null;
 
-			Logger.i("cameraApi", "recycled afterRotation");
+			L.i("cameraApi", "recycled afterRotation");
 
 			Utils.writeBitmapToFile(squareBitmap, pictureFile, 95);
 
 			squareBitmap.recycle();
 			squareBitmap = null;
 
-			Logger.i("cameraApi", "recycled squareBitmap");
+			L.i("cameraApi", "recycled squareBitmap");
 		} catch (Exception e) {
 			return false;
 		}
@@ -608,7 +608,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 					matrix, true);
 		} catch (OutOfMemoryError e) {
 
-			Logger.i("cameraApi", "rotateBitmap - trying to set smaller bitmap");
+			L.i("cameraApi", "rotateBitmap - trying to set smaller bitmap");
 
 			// try to load smaller size
 			Bitmap smallerBitmap = Bitmap.createScaledBitmap(source, width / 2,
@@ -628,7 +628,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Logger.i("cameraApi", "entered onActivityResult");
+		L.i("cameraApi", "entered onActivityResult");
 		switch (requestCode) {
 		case Constants.RequestCodes.CAMERA_GALLERY_CROP:
 			// got back from gallery;
@@ -667,7 +667,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	public final boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			if (canUseBackKey == true) {
-				Logger.i("cameraApi", "cameraActivity - keyDown");
+				L.i("cameraApi", "cameraActivity - keyDown");
 				setResult(Activity.RESULT_CANCELED);
 				finish();
 			} else {
@@ -679,26 +679,26 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 	@Override
 	protected void onDestroy() {
-		Logger.i("cameraApi", "cameraActivity cameraActivity onDestroy()");
+		L.i("cameraApi", "cameraActivity cameraActivity onDestroy()");
 		super.onDestroy();
 		this.finish();
 	}
 
 	@Override
 	protected void onRestart() {
-		Logger.i("cameraApi", "cameraActivity cameraActivity onRestart()");
+		L.i("cameraApi", "cameraActivity cameraActivity onRestart()");
 		super.onRestart();
 	}
 
 	@Override
 	protected void onStop() {
-		Logger.i("cameraApi", "cameraActivity cameraActivity onStop()");
+		L.i("cameraApi", "cameraActivity cameraActivity onStop()");
 		super.onStop();
 	}
 
 	@Override
 	protected void onStart() {
-		Logger.i("cameraApi", "cameraActivity onStart()");
+		L.i("cameraApi", "cameraActivity onStart()");
 		super.onStart();
 	}
 
@@ -721,7 +721,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	}
 
 	private void surfaceChangedTaskJob(int w, int h) {
-		Logger.i("cameraApi", "enter surfaceChanged - enter with w = " + w
+		L.i("cameraApi", "enter surfaceChanged - enter with w = " + w
 				+ " h = " + h + " bestw = " + bestWidth + " bestH = "
 				+ bestHeight);
 
@@ -729,7 +729,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		// Make sure to stop the preview before resizing or reformatting it.
 
 		if (mHolder.getSurface() == null) {
-			Logger.i("cameraApi",
+			L.i("cameraApi",
 					"surfaceChanged - preview surface does not exist!");
 			// preview surface does not exist
 			return;
@@ -739,7 +739,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		try {
 			mCamera.stopPreview();
 		} catch (Exception e) {
-			Logger.i("cameraApi",
+			L.i("cameraApi",
 					"surfaceChanged - tried to stop a non-existent preview");
 			// ignore: tried to stop a non-existent preview
 		}
@@ -756,23 +756,23 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		w = bestSize.height;
 
 		if (display.getRotation() == Surface.ROTATION_0) {
-			Logger.i("cameraApi", "surfaceChanged rotation = 0");
+			L.i("cameraApi", "surfaceChanged rotation = 0");
 			parameters.setPreviewSize(h, w);
 			mCamera.setDisplayOrientation(90);
 		}
 
 		if (display.getRotation() == Surface.ROTATION_90) {
-			Logger.i("cameraApi", "surfaceChanged rotation = 90");
+			L.i("cameraApi", "surfaceChanged rotation = 90");
 			parameters.setPreviewSize(w, h);
 		}
 
 		if (display.getRotation() == Surface.ROTATION_180) {
-			Logger.i("cameraApi", "surfaceChanged rotation = 180");
+			L.i("cameraApi", "surfaceChanged rotation = 180");
 			parameters.setPreviewSize(h, w);
 		}
 
 		if (display.getRotation() == Surface.ROTATION_270) {
-			Logger.i("cameraApi", "surfaceChanged rotation = 270");
+			L.i("cameraApi", "surfaceChanged rotation = 270");
 			parameters.setPreviewSize(w, h);
 			mCamera.setDisplayOrientation(180);
 		}
@@ -782,13 +782,13 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		// start preview with new settings
 		try {
 			// mHolder.setFixedSize(w1, h1);
-			Logger.i("cameraApi",
+			L.i("cameraApi",
 					"surfaceChanged : tring to set preview display in camera");
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
 
 		} catch (Exception e) {
-			Logger.d("Error starting camera preview: " + e.getMessage());
+			L.d("Error starting camera preview: " + e.getMessage());
 		}
 
 		canTouchButton = true;
@@ -796,32 +796,32 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
-		Logger.i("cameraApi", "cameraApi : enter surfaceCreated");
+		L.i("cameraApi", "cameraApi : enter surfaceCreated");
 		// The Surface has been created, now tell the camera where to draw the
 		// preview.
 		try {
-			Logger.i("cameraApi",
+			L.i("cameraApi",
 					"surfaceCreated - tring to set preview display in camera");
 			mCamera.setPreviewDisplay(holder);
 
 			mCamera.setPreviewCallback(new PreviewCallback() {
 				// Called for each frame previewed
 				public void onPreviewFrame(byte[] data, Camera camera) {
-					Logger.d("onPreviewFrame called at: "
+					L.d("onPreviewFrame called at: "
 							+ System.currentTimeMillis());
 					// CameraPreview.this.invalidate(); // <12>
 				}
 			});
-			Logger.i("cameraApi", "surfaceCreated - startingpreview in camera");
+			L.i("cameraApi", "surfaceCreated - startingpreview in camera");
 			// mCamera.startPreview();
 
 		} catch (IOException e) {
-			Logger.i("cameraApi", "failllllled");
+			L.i("cameraApi", "failllllled");
 		}
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		Logger.i("cameraApi", "cameraApi : enter surfaceDestroyed");
+		L.i("cameraApi", "cameraApi : enter surfaceDestroyed");
 		canUseBackKey = false;
 		mCamera.stopPreview();
 		mCamera.release();
@@ -833,10 +833,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		canTouchButton = false;
 		canTouchPreview = false;
 
-		Logger.i("cameraApi",
+		L.i("cameraApi",
 				"cameraActivity - entered doSome - stoping preview ( mCamera.stopPreview)");
 		mCamera.stopPreview();
-		Logger.i(
+		L.i(
 				"cameraApi",
 				"cameraActivity - entered doSome - releasing camera forothe applications ( mCamera.release())");
 		mCamera.release();
@@ -848,10 +848,10 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		}
 
 		manipulateLayoutsHeight(display);
-		Logger.i("cameraApi",
+		L.i("cameraApi",
 				"cameraActivity - entered doSome - calling surface created explicit");
 		surfaceCreated(mHolder);
-		Logger.i("cameraApi",
+		L.i("cameraApi",
 				"cameraActivity - entered doSome - calling surfaceChanged explicit");
 		surfaceChanged(mHolder, 0, 480, 640);
 	}
@@ -1046,12 +1046,12 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
 		private boolean startAutoFocus(
 				Camera.AutoFocusCallback autoFocusCallback) {
-			Logger.i("cameraApi", "enter onTouch");
+			L.i("cameraApi", "enter onTouch");
 			mCamera.cancelAutoFocus();
 			cameraLayoutViewHolder.focusImageView.setVisibility(View.VISIBLE);
 			cameraLayoutViewHolder.focusImageView
 					.setImageResource(R.drawable.focus_crosshair_image1);
-			Logger.i("cameraApi", "in onTouch, calling auto focus");
+			L.i("cameraApi", "in onTouch, calling auto focus");
 
 			mHandler.removeCallbacks(mRunnable);
 			mCamera.autoFocus(autoFocusCallback);

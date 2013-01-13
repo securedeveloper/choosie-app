@@ -3,7 +3,7 @@ package com.choosie.app.camera;
 import java.io.File;
 
 import com.choosie.app.Constants;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -36,7 +36,7 @@ public class GalleryActivity extends Activity {
 	}
 
 	private void startCropingStuff() {
-		Logger.i("cameraApi", "in startCropingStuff");
+		L.i("cameraApi", "in startCropingStuff");
 
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
 		intent.setType("image/*");
@@ -59,21 +59,21 @@ public class GalleryActivity extends Activity {
 	}
 
 	private void setRresultOk() {
-		Logger.i("cameraApi", " in handleCroppedImage");
+		L.i("cameraApi", " in handleCroppedImage");
 		setResult(Activity.RESULT_OK);
 		finish();
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Logger.i("cameraApi", "in onActivityResult, code = " + requestCode
+		L.i("cameraApi", "in onActivityResult, code = " + requestCode
 				+ " result = " + resultCode);
 
 		if (resultCode == Activity.RESULT_OK) {
 
 			switch (requestCode) {
 			case Constants.RequestCodes.CAMERA_GALLERY_CROP:
-				Logger.i("cameraApi", "returned!, code CAMERA_GALLERY_CROP");
+				L.i("cameraApi", "returned!, code CAMERA_GALLERY_CROP");
 				setRresultOk();
 				break;
 			}

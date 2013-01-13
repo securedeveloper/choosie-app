@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.choosie.app.Callback;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.controllers.FeedCacheKey;
 import com.choosie.app.Models.ChoosiePostData;
@@ -48,7 +48,7 @@ public class MockClient extends Client {
 			cursor = "";
 		}
 
-		Logger.i("Got feed request. Cursor = " + cursor);
+		L.i("Got feed request. Cursor = " + cursor);
 
 		List<ChoosiePostData> mockPosts = new ArrayList<ChoosiePostData>();
 

@@ -33,7 +33,7 @@ import org.json.JSONObject;
 import com.choosie.app.Callback;
 import com.choosie.app.Constants;
 import com.choosie.app.CustomMultiPartEntity;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.Utils;
@@ -81,19 +81,19 @@ public class RealClient extends Client {
 			feedUri += "&cursor=" + feedRequest.getCursor();
 		}
 
-		Logger.i("Getting feed from URI: " + feedUri);
+		L.i("Getting feed from URI: " + feedUri);
 		final HttpClient client = new DefaultHttpClient();
 		final HttpGet request = new HttpGet(feedUri);
 		HttpResponse response;
 		try {
 			response = client.execute(request);
 		} catch (ClientProtocolException e) {
-			Logger.e("getFeedByCursor",
+			L.e("getFeedByCursor",
 					"ClientProtocolException failed to get response");
 			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			Logger.e("getFeedByCursor", "IOException failed to get response");
+			L.e("getFeedByCursor", "IOException failed to get response");
 			e.printStackTrace();
 			return null;
 		}
@@ -101,11 +101,11 @@ public class RealClient extends Client {
 		try {
 			jsonString = EntityUtils.toString(response.getEntity());
 		} catch (ParseException e) {
-			Logger.e("getFeedByCursor", "ParseException - failed");
+			L.e("getFeedByCursor", "ParseException - failed");
 			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			Logger.e("getFeedByCursor", "IOException - failed");
+			L.e("getFeedByCursor", "IOException - failed");
 			e.printStackTrace();
 			return null;
 		}
@@ -114,12 +114,12 @@ public class RealClient extends Client {
 		try {
 			choosiePostsFromFeed = convertJsonToChoosiePosts(jsonString);
 		} catch (JSONException e) {
-			Logger.e("choosiePostsFromFeed", "convertJsonToChoosiePosts failed");
+			L.e("choosiePostsFromFeed", "convertJsonToChoosiePosts failed");
 			e.printStackTrace();
 			return null;
 		}
 
-		Logger.i("Feed converted to posts, and got cursor.");
+		L.i("Feed converted to posts, and got cursor.");
 		choosiePostsFromFeed.setAppend(feedRequest.isAppend());
 		return choosiePostsFromFeed;
 	}
@@ -130,7 +130,7 @@ public class RealClient extends Client {
 		// Creates the GET HTTP request
 		String postUri = Constants.URIs.POSTS_URI + "/" + postKey;
 
-		Logger.i("Getting post from URI: " + postUri);
+		L.i("Getting post from URI: " + postUri);
 
 		// enable on server hebrew sync
 		HttpParams params = new BasicHttpParams();
@@ -144,12 +144,12 @@ public class RealClient extends Client {
 		try {
 			response = client.execute(request);
 		} catch (ClientProtocolException e) {
-			Logger.e("getPostByKey",
+			L.e("getPostByKey",
 					"ClientProtocolException - failed to get response");
 			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			Logger.e("getPostByKey", "IOException - failed to get response");
+			L.e("getPostByKey", "IOException - failed to get response");
 			e.printStackTrace();
 			return null;
 		}
@@ -157,11 +157,11 @@ public class RealClient extends Client {
 		try {
 			jsonString = EntityUtils.toString(response.getEntity());
 		} catch (ParseException e) {
-			Logger.e("getPostByKey", "ParseException - failed toString Json");
+			L.e("getPostByKey", "ParseException - failed toString Json");
 			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
-			Logger.e("getPostByKey", "IOException - failed toString Json");
+			L.e("getPostByKey", "IOException - failed toString Json");
 			e.printStackTrace();
 			return null;
 		}
@@ -170,13 +170,13 @@ public class RealClient extends Client {
 		try {
 			choosiePostFromResponse = convertJsonToChoosiePost(jsonString);
 		} catch (JSONException e) {
-			Logger.e("getPostByKey",
+			L.e("getPostByKey",
 					"JSONException - failed convertJsonToChoosiePost");
 			e.printStackTrace();
 			return null;
 		}
 
-		Logger.i("Response converted to post.");
+		L.i("Response converted to post.");
 		return choosiePostFromResponse;
 	}
 
@@ -189,7 +189,7 @@ public class RealClient extends Client {
 		try {
 			createLoginPostRequest(postRequest);
 		} catch (UnsupportedEncodingException e) {
-			Logger.e("login",
+			L.e("login",
 					"UnsupportedEncodingException - failed createLoginPostRequest");
 			e.printStackTrace();
 			return;
@@ -202,11 +202,11 @@ public class RealClient extends Client {
 				try {
 					httpClient.execute(postRequest);
 				} catch (ClientProtocolException e) {
-					Logger.e("login",
+					L.e("login",
 							"ClientProtocolException - failed execute postRequest");
 					e.printStackTrace();
 				} catch (IOException e) {
-					Logger.e("login", "IOException - failed execute postRequest");
+					L.e("login", "IOException - failed execute postRequest");
 					e.printStackTrace();
 				}
 				return null;
@@ -283,13 +283,13 @@ public class RealClient extends Client {
 			multipartContent.addPart("fb_access_token_expdate", new StringBody(
 					String.valueOf(this.fbDetails.getAccess_token_expdate())));
 
-			Logger.i("share_to_fb = on");
-			Logger.i("fb_access_token = " + this.fbDetails.getAccess_token());
-			Logger.i("fb_access_token_expdate = "
+			L.i("share_to_fb = on");
+			L.i("fb_access_token = " + this.fbDetails.getAccess_token());
+			L.i("fb_access_token_expdate = "
 					+ String.valueOf(this.fbDetails.getAccess_token_expdate()));
 		}
 
-		Logger.i("finished building multipart content");
+		L.i("finished building multipart content");
 
 		return multipartContent;
 	}
@@ -328,14 +328,14 @@ public class RealClient extends Client {
 							});
 					totalSize = multipartContent.getContentLength();
 					httpPost.setEntity(multipartContent);
-					Logger.i("doInBackground(): Executing HTTP Request!");
+					L.i("doInBackground(): Executing HTTP Request!");
 					return httpClient.execute(httpPost);
 				} catch (ClientProtocolException e) {
-					Logger.e("createExecuteHttpPostTask",
+					L.e("createExecuteHttpPostTask",
 							"ClientProtocolException failed execute postRequest");
 					e.printStackTrace();
 				} catch (IOException e) {
-					Logger.e("createExecuteHttpPostTask",
+					L.e("createExecuteHttpPostTask",
 							"IOException - failed execute postRequest");
 					e.printStackTrace();
 				}
@@ -380,7 +380,7 @@ public class RealClient extends Client {
 				choosiePostsFromFeed.add(postData);
 
 			} catch (JSONException e) {
-				Logger.e("convertJsonToChoosiePosts", "JSONException failed");
+				L.e("convertJsonToChoosiePosts", "JSONException failed");
 				e.printStackTrace();
 			}
 		}
@@ -497,12 +497,12 @@ public class RealClient extends Client {
 				try {
 					httpClient.execute(getRequest);
 				} catch (ClientProtocolException e) {
-					Logger.e("sendVoteToServer",
+					L.e("sendVoteToServer",
 							"ClientProtocolException failed execute");
 					e.printStackTrace();
 					return false;
 				} catch (IOException e) {
-					Logger.e("sendVoteToServer", "IOException failed execute");
+					L.e("sendVoteToServer", "IOException failed execute");
 					e.printStackTrace();
 					return false;
 				}
@@ -558,12 +558,12 @@ public class RealClient extends Client {
 				try {
 					httpClient.execute(postRequest);
 				} catch (ClientProtocolException e) {
-					Logger.e("sendCommentToServer",
+					L.e("sendCommentToServer",
 							"ClientProtocolException - failed execute");
 					e.printStackTrace();
 					return false;
 				} catch (IOException e) {
-					Logger.e("sendCommentToServer", "IOException - failed execute");
+					L.e("sendCommentToServer", "IOException - failed execute");
 					e.printStackTrace();
 					return false;
 				}
@@ -594,7 +594,7 @@ public class RealClient extends Client {
 			multipartContent.addPart("post_key",
 					new StringBody(comment.getPost_key()));
 		} catch (UnsupportedEncodingException e) {
-			Logger.e("createNewCommentPostRequest",
+			L.e("createNewCommentPostRequest",
 					"UnsupportedEncodingException - failed");
 			e.printStackTrace();
 		}
@@ -613,7 +613,7 @@ public class RealClient extends Client {
 		try {
 			createRegisterRequest(postRequest, deviceId);
 		} catch (UnsupportedEncodingException e) {
-			Logger.e("login",
+			L.e("login",
 					"UnsupportedEncodingException - failed createLoginPostRequest");
 			e.printStackTrace();
 			return;
@@ -626,11 +626,11 @@ public class RealClient extends Client {
 				try {
 					return httpClient.execute(postRequest);
 				} catch (ClientProtocolException e) {
-					Logger.e("Register",
+					L.e("Register",
 							"ClientProtocolException - failed execute registerReq");
 					e.printStackTrace();
 				} catch (IOException e) {
-					Logger.e("login", "IOException - failed execute registerReq");
+					L.e("login", "IOException - failed execute registerReq");
 					e.printStackTrace();
 				}
 				return null;
@@ -639,7 +639,7 @@ public class RealClient extends Client {
 			@Override
 			protected void onPostExecute(HttpResponse result) {
 				// TODO: chack result or something
-				Logger.i("Register", "result status = " + result.getStatusLine());
+				L.i("Register", "result status = " + result.getStatusLine());
 			}
 		};
 		registerTask.execute();

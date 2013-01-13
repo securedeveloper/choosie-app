@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.choosie.app.Constants;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData;
 import com.choosie.app.R;
 import com.choosie.app.Utils;
@@ -66,7 +66,7 @@ public class NewPostActivity extends Activity {
 		// Get the intent from the Camera Activity
 		intent = getIntent();
 		if (intent == null) {
-			Logger.e("An Error has occurred! Intent is NULL");
+			L.e("An Error has occurred! Intent is NULL");
 		}
 
 		InitializeComponents(intent);
@@ -124,7 +124,7 @@ public class NewPostActivity extends Activity {
 			List<String> perms = session.getPermissions();
 			userHasPublishPermissions = perms.contains("publish_stream");
 		} else {
-			Logger.i("isUserHasPublishPermissions(): session is not opened!");
+			L.i("isUserHasPublishPermissions(): session is not opened!");
 		}
 		return userHasPublishPermissions;
 	}
@@ -142,10 +142,10 @@ public class NewPostActivity extends Activity {
 			try {
 				session.reauthorizeForPublish(request);
 			} catch (Exception ex) {
-				Logger.e("Exception in reauthorizeForPublish() : "
+				L.e("Exception in reauthorizeForPublish() : "
 						+ ex.toString());
 			}
-			Logger.i("on set active session permissions: "
+			L.i("on set active session permissions: "
 					+ session.getPermissions().toString());
 		}
 	}
@@ -171,7 +171,7 @@ public class NewPostActivity extends Activity {
 	private class SessionStatusCallback implements Session.StatusCallback {
 		public void call(Session session, SessionState state,
 				Exception exception) {
-			Logger.i("Entered SessionStatusCallback()");
+			L.i("Entered SessionStatusCallback()");
 		}
 	}
 
@@ -211,7 +211,7 @@ public class NewPostActivity extends Activity {
 
 				// if so, just show button as checked
 				if (userHasPublishPermissions) {
-					Logger.i("Already have publish permissions: "
+					L.i("Already have publish permissions: "
 							+ session.getPermissions().toString());
 					mTbFacebook.setChecked(true);
 

@@ -49,7 +49,7 @@ public class Utils {
 		try {
 			date = df.parse(str_date);
 		} catch (ParseException e) {
-			Logger.e("convertStringToDateUTC",
+			L.e("convertStringToDateUTC",
 					"failed parsing SimpleDateFormat");
 			e.printStackTrace();
 			return null;
@@ -64,7 +64,7 @@ public class Utils {
 
 		if (milliseconds < 0) {
 			// In case the time difference is negative: probably an error.
-			Logger.w("Got a picture from the future.");
+			L.w("Got a picture from the future.");
 			return "";
 		}
 		long seconds = milliseconds / 1000;
@@ -116,13 +116,13 @@ public class Utils {
 			FileOutputStream fos = new FileOutputStream(pictureFile);
 			fos.write(data);
 			fos.close();
-			Logger.i("writeBytesIntoFile: path = "
+			L.i("writeBytesIntoFile: path = "
 					+ pictureFile.getAbsolutePath());
 
 		} catch (FileNotFoundException e) {
-			Logger.e("File not found: " + e.getMessage());
+			L.e("File not found: " + e.getMessage());
 		} catch (IOException e) {
-			Logger.e("Error accessing file: " + e.getMessage());
+			L.e("Error accessing file: " + e.getMessage());
 		}
 	}
 
@@ -149,7 +149,7 @@ public class Utils {
 			fo.write(bos.toByteArray());
 			fo.close();
 		} catch (IOException e) {
-			Logger.e("writeByteStreamOnSD", "failed to wirte on file: "
+			L.e("writeByteStreamOnSD", "failed to wirte on file: "
 					+ fullPath);
 			e.printStackTrace();
 		}
@@ -170,7 +170,7 @@ public class Utils {
 		progressCallback.onProgress(5);
 		Bitmap toRet = BitmapFactory.decodeFile(fullPath);
 
-		Logger.d("getBitmapFromURL - URL = " + param + " fullPath = "
+		L.d("getBitmapFromURL - URL = " + param + " fullPath = "
 				+ fullPath + " toRet = " + toRet);
 		toRet = shrinkBitmapToImageViewSizeIfNeeded(toRet);
 		// Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " +
@@ -231,11 +231,11 @@ public class Utils {
 				memoryInfo.getTotalPss() / 1024.0,
 				memoryInfo.getTotalPrivateDirty() / 1024.0,
 				memoryInfo.getTotalSharedDirty() / 1024.0);
-		Logger.d("Utils: " + memMessage);
+		L.d("Utils: " + memMessage);
 	}
 
 	public static Bitmap shrinkBitmapToImageViewSizeIfNeeded(Bitmap inputBitmap) {
-		Logger.d("enterd shrinkBitmapToImageViewSizeIfNeeded, inputBitmap = "
+		L.d("enterd shrinkBitmapToImageViewSizeIfNeeded, inputBitmap = "
 				+ inputBitmap + screenWidth);
 		if (screenWidth / 2 < inputBitmap.getWidth()) {
 			Bitmap shrinkedBitmap = Bitmap.createScaledBitmap(inputBitmap,
@@ -286,7 +286,7 @@ public class Utils {
 	}
 
 	public static File getAlbumDir() {
-		Logger.i("PostScreenController - enter getAlbumDir,path = "
+		L.i("PostScreenController - enter getAlbumDir,path = "
 				+ Environment
 						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
 				+ " " + Constants.URIs.APPLICATION_NAME);
@@ -300,12 +300,12 @@ public class Utils {
 	public static File createImageFile(Integer prefix) {
 		File dir = getAlbumDir();
 		if (dir.exists() == false) {
-			Logger.i("Utils - createImageFile: the dir is not exist, path = "
+			L.i("Utils - createImageFile: the dir is not exist, path = "
 					+ dir.getAbsolutePath());
 			boolean dirCreated = dir.mkdirs();
-			Logger.i("Utils, dirCreated = " + dirCreated);
+			L.i("Utils, dirCreated = " + dirCreated);
 		} else {
-			Logger.i("Utils - createImageFile: dir exists, path = "
+			L.i("Utils - createImageFile: dir exists, path = "
 					+ dir.getAbsolutePath());
 		}
 		// Create an image file name
@@ -316,7 +316,7 @@ public class Utils {
 		try {
 			imageFile = File.createTempFile(imageFileName, ".jpg", dir);
 		} catch (IOException e) {
-			Logger.e("createImageFile", "failed to create temp image file: "
+			L.e("createImageFile", "failed to create temp image file: "
 					+ imageFileName);
 			e.printStackTrace();
 		}
@@ -324,7 +324,7 @@ public class Utils {
 	}
 
 	public static void galleryAddPic(Uri uri, Context context) {
-		Logger.i("Utils: adding to gallery, path = " + uri.getPath());
+		L.i("Utils: adding to gallery, path = " + uri.getPath());
 		Intent mediaScanIntent = new Intent(
 				Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 		mediaScanIntent.setData(uri);
@@ -373,7 +373,7 @@ public class Utils {
 		int h = bitmap.getHeight();
 
 		int[] pix = new int[w * h];
-		Logger.e("pix", w + " " + h + " " + pix.length);
+		L.e("pix", w + " " + h + " " + pix.length);
 		bitmap.getPixels(pix, 0, w, 0, 0, w, h);
 
 		int wm = w - 1;
@@ -560,7 +560,7 @@ public class Utils {
 			}
 		}
 
-		Logger.e("pix", w + " " + h + " " + pix.length);
+		L.e("pix", w + " " + h + " " + pix.length);
 		bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
 		return (bitmap);

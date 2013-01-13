@@ -20,7 +20,7 @@ public class IntentData implements Parcelable {
 		/*
 		 * Reconstruct from the Parcel
 		 */
-		Logger.v("parcel ota",
+		L.v("parcel ota",
 				"ParcelData(Parcel source): time to put back parcel data");
 		startingImage = source.readInt();
 		votes1 = source.readInt();

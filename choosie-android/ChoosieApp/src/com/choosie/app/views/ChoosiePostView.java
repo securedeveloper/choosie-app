@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.choosie.app.Constants;
-import com.choosie.app.Logger;
+import com.choosie.app.L;
 import com.choosie.app.NewChoosiePostData.PostType;
 import com.choosie.app.R;
 import com.choosie.app.Screen;
@@ -147,7 +147,7 @@ public class ChoosiePostView extends RelativeLayout {
 					.setBackgroundColor(getResources().getColor(
 							R.color.Transparent));
 
-			Logger.i(post.getPhoto2URL());
+			L.i(post.getPhoto2URL());
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgViewCenter,
 					postViewHolder.progressBarCenter,
 					postViewHolder.voteButton1);
@@ -193,7 +193,7 @@ public class ChoosiePostView extends RelativeLayout {
 		postViewHolder.imgView1
 				.setOnLongClickListener(new OnLongClickListener() {
 					public boolean onLongClick(View v) {
-						Logger.i("onLongClick signaled for voting 1");
+						L.i("onLongClick signaled for voting 1");
 						return handleVote1(postViewHolder.votes1,
 								postViewHolder.votes2,
 								postViewHolder.voteButton1,
@@ -223,7 +223,7 @@ public class ChoosiePostView extends RelativeLayout {
 				.setOnLongClickListener(new OnLongClickListener() {
 
 					public boolean onLongClick(View v) {
-						Logger.i("onLongClick signaled for voting 2");
+						L.i("onLongClick signaled for voting 2");
 						return handleVote2(postViewHolder.votes1,
 								postViewHolder.votes2,
 								postViewHolder.voteButton1,
@@ -261,7 +261,7 @@ public class ChoosiePostView extends RelativeLayout {
 		// listener for handling votes popUpWindow
 		OnClickListener votesListener = new OnClickListener() {
 			public void onClick(View v) {
-				Logger.d("User click to show votes, choosiePost.getPostKey() = "
+				L.d("User click to show votes, choosiePost.getPostKey() = "
 						+ choosiePost.getPostKey() + " position = " + position);
 				superController.handlePopupVoteWindow(choosiePost.getPostKey(),
 						position);
@@ -323,38 +323,38 @@ public class ChoosiePostView extends RelativeLayout {
 	private boolean handleVote2(final TextView votes1, final TextView votes2,
 			final ImageView imgSelected1, final ImageView imgSelected2) {
 		if (!choosiePost.isVotedAlready(2)) {
-			Logger.i("voting 2 (Not voted 2 yet)");
+			L.i("voting 2 (Not voted 2 yet)");
 			superController.voteFor(choosiePost, 2);
 
 			// SHOW VOTES RESULTS
 			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 
 			// Set border for relevant image
-			Logger.i("Setting border for image 2");
+			L.i("Setting border for image 2");
 			setVoteButtonIcon(imgSelected2, true, 2);
 			setVoteButtonIcon(imgSelected1, false, 1);
 			return true;
 		}
-		Logger.i("Already voted for 2. vote not sent");
+		L.i("Already voted for 2. vote not sent");
 		return false;
 	}
 
 	private boolean handleVote1(final TextView votes1, final TextView votes2,
 			final ImageView imgSelected1, final ImageView imgSelected2) {
 		if (!choosiePost.isVotedAlready(1)) {
-			Logger.i("voting 1 (Not voted 1 yet)");
+			L.i("voting 1 (Not voted 1 yet)");
 			superController.voteFor(choosiePost, 1);
 
 			// SHOW VOTES RESULTS
 			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 
 			// Set border for relevant image
-			Logger.i("Setting border for image 1");
+			L.i("Setting border for image 1");
 			setVoteButtonIcon(imgSelected1, true, 1);
 			setVoteButtonIcon(imgSelected2, false, 2);
 			return true;
 		}
-		Logger.i("Already voted for 1. vote not sent");
+		L.i("Already voted for 1. vote not sent");
 		return false;
 	}
 
