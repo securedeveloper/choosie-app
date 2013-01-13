@@ -1,6 +1,7 @@
 package com.choosie.app;
 
 import java.util.List;
+import java.util.Random;
 
 import com.choosie.app.client.Client;
 import com.choosie.app.controllers.SuperController;
@@ -36,10 +37,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	}
 
 	private void generateNotification(Context context, Intent intent) {
-		if (!AppSettings.getPushNotifications()) {
-			return;
-		}
-
 		if (isApplicationRunningInForeground()) {
 			// TODO: show +1 in notification manager inside the app
 			Logger.i("Application is running in Foreground");
@@ -55,13 +52,25 @@ public class GCMIntentService extends GCMBaseIntentService {
 			String text = intent.getStringExtra("text");
 			String postKey = intent.getStringExtra("post_key");
 			String deviceId = intent.getStringExtra("device_id");
-			String is_friend = intent.getStringExtra("is_friend");
 			Logger.i("GCMINTENTSERVICE: GOT NOTIFICATION. NotificationType = "
 					+ notificationType + ", text = " + text + ", postkey = "
 					+ postKey + ", deviceID = " + deviceId);
 
 			PushNotification notification = new PushNotification(
 					notificationType, text, postKey, deviceId);
+			
+			if (notification.getNotificationType().equals("1")) {
+				if (!AppSettings.isGetAllNotifications()) {
+					//TODO: change this bad hook
+					
+					//randomly decide if send notification or not
+					Random r = new Random();
+					int i = r.nextInt(2);
+					if (i != 0)
+						return;
+				}			
+			}
+			
 			notifyStartActivity(context, notification);
 		}
 	}

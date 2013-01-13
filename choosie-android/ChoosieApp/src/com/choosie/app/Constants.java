@@ -106,8 +106,10 @@ public class Constants {
 	}
 
 	public static class SP {
-		public static final String PUSH_NOTIFICATIONS = "push_notifications";
-		public static final String CAMERA_TYPE = "camera_type";
+//		public static final String PUSH_NOTIFICATIONS = "push_notifications";
+//		public static final String CAMERA_TYPE = "camera_type";
+		public static final String PREF_NOTIFICATION = "pref_notification";
+		public static final String PREF_CAMERA = "pref_camera";
 	}
 
 	public static class DialogId {

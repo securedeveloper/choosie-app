@@ -159,7 +159,7 @@ public class ChoosieActivity extends Activity {
 			break;
 		case R.id.layout_button_post:
 		case R.id.layout_button_image_post:
-			if (AppSettings.useChoozieCamera() == true) {
+			if (AppSettings.isUseAdvancedCamera()){
 				Intent intent = new Intent(this.getApplicationContext(),
 						CameraMainSuperControllerActivity.class);
 				startActivityForResult(intent, Constants.RequestCodes.NEW_POST);
@@ -260,9 +260,9 @@ public class ChoosieActivity extends Activity {
 
 		public void onClick(View v) {
 			Logger.i("Clicked settings button");
-			AppSettingsWindow settingsWindow = new AppSettingsWindow(
-					superController.getActivity());
-			settingsWindow.show();
+//			AppSettingsWindow settingsWindow = new AppSettingsWindow(
+//					superController.getActivity());
+//			settingsWindow.show();
 		}
 	};
 

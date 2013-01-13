@@ -48,7 +48,8 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/view_choosie_post_margin"
             android:paddingRight="@dimen/view_choosie_post_margin"
-            android:src="@drawable/settings_icon" />
+            android:src="@drawable/settings_icon"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <ProgressBar

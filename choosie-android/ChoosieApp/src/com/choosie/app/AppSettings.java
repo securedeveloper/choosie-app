@@ -11,25 +11,13 @@ public class AppSettings {
 	public static void init(Context context) {
 		sp = PreferenceManager.getDefaultSharedPreferences(context);
 	}
-
-	public static void setPushNotifications(boolean value) {
-		SharedPreferences.Editor editor = sp.edit();
-		editor.putBoolean(Constants.SP.PUSH_NOTIFICATIONS, value);
-		editor.commit();
+	
+	public static boolean isUseAdvancedCamera() {
+		return sp.getBoolean(Constants.SP.PREF_CAMERA, true);
 	}
 	
-	public static void setCameraType(boolean value) {
-		SharedPreferences.Editor editor = sp.edit();
-		editor.putBoolean(Constants.SP.CAMERA_TYPE, value);
-		editor.commit();
-	}
-
-	public static boolean getPushNotifications() {
-		return sp.getBoolean(Constants.SP.PUSH_NOTIFICATIONS, true);
-	}
-	
-	public static boolean useChoozieCamera() {
-		return sp.getBoolean(Constants.SP.CAMERA_TYPE, true);
+	public static boolean isGetAllNotifications() {
+		return sp.getString(Constants.SP.PREF_NOTIFICATION, "0").equals("0");
 	}
 
 }
