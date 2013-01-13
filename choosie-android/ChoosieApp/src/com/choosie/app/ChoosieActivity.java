@@ -188,7 +188,7 @@ public class ChoosieActivity extends Activity {
 			break;
 		case R.id.layout_button_post:
 		case R.id.layout_button_image_post:
-			if (AppSettings.isUseAdvancedCamera()) {
+			if (AppSettings.isUseAdvancedCamera(this)) {
 				Intent intent = new Intent(this.getApplicationContext(),
 						CameraMainSuperControllerActivity.class);
 				startActivityForResult(intent, Constants.RequestCodes.NEW_POST);

@@ -54,8 +54,6 @@ public class StartActivity extends Activity {
 		// Initialize all buttons
 		InitializeComponents();
 
-		AppSettings.init(getApplicationContext());
-
 		Settings.addLoggingBehavior(LoggingBehaviors.INCLUDE_ACCESS_TOKENS);
 
 		Session session = Session.getActiveSession();

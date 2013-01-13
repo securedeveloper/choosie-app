@@ -6,18 +6,14 @@ import android.preference.PreferenceManager;
 
 public class AppSettings {
 
-	private static SharedPreferences sp;
+	public static boolean isUseAdvancedCamera(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context)
+				.getBoolean(Constants.SP.PREF_CAMERA, true);
+	}
 
-	public static void init(Context context) {
-		sp = PreferenceManager.getDefaultSharedPreferences(context);
-	}
-	
-	public static boolean isUseAdvancedCamera() {
-		return sp.getBoolean(Constants.SP.PREF_CAMERA, true);
-	}
-	
-	public static boolean isGetAllNotifications() {
-		return sp.getString(Constants.SP.PREF_NOTIFICATION, "0").equals("0");
+	public static boolean isGetAllNotifications(Context context) {
+		return PreferenceManager.getDefaultSharedPreferences(context)
+				.getString(Constants.SP.PREF_NOTIFICATION, "0").equals("0");
 	}
 
 }

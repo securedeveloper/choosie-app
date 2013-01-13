@@ -61,7 +61,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 					notificationType, text, postKey, deviceId);
 			
 			if (notification.getNotificationType().equals("1")) {
-				if (!AppSettings.isGetAllNotifications()) {
+				if (!AppSettings.isGetAllNotifications(context)) {
 					//TODO: change this bad hook
 					
 					//randomly decide if send notification or not

@@ -63,10 +63,9 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// Add 'general' preferences.
 		addPreferencesFromResource(R.xml.pref_general);
-//		PreferenceCategory fakeHeader = new PreferenceCategory(this);
-//		fakeHeader.setTitle(R.string.pref_header_general);
-//		getPreferenceScreen().addPreference(fakeHeader);
-		
+		// PreferenceCategory fakeHeader = new PreferenceCategory(this);
+		// fakeHeader.setTitle(R.string.pref_header_general);
+		// getPreferenceScreen().addPreference(fakeHeader);
 
 		// Add 'notifications' preferences, and a corresponding header.
 		PreferenceCategory fakeHeader = new PreferenceCategory(this);
@@ -77,10 +76,11 @@ public class SettingsActivity extends PreferenceActivity {
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
-		
-		bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.pref_notification)));
-//		bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.pref_camera)));
-		
+
+		bindPreferenceSummaryToValue(findPreference(getResources().getString(
+				R.string.pref_notification)));
+		// bindPreferenceSummaryToValue(findPreference(getResources().getString(R.string.pref_camera)));
+
 	}
 
 	/** {@inheritDoc} */
