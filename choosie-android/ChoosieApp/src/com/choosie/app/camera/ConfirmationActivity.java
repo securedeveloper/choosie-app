@@ -60,9 +60,9 @@ public class ConfirmationActivity extends Activity {
 		screenWidth = display.getWidth(); // deprecated
 		// int height = display.getHeight(); // deprecated
 
-		scalledBitmapToShow = Bitmap.createScaledBitmap(
-				BitmapFactory.decodeFile(path), screenWidth,
-				screenWidth, false);
+		scalledBitmapToShow = Bitmap
+				.createScaledBitmap(BitmapFactory.decodeFile(path),
+						screenWidth, screenWidth, false);
 
 		Log.i("cameraApi",
 				"on confirmation, onCreate, about to show scalled bitmap width = "
@@ -133,7 +133,7 @@ public class ConfirmationActivity extends Activity {
 		cancelImageView.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				cancelIt();
+				cancelIt(false);
 			}
 		});
 	}
@@ -224,10 +224,17 @@ public class ConfirmationActivity extends Activity {
 		return true;
 	}
 
-	protected void cancelIt() {
-		setResult(RESULT_CANCELED, null);
-		resetConfirmationActivity();
-		finish();
+	protected void cancelIt(boolean isNeedToReturnToMain) {
+		if (isNeedToReturnToMain) {
+			Intent intent = new Intent();
+			intent.putExtra(Constants.IntentsCodes.stayOnScreen, true);
+			setResult(RESULT_CANCELED, intent);
+			finish();
+		} else {
+			setResult(RESULT_CANCELED);
+			resetConfirmationActivity();
+			finish();
+		}
 	}
 
 	// setting the backKey to cancel the commentizatzia
@@ -236,11 +243,11 @@ public class ConfirmationActivity extends Activity {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			if (isBackKeyPressed == false) {
 				isBackKeyPressed = true;
-				cancelIt();
+				cancelIt(true);
 			} else {
 				return true;
 			}
-
+			
 		}
 		return super.onKeyDown(keyCode, event);
 	}
@@ -268,7 +275,5 @@ public class ConfirmationActivity extends Activity {
 	protected void onStart() {
 		super.onStart();
 	}
-
-	
 
 }

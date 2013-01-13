@@ -85,6 +85,7 @@ public class Constants {
 		public static final String cameraBottomWrapperHeight = "cameraBottomWrapperHeight";
 		public static final String cameraBottomHideHeight = "cameraBottomHideHeight";
 		public static final String error = "error";
+		public static final String stayOnScreen = "stayOnScreen";
 	}
 
 	public static class Notifications {

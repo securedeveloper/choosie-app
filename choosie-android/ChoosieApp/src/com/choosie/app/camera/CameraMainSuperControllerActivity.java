@@ -236,16 +236,16 @@ public class CameraMainSuperControllerActivity extends Activity {
 		float x = motion.getX();
 		float y = motion.getY();
 
+		if (motion.getAction() == MotionEvent.ACTION_DOWN) {
+			view.setImageResource(drawablePressed);
+		}
+
 		// if moved outside the button - make the focus image gone
 		if (motion.getAction() == MotionEvent.ACTION_MOVE) {
 			if ((x < 0) || (y < 0) || (x > maxX) || (y > maxY)) {
 				view.setImageResource(drawable);
 				return;
 			}
-		}
-
-		if (motion.getAction() == MotionEvent.ACTION_DOWN) {
-			view.setImageResource(drawablePressed);
 		}
 
 		if (motion.getAction() == MotionEvent.ACTION_UP) {
@@ -479,8 +479,15 @@ public class CameraMainSuperControllerActivity extends Activity {
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				// user declined, let's start the CameraActivity again with
 				// first image
+				if (data != null) {
+					if (data.getBooleanExtra(
+							Constants.IntentsCodes.stayOnScreen, false) == true) {
+						break;
+					}
+				}
 				startNewCameraActivity(
 						Constants.RequestCodes.CAMERA_PICURE_FIRST, imagePath1);
+
 			}
 			break;
 
@@ -496,6 +503,12 @@ public class CameraMainSuperControllerActivity extends Activity {
 			} else if (resultCode == Activity.RESULT_CANCELED) {
 				// user declined, let's start the CameraActivity again with
 				// second image
+				if (data != null) {
+					if (data.getBooleanExtra(
+							Constants.IntentsCodes.stayOnScreen, false) == true) {
+						break;
+					}
+				}
 				startNewCameraActivity(
 						Constants.RequestCodes.CAMERA_PICURE_SECOND, imagePath2);
 			}
