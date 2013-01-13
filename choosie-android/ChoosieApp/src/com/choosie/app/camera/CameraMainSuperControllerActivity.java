@@ -18,6 +18,7 @@ import com.facebook.SessionState;
 import com.facebook.Session.ReauthorizeRequest;
 import com.facebook.Session.StatusCallback;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 
@@ -118,6 +119,18 @@ public class CameraMainSuperControllerActivity extends Activity {
 		startNewCameraActivity(Constants.RequestCodes.CAMERA_PICURE_FIRST,
 				imagePath1);
 	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		EasyTracker.getInstance().activityStart(this);
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		EasyTracker.getInstance().activityStop(this);
+	}
 
 	private void InitializeComponents() {
 
@@ -136,7 +149,6 @@ public class CameraMainSuperControllerActivity extends Activity {
 		this.mTrFacebook = (TableRow) findViewById(R.id.tableRowShareFB);
 		// this.mProgressBar = (ProgressBar)
 		// findViewById(R.id.post_progressBar);
-
 		images12Layout.bringToFront();
 		mImageMiddle.setEnabled(false);
 

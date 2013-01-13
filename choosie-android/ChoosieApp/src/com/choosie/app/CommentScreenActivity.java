@@ -8,6 +8,7 @@ import com.choosie.app.Models.CommentData;
 import com.choosie.app.caches.CacheCallback;
 import com.choosie.app.caches.Caches;
 import com.choosie.app.camera.YesNoUtils;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -135,6 +136,8 @@ public class CommentScreenActivity extends Activity {
 		});
 
 	}
+	
+	
 
 	@Override
 	protected void onStart() {
@@ -143,11 +146,18 @@ public class CommentScreenActivity extends Activity {
 		if (openVotesWindow) {
 			this.getWindow().getDecorView().post(new Runnable() {
 				public void run() {
-
+					
 					openVotesWindow();
 				}
 			});
 		}
+		EasyTracker.getInstance().activityStart(this);
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		EasyTracker.getInstance().activityStop(this);
 	}
 
 	private ArrayAdapter<CommentData> makeCommentScreenAdapter(

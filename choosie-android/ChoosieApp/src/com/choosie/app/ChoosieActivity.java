@@ -13,6 +13,8 @@ import com.choosie.app.R.id;
 import com.choosie.app.R.layout;
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.google.analytics.tracking.android.Tracker;
 import com.nullwire.trace.ExceptionHandler;
 
 import android.os.Bundle;
@@ -88,18 +90,23 @@ public class ChoosieActivity extends Activity {
 
 		int notificationType = Integer.parseInt(notification
 				.getNotificationType());
+		Tracker tracker = GoogleAnalytics.getInstance(this).getDefaultTracker();
 
 		switch (notificationType) {
 		case Notifications.NEW_POST_NOTIFICATION_TYPE:
+			tracker.trackEvent("Push Notification", "New Post","", null);
 			handleNewPostNotification(notification);
 			break;
 		case Notifications.NEW_COMMENT_NOTIFICATION_TYPE:
+			tracker.trackEvent("Push Notification", "Comment","", null);
 			handleCommentNotification(notification);
 			break;
 		case Notifications.NEW_VOTE_NOTIFICATION_TYPE:
+			tracker.trackEvent("Push Notification", "Vote","", null);
 			handleVoteNotification(notification);
 			break;
 		case Notifications.REGISTER_NOTIFICATION_TYPE:
+			tracker.trackEvent("Push Notification", "Register","", null);
 			handleRegisterNotification(notification);
 			break;
 		}
