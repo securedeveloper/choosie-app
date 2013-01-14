@@ -330,8 +330,8 @@ public class CommentScreenActivity extends Activity {
 				commentViewHolder.votes1.setOnClickListener(votesListenter);
 				commentViewHolder.votes2.setOnClickListener(votesListenter);
 			} else {
-				commentViewHolder.votes1.setText("?");
-				commentViewHolder.votes2.setText("?");
+				commentViewHolder.votes1.setText("");
+				commentViewHolder.votes2.setText("");
 			}
 		} else {
 			// commentViewHolder.layoutTwoPhotos.setVisibility(View.GONE);
