@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class L {
 
-	private static boolean useLogger = false;
+	private static boolean useLogger = true;
 
 	private L() {
 	}
