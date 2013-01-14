@@ -1,11 +1,16 @@
-package com.choosie.app;
+package com.choozie.app;
 
 import java.util.List;
 import java.util.Random;
 
+import com.choosie.app.Constants.Notifications;
 import com.choosie.app.client.Client;
 import com.choosie.app.controllers.SuperController;
+import com.choosie.app.AppSettings;
+import com.choosie.app.Constants;
+import com.choosie.app.L;
 import com.choosie.app.PushNotification;
+import com.choosie.app.StartActivity;
 import com.choozie.app.R;
 import com.google.android.gcm.GCMBaseIntentService;
 
@@ -59,7 +64,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 			PushNotification notification = new PushNotification(
 					notificationType, text, postKey, deviceId);
-			
+
 			if (notification.getNotificationType().equals("1")) {
 				if (!AppSettings.isGetAllNotifications(context)) {
 					//TODO: change this bad hook
@@ -71,7 +76,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 						return;
 				}			
 			}
-			
+
 			notifyStartActivity(context, notification);
 		}
 	}

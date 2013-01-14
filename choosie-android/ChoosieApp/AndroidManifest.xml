@@ -51,7 +51,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.choosie.app.GCMIntentService" />
+        <service android:name="com.choozie.app.GCMIntentService" />
 
         <activity
             android:name="com.choosie.app.ChoosieActivity"
