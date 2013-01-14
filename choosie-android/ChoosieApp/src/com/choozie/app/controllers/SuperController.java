@@ -24,6 +24,7 @@ import com.choozie.app.client.Client;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
 import com.choozie.app.models.Vote;
+import com.choozie.app.models.VoteHandler;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 import com.google.android.gcm.GCMRegistrar;
@@ -97,17 +98,16 @@ public class SuperController {
 				.getDefaultTracker();
 		tracker.trackEvent("Ui Action", "Vote", String.valueOf(whichPhoto),
 				null);
-		Client.getInstance().sendVoteToServer(post, whichPhoto,
+		VoteHandler voteHandler = new VoteHandler(
 				new Callback<Void, Void, Boolean>() {
-
 					@Override
 					public void onFinish(Boolean param) {
 						if (param) {
 							refreshPost(post.getPostKey());
 						}
 					}
-
 				});
+		voteHandler.voteFor(post, whichPhoto);
 	}
 
 	private void refreshPost(String postKey) {

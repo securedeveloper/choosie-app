@@ -5,6 +5,12 @@
     android:orientation="vertical" >
 
     <ImageView
+        android:id="@+id/enlatgeView_image_vote_icon"
+        style="@style/VotingButtonOnChoosiePostView"
+        android:layout_alignParentLeft="true"
+        android:src="@drawable/thumbsupuntouched" />
+
+    <ImageView
         android:id="@+id/view_enlarge_image1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -14,8 +20,8 @@
         android:id="@+id/view_enlarge_votes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
         android:layout_below="@+id/view_enlarge_image1"
+        android:layout_marginLeft="4dp"
         android:text="1,000,000 votes"
         android:textColor="#2A1EB0"
         android:textStyle="bold" />
