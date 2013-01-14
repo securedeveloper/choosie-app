@@ -26,7 +26,6 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-
 public class GCMIntentService extends GCMBaseIntentService {
 	@SuppressWarnings("hiding")
 	private static final String TAG = "GCMIntentService";
@@ -67,14 +66,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 			if (notification.getNotificationType().equals("1")) {
 				if (!AppSettings.isGetAllNotifications(context)) {
-					//TODO: change this bad hook
-					
-					//randomly decide if send notification or not
+					// TODO: change this bad hook
+
+					// randomly decide if send notification or not
 					Random r = new Random();
 					int i = r.nextInt(2);
 					if (i != 0)
 						return;
-				}			
+				}
 			}
 
 			notifyStartActivity(context, notification);
@@ -90,8 +89,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			return false;
 		}
 		ActivityManager.RunningTaskInfo taskInfo = runningTasks.get(0);
-		L.i("current task: "
-				+ taskInfo.topActivity.getClass().getSimpleName());
+		L.i("current task: " + taskInfo.topActivity.getClass().getSimpleName());
 
 		return taskInfo.topActivity.getPackageName().equalsIgnoreCase(
 				"com.choozie.app");
@@ -151,8 +149,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 				.setContentText(notificationData.getText())
 				.setContentIntent(resultPendingIntent).build();
 
-//		notification.defaults |= Notification.DEFAULT_SOUND;
-		notification.sound = Uri.parse("android.resource://com.choosie.app/"+R.raw.notification_sound);
+		// notification.defaults |= Notification.DEFAULT_SOUND;
+		notification.sound = Uri.parse("android.resource://com.choozie.app/"
+				+ R.raw.notification_sound);
 		return notification;
 	}
 
