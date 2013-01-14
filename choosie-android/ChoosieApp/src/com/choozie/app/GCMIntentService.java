@@ -3,15 +3,10 @@ package com.choozie.app;
 import java.util.List;
 import java.util.Random;
 
-import com.choosie.app.Constants.Notifications;
-import com.choosie.app.client.Client;
-import com.choosie.app.controllers.SuperController;
-import com.choosie.app.AppSettings;
-import com.choosie.app.Constants;
-import com.choosie.app.L;
-import com.choosie.app.PushNotification;
-import com.choosie.app.StartActivity;
 import com.choozie.app.R;
+import com.choozie.app.Constants.Notifications;
+import com.choozie.app.client.Client;
+import com.choozie.app.controllers.SuperController;
 import com.google.android.gcm.GCMBaseIntentService;
 
 import android.app.ActivityManager;
