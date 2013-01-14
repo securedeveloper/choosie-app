@@ -332,6 +332,8 @@ public class CommentScreenActivity extends Activity {
 			} else {
 				commentViewHolder.votes1.setText("");
 				commentViewHolder.votes2.setText("");
+				commentViewHolder.votesImageView1.setVisibility(View.GONE);
+				commentViewHolder.votesImageView2.setVisibility(View.GONE);
 			}
 		} else {
 			// commentViewHolder.layoutTwoPhotos.setVisibility(View.GONE);
