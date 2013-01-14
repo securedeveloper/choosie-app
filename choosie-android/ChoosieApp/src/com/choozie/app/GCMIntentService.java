@@ -94,7 +94,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 				+ taskInfo.topActivity.getClass().getSimpleName());
 
 		return taskInfo.topActivity.getPackageName().equalsIgnoreCase(
-				"com.choosie.app");
+				"com.choozie.app");
 	}
 
 	private boolean isAppRunning() {
@@ -102,7 +102,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 		List<RunningAppProcessInfo> procList = am.getRunningAppProcesses();
 		for (RunningAppProcessInfo proc : procList) {
-			if (proc.processName.equals("com.choosie.app")) {
+			if (proc.processName.equals("com.choozie.app")) {
 				return true;
 			}
 		}
