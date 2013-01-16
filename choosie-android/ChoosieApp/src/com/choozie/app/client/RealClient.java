@@ -43,11 +43,11 @@ import com.choozie.app.models.Comment;
 import com.choozie.app.models.FacebookDetails;
 import com.choozie.app.models.User;
 import com.choozie.app.models.Vote;
+import com.facebook.Response;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
-
 
 public class RealClient extends Client {
 
@@ -474,15 +474,14 @@ public class RealClient extends Client {
 	}
 
 	@Override
-	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto,
+	public void sendVoteToServer(String postKey, int whichPhoto,
 			final Callback<Void, Void, Boolean> callback) {
 		// TODO: Change to POST request
 		final HttpUriRequest getRequest;
 		// try {
 		getRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI + "?which_photo="
-				+ Integer.toString(whichPhoto) + "&post_key="
-				+ choosiePost.getPostKey() + "&fb_uid="
-				+ this.fbDetails.getFb_uid());
+				+ Integer.toString(whichPhoto) + "&post_key=" + postKey
+				+ "&fb_uid=" + this.fbDetails.getFb_uid());
 		// postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);
 		// } catch (UnsupportedEncodingException e1) {
 		// // TODO Auto-generated catch block
@@ -495,7 +494,9 @@ public class RealClient extends Client {
 			@Override
 			protected Boolean doInBackground(Void... params) {
 				try {
-					httpClient.execute(getRequest);
+					HttpResponse response = httpClient.execute(getRequest);
+					int i = 9;
+					
 				} catch (ClientProtocolException e) {
 					L.e("sendVoteToServer",
 							"ClientProtocolException failed execute");

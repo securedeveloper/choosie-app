@@ -34,8 +34,8 @@ public abstract class Client {
 	public abstract void sendCommentToServer(String post_key, String text,
 			final Callback<Void, Void, Boolean> callback);
 
-	public abstract void sendVoteToServer(ChoosiePostData choosiePost,
-			int whichPhoto, final Callback<Void, Void, Boolean> callback);
+	public abstract void sendVoteToServer(String postKey, int whichPhoto,
+			final Callback<Void, Void, Boolean> callback);
 
 	public abstract void login(final Callback<Void, Void, Void> onLoginComplete);
 

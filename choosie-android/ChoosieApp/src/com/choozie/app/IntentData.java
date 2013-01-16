@@ -3,18 +3,20 @@ package com.choozie.app;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
 public class IntentData implements Parcelable {
 	private final int startingImage;
-	private final int votes1;
-	private final int votes2;
+	private int votes1;
+	private int votes2;
+	private final String postKey;
 	private final String photo1Path;
 	private final String photo2Path;
 	private final String userPhotoPath;
 	private final String userName;
 	private final String question;
-	private final boolean isVotedAlready;
+	private boolean isVotedAlready;
 	private final boolean noSecondPhoto;
+	private boolean isVotedAlready1;
+	private boolean isVotedAlready2;
 
 	public IntentData(Parcel source) {
 		/*
@@ -32,12 +34,16 @@ public class IntentData implements Parcelable {
 		question = source.readString();
 		isVotedAlready = source.readByte() == 1;
 		noSecondPhoto = source.readByte() == 1;
+		isVotedAlready1 = source.readByte() == 1;
+		isVotedAlready2 = source.readByte() == 1;
+		postKey = source.readString();
 	}
 
 	public IntentData(int startingImage, int votes1, int votes2,
 			String photo1Path, String photo2Path, String userPhotoPath,
 			String userName, String question, boolean isVotedAlready,
-			boolean noSecondPhoto) {
+			boolean noSecondPhoto, boolean isVotedAlready1,
+			boolean isVotedAlready2, String postKey) {
 		this.startingImage = startingImage;
 		this.votes1 = votes1;
 		this.votes2 = votes2;
@@ -48,6 +54,9 @@ public class IntentData implements Parcelable {
 		this.question = question;
 		this.isVotedAlready = isVotedAlready;
 		this.noSecondPhoto = noSecondPhoto;
+		this.isVotedAlready1 = isVotedAlready1;
+		this.isVotedAlready2 = isVotedAlready2;
+		this.postKey = postKey;
 	}
 
 	public int getStartingImage() {
@@ -86,6 +95,41 @@ public class IntentData implements Parcelable {
 		return isVotedAlready;
 	}
 
+	public boolean checkIfVotedAlready(int photoNumber) {
+		if (photoNumber == 1) {
+			return isVotedAlready1;
+		} else {
+			return isVotedAlready2;
+		}
+	}
+
+	public String getPostKey() {
+		return postKey;
+	}
+
+	public void setVotes1(int votes) {
+		votes1 = votes;
+	}
+
+	public void setVotes2(int votes) {
+		votes2 = votes;
+	}
+
+	public void setIsVotedAlread() {
+		isVotedAlready = true;
+	}
+
+	public void setVotedFor(int photoNumber) {
+		if (photoNumber == 1) {
+			isVotedAlready1 = true;
+			isVotedAlready2 = false;
+		} else {
+			isVotedAlready2 = true;
+			isVotedAlready2 = false;
+		}
+
+	}
+
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(startingImage);
 		dest.writeInt(votes1);
@@ -97,6 +141,9 @@ public class IntentData implements Parcelable {
 		dest.writeString(question);
 		dest.writeByte((byte) (isVotedAlready ? 1 : 0));
 		dest.writeByte((byte) (noSecondPhoto ? 1 : 0));
+		dest.writeByte((byte) (isVotedAlready1 ? 1 : 0));
+		dest.writeByte((byte) (isVotedAlready2 ? 1 : 0));
+		dest.writeString(postKey);
 	}
 
 	public int describeContents() {

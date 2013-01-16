@@ -15,6 +15,7 @@ import com.choozie.app.caches.Caches;
 import com.choozie.app.controllers.SuperController;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
+import com.choozie.app.models.VoteHandler;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -40,9 +41,12 @@ public class ChoosiePostView extends RelativeLayout {
 	private SuperController superController;
 	private ChoosiePostViewHolder postViewHolder;
 
+	private VoteHandler voteHandler;
+
 	public ChoosiePostView(Context context, SuperController superController,
 			int position) {
 		super(context);
+		voteHandler = new VoteHandler(superController.getActivity());
 		inflateLayout(position);
 		this.superController = superController;
 		initializeHolder();
@@ -188,10 +192,10 @@ public class ChoosiePostView extends RelativeLayout {
 		}
 
 		// Set border for voted image
-		setVoteButtonIcon(postViewHolder.voteButton1,
-				choosiePost.isVotedAlready(1), 1);
-		setVoteButtonIcon(postViewHolder.voteButton2,
-				choosiePost.isVotedAlready(2), 2);
+		voteHandler.setVoteButtonIcon(postViewHolder.voteButton1,
+				choosiePost.isVotedAlready(1), 1, choosiePost.getPostType());
+		voteHandler.setVoteButtonIcon(postViewHolder.voteButton2,
+				choosiePost.isVotedAlready(2), 2, choosiePost.getPostType());
 
 		// TODO: Merge both listeners below to a single one that accepts an
 		// argument.
@@ -199,10 +203,11 @@ public class ChoosiePostView extends RelativeLayout {
 				.setOnLongClickListener(new OnLongClickListener() {
 					public boolean onLongClick(View v) {
 						L.i("onLongClick signaled for voting 1");
-						return handleVote1(postViewHolder.votes1,
+						return handleVote(postViewHolder.votes1,
 								postViewHolder.votes2,
 								postViewHolder.voteButton1,
-								postViewHolder.voteButton2);
+								postViewHolder.voteButton2, 1,
+								choosiePost.isVotedAlready(1));
 					}
 				});
 
@@ -210,8 +215,9 @@ public class ChoosiePostView extends RelativeLayout {
 
 			public void onClick(View v) {
 
-				handleVote1(postViewHolder.votes1, postViewHolder.votes2,
-						postViewHolder.voteButton1, postViewHolder.voteButton2);
+				handleVote(postViewHolder.votes1, postViewHolder.votes2,
+						postViewHolder.voteButton1, postViewHolder.voteButton2,
+						1, choosiePost.isVotedAlready(1));
 				if (choosiePost.getPostType() == PostType.YesNo) {
 					setAndStartAnimationForCenter(
 							postViewHolder.voteImageAnimationCenter,
@@ -229,10 +235,11 @@ public class ChoosiePostView extends RelativeLayout {
 
 					public boolean onLongClick(View v) {
 						L.i("onLongClick signaled for voting 2");
-						return handleVote2(postViewHolder.votes1,
+						return handleVote(postViewHolder.votes1,
 								postViewHolder.votes2,
 								postViewHolder.voteButton1,
-								postViewHolder.voteButton2);
+								postViewHolder.voteButton2, 2,
+								choosiePost.isVotedAlready(2));
 					}
 
 				});
@@ -241,8 +248,9 @@ public class ChoosiePostView extends RelativeLayout {
 
 			public void onClick(View v) {
 
-				handleVote2(postViewHolder.votes1, postViewHolder.votes2,
-						postViewHolder.voteButton1, postViewHolder.voteButton2);
+				handleVote(postViewHolder.votes1, postViewHolder.votes2,
+						postViewHolder.voteButton1, postViewHolder.voteButton2,
+						2, choosiePost.isVotedAlready(2));
 				if (choosiePost.getPostType() == PostType.YesNo) {
 					setAndStartAnimationForCenter(
 							postViewHolder.voteImageAnimationCenter,
@@ -328,64 +336,96 @@ public class ChoosiePostView extends RelativeLayout {
 
 	}
 
-	private boolean handleVote2(final TextView votes1, final TextView votes2,
-			final ImageView imgSelected1, final ImageView imgSelected2) {
-		if (!choosiePost.isVotedAlready(2)) {
+	private boolean handleVote(final TextView votes1, final TextView votes2,
+			final ImageView imgSelected1, final ImageView imgSelected2,
+			int photoNumber, boolean isVotedAlreadyForPhotoNumber) {
+		if (!isVotedAlreadyForPhotoNumber) {
 			L.i("voting 2 (Not voted 2 yet)");
-			superController.voteFor(choosiePost, 2);
+			superController.voteFor(choosiePost.getPostKey(), photoNumber);
 
 			// SHOW VOTES RESULTS
 			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
 
 			// Set border for relevant image
-			L.i("Setting border for image 2");
-			setVoteButtonIcon(imgSelected2, true, 2);
-			setVoteButtonIcon(imgSelected1, false, 1);
-			return true;
+			if (photoNumber == 1) {
+				L.i("Setting border for image 1");
+				voteHandler.setVoteButtonIcon(imgSelected1, true, 1,
+						choosiePost.getPostType());
+				voteHandler.setVoteButtonIcon(imgSelected2, false, 2,
+						choosiePost.getPostType());
+				return true;
+
+			} else if (photoNumber == 2) {
+				L.i("Setting border for image 2");
+				voteHandler.setVoteButtonIcon(imgSelected2, true, 2,
+						choosiePost.getPostType());
+				voteHandler.setVoteButtonIcon(imgSelected1, false, 1,
+						choosiePost.getPostType());
+				return true;
+			}
 		}
 		L.i("Already voted for 2. vote not sent");
 		return false;
 	}
 
-	private boolean handleVote1(final TextView votes1, final TextView votes2,
-			final ImageView imgSelected1, final ImageView imgSelected2) {
-		if (!choosiePost.isVotedAlready(1)) {
-			L.i("voting 1 (Not voted 1 yet)");
-			superController.voteFor(choosiePost, 1);
+	// private boolean handleVote2(final TextView votes1, final TextView votes2,
+	// final ImageView imgSelected1, final ImageView imgSelected2) {
+	// if (!choosiePost.isVotedAlready(2)) {
+	// L.i("voting 2 (Not voted 2 yet)");
+	// superController.voteFor(choosiePost, 2);
+	//
+	// // SHOW VOTES RESULTS
+	// ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
+	//
+	// // Set border for relevant image
+	// L.i("Setting border for image 2");
+	// setVoteButtonIcon(imgSelected2, true, 2);
+	// setVoteButtonIcon(imgSelected1, false, 1);
+	// return true;
+	// }
+	// L.i("Already voted for 2. vote not sent");
+	// return false;
+	// }
+	//
+	// private boolean handleVote1(final TextView votes1, final TextView votes2,
+	// final ImageView imgSelected1, final ImageView imgSelected2) {
+	// if (!choosiePost.isVotedAlready(1)) {
+	// L.i("voting 1 (Not voted 1 yet)");
+	// superController.voteFor(choosiePost, 1);
+	//
+	// // SHOW VOTES RESULTS
+	// ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
+	//
+	// // Set border for relevant image
+	// L.i("Setting border for image 1");
+	// setVoteButtonIcon(imgSelected1, true, 1);
+	// setVoteButtonIcon(imgSelected2, false, 2);
+	// return true;
+	// }
+	// L.i("Already voted for 1. vote not sent");
+	// return false;
+	// }
 
-			// SHOW VOTES RESULTS
-			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
-
-			// Set border for relevant image
-			L.i("Setting border for image 1");
-			setVoteButtonIcon(imgSelected1, true, 1);
-			setVoteButtonIcon(imgSelected2, false, 2);
-			return true;
-		}
-		L.i("Already voted for 1. vote not sent");
-		return false;
-	}
-
-	private void setVoteButtonIcon(ImageView imgView, boolean isVoted,
-			int photoNumber) {
-		if (choosiePost.getPostType() == PostType.YesNo && photoNumber == 2) {
-			if (isVoted) {
-				imgView.setImageDrawable(getResources().getDrawable(
-						R.drawable.thumbdown_voted));
-			} else {
-				imgView.setImageDrawable(getResources().getDrawable(
-						R.drawable.thumbdown_not_voted));
-			}
-		} else {
-			if (isVoted) {
-				imgView.setImageDrawable(getResources().getDrawable(
-						R.drawable.thumbup_voted));
-			} else {
-				imgView.setImageDrawable(getResources().getDrawable(
-						R.drawable.thumbup_not_voted));
-			}
-		}
-	}
+	// private void setVoteButtonIcon(ImageView imgView, boolean isVoted,
+	// int photoNumber, PostType postType) {
+	// if (postType == PostType.YesNo && photoNumber == 2) {
+	// if (isVoted) {
+	// imgView.setImageDrawable(getResources().getDrawable(
+	// R.drawable.thumbdown_voted));
+	// } else {
+	// imgView.setImageDrawable(getResources().getDrawable(
+	// R.drawable.thumbdown_not_voted));
+	// }
+	// } else {
+	// if (isVoted) {
+	// imgView.setImageDrawable(getResources().getDrawable(
+	// R.drawable.thumbup_voted));
+	// } else {
+	// imgView.setImageDrawable(getResources().getDrawable(
+	// R.drawable.thumbup_not_voted));
+	// }
+	// }
+	// }
 
 	private void ChangeVotingResultsVisibility(TextView votes1,
 			TextView votes2, int visibility) {

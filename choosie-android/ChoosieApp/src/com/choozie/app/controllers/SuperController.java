@@ -92,22 +92,23 @@ public class SuperController {
 		}
 	}
 
-	public void voteFor(final ChoosiePostData post, int whichPhoto) {
-		L.i("Issuing vote for: " + post.getPostKey());
+	public void voteFor(final String postKey, int whichPhoto) {
+		L.i("Issuing vote for: " + postKey);
 		Tracker tracker = GoogleAnalytics.getInstance(getActivity())
 				.getDefaultTracker();
 		tracker.trackEvent("Ui Action", "Vote", String.valueOf(whichPhoto),
 				null);
-		VoteHandler voteHandler = new VoteHandler(
+		VoteHandler voteHandler = new VoteHandler(getActivity());
+
+		voteHandler.voteFor(postKey, whichPhoto,
 				new Callback<Void, Void, Boolean>() {
 					@Override
 					public void onFinish(Boolean param) {
 						if (param) {
-							refreshPost(post.getPostKey());
+							refreshPost(postKey);
 						}
 					}
 				});
-		voteHandler.voteFor(post, whichPhoto);
 	}
 
 	private void refreshPost(String postKey) {
@@ -316,7 +317,8 @@ public class SuperController {
 
 		IntentData intentData = new IntentData(startingImage, votes1, votes2,
 				photo1Path, photo2Path, userPhotoPath, userName, question,
-				isVotedAlready, noSecondPhoto);
+				isVotedAlready, noSecondPhoto, choosiePost.isVotedAlready(1),
+				choosiePost.isVotedAlready(2), choosiePost.getPostKey());
 
 		intent.putExtra(Constants.IntentsCodes.intentData, intentData);
 

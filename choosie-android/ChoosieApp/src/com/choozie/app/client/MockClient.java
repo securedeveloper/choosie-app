@@ -28,7 +28,7 @@ public class MockClient extends Client {
 	}
 
 	@Override
-	public void sendVoteToServer(ChoosiePostData choosiePost, int whichPhoto,
+	public void sendVoteToServer(String postKey, int whichPhoto,
 			Callback<Void, Void, Boolean> callback) {
 		// TODO Auto-generated method stub
 
