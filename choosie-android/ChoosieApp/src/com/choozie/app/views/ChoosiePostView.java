@@ -15,6 +15,8 @@ import com.choozie.app.caches.Caches;
 import com.choozie.app.controllers.SuperController;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
+import com.choozie.app.models.User;
+import com.choozie.app.models.UserManger;
 import com.choozie.app.models.VoteHandler;
 
 import android.content.Context;
@@ -291,6 +293,15 @@ public class ChoosiePostView extends RelativeLayout {
 
 		postViewHolder.imgView1.setOnClickListener(enlargeListener);
 		postViewHolder.imgView2.setOnClickListener(enlargeListener);
+
+		postViewHolder.feed_userimage.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				UserManger userManager = new UserManger(superController
+						.getActivity(), choosiePost.getAuthor());
+				userManager.goToProfile();
+			}
+		});
 	}
 
 	private void setThumbsIconsNextToVoteTextVisibility() {

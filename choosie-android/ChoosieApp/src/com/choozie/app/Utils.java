@@ -34,6 +34,7 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 public class Utils {
@@ -169,7 +170,7 @@ public class Utils {
 
 		L.d("getBitmapFromURL - URL = " + param + " fullPath = " + fullPath
 				+ " toRet = " + toRet);
-		//toRet = shrinkBitmapToImageViewSizeIfNeeded(toRet);
+		// toRet = shrinkBitmapToImageViewSizeIfNeeded(toRet);
 		// Log.i("mem", "insert toRet WR" + toRet.getRowBytes() + " H - " +
 		// toRet.getHeight() + " BC: " +toRet.getByteCount());
 		progressCallback.onProgress(100);
@@ -576,6 +577,21 @@ public class Utils {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private static void executeOnThreadPoolExecutor(AsyncTask<?, ?, ?> task) {
 		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+	}
+
+	public static void setImageFromPath(String photoPath,
+			ImageView imageViewPhoto) {
+		if (photoPath != null) {
+			imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
+		}
+	}
+
+	public static void setImageFromPath(String photoPath,
+			ImageButton imageButtonPhoto) {
+		if (photoPath != null) {
+			imageButtonPhoto
+					.setImageBitmap(BitmapFactory.decodeFile(photoPath));
+		}
 	}
 
 }

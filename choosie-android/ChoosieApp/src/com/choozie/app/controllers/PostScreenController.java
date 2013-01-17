@@ -174,7 +174,7 @@ public class PostScreenController extends ScreenController {
 	protected void onShow() {
 		L.i("PostScreenController - showing post screen");
 		superController.setCurrentScreen(Screen.POST);
-		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
+		((RelativeLayout) getActivity().findViewById(R.id.view_navBar_layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
 		superController.getActivity().findViewById(R.id.refresh_button)
@@ -185,7 +185,7 @@ public class PostScreenController extends ScreenController {
 	@Override
 	protected void onHide() {
 		L.i("PostScreenController - hiding post screen");
-		((RelativeLayout) getActivity().findViewById(R.id.layout_button_post))
+		((RelativeLayout) getActivity().findViewById(R.id.view_navBar_layout_button_post))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));
 	}

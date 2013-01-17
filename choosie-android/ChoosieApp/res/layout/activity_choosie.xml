@@ -68,52 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:baselineAligned="false"
-        android:orientation="horizontal" >
-
-        <RelativeLayout
-            android:id="@+id/layout_button_feed"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/selected_button"
-            android:clickable="true"
-            android:onClick="onBottomNavBarButtonClick"
-            android:visibility="visible" >
-
-            <ImageView
-                android:id="@+id/layout_button_image_feed"
-                android:layout_width="45dp"
-                android:layout_height="30dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:clickable="true"
-                android:contentDescription="@string/general_content_description"
-                android:onClick="onBottomNavBarButtonClick"
-                android:src="@drawable/list_button" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_button_post"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:background="@drawable/bottom_menu_selector"
-            android:clickable="true"
-            android:onClick="onBottomNavBarButtonClick"
-            android:visibility="visible" >
-
-            <ImageView
-                android:id="@+id/layout_button_image_post"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:clickable="true"
-                android:contentDescription="@string/general_content_description"
-                android:onClick="onBottomNavBarButtonClick"
-                android:src="@drawable/camera" />
-        </RelativeLayout>
-    </LinearLayout>
+        android:orientation="horizontal" />
 
     <RelativeLayout
         android:id="@+id/layout_feed"

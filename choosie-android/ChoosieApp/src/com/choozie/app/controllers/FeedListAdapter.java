@@ -28,6 +28,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 	State state;
 	private View loadingItemView = buildLoadingItemView();
+	private String fbUid;
 
 	private static final String LOADING_ITEM_TEXT = "LOADING_ITEM";
 	private String feedCursor;
@@ -37,6 +38,12 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			SuperController superController) {
 		super(context, textViewResourceId);
 		this.superController = superController;
+	}
+
+	public FeedListAdapter(Context context, int textViewResourceId,
+			SuperController superController, String fbUid) {
+		this(context, textViewResourceId, superController);
+		this.fbUid = fbUid;
 	}
 
 	@Override
@@ -109,8 +116,8 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	private ChoosiePostData loadingItem;
 
 	private void update(FeedResponse param) {
-		L.i("FeedListAdapter: update. Posts count: "
-				+ param.getPosts().size() + ". Append: " + param.isAppend());
+		L.i("FeedListAdapter: update. Posts count: " + param.getPosts().size()
+				+ ". Append: " + param.isAppend());
 		if (param.getPosts().size() == 0) {
 			L.i("No images in feed.");
 		}
@@ -124,7 +131,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		}
 		if (param.isAppend() && lastCursor == param.getCursor()) {
 			L.w("Not supposed to get here: an update that was "
-							+ "recevied twice.");
+					+ "recevied twice.");
 			return;
 		}
 		if (this.state == State.REFRESHING_FEED) {
@@ -193,10 +200,10 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 		FeedCacheKey request = null;
 		if (this.state == State.REFRESHING_FEED) {
-			request = new FeedCacheKey(null, false);
+			request = new FeedCacheKey(null, false, fbUid);
 		} else if (this.state == State.APPENDING_TO_FEED) {
 			L.i("feedCursor = " + feedCursor);
-			request = new FeedCacheKey(this.feedCursor, true);
+			request = new FeedCacheKey(this.feedCursor, true, fbUid);
 		}
 
 		if (request == null) {

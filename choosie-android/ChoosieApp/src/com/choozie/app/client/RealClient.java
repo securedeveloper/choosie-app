@@ -81,9 +81,14 @@ public class RealClient extends Client {
 			feedUri += "&cursor=" + feedRequest.getCursor();
 		}
 
+		if (feedRequest.getFbUid() != null) {
+			feedUri += "&fb_uid=" + feedRequest.getFbUid();
+		}
+
 		L.i("Getting feed from URI: " + feedUri);
 		final HttpClient client = new DefaultHttpClient();
 		final HttpGet request = new HttpGet(feedUri);
+
 		HttpResponse response;
 		try {
 			response = client.execute(request);
@@ -496,7 +501,7 @@ public class RealClient extends Client {
 				try {
 					HttpResponse response = httpClient.execute(getRequest);
 					int i = 9;
-					
+
 				} catch (ClientProtocolException e) {
 					L.e("sendVoteToServer",
 							"ClientProtocolException failed execute");

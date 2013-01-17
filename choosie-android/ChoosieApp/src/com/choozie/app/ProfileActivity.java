@@ -4,6 +4,7 @@ import com.choozie.app.caches.CacheCallback;
 import com.choozie.app.caches.Caches;
 import com.choozie.app.client.Client;
 import com.choozie.app.models.FacebookDetails;
+import com.choozie.app.models.User;
 import com.facebook.android.FbDialog;
 
 import android.os.Bundle;
@@ -19,19 +20,22 @@ public class ProfileActivity extends Activity {
 
 	private TextView tvFullName;
 	private ImageButton ibUserPicture;
+	private User user;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profile);
-		
+
 		Intent intent = getIntent();
-		
-		tvFullName = (TextView)findViewById(R.id.profile_user_name);
-		ibUserPicture = (ImageButton)findViewById(R.id.profile_user_picture);
-		
-		FacebookDetails fb_details = intent.getParcelableExtra("fb_details");
-		tvFullName.setText(fb_details.getFirstName() + " " + fb_details.getLastName());
+		user = intent.getParcelableExtra(Constants.IntentsCodes.user);
+
+		tvFullName = (TextView) findViewById(R.id.profile_user_name);
+		ibUserPicture = (ImageButton) findViewById(R.id.profile_user_picture);
+
+		String userImagePath = Utils.getFileNameForURL(user.getPhotoURL());
+		Utils.setImageFromPath(userImagePath, ibUserPicture);
+		tvFullName.setText(user.getUserName());
 	}
 
 	@Override

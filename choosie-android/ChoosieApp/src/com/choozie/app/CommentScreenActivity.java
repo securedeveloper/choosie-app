@@ -211,7 +211,7 @@ public class CommentScreenActivity extends Activity {
 		String userPhotoPath = intent
 				.getStringExtra(Constants.IntentsCodes.userPhotoPath);
 
-		setImageFromPath(userPhotoPath, imageViewUserPhoto);
+		Utils.setImageFromPath(userPhotoPath, imageViewUserPhoto);
 
 		// set the user name
 		TextView userNameTextView = (TextView) findViewById(R.id.comment_activity_user_name);
@@ -408,11 +408,11 @@ public class CommentScreenActivity extends Activity {
 		tv.setText(sb);
 	}
 
-	private void setImageFromPath(String photoPath, ImageView imageViewPhoto) {
-		if (photoPath != null) {
-			imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
-		}
-	}
+//	private void setImageFromPath(String photoPath, ImageView imageViewPhoto) {
+//		if (photoPath != null) {
+//			imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
+//		}
+//	}
 
 	// TODO: check if can delete this function
 	@Override

@@ -11,6 +11,7 @@ import com.choozie.app.client.Client;
 import com.choozie.app.controllers.SuperController;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.FacebookDetails;
+import com.choozie.app.views.BottomNavigationBarView;
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
@@ -31,12 +32,15 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
+import android.view.ViewParent;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class ChoosieActivity extends Activity {
 
 	SuperController superController;
+	private RelativeLayout dummyContainer;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,11 @@ public class ChoosieActivity extends Activity {
 		setContentView(R.layout.activity_choosie);
 
 		Utils.makeMainDirectory();
+
+		LinearLayout bottomView = (LinearLayout) findViewById(R.id.bottom_nav_bar);
+
+		View customView = new BottomNavigationBarView(this, this, Screen.FEED);
+		bottomView.addView(customView);
 
 		LayoutInflater layoutInflater = (LayoutInflater) this
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -84,7 +93,6 @@ public class ChoosieActivity extends Activity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			showSettingsButtonIfNoHardwareKey();
 		}
-
 	}
 
 	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -180,24 +188,25 @@ public class ChoosieActivity extends Activity {
 		return true;
 	}
 
-	public void onBottomNavBarButtonClick(View view) {
-		switch (view.getId()) {
-		case R.id.layout_button_feed:
-		case R.id.layout_button_image_feed:
-			superController.switchToScreen(Screen.FEED);
-			break;
-		case R.id.layout_button_post:
-		case R.id.layout_button_image_post:
-			if (AppSettings.isUseAdvancedCamera(this)) {
-				Intent intent = new Intent(this.getApplicationContext(),
-						CameraMainSuperControllerActivity.class);
-				startActivityForResult(intent, Constants.RequestCodes.NEW_POST);
-			} else {
-				superController.switchToScreen(Screen.POST);
-			}
-			break;
-		}
-	}
+	// public void onBottomNavBarButtonClick(View view) {
+	//
+	// switch (view.getId()) {
+	// case R.id.oren_layout_button_feed:
+	// case R.id.oren_layout_button_image_feed:
+	// superController.switchToScreen(Screen.FEED);
+	// break;
+	// case R.id.layout_button_post:
+	// case R.id.layout_button_image_post:
+	// if (AppSettings.isUseAdvancedCamera(this)) {
+	// Intent intent = new Intent(this.getApplicationContext(),
+	// CameraMainSuperControllerActivity.class);
+	// startActivityForResult(intent, Constants.RequestCodes.NEW_POST);
+	// } else {
+	// superController.switchToScreen(Screen.POST);
+	// }
+	// break;
+	// }
+	// }
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (Session.getActiveSession() != null
@@ -249,11 +258,11 @@ public class ChoosieActivity extends Activity {
 	protected void onResume() {
 		L.i("ChoosieActivity: onResume()");
 		super.onResume();
-		switch (superController.getCurrentScreen()) {
-		case POST:
-			superController.getControllerForScreen(Screen.POST).onResume();
-			break;
-		}
+		// switch (superController.getCurrentScreen()) {
+		// case POST:
+		// superController.getControllerForScreen(Screen.POST).onResume();
+		// break;
+		// }
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

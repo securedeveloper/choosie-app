@@ -3,10 +3,12 @@ package com.choozie.app.controllers;
 public class FeedCacheKey {
 	private String cursor;
 	private boolean append;
+	private String fbUid;
 
-	public FeedCacheKey(String cursor, boolean append) {
+	public FeedCacheKey(String cursor, boolean append, String fbUid) {
 		this.setCursor(cursor);
 		this.append = append;
+		this.fbUid = fbUid;
 	}
 
 	public boolean isAppend() {
@@ -21,6 +23,10 @@ public class FeedCacheKey {
 		return cursor;
 	}
 
+	public String getFbUid() {
+		return fbUid;
+	}
+
 	public void setCursor(String cursor) {
 		this.cursor = cursor;
 	}
@@ -30,12 +36,15 @@ public class FeedCacheKey {
 		if (!(o instanceof FeedCacheKey)) {
 			return false;
 		}
+
+		boolean isCursorsEqual = false;
+		boolean isFbUidEqual = false;
 		FeedCacheKey other = (FeedCacheKey) o;
 		if (other.append != this.append) {
 			return false;
 		}
 		if (this.getCursor() == null && other.getCursor() == null) {
-			return true;
+			isCursorsEqual = true;
 		}
 		if (this.getCursor() != null && other.getCursor() == null) {
 			return false;
@@ -43,7 +52,33 @@ public class FeedCacheKey {
 		if (this.getCursor() == null && other.getCursor() != null) {
 			return false;
 		}
-		return this.getCursor().equals(other.getCursor());
+
+		if ((this.getFbUid() == null) && (other.getFbUid() == null)) {
+			isFbUidEqual = true;
+		}
+
+		if ((this.getFbUid() == null) && (other.getFbUid() != null)) {
+			return false;
+		}
+
+		if ((this.getFbUid() != null) && (other.getFbUid() == null)) {
+			return false;
+		}
+
+		if (isCursorsEqual == false) {
+			if (this.getCursor().equals(other.getCursor())) {
+				isCursorsEqual = true;
+			}
+		}
+
+		if (isFbUidEqual == false) {
+			if (this.getFbUid().equals(other.getFbUid())) {
+				isFbUidEqual = true;
+			}
+		}
+
+		return (isFbUidEqual && isCursorsEqual);
+
 	}
 
 	@Override

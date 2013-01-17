@@ -68,7 +68,7 @@ public class FeedScreenController extends ScreenController {
 	@Override
 	protected void onShow() {
 		superController.setCurrentScreen(Screen.FEED);
-		((RelativeLayout) getActivity().findViewById(R.id.layout_button_feed))
+		((RelativeLayout) getActivity().findViewById(R.id.view_navBar_layout_button_feed))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.selected_button));
 		superController.getActivity().findViewById(R.id.refresh_button)
@@ -78,7 +78,7 @@ public class FeedScreenController extends ScreenController {
 
 	@Override
 	protected void onHide() {
-		((RelativeLayout) getActivity().findViewById(R.id.layout_button_feed))
+		((RelativeLayout) getActivity().findViewById(R.id.view_navBar_layout_button_feed))
 				.setBackgroundDrawable(getActivity().getResources()
 						.getDrawable(R.drawable.unselected_button));
 	}

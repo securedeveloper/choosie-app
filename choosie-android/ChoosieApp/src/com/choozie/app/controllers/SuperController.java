@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Pair;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SuperController {
@@ -83,6 +84,7 @@ public class SuperController {
 
 	public void switchToScreen(Screen screenToShow) {
 		// Hide all screens except 'screen'
+		
 		for (Screen screen : screenToController.keySet()) {
 			if (screen == screenToShow) {
 				screenToController.get(screen).showScreen();
