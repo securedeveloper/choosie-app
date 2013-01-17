@@ -73,8 +73,7 @@ public class StartActivity extends Activity {
 			}
 		} else {
 
-			L.i("on start permissions: "
-					+ session.getPermissions().toString());
+			L.i("on start permissions: " + session.getPermissions().toString());
 			updateView();
 		}
 	}
@@ -197,7 +196,8 @@ public class StartActivity extends Activity {
 									.getId(), Session.getActiveSession()
 									.getAccessToken(), Session
 									.getActiveSession().getExpirationDate()
-									.getTime());
+									.getTime(), user.getFirstName(), user
+									.getLastName());
 							Client.getInstance().setFacebookDetails(details);
 
 							L.i("creating intent for ChoosieActivity");
