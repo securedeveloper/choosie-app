@@ -42,7 +42,7 @@ public class Utils {
 	private static int screenHeight = -1;
 
 	public static Date convertStringToDateUTC(String str_date) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("GMT"));
 		Date date = new Date();
 
