@@ -10,21 +10,25 @@ from utils import Utils
 
 class FeedHandler(webapp2.RequestHandler):
     def get(self):
+        user_fb_uid = self.request.get('fb_uid', default_value=None)
         choosie_posts, cursor = FeedHandler.get_feed_and_cursor(self.request.get('cursor'),
                                                                 self.request.get('limit'),
-                                                                self.request.get('timestamp'))
+                                                                self.request.get('timestamp'),
+                                                                "user_fb_uid")
         choosie_posts_json = Utils.items_to_json(choosie_posts)
         self.response.out.write(json.dumps({'feed': choosie_posts_json,
                                             'cursor': cursor,
                                             'timestamp': datetime.utcnow().isoformat()}))
         
     @staticmethod
-    def get_feed_and_cursor(cursor, limit = 10, timestamp = None):
+    def get_feed_and_cursor(cursor, limit = 10, timestamp = None, fb_uid = None):
         if not limit:
             limit = 10
         limit = int(limit)
         logging.info('Retrieving %d posts from db' % limit)
         posts = ChoosiePost.all()
+        if fb_uid is not None:
+            posts.filter("user_fb_id =", fb_uid)
         if cursor:
             posts.with_cursor(cursor)
         if timestamp:
