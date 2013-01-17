@@ -37,5 +37,7 @@
     <string name="title_activity_confirmation">ConfirmationActivity</string>
     <string name="title_activity_gallery">GalleryActivty</string>
     <string name="title_activity_camera_main">CameraMainActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="posts">Posts:</string>
 
 </resources>
