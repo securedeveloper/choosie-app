@@ -1,7 +1,7 @@
 import logging
 import webapp2
 import math
-
+import datetime
 from google.appengine.api import images
 from google.appengine.ext import db
 
@@ -70,7 +70,8 @@ class PostsHandler(webapp2.RequestHandler):
                                user_fb_id = self.request.get('fb_uid'),
                                photo1_blob_key = photo1_blob_key,
                                photo2_blob_key = photo2_blob_key,
-                               post_type_id = post_type_id)
+                               post_type_id = post_type_id,
+                               created_at = datetime.datetime.now())
 
     # Save this post in the datastore, and also in the memcache.
     choosie_post.put()
