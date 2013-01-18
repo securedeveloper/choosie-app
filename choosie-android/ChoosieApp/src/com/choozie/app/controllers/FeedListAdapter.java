@@ -10,6 +10,7 @@ import com.choozie.app.caches.Caches;
 import com.choozie.app.client.FeedResponse;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.views.ChoosiePostView;
+import com.choozie.app.views.PostViewActionsHandler;
 
 import android.content.Context;
 
@@ -32,17 +33,17 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 	private static final String LOADING_ITEM_TEXT = "LOADING_ITEM";
 	private String feedCursor;
-	private SuperController superController;
+	private PostViewActionsHandler actionsHandler;
 
 	public FeedListAdapter(Context context, int textViewResourceId,
-			SuperController superController) {
+			PostViewActionsHandler actionsHandler) {
 		super(context, textViewResourceId);
-		this.superController = superController;
+		this.actionsHandler = actionsHandler;
 	}
 
 	public FeedListAdapter(Context context, int textViewResourceId,
-			SuperController superController, String fbUid) {
-		this(context, textViewResourceId, superController);
+			PostViewActionsHandler actionsHandler, String fbUid) {
+		this(context, textViewResourceId, actionsHandler);
 		this.fbUid = fbUid;
 	}
 
@@ -63,7 +64,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 			// we can't use this convertView, we will create new view
 			itemView = new ChoosiePostView(this.getContext(),
-					this.superController, position);
+					this.actionsHandler, position);
 		} else {
 			// Yey!! we can reuse convertView
 			itemView = (ChoosiePostView) convertView;

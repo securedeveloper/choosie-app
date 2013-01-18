@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public class BottomNavigationBarView extends LinearLayout{
+public class BottomNavigationBarView extends LinearLayout {
 
 	// private SuperController superController;
 	private Activity activity;
@@ -98,6 +98,7 @@ public class BottomNavigationBarView extends LinearLayout{
 		if (currentScreen != Screen.FEED) {
 			Intent intent = new Intent(activity.getApplicationContext(),
 					ChoosieActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			activity.startActivity(intent);
 		}
 	}

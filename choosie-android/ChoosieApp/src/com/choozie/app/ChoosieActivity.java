@@ -40,7 +40,7 @@ import android.widget.RelativeLayout;
 public class ChoosieActivity extends Activity {
 
 	SuperController superController;
-	private RelativeLayout dummyContainer;
+	private RelativeLayout dummyContainer;  
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

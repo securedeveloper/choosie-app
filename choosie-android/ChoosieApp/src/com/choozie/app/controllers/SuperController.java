@@ -25,6 +25,7 @@ import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
 import com.choozie.app.models.Vote;
 import com.choozie.app.models.VoteHandler;
+import com.choozie.app.views.PostViewActionsHandler;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 import com.google.android.gcm.GCMRegistrar;
@@ -34,10 +35,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Pair;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SuperController {
+public class SuperController implements PostViewActionsHandler {
 	private Screen currentScreen;
 	private ChoosieActivity activity;
 	Map<Screen, ScreenController> screenToController;
@@ -84,7 +86,7 @@ public class SuperController {
 
 	public void switchToScreen(Screen screenToShow) {
 		// Hide all screens except 'screen'
-		
+
 		for (Screen screen : screenToController.keySet()) {
 			if (screen == screenToShow) {
 				screenToController.get(screen).showScreen();
@@ -95,25 +97,32 @@ public class SuperController {
 	}
 
 	public void voteFor(final String postKey, int whichPhoto) {
+		issueVote(postKey, whichPhoto, getActivity(),
+				((FeedScreenController) screenToController.get(Screen.FEED))
+						.getFeedListAdapter());
+	}
+
+	public static void issueVote(final String postKey, int whichPhoto,
+			final Activity theActivity, final FeedListAdapter feedListAdapter) {
 		L.i("Issuing vote for: " + postKey);
-		Tracker tracker = GoogleAnalytics.getInstance(getActivity())
+		Tracker tracker = GoogleAnalytics.getInstance(theActivity)
 				.getDefaultTracker();
 		tracker.trackEvent("Ui Action", "Vote", String.valueOf(whichPhoto),
 				null);
-		VoteHandler voteHandler = new VoteHandler(getActivity());
-
-		voteHandler.voteFor(postKey, whichPhoto,
-				new Callback<Void, Void, Boolean>() {
-					@Override
-					public void onFinish(Boolean param) {
-						if (param) {
-							refreshPost(postKey);
-						}
-					}
-				});
+		VoteHandler voteHandler = new VoteHandler(theActivity);
+		Callback<Void, Void, Boolean> theCallback = new Callback<Void, Void, Boolean>() {
+			@Override
+			public void onFinish(Boolean param) {
+				if (param) {
+					refreshPost(postKey, theActivity, feedListAdapter);
+				}
+			}
+		};
+		voteHandler.voteFor(postKey, whichPhoto, theCallback);
 	}
 
-	private void refreshPost(String postKey) {
+	private static void refreshPost(String postKey, final Activity theActivity,
+			final FeedListAdapter feedListAdapter) {
 		Caches.getInstance().getPostsCache().invalidateKey(postKey);
 		Caches.getInstance()
 				.getPostsCache()
@@ -124,21 +133,21 @@ public class SuperController {
 									ChoosiePostData result) {
 								if (result == null) {
 									// TODO: Handle error
-									Toast.makeText(getActivity(),
+									Toast.makeText(theActivity,
 											"Failed to update post.",
 											Toast.LENGTH_SHORT).show();
 									return;
 								}
-								((FeedScreenController) screenToController
-										.get(Screen.FEED)).refreshPost(result);
+								feedListAdapter.refreshItem(result);
 							}
 						});
 
 	}
 
-	public void CommentFor(final String post_key, String text) {
+	public static void commentFor(final String post_key, String text,
+			final Activity theActivity, final FeedListAdapter feedListAdapter) {
 		L.i("commenting vote for: " + post_key);
-		Tracker tracker = GoogleAnalytics.getInstance(getActivity())
+		Tracker tracker = GoogleAnalytics.getInstance(theActivity)
 				.getDefaultTracker();
 		tracker.trackEvent("Ui Action", "comment", "text", null);
 		Client.getInstance().sendCommentToServer(post_key, text,
@@ -147,7 +156,7 @@ public class SuperController {
 					@Override
 					public void onFinish(Boolean param) {
 						if (param) {
-							refreshPost(post_key);
+							refreshPost(post_key, theActivity, feedListAdapter);
 						}
 					}
 				});
@@ -155,11 +164,16 @@ public class SuperController {
 
 	private void switchToCommentScreen(ChoosiePostData choosiePost,
 			boolean openVotesWindow) {
-		final Intent intent = new Intent(screenToController.get(Screen.FEED)
-				.getActivity().getApplicationContext(),
+		Activity theActivity = getActivity();
+		switchToCommentScreen(choosiePost, openVotesWindow, theActivity);
+
+	}
+
+	public static void switchToCommentScreen(ChoosiePostData choosiePost,
+			boolean openVotesWindow, final Activity theActivity) {
+		final Intent intent = new Intent(theActivity.getApplicationContext(),
 				CommentScreenActivity.class);
 
-		// intent.putExtra("choosie_post", choosiePost);
 		intent.putExtra("post_key", choosiePost.getPostKey());
 		intent.putExtra("no_second_photo",
 				choosiePost.getPostType() == PostType.YesNo);
@@ -190,6 +204,7 @@ public class SuperController {
 		ArrayList<String> commentList = new ArrayList<String>();
 		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
 		ArrayList<CharSequence> createdAtList = new ArrayList<CharSequence>();
+		ArrayList<String> fbUidList = new ArrayList<String>();
 
 		for (Comment comment : choosiePost.getComments()) {
 			nameList.add(comment.getUser().getUserName());
@@ -197,6 +212,7 @@ public class SuperController {
 			commentierPhotoUrlList.add(comment.getUser().getPhotoURL());
 			createdAtList.add(Utils.getTimeDifferenceTextFromNow(comment
 					.getCreatedAt()));
+			fbUidList.add(comment.getUser().getFbUid());
 		}
 
 		intent.putStringArrayListExtra(Constants.IntentsCodes.nameList,
@@ -208,6 +224,7 @@ public class SuperController {
 				commentierPhotoUrlList);
 		intent.putCharSequenceArrayListExtra(
 				Constants.IntentsCodes.createdAtList, createdAtList);
+		intent.putStringArrayListExtra(Constants.IntentsCodes.fbUid, fbUidList);
 
 		// this is to make sure that the user has the photos in his sd
 		Caches.getInstance()
@@ -216,14 +233,10 @@ public class SuperController {
 						new CacheCallback<String, Bitmap>() {
 
 							public void onValueReady(String key, Bitmap result) {
-								screenToController
-										.get(Screen.FEED)
-										.getActivity()
-										.startActivityForResult(intent,
-												Constants.RequestCodes.COMMENT);
+								theActivity.startActivityForResult(intent,
+										Constants.RequestCodes.COMMENT);
 							}
 						});
-
 	}
 
 	public void switchToVotesScreen(ChoosiePostData choosiePost) {
@@ -271,7 +284,8 @@ public class SuperController {
 			String text = data.getStringExtra(Constants.IntentsCodes.text);
 			String post_key = data
 					.getStringExtra(Constants.IntentsCodes.post_key);
-			CommentFor(post_key, text);
+			commentFor(post_key, text, getActivity(),
+					getControllerForScreen(Screen.FEED).getFeedListAdapter());
 		}
 	}
 
@@ -292,8 +306,12 @@ public class SuperController {
 	}
 
 	public void switchToEnlargeImage(View v, ChoosiePostData choosiePost) {
-		Intent intent = new Intent(screenToController.get(Screen.FEED)
-				.getActivity().getApplicationContext(),
+		switchToEnlargeImage(v, choosiePost, getActivity());
+	}
+
+	public static void switchToEnlargeImage(View v,
+			ChoosiePostData choosiePost, Activity theActivity) {
+		Intent intent = new Intent(theActivity.getApplicationContext(),
 				EnlargePhotoActivity.class);
 
 		int startingImage = 2;
@@ -324,7 +342,7 @@ public class SuperController {
 
 		intent.putExtra(Constants.IntentsCodes.intentData, intentData);
 
-		getActivity().startActivityForResult(intent,
+		theActivity.startActivityForResult(intent,
 				Constants.RequestCodes.EnalargeImage);
 	}
 
@@ -348,21 +366,29 @@ public class SuperController {
 	public void handlePopupVoteWindow(String postKey, int position) {
 		L.d("SuperController: entered handlePopupVoteWindow, postKey = "
 				+ postKey + " position = " + position);
+		ListView listView = getControllerForScreen(Screen.FEED)
+				.getFeedListView();
+		Activity theActivity = getActivity();
+		handlePopupVoteWindow(postKey, position, listView, theActivity);
+	}
+
+	public static void handlePopupVoteWindow(String postKey, int position,
+			ListView listView, Activity theActivity) {
 		// first scroll the positioned item
 		if (position != -1) {
-			getControllerForScreen(Screen.FEED).getFeedListView()
-					.smoothScrollToPosition(position);
+			listView.smoothScrollToPosition(position);
 		}
 		VotePopupWindowUtils votesPopupWindowUtils = new VotePopupWindowUtils(
-				getActivity());
+				theActivity);
 		votesPopupWindowUtils.popUpVotesWindow(postKey);
 	}
 
 	public void switchToCommentScreen(String postKey) {
-		switchToCommentScreen(postKey, false);
+		switchToCommentScreen(postKey, false, getActivity());
 	}
 
-	private void switchToCommentScreen(String postKey, final boolean openVotes) {
+	public static void switchToCommentScreen(String postKey,
+			final boolean openVotes, final Activity theActivity) {
 		Caches.getInstance()
 				.getPostsCache()
 				.getValue(postKey,
@@ -378,12 +404,13 @@ public class SuperController {
 									// Toast.LENGTH_SHORT).show();
 									return;
 								}
-								switchToCommentScreen(result, openVotes);
+								switchToCommentScreen(result, openVotes,
+										theActivity);
 							}
 						});
 	}
 
 	public void switchToCommentScreenAndOpenVotes(String postKey) {
-		switchToCommentScreen(postKey, true);
+		switchToCommentScreen(postKey, true, getActivity());
 	}
 }

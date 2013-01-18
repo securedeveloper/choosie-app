@@ -40,17 +40,18 @@ import android.view.animation.AnimationUtils;
 
 public class ChoosiePostView extends RelativeLayout {
 	private ChoosiePostData choosiePost;
-	private SuperController superController;
 	private ChoosiePostViewHolder postViewHolder;
 
 	private VoteHandler voteHandler;
 
-	public ChoosiePostView(Context context, SuperController superController,
-			int position) {
+	private PostViewActionsHandler actionsHandler;
+
+	public ChoosiePostView(Context context,
+			PostViewActionsHandler actionsHandler, int position) {
 		super(context);
-		voteHandler = new VoteHandler(superController.getActivity());
+		this.actionsHandler = actionsHandler;
+		voteHandler = new VoteHandler(actionsHandler.getActivity());
 		inflateLayout(position);
-		this.superController = superController;
 		initializeHolder();
 	}
 
@@ -124,7 +125,7 @@ public class ChoosiePostView extends RelativeLayout {
 		this.findViewById(R.id.button_to_comment).setOnClickListener(
 				new OnClickListener() {
 					public void onClick(View arg0) {
-						superController.switchToCommentScreen(choosiePost
+						actionsHandler.switchToCommentScreen(choosiePost
 								.getPostKey());
 					}
 				});
@@ -269,7 +270,7 @@ public class ChoosiePostView extends RelativeLayout {
 		OnClickListener enlargeListener = new OnClickListener() {
 
 			public void onClick(View v) {
-				superController.switchToEnlargeImage(v, post);
+				actionsHandler.switchToEnlargeImage(v, post);
 			}
 		};
 
@@ -278,7 +279,7 @@ public class ChoosiePostView extends RelativeLayout {
 			public void onClick(View v) {
 				L.d("User click to show votes, choosiePost.getPostKey() = "
 						+ choosiePost.getPostKey() + " position = " + position);
-				superController.handlePopupVoteWindow(choosiePost.getPostKey(),
+				actionsHandler.handlePopupVoteWindow(choosiePost.getPostKey(),
 						position);
 			}
 		};
@@ -294,14 +295,18 @@ public class ChoosiePostView extends RelativeLayout {
 		postViewHolder.imgView1.setOnClickListener(enlargeListener);
 		postViewHolder.imgView2.setOnClickListener(enlargeListener);
 
-		postViewHolder.feed_userimage.setOnClickListener(new OnClickListener() {
+		OnClickListener profileListener = new OnClickListener() {
 
 			public void onClick(View v) {
-				UserManger userManager = new UserManger(superController
-						.getActivity(), choosiePost.getAuthor());
+				UserManger userManager = new UserManger(
+						actionsHandler.getActivity(), choosiePost.getAuthor());
 				userManager.goToProfile();
 			}
-		});
+		};
+
+		postViewHolder.feed_userimage.setOnClickListener(profileListener);
+		postViewHolder.feed_name.setOnClickListener(profileListener);
+
 	}
 
 	private void setThumbsIconsNextToVoteTextVisibility() {
@@ -311,7 +316,7 @@ public class ChoosiePostView extends RelativeLayout {
 			final int resourceId, int animationId) {
 
 		final Animation fadeOutAnimation = AnimationUtils.loadAnimation(
-				superController.getActivity(), R.anim.fadeout);
+				actionsHandler.getActivity(), R.anim.fadeout);
 
 		fadeOutAnimation.setAnimationListener(new AnimationListener() {
 
@@ -327,7 +332,7 @@ public class ChoosiePostView extends RelativeLayout {
 		});
 
 		final Animation fadeInAnimation = AnimationUtils.loadAnimation(
-				superController.getActivity(), animationId);
+				actionsHandler.getActivity(), animationId);
 
 		fadeInAnimation.setAnimationListener(new AnimationListener() {
 
@@ -352,7 +357,7 @@ public class ChoosiePostView extends RelativeLayout {
 			int photoNumber, boolean isVotedAlreadyForPhotoNumber) {
 		if (!isVotedAlreadyForPhotoNumber) {
 			L.i("voting 2 (Not voted 2 yet)");
-			superController.voteFor(choosiePost.getPostKey(), photoNumber);
+			actionsHandler.voteFor(choosiePost.getPostKey(), photoNumber);
 
 			// SHOW VOTES RESULTS
 			ChangeVotingResultsVisibility(votes1, votes2, View.VISIBLE);
@@ -491,15 +496,14 @@ public class ChoosiePostView extends RelativeLayout {
 			// commentLayout.addView(commentView);
 		}
 		if ((size > 3) && (i == 0)) {
-			TextView tv = new TextView(superController.getControllerForScreen(
-					Screen.FEED).getActivity());
+			TextView tv = new TextView(actionsHandler.getActivity());
 			tv.setText("View all " + size + " comments");
-			tv.setTextColor(superController.getActivity().getResources()
+			tv.setTextColor(actionsHandler.getActivity().getResources()
 					.getColor(R.color.Gray));
 			tv.setOnClickListener(new OnClickListener() {
 
 				public void onClick(View arg0) {
-					superController.switchToCommentScreen(choosiePost
+					actionsHandler.switchToCommentScreen(choosiePost
 							.getPostKey());
 				}
 			});
@@ -513,8 +517,7 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private TextView buildViewForComment(Comment comment) {
-		TextView tv = new TextView(superController.getControllerForScreen(
-				Screen.FEED).getActivity());
+		TextView tv = new TextView(actionsHandler.getActivity());
 
 		final SpannableStringBuilder sb = new SpannableStringBuilder(comment
 				.getUser().getUserName() + " " + comment.getText());

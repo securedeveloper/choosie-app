@@ -91,10 +91,6 @@ public class FeedScreenController extends ScreenController {
 
 	public void refreshPost(ChoosiePostData post) {
 		choosiePostsItemAdapter.refreshItem(post);
-		Toast toast = Toast.makeText(getActivity(), "Post refreshed.",
-				Toast.LENGTH_SHORT);
-		toast.show();
-
 	}
 
 	@Override

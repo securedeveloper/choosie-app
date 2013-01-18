@@ -8,6 +8,7 @@ import com.choozie.app.caches.Caches;
 import com.choozie.app.camera.YesNoUtils;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.CommentData;
+import com.choozie.app.models.UserManger;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.nullwire.trace.ExceptionHandler;
 
@@ -52,6 +53,7 @@ public class CommentScreenActivity extends Activity {
 	String postKey;
 	private boolean openVotesWindow;
 	private boolean noSecondPhoto;
+	private Activity activity;
 
 	// RelativeLayout mainCommentLayout;
 
@@ -88,6 +90,7 @@ public class CommentScreenActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		L.i("in comment screen");
 		super.onCreate(savedInstanceState);
+		this.activity = this;
 		setContentView(R.layout.activity_comment_screen);
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 
@@ -136,8 +139,6 @@ public class CommentScreenActivity extends Activity {
 		});
 
 	}
-	
-	
 
 	@Override
 	protected void onStart() {
@@ -146,14 +147,14 @@ public class CommentScreenActivity extends Activity {
 		if (openVotesWindow) {
 			this.getWindow().getDecorView().post(new Runnable() {
 				public void run() {
-					
+
 					openVotesWindow();
 				}
 			});
 		}
 		EasyTracker.getInstance().activityStart(this);
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -180,6 +181,7 @@ public class CommentScreenActivity extends Activity {
 		ArrayList<String> commentList = new ArrayList<String>();
 		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
 		ArrayList<CharSequence> createdAtList = new ArrayList<CharSequence>();
+		ArrayList<String> fbUidList = new ArrayList<String>();
 
 		nameList = intent
 				.getStringArrayListExtra(Constants.IntentsCodes.nameList);
@@ -189,6 +191,8 @@ public class CommentScreenActivity extends Activity {
 				.getStringArrayListExtra(Constants.IntentsCodes.commentierPhotoUrlList);
 		createdAtList = intent
 				.getCharSequenceArrayListExtra(Constants.IntentsCodes.createdAtList);
+		fbUidList = intent
+				.getStringArrayListExtra(Constants.IntentsCodes.fbUid);
 
 		// if there are no comments - put a dummy item for showing the pictures
 		if (nameList.size() == 0) {
@@ -197,7 +201,7 @@ public class CommentScreenActivity extends Activity {
 			for (int i = 0; i < nameList.size(); i++) {
 				CommentData newCommentData = new CommentData(nameList.get(i),
 						commentList.get(i), commentierPhotoUrlList.get(i),
-						createdAtList.get(i));
+						createdAtList.get(i), fbUidList.get(i));
 				adi.add(newCommentData);
 			}
 		}
@@ -223,7 +227,7 @@ public class CommentScreenActivity extends Activity {
 				.setText(intent.getStringExtra("question"));
 	}
 
-	private View createViewComment(CommentData item, int position,
+	private View createViewComment(final CommentData item, int position,
 			View convertView) {
 
 		RelativeLayout itemView = (RelativeLayout) convertView;
@@ -232,7 +236,7 @@ public class CommentScreenActivity extends Activity {
 		// if convertView is null we will create a new View
 		if (convertView == null) {
 			// create new holder
-			commentViewHolder = new CommentViewHolder();
+
 			// inflate view_comment into itemView
 			LayoutInflater inflater = (LayoutInflater) this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -240,55 +244,7 @@ public class CommentScreenActivity extends Activity {
 					null);
 
 			// initialize the holder
-			commentViewHolder.imagesLayout = (LinearLayout) itemView
-					.findViewById(R.id.layout_images_comment);
-			commentViewHolder.viewComment_votes_layout = (RelativeLayout) itemView
-					.findViewById(R.id.viewComment_votes_layout);
-			commentViewHolder.votes1 = (TextView) itemView
-					.findViewById(R.id.viewComment_votes1);
-			commentViewHolder.votes2 = (TextView) itemView
-					.findViewById(R.id.viewComment_votes2);
-			commentViewHolder.imageViewPhoto1 = (ImageView) itemView
-					.findViewById(R.id.photo1_comment_screen);
-			commentViewHolder.imageViewPhoto2 = (ImageView) itemView
-					.findViewById(R.id.photo2_comment_screen);
-			commentViewHolder.tv = (TextView) itemView
-					.findViewById(R.id.view_comment_comment);
-			commentViewHolder.commentierPhotoImageView = (ImageView) itemView
-					.findViewById(R.id.commentScreen_commentierPhoto);
-			commentViewHolder.commentTime = (TextView) itemView
-					.findViewById(R.id.commentScreen_commentTime);
-			commentViewHolder.photoMiddle = (ImageView) itemView
-					.findViewById(R.id.commentView_photo_midle);
-			commentViewHolder.layoutMiddle = (RelativeLayout) itemView
-					.findViewById(R.id.commentView_middle_layout);
-			commentViewHolder.votesImageView1 = (ImageView) itemView
-					.findViewById(R.id.viewComment_votes1_pointing);
-			commentViewHolder.votesImageView2 = (ImageView) itemView
-					.findViewById(R.id.viewComment_votes2_pointing);
-
-			// commentViewHolder.layoutTwoPhotos = (RelativeLayout) itemView
-			// .findViewById(R.id.commentView_two_photos_layout);
-
-			Utils.setImageViewSize(commentViewHolder.layoutMiddle,
-					Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
-			Utils.setImageViewSize(commentViewHolder.photoMiddle,
-					Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
-			// commentViewHolder.layoutTwoPhotos.setVisibility(View.GONE);
-			commentViewHolder.layoutMiddle.setVisibility(View.GONE);
-			commentViewHolder.photoMiddle.setImageBitmap(null);
-
-			// set the size of the image view to be a square sized half of the
-			// screen width
-			int screenWidth = Utils.getScreenWidth();
-			if (screenWidth != -1) {
-				// commentViewHolder.layoutTwoPhotos.getLayoutParams().height =
-				// screenWidth / 2;
-				commentViewHolder.imageViewPhoto1.getLayoutParams().height = screenWidth / 2;
-				commentViewHolder.imageViewPhoto1.getLayoutParams().width = screenWidth / 2;
-				commentViewHolder.imageViewPhoto2.getLayoutParams().height = screenWidth / 2;
-				commentViewHolder.imageViewPhoto2.getLayoutParams().width = screenWidth / 2;
-			}
+			commentViewHolder = initializeHolder(itemView, commentViewHolder);
 
 			// set the holder inside the view we just created
 			itemView.setTag(commentViewHolder);
@@ -368,7 +324,70 @@ public class CommentScreenActivity extends Activity {
 			((ImageView) itemView.findViewById(R.id.view_comment_clockImage))
 					.setVisibility(View.GONE);
 		}
+
+		OnClickListener profileListener = new OnClickListener() {
+
+			public void onClick(View v) {
+				UserManger userManager = new UserManger(activity,
+						item.getUser());
+				userManager.goToProfile();
+			}
+		};
+
+		commentViewHolder.commentierPhotoImageView
+				.setOnClickListener(profileListener);
 		return itemView;
+	}
+
+	private CommentViewHolder initializeHolder(RelativeLayout itemView,
+			CommentViewHolder commentViewHolder) {
+		commentViewHolder = new CommentViewHolder();
+
+		commentViewHolder.imagesLayout = (LinearLayout) itemView
+				.findViewById(R.id.layout_images_comment);
+		commentViewHolder.viewComment_votes_layout = (RelativeLayout) itemView
+				.findViewById(R.id.viewComment_votes_layout);
+		commentViewHolder.votes1 = (TextView) itemView
+				.findViewById(R.id.viewComment_votes1);
+		commentViewHolder.votes2 = (TextView) itemView
+				.findViewById(R.id.viewComment_votes2);
+		commentViewHolder.imageViewPhoto1 = (ImageView) itemView
+				.findViewById(R.id.photo1_comment_screen);
+		commentViewHolder.imageViewPhoto2 = (ImageView) itemView
+				.findViewById(R.id.photo2_comment_screen);
+		commentViewHolder.tv = (TextView) itemView
+				.findViewById(R.id.view_comment_comment);
+		commentViewHolder.commentierPhotoImageView = (ImageView) itemView
+				.findViewById(R.id.commentScreen_commentierPhoto);
+		commentViewHolder.commentTime = (TextView) itemView
+				.findViewById(R.id.commentScreen_commentTime);
+		commentViewHolder.photoMiddle = (ImageView) itemView
+				.findViewById(R.id.commentView_photo_midle);
+		commentViewHolder.layoutMiddle = (RelativeLayout) itemView
+				.findViewById(R.id.commentView_middle_layout);
+		commentViewHolder.votesImageView1 = (ImageView) itemView
+				.findViewById(R.id.viewComment_votes1_pointing);
+		commentViewHolder.votesImageView2 = (ImageView) itemView
+				.findViewById(R.id.viewComment_votes2_pointing);
+
+		Utils.setImageViewSize(commentViewHolder.layoutMiddle,
+				Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
+		Utils.setImageViewSize(commentViewHolder.photoMiddle,
+				Utils.getScreenWidth() / 2, Utils.getScreenWidth() / 2);
+		commentViewHolder.layoutMiddle.setVisibility(View.GONE);
+		commentViewHolder.photoMiddle.setImageBitmap(null);
+
+		// set the size of the image view to be a square sized half of the
+		// screen width
+		int screenWidth = Utils.getScreenWidth();
+		if (screenWidth != -1) {
+			Utils.setImageViewSize(commentViewHolder.imageViewPhoto1,
+					screenWidth / 2, screenWidth / 2);
+			Utils.setImageViewSize(commentViewHolder.imageViewPhoto2,
+					screenWidth / 2, screenWidth / 2);
+		}
+
+		return commentViewHolder;
 	}
 
 	private void activateSendButton(final Intent intent) {
@@ -408,11 +427,12 @@ public class CommentScreenActivity extends Activity {
 		tv.setText(sb);
 	}
 
-//	private void setImageFromPath(String photoPath, ImageView imageViewPhoto) {
-//		if (photoPath != null) {
-//			imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
-//		}
-//	}
+	// private void setImageFromPath(String photoPath, ImageView imageViewPhoto)
+	// {
+	// if (photoPath != null) {
+	// imageViewPhoto.setImageBitmap(BitmapFactory.decodeFile(photoPath));
+	// }
+	// }
 
 	// TODO: check if can delete this function
 	@Override
