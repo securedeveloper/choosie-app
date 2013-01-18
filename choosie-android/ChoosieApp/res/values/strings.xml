@@ -39,5 +39,7 @@
     <string name="title_activity_camera_main">CameraMainActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="posts">Posts:</string>
+    <string name="title_activity_post">PostActivity</string>
+    <string name="new_post">New Post</string>
 
 </resources>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PostActivity" >
+
+    <LinearLayout
+        android:id="@+id/post_linear_layout_images"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/post_header_layout" >
+
+        <!-- android:layout_below="@+id/create_new_post" -->
+
+        <ImageView
+            android:id="@+id/post_image_photo1"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="@dimen/view_choosie_post_margin"
+            android:layout_marginLeft="@dimen/view_choosie_post_margin"
+            android:layout_marginRight="@dimen/view_choosie_post_margin"
+            android:layout_marginTop="@dimen/view_choosie_post_margin"
+            android:layout_weight="1"
+            android:background="@drawable/image_frame_post"
+            android:contentDescription="@string/desc"
+            android:onClick="takePhoto"
+            android:scaleType="centerInside"
+            android:src="@drawable/camera" />
+
+        <ImageView
+            android:id="@+id/post_image_photo2"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="@dimen/view_choosie_post_margin"
+            android:layout_marginLeft="@dimen/view_choosie_post_margin"
+            android:layout_marginRight="@dimen/view_choosie_post_margin"
+            android:layout_marginTop="@dimen/view_choosie_post_margin"
+            android:layout_weight="1"
+            android:background="@drawable/image_frame_post"
+            android:contentDescription="@string/desc"
+            android:scaleType="centerInside"
+            android:src="@drawable/camera" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/post_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/post_linear_layout_shareOnFacebook"
+        android:layout_marginLeft="@dimen/view_choosie_post_margin"
+        android:layout_marginRight="@dimen/view_choosie_post_margin"
+        android:layout_marginBottom="@dimen/view_choosie_post_text_margin"
+        android:gravity="top|left"
+        android:hint="@string/editTextQuestion"
+        android:inputType="textCapSentences"
+        android:maxLines="2"
+        android:minLines="2"
+        android:singleLine="false" >
+        <requestFocus android:layout_width="wrap_content" />
+    </EditText>
+
+    <LinearLayout
+        android:id="@+id/post_linear_layout_shareOnFacebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/post_button_submit"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal"
+        android:padding="@dimen/view_choosie_post_margin" >
+
+        <TextView
+            android:id="@+id/post_shareOnFacebookTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/view_choosie_post_text_margin"
+            android:layout_weight="0.87"
+            android:paddingRight="@dimen/share_button_magin"
+            android:text="@string/share_on"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <ToggleButton
+            android:id="@+id/post_shareOnFacebookToggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:background="@drawable/facebook_square_bw"
+            android:gravity="center_vertical|center_horizontal|bottom|fill_vertical"
+            android:textOff="@string/empty_string"
+            android:textOn="@string/empty_string" />
+    </LinearLayout>
+
+    <!-- android:text="@string/button_submit" -->
+
+    <LinearLayout
+        android:id="@+id/post_buttom_nav_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/post_button_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/post_buttom_nav_bar"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/share_button"
+        android:layout_marginBottom="@dimen/view_choosie_post_margin" />
+
+    <LinearLayout
+        android:id="@+id/post_header_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/header_selector" >
+
+        <TextView
+            android:id="@+id/post_header_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/view_choosie_post_margin"
+            android:gravity="center_vertical"
+            android:textColor="@color/White"
+            android:textSize="18dp"
+            android:text="@string/new_post"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>
