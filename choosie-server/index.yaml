@@ -11,6 +11,12 @@ indexes:
   - name: posted_to_fb
   - name: created_at
 
+- kind: ChoosiePost
+  properties:
+  - name: user_fb_id
+  - name: created_at
+    direction: desc
+
 - kind: User
   properties:
   - name: device_id

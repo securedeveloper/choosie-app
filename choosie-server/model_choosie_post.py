@@ -18,6 +18,7 @@ from time import sleep
 import datetime
 from StringIO import *
 from notify_handler import NotifyHandler
+from model_configuration import ChoosieConfiguration
 
 CHOOSIE_POST_TYPE_DILEMMA = 1
 CHOOSIE_POST_TYPE_YES_NO = 2
@@ -166,23 +167,37 @@ class ChoosiePost(db.Model):
   def notify_friends(self):
     deferred.defer(self.notify_friends_async, self.key())
 
+  def top_users(self):
+    return ['100002024985258', '617068239', '624205547', '100001175049155', '1241855576', '100000707183816', '508640191', '1137431418',
+            '1298401028','749156674', '1300315570', '1438198086', '631996760', '100000345475034',
+            '665685278','100000834903975', '587727489', '1549874146', '100000345384628', '594341581', '1780333990',
+            '587021920', '755595360', '1670197107', '588175278', '629616771', '530730008', '624988027', '603274673', '100004590640266', '573474136', '100001896302257', '670874576', '595614277', '812988819']
+
   def notify_friends_async(self, choosie_post_key):
     try:
       choosie_post = CacheController.get_model(str(choosie_post_key))
-      # choosie_post = db.get(choosie_post_key)
 
       logging.info("choosie post key = %s", str(choosie_post.key()))
       for user in User.all():
         logging.info("%s: device %s, uid: %s", user.name(), user.device_id, user.fb_uid)
 
       users = User.all()
+      top_list = self.top_users()
       recipients = [u for u in User.all()
+                   if ((ChoosieConfiguration.get_send_to_rest_setting() == False) and (u.fb_uid in top_list) or (ChoosieConfiguration.get_send_to_rest_setting() == True))]
+
+      logging.info("First selection: %s", ", ".join([user.name() for user in recipients]))
+
+      recipients = [u for u in recipients
                     if u.device_id is not None and user.fb_uid != choosie_post.user_fb_id]
 
       result = NotifyHandler.send_notifiction(NotifyHandler.notify_type["new_post"],
                                               self.get_user().name(), 
                                               str(choosie_post_key),
                                               recipients)
+
+      ChoosieConfiguration.set_sent_to_rest_setting(not ChoosieConfiguration.get_send_to_rest_setting())
+
       logging.info("result of notifying friends= " + result)
     except Exception, e:
       logging.error("Faled to notify friends on new post: %s" % e)

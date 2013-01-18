@@ -14,7 +14,7 @@ class FeedHandler(webapp2.RequestHandler):
         choosie_posts, cursor = FeedHandler.get_feed_and_cursor(self.request.get('cursor'),
                                                                 self.request.get('limit'),
                                                                 self.request.get('timestamp'),
-                                                                "user_fb_uid")
+                                                                user_fb_uid)
         choosie_posts_json = Utils.items_to_json(choosie_posts)
         self.response.out.write(json.dumps({'feed': choosie_posts_json,
                                             'cursor': cursor,
