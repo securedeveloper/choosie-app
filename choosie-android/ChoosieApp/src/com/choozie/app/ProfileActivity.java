@@ -98,7 +98,11 @@ public class ProfileActivity extends Activity {
 
 		initializeHeader(header);
 
+		View footer = getLayoutInflater().inflate(
+				R.layout.footer_profile_listview, null);
+
 		listView.addHeaderView(header);
+		listView.addFooterView(footer);
 
 		listView.setAdapter(choosiePostsItemAdapter);
 

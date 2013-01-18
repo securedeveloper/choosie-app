@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/button_selector_with_stroke"
+            android:background="@drawable/header_selector"
             android:contentDescription="@string/desc"
             android:src="@drawable/post_icon" />
     </RelativeLayout>
@@ -84,7 +84,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/post_tvQuestion"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/post_box_border"
                 android:orientation="horizontal" >
 
@@ -126,27 +129,19 @@
                     android:layout_centerInParent="true"
                     android:clickable="true"
                     android:contentDescription="@string/desc"
-                    android:paddingTop="8dp"
                     android:paddingBottom="10dp"
+                    android:paddingTop="8dp"
                     android:scaleType="centerInside" />
             </RelativeLayout>
-
-            <TextView
-                android:id="@+id/tvModes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/post_imagesLayout"
-                android:paddingLeft="10dp"
-                android:text="MODES"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/post_layout_stateButtons"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tvModes"
-                android:layout_margin="10dp"
+                android:layout_below="@+id/post_imagesLayout"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/post_box_border"
                 android:orientation="horizontal" >
 
