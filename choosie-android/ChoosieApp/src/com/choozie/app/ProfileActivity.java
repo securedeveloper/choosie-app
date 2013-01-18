@@ -88,20 +88,7 @@ public class ProfileActivity extends Activity {
 	}
 
 	private void startTheListView() {
-		LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		// Create a progress bar to display while the list loads
-		// TextView textView = new TextView(this);
-		// textView.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-		// LayoutParams.WRAP_CONTENT));
-		// textView.setText(R.string.feed_is_empty_message);
-		//
-
-		// listView.setEmptyView(textView);
-		//
-		// // Must add the progress bar to the root of the layout
-		// ViewGroup root = (ViewGroup) findViewById(R.id.);
-		// root.addView(textView);
 		listView = (ListView) findViewById(R.id.profile_feedListView);
 		choosiePostsItemAdapter = new FeedListAdapter(this, R.id.layout_me,
 				this.actionHandler, user.getFbUid());
@@ -129,9 +116,7 @@ public class ProfileActivity extends Activity {
 					choosiePostsItemAdapter.appendToList();
 				}
 			}
-
 		});
-
 	}
 
 	private void initializeHeader(View header) {
@@ -146,12 +131,21 @@ public class ProfileActivity extends Activity {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == ChoosieActivity.RESULT_OK) {
-			String text = data.getStringExtra(Constants.IntentsCodes.text);
-			String post_key = data
-					.getStringExtra(Constants.IntentsCodes.post_key);
-			SuperController.commentFor(post_key, text, this,
-					choosiePostsItemAdapter);
+		switch (requestCode) {
+
+		case Constants.RequestCodes.COMMENT:
+			if (resultCode == Activity.RESULT_OK) {
+				String text = data.getStringExtra(Constants.IntentsCodes.text);
+				String post_key = data
+						.getStringExtra(Constants.IntentsCodes.post_key);
+				SuperController.commentFor(post_key, text, this,
+						choosiePostsItemAdapter);
+			}
+			break;
+		case Constants.RequestCodes.NEW_POST:
+			if (resultCode == Activity.RESULT_OK) {
+				choosiePostsItemAdapter.refreshFeed();
+			}
 		}
 	}
 
