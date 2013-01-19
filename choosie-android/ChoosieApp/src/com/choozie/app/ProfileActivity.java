@@ -1,28 +1,17 @@
 package com.choozie.app;
 
-import com.choozie.app.caches.CacheCallback;
-import com.choozie.app.caches.Caches;
 import com.choozie.app.client.Client;
 import com.choozie.app.controllers.FeedListAdapter;
 import com.choozie.app.controllers.SuperController;
 import com.choozie.app.models.ChoosiePostData;
-import com.choozie.app.models.FacebookDetails;
 import com.choozie.app.models.User;
 import com.choozie.app.views.BottomNavigationBarView;
 import com.choozie.app.views.PostViewActionsHandler;
-import com.facebook.android.FbDialog;
-
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -39,6 +28,7 @@ public class ProfileActivity extends Activity {
 	private ListView listView;
 	private FeedListAdapter choosiePostsItemAdapter;
 	private PostViewActionsHandler actionHandler;
+	private ImageButton ibEdit;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +38,19 @@ public class ProfileActivity extends Activity {
 		Intent intent = getIntent();
 		user = intent.getParcelableExtra(Constants.IntentsCodes.user);
 
+		ibEdit = (ImageButton)findViewById(R.id.profile_edit_image_button);
 		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
 
 		BottomNavigationBarView customView = new BottomNavigationBarView(this,
 				this, Screen.USER_PROFILE);
 		bottomView.addView(customView);
-		if (Client.getInstance().getActiveUser().equals(user)) {
+		
+		// Set the Profile nagivation bar as 'selected' only
+		// if I enter my own profile.
+		if (user.isActiveUser()) {
 			customView
 					.changeSelectedButton((RelativeLayout) findViewById(R.id.view_navBar_layout_button_profile));
+			ibEdit.setVisibility(View.VISIBLE);
 		}
 
 		tvFullName = (TextView) findViewById(R.id.profile_user_name);

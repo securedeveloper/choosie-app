@@ -1,5 +1,7 @@
 package com.choozie.app.models;
 
+import com.choozie.app.client.Client;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -60,5 +62,9 @@ public class User implements Parcelable{
 	public boolean equals(User user) {
 		//User u = (User) user;
 		return user.getFbUid().equals(this.fbUid);
+	}
+	
+	public boolean isActiveUser() {
+		return this.fbUid.equals(Client.getInstance().getActiveUser().getFbUid());
 	}
 }

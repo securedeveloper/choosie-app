@@ -4,4 +4,6 @@
     <dimen name="view_choosie_post_margin">10dp</dimen>
     <dimen name="share_button_magin">15dp</dimen>
     <dimen name="share_text_top_margin">25dp</dimen>
+    <dimen name="profile_details_margin">5dp</dimen>
+    <dimen name="header_text_size">18dp</dimen>
 </resources>

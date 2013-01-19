@@ -41,5 +41,7 @@
     <string name="posts">Posts:</string>
     <string name="title_activity_post">PostActivity</string>
     <string name="new_post">New Post</string>
+    <string name="votes">Votes:</string>
+    <string name="bio_watermark">Write a short bio by clicking the Edit button</string>
 
 </resources>

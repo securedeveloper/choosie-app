@@ -126,7 +126,7 @@
             android:layout_marginLeft="@dimen/view_choosie_post_margin"
             android:gravity="center_vertical"
             android:textColor="@color/White"
-            android:textSize="18dp"
+            android:textSize="@dimen/header_text_size"
             android:text="@string/new_post"
             android:textStyle="bold" />
 
