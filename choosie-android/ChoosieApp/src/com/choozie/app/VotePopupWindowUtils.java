@@ -278,7 +278,7 @@ public class VotePopupWindowUtils {
 									// set the listeners for the profile
 									holder.voterPhotoImageView1
 											.setOnClickListener(profileListener);
-									holder.tv2
+									holder.tv1
 											.setOnClickListener(profileListener);
 								}
 							});
