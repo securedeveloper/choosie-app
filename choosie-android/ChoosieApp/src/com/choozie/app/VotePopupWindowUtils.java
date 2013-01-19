@@ -29,6 +29,7 @@ import com.choozie.app.NewChoosiePostData.PostType;
 import com.choozie.app.caches.CacheCallback;
 import com.choozie.app.caches.Caches;
 import com.choozie.app.models.ChoosiePostData;
+import com.choozie.app.models.User;
 import com.choozie.app.models.Vote;
 import com.choozie.app.models.VoteData;
 
@@ -44,8 +45,7 @@ public class VotePopupWindowUtils {
 	}
 
 	public void popUpVotesWindow(String postKey) {
-		L.d("VotePopupWindow: entered popUpVotesWindow, postKey = "
-				+ postKey);
+		L.d("VotePopupWindow: entered popUpVotesWindow, postKey = " + postKey);
 
 		// We need to get the instance of the LayoutInflater, use the
 		// context of this activity
@@ -92,23 +92,11 @@ public class VotePopupWindowUtils {
 								createAndShowPopup(result, layout);
 							}
 						});
-
-		// createAndShowPopup(null);
 	}
 
 	private void createAndShowPopup(ChoosiePostData choosiePost,
 			RelativeLayout layout) {
 		L.d("VotePopupWindow, starting createAndShowPopup");
-		// PopupWindow pw;
-
-		// // We need to get the instance of the LayoutInflater, use the
-		// // context of this activity
-		// LayoutInflater inflater = (LayoutInflater) activity
-		// .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		//
-		// RelativeLayout layout = (RelativeLayout) inflater.inflate(
-		// R.layout.popup_layout,
-		// (ViewGroup) activity.findViewById(R.id.popup_element));
 
 		if (choosiePost.getPostType() == PostType.YesNo) {
 			((ImageView) layout
@@ -136,40 +124,27 @@ public class VotePopupWindowUtils {
 		textViewVotes2.setText(choosiePost.getVotes2() + " votes");
 
 		// create the votes list
-		ArrayList<String> nameList = new ArrayList<String>();
-		ArrayList<String> votersPhotoUrlList = new ArrayList<String>();
+		ArrayList<User> usersList = new ArrayList<User>();
 		ArrayList<Integer> voteForList = new ArrayList<Integer>();
 
 		for (Vote vote : choosiePost.getVotes()) {
-			nameList.add(vote.getUsers().getUserName());
-			votersPhotoUrlList.add(vote.getUsers().getPhotoURL());
+			User user = vote.getUser();
+			usersList.add(user);
 			voteForList.add(vote.getVote_for());
 		}
 
 		// create the adapter
 		ArrayAdapter<VoteData> voteScreenAdapter = makeVotesScreenAdapter(
-				nameList, votersPhotoUrlList, voteForList);
+				usersList, voteForList);
 
 		// attache the listView, where the votes will be displayed
 		ListView listView = (ListView) layout
 				.findViewById(R.id.votesPopupWindow_listView);
 		listView.setAdapter(voteScreenAdapter);
-
-		// // set view and size
-		// pw = new PopupWindow(layout, Utils.getScreenWidth() - 30,
-		// Utils.getScreenHeight() / 2, true);
-		// pw.setAnimationStyle(R.style.PopupWindowAnimation);
-		//
-		// // for closing when touching outside - set the background not null
-		// pw.setBackgroundDrawable(new BitmapDrawable());
-		//
-		// // show it!
-		// pw.showAtLocation(layout, Gravity.BOTTOM, 0, 10);
 	}
 
 	private ArrayAdapter<VoteData> makeVotesScreenAdapter(
-			ArrayList<String> nameList, ArrayList<String> votersPhotoUrlList,
-			ArrayList<Integer> voteForList) {
+			ArrayList<User> users, ArrayList<Integer> voteForList) {
 
 		L.d("VotePopupWindowe, starting makeVotesScreenAdapter");
 
@@ -185,65 +160,39 @@ public class VotePopupWindowUtils {
 			}
 		};
 
-		ArrayList<MiniVoteData> votersToPhoto1 = new ArrayList<MiniVoteData>();
-		ArrayList<MiniVoteData> votersToPhoto2 = new ArrayList<MiniVoteData>();
+		ArrayList<User> votersToPhoto1 = new ArrayList<User>();
+		ArrayList<User> votersToPhoto2 = new ArrayList<User>();
 
 		// fill each array with its suite votes
-		divideVoters(votersToPhoto1, votersToPhoto2, nameList,
-				votersPhotoUrlList, voteForList);
+		divideVoters(votersToPhoto1, votersToPhoto2, users, voteForList);
 
 		for (int i = 0; i < Math.max(votersToPhoto1.size(),
 				votersToPhoto2.size()); i++) {
 
-			String voterName1 = null;
-			String photoUrl1 = null;
-			String voterName2 = null;
-			String photoUrl2 = null;
+			User user1 = null;
+			User user2 = null;
 
 			if (i < votersToPhoto1.size()) {
-				voterName1 = votersToPhoto1.get(i).getName();
-				photoUrl1 = votersToPhoto1.get(i).getPhotoUrl();
+				user1 = votersToPhoto1.get(i);
 			}
 			if (i < votersToPhoto2.size()) {
-				voterName2 = votersToPhoto2.get(i).getName();
-				photoUrl2 = votersToPhoto2.get(i).getPhotoUrl();
+				user2 = votersToPhoto2.get(i);
 			}
-			VoteData newVoteData = new VoteData(voterName1, photoUrl1,
-					voterName2, photoUrl2);
+			VoteData newVoteData = new VoteData(user1, user2);
 			adi.add(newVoteData);
 		}
 		return adi;
 	}
 
-	private class MiniVoteData {
-		private final String name;
-		private final String photoUrl;
+	private void divideVoters(ArrayList<User> votersToPhoto1,
+			ArrayList<User> votersToPhoto2, ArrayList<User> users,
+			ArrayList<Integer> voteForList) {
 
-		public MiniVoteData(String name, String photoUrl) {
-			this.name = name;
-			this.photoUrl = photoUrl;
-		}
-
-		public String getName() {
-			return this.name;
-		}
-
-		public String getPhotoUrl() {
-			return this.photoUrl;
-		}
-	}
-
-	private void divideVoters(ArrayList<MiniVoteData> votersToPhoto1,
-			ArrayList<MiniVoteData> votersToPhoto2, ArrayList<String> nameList,
-			ArrayList<String> votersPhotoUrlList, ArrayList<Integer> voteForList) {
-
-		for (int i = 0; i < nameList.size(); i++) {
+		for (int i = 0; i < users.size(); i++) {
 			if (voteForList.get(i) == 1) {
-				votersToPhoto1.add(new MiniVoteData(nameList.get(i),
-						votersPhotoUrlList.get(i)));
+				votersToPhoto1.add(users.get(i));
 			} else {
-				votersToPhoto2.add(new MiniVoteData(nameList.get(i),
-						votersPhotoUrlList.get(i)));
+				votersToPhoto2.add(users.get(i));
 			}
 		}
 	}
@@ -289,44 +238,56 @@ public class VotePopupWindowUtils {
 		voteViewHolder.voterPhotoImageView2.setImageBitmap(null);
 
 		final VoteViewHolder holder = voteViewHolder;
-		if (item.getName1() != null) {
+		if (item.getUser1() != null) {
 			// set the voter1 names
-			setTextOntv(item.getName1(), voteViewHolder.tv1);
+			setTextOntv(item.getUser1().getUserName(), voteViewHolder.tv1);
 			// set the voter1 photo
 			L.d("createViewVotes - name1 != null, getting from cache, name = "
-					+ item.getName1());
+					+ item.getUser1().getUserName());
 			Caches.getInstance()
 					.getPhotosCache()
-					.getValue(item.getVoterPhotoUrl1(),
+					.getValue(item.getUser1().getPhotoURL(),
 							new CacheCallback<String, Bitmap>() {
 								@Override
 								public void onValueReady(String key,
 										Bitmap result) {
 									L.d("createViewVotes, got param for name = "
-											+ item.getVoterPhotoUrl1()
+											+ item.getUser1().getPhotoURL()
 											+ "param = " + result);
 									holder.voterPhotoImageView1
 											.setImageBitmap(result);
+
+									// set the listeners for the profile
+									// holder.voterPhotoImageView1.setOnClickListener(new
+									// OnClickListener() {
+									//
+									// public void onClick(View v) {
+									// User user1 = new User(item.getName1(),
+									// item.getVoterPhotoUrl1(), )
+									//
+									// }
+									// });
+
 								}
 							});
 		}
 
-		if (item.getName2() != null) {
+		if (item.getUser2() != null) {
 			// set the voter2 names
-			setTextOntv(item.getName2(), voteViewHolder.tv2);
+			setTextOntv(item.getUser2().getUserName(), voteViewHolder.tv2);
 
 			// set the voter2 photo
 			L.d("name2 != null, getting from cache, name = "
-					+ item.getName2());
+					+ item.getUser2().getUserName());
 			Caches.getInstance()
 					.getPhotosCache()
-					.getValue(item.getVoterPhotoUrl2(),
+					.getValue(item.getUser2().getPhotoURL(),
 							new CacheCallback<String, Bitmap>() {
 								@Override
 								public void onValueReady(String key,
 										Bitmap result) {
 									L.d("createViewVotes, got param for name = "
-											+ item.getVoterPhotoUrl2()
+											+ item.getUser2().getPhotoURL()
 											+ "param = " + result);
 									holder.voterPhotoImageView2
 											.setImageBitmap(result);

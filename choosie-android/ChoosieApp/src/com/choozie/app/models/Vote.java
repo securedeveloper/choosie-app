@@ -21,7 +21,7 @@ public class Vote {
 		return createdAtUTC;
 	}
 
-	public User getUsers() {
+	public User getUser() {
 		return user;
 	}
 }

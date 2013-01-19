@@ -13,7 +13,7 @@
 
             <padding android:bottom="1dp" android:left="1dp" android:right="1dp" android:top="1dp" />
 
-            <gradient android:angle="90" android:centerColor="@color/Gray" android:endColor="@color/DarkGray" android:startColor="@color/DarkSlateGray" android:type="linear" />
+            <solid android:color="#537ba7"/>
         </shape></item>
 
 </selector>

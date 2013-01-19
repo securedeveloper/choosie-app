@@ -16,7 +16,6 @@ import com.choozie.app.R;
 import com.choozie.app.Screen;
 import com.choozie.app.Utils;
 import com.choozie.app.VotePopupWindowUtils;
-import com.choozie.app.VotesScreenActivity;
 import com.choozie.app.NewChoosiePostData.PostType;
 import com.choozie.app.caches.CacheCallback;
 import com.choozie.app.caches.Caches;
@@ -237,46 +236,6 @@ public class SuperController implements PostViewActionsHandler {
 										Constants.RequestCodes.COMMENT);
 							}
 						});
-	}
-
-	public void switchToVotesScreen(ChoosiePostData choosiePost) {
-		Intent intent = new Intent(screenToController.get(Screen.FEED)
-				.getActivity().getApplicationContext(),
-				VotesScreenActivity.class);
-
-		// intent.putExtra("post_key", choosiePost.getPostKey());
-		intent.putExtra(Constants.IntentsCodes.question,
-				choosiePost.getQuestion());
-
-		String photo1Path = Utils.getFileNameForURL(choosiePost.getPhoto1URL());
-		String photo2Path = Utils.getFileNameForURL(choosiePost.getPhoto2URL());
-		String userPhotoPath = Utils.getFileNameForURL(choosiePost.getAuthor()
-				.getPhotoURL());
-
-		intent.putExtra(Constants.IntentsCodes.photo1Path, photo1Path);
-		intent.putExtra(Constants.IntentsCodes.photo2Path, photo2Path);
-		intent.putExtra(Constants.IntentsCodes.userPhotoPath, userPhotoPath);
-
-		// create the votes list
-		ArrayList<String> nameList = new ArrayList<String>();
-		ArrayList<String> votersPhotoUrlList = new ArrayList<String>();
-		ArrayList<Integer> voteForList = new ArrayList<Integer>();
-
-		for (Vote vote : choosiePost.getVotes()) {
-			nameList.add(vote.getUsers().getUserName());
-			votersPhotoUrlList.add(Utils.getFileNameForURL(vote.getUsers()
-					.getPhotoURL()));
-			voteForList.add(vote.getVote_for());
-		}
-
-		intent.putStringArrayListExtra(Constants.IntentsCodes.nameList,
-				nameList);
-		intent.putStringArrayListExtra(
-				Constants.IntentsCodes.votersPhotoUrlList, votersPhotoUrlList);
-		intent.putIntegerArrayListExtra(Constants.IntentsCodes.voteForList,
-				voteForList);
-
-		screenToController.get(Screen.FEED).getActivity().startActivity(intent);// Constants.RequestCodes.VOTES);
 	}
 
 	public void onActivityResult(int resultCode, Intent data) {
