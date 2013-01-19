@@ -58,6 +58,7 @@ public class Constants {
 		public static final int CAMERA_PICURE_GALLERY = 19;
 		public static final int CAMERA_GALLERY_CROP = 20;
 		public static final int PROFILE_SCREEN = 0;
+		public static final int EDIT_PROFILE_SCREEN = 21;
 	}
 
 	public static class IntentsCodes {
@@ -124,6 +125,7 @@ public class Constants {
 		public static final int EXIT_ALERT_DIALOG = 0;
 		public static final int WAIT_LOADING = 1;
 		public static final int ERROR = 2;
+		public static final int WAIT_SAVING = 3;
 
 	}
 

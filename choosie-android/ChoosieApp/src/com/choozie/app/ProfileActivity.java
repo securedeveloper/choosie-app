@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -29,6 +30,12 @@ public class ProfileActivity extends Activity {
 	private FeedListAdapter choosiePostsItemAdapter;
 	private PostViewActionsHandler actionHandler;
 	private ImageButton ibEdit;
+	private OnClickListener edit_button_listener = new OnClickListener() {
+		
+		public void onClick(View v) {
+			startProfileEditActivity();
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,7 @@ public class ProfileActivity extends Activity {
 		user = intent.getParcelableExtra(Constants.IntentsCodes.user);
 
 		ibEdit = (ImageButton)findViewById(R.id.profile_edit_image_button);
+		ibEdit.setOnClickListener(edit_button_listener );
 		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
 
 		BottomNavigationBarView customView = new BottomNavigationBarView(this,
@@ -84,6 +92,12 @@ public class ProfileActivity extends Activity {
 		};
 
 		startTheListView();
+	}
+
+	protected void startProfileEditActivity() {
+		Intent intent = new Intent(this, ProfileEditActivity.class);
+		intent.putExtra(Constants.IntentsCodes.user, this.user);
+		startActivityForResult(intent, Constants.RequestCodes.EDIT_PROFILE_SCREEN);
 	}
 
 	private void startTheListView() {
@@ -148,6 +162,10 @@ public class ProfileActivity extends Activity {
 		case Constants.RequestCodes.NEW_POST:
 			if (resultCode == Activity.RESULT_OK) {
 				choosiePostsItemAdapter.refreshFeed();
+			}
+		case Constants.RequestCodes.EDIT_PROFILE_SCREEN:
+			if (resultCode == Activity.RESULT_OK) {
+				
 			}
 		}
 	}

@@ -43,5 +43,11 @@
     <string name="new_post">New Post</string>
     <string name="votes">Votes:</string>
     <string name="bio_watermark">Write a short bio by clicking the Edit button</string>
+    <string name="title_activity_profile_edit">ProfileEditActivity</string>
+    <string name="edit_profile_header_text">Edit Profile</string>
+    <string name="nickname_hint">Your Nickname</string>
+    <string name="bio_hint">Write a short bio...</string>
+    <string name="nickname">Nickname: </string>
+    <string name="info">Info: </string>
 
 </resources>
