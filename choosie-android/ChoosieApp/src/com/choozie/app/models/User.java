@@ -56,4 +56,9 @@ public class User implements Parcelable{
 			return new User[size];
 		}
 	};
+	
+	public boolean equals(User user) {
+		//User u = (User) user;
+		return user.getFbUid().equals(this.fbUid);
+	}
 }

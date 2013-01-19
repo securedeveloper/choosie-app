@@ -53,8 +53,10 @@ public class ProfileActivity extends Activity {
 		BottomNavigationBarView customView = new BottomNavigationBarView(this,
 				this, Screen.USER_PROFILE);
 		bottomView.addView(customView);
-		customView
-				.changeSelectedButton((RelativeLayout) findViewById(R.id.view_navBar_layout_button_profile));
+		if (Client.getInstance().getActiveUser().equals(user)) {
+			customView
+					.changeSelectedButton((RelativeLayout) findViewById(R.id.view_navBar_layout_button_profile));
+		}
 
 		tvFullName = (TextView) findViewById(R.id.profile_user_name);
 		tvFullName.setText(user.getUserName());
