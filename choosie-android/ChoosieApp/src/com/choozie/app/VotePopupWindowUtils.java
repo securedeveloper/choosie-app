@@ -14,6 +14,7 @@ import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ import com.choozie.app.caches.CacheCallback;
 import com.choozie.app.caches.Caches;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.User;
+import com.choozie.app.models.UserManger;
 import com.choozie.app.models.Vote;
 import com.choozie.app.models.VoteData;
 
@@ -237,6 +239,22 @@ public class VotePopupWindowUtils {
 		voteViewHolder.voterPhotoImageView1.setImageBitmap(null);
 		voteViewHolder.voterPhotoImageView2.setImageBitmap(null);
 
+		final OnClickListener profileListener = new OnClickListener() {
+
+			public void onClick(View v) {
+				User user = null;
+				if (v.getId() == R.id.voteView_voterPhoto1) {
+					user = item.getUser1();
+				} else {
+					user = item.getUser2();
+				}
+				if (user != null) {
+					UserManger userManager = new UserManger(activity, user);
+					userManager.goToProfile();
+				}
+			}
+		};
+
 		final VoteViewHolder holder = voteViewHolder;
 		if (item.getUser1() != null) {
 			// set the voter1 names
@@ -258,16 +276,10 @@ public class VotePopupWindowUtils {
 											.setImageBitmap(result);
 
 									// set the listeners for the profile
-									// holder.voterPhotoImageView1.setOnClickListener(new
-									// OnClickListener() {
-									//
-									// public void onClick(View v) {
-									// User user1 = new User(item.getName1(),
-									// item.getVoterPhotoUrl1(), )
-									//
-									// }
-									// });
-
+									holder.voterPhotoImageView1
+											.setOnClickListener(profileListener);
+									holder.tv2
+											.setOnClickListener(profileListener);
 								}
 							});
 		}
@@ -291,6 +303,12 @@ public class VotePopupWindowUtils {
 											+ "param = " + result);
 									holder.voterPhotoImageView2
 											.setImageBitmap(result);
+
+									// set the listeners for the profile
+									holder.voterPhotoImageView2
+											.setOnClickListener(profileListener);
+									holder.tv2
+											.setOnClickListener(profileListener);
 								};
 							});
 		}
