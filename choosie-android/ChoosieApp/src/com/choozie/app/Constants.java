@@ -9,8 +9,8 @@ public class Constants {
 	public static class URIs {
 
 		public static final String ROOT_URL = "http://choosieapp.appspot.com";
-		// public static final String ROOT_URL =
-		// "http://choosie-dev.appspot.com";
+//		 public static final String ROOT_URL =
+//		 "http://choosie-dev.appspot.com";
 
 		public static final String REGISTER = ROOT_URL + "/register";
 		public static final String CRASH_REPORT = ROOT_URL + "/collectcrash";
@@ -27,6 +27,10 @@ public class Constants {
 		// public static final String mainDirectoryPath = (Environment
 		// .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)).getAbsolutePath();
 		public static final String APPLICATION_NAME = "Choozie";
+		
+		public static final String FACEBOOK_PROFILE_PIC(String fb_uid) {
+			return "http://graph.facebook.com/" + fb_uid + "/picture";
+		}
 	}
 
 	public static class RequestCodes {
@@ -53,6 +57,7 @@ public class Constants {
 		public static final int CAMERA_RETAKE_PICTURE = 18;
 		public static final int CAMERA_PICURE_GALLERY = 19;
 		public static final int CAMERA_GALLERY_CROP = 20;
+		public static final int PROFILE_SCREEN = 0;
 	}
 
 	public static class IntentsCodes {

@@ -50,6 +50,28 @@
                 android:contentDescription="@string/general_content_description"
                 android:src="@drawable/camera" />
         </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/view_navBar_layout_button_profile"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bottom_menu_selector_alpha"
+            android:clickable="true"
+            android:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/view_navBar_layout_button_image_profile"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:contentDescription="@string/general_content_description"
+                android:src="@drawable/user_blue" />
+
+        </RelativeLayout>
+
     </LinearLayout>
 
 </merge>

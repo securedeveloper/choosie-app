@@ -37,11 +37,14 @@ import com.choozie.app.L;
 import com.choozie.app.NewChoosiePostData;
 import com.choozie.app.Utils;
 import com.choozie.app.NewChoosiePostData.PostType;
+import com.choozie.app.caches.CacheCallback;
+import com.choozie.app.caches.Caches;
 import com.choozie.app.controllers.FeedCacheKey;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
 import com.choozie.app.models.FacebookDetails;
 import com.choozie.app.models.User;
+import com.choozie.app.models.UserManger;
 import com.choozie.app.models.Vote;
 import com.facebook.Response;
 
@@ -655,6 +658,19 @@ public class RealClient extends Client {
 	public void unregisterGCM(String deviceId) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public User getActiveUser() {
+		String firstName = this.fbDetails.getFirstName();
+		String lastName = this.fbDetails.getLastName();
+		String userName = firstName + " " + lastName;
+
+		// TODO: get photo URL of the active user.
+		String photoURL = Constants.URIs.FACEBOOK_PROFILE_PIC(this.fbDetails
+				.getFb_uid());
+		String fbUid = this.fbDetails.getFb_uid();
+
+		return new User(userName, photoURL, fbUid);
 	}
 
 }

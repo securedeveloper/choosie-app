@@ -109,4 +109,10 @@ public class MockClient extends Client {
 
 	}
 
+	@Override
+	public User getActiveUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

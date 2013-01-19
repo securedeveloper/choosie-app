@@ -16,6 +16,7 @@ import com.choozie.app.NewChoosiePostData;
 import com.choozie.app.controllers.FeedCacheKey;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.FacebookDetails;
+import com.choozie.app.models.User;
 
 public abstract class Client {
 
@@ -128,5 +129,7 @@ public abstract class Client {
 	public abstract void registerGCM(String deviceId);
 
 	public abstract void unregisterGCM(String registrationId);
+
+	public abstract User getActiveUser();
 
 }

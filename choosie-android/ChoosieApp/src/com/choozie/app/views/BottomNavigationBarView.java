@@ -7,9 +7,13 @@ import com.choozie.app.AppSettings;
 import com.choozie.app.ChoosieActivity;
 import com.choozie.app.Constants;
 import com.choozie.app.PostActivity;
+import com.choozie.app.ProfileActivity;
 import com.choozie.app.R;
 import com.choozie.app.Screen;
 import com.choozie.app.camera.CameraMainSuperControllerActivity;
+import com.choozie.app.client.Client;
+import com.choozie.app.models.User;
+import com.choozie.app.models.UserManger;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,10 +29,10 @@ public class BottomNavigationBarView extends LinearLayout {
 	// private SuperController superController;
 	private Activity activity;
 	private Screen currentScreen;
-	
+
 	private List<RelativeLayout> navBarRelativeLayouts;
 	private List<ImageView> navBarImageViews;
-	
+
 	public BottomNavigationBarView(Context context, Activity activity,
 			Screen currentScreen) {
 		super(activity);
@@ -51,26 +55,22 @@ public class BottomNavigationBarView extends LinearLayout {
 
 		navBarRelativeLayouts = new ArrayList<RelativeLayout>();
 		navBarImageViews = new ArrayList<ImageView>();
-		
-		navBarRelativeLayouts.add((RelativeLayout) findViewById(R.id.view_navBar_layout_button_feed));
-		navBarRelativeLayouts.add((RelativeLayout) findViewById(R.id.view_navBar_layout_button_post));
-		
-		navBarImageViews.add((ImageView) findViewById(R.id.view_navBar_layout_button_image_feed));
-		navBarImageViews.add((ImageView) findViewById(R.id.view_navBar_layout_button_image_post));
-		
+
+		navBarRelativeLayouts
+				.add((RelativeLayout) findViewById(R.id.view_navBar_layout_button_feed));
+		navBarRelativeLayouts
+				.add((RelativeLayout) findViewById(R.id.view_navBar_layout_button_post));
+		navBarRelativeLayouts
+				.add((RelativeLayout) findViewById(R.id.view_navBar_layout_button_profile));
+
+		navBarImageViews
+				.add((ImageView) findViewById(R.id.view_navBar_layout_button_image_feed));
+		navBarImageViews
+				.add((ImageView) findViewById(R.id.view_navBar_layout_button_image_post));
+		navBarImageViews
+				.add((ImageView) findViewById(R.id.view_navBar_layout_button_image_profile));
+
 		setNavigationListeners();
-		
-		
-
-//		((ImageView) findViewById(R.id.view_navBar_layout_button_image_feed))
-//				.setOnClickListener(navigationListener);
-//
-//		RelativeLayout rlButtomNavBarPost = (RelativeLayout) findViewById(R.id.view_navBar_layout_button_post);
-//		rlButtomNavBarPost.setOnClickListener(navigationListener);
-//
-//		((ImageView) findViewById(R.id.view_navBar_layout_button_image_post))
-//				.setOnClickListener(navigationListener);
-
 	}
 
 	private void setNavigationListeners() {
@@ -107,30 +107,43 @@ public class BottomNavigationBarView extends LinearLayout {
 				switchToPostScreen();
 			}
 			break;
+		case R.id.view_navBar_layout_button_profile:
+		case R.id.view_navBar_layout_button_image_profile:
+			switchToProfileScreen();
+		}
+
+	}
+
+	private void switchToProfileScreen() {
+		if (currentScreen != Screen.USER_PROFILE) {
+			UserManger um = new UserManger(activity, Client.getInstance()
+					.getActiveUser());
+			um.goToProfile();
 		}
 
 	}
 
 	private void switchToPostScreen() {
 		if (currentScreen != Screen.POST) {
-			//changeSelectedButton((RelativeLayout)findViewById(R.id.view_navBar_layout_button_post));
-			
+			// changeSelectedButton((RelativeLayout)findViewById(R.id.view_navBar_layout_button_post));
+
 			Intent intent = new Intent(activity.getApplicationContext(),
 					PostActivity.class);
-			activity.startActivityForResult(intent, Constants.RequestCodes.NEW_POST);	
+			activity.startActivityForResult(intent,
+					Constants.RequestCodes.NEW_POST);
 		}
 	}
 
 	private void switchToFeedScreen() {
 		if (currentScreen != Screen.FEED) {
-			//changeSelectedButton((RelativeLayout)findViewById(R.id.view_navBar_layout_button_feed));
+			// changeSelectedButton((RelativeLayout)findViewById(R.id.view_navBar_layout_button_feed));
 			Intent intent = new Intent(activity.getApplicationContext(),
 					ChoosieActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			activity.startActivity(intent);
 		}
 	}
-	
+
 	public void changeSelectedButton(RelativeLayout relativeLayout) {
 		for (RelativeLayout rl : navBarRelativeLayouts) {
 			if (rl.equals(relativeLayout))
@@ -139,7 +152,5 @@ public class BottomNavigationBarView extends LinearLayout {
 				rl.setBackgroundResource(R.drawable.unselected_button);
 		}
 	}
-	
-	
 
 }
