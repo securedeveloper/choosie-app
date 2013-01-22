@@ -17,7 +17,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 	private final Activity _context;
 
 	public ContactAdapter(Activity context, List<Contact> contacts) {
-		super(context, R.layout.contactlistitem, contacts);
+		super(context, R.layout.activity_contacts, contacts);
 		this._contacts = contacts;
 		this._context = context;
 	}
