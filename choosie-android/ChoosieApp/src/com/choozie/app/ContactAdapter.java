@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class ContactAdapter extends ArrayAdapter<Contact> {
@@ -22,11 +23,12 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 	}
 
 	static class ViewHolder {
-		protected TextView text;
+		//protected TextView text;
+		protected CheckBox _cbContactName;
 		private Contact _contact;
 
 		protected void setContact(Contact contact) {
-			text.setText(contact.getDisplayName());
+			_cbContactName.setText(contact.getDisplayName());
 			_contact = contact;
 		}
 
@@ -47,7 +49,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 			LayoutInflater inflater = _context.getLayoutInflater();
 			view = inflater.inflate(R.layout.contactlistitem, null);
 			final ViewHolder viewHolder = new ViewHolder();
-			viewHolder.text = (TextView) view.findViewById(R.id.txtDisplayName);
+			viewHolder._cbContactName = (CheckBox) view.findViewById(R.id.cbDisplayName);
 			viewHolder.setContact(_contacts.get(position));
 			view.setTag(viewHolder);
 		}

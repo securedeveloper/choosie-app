@@ -1,42 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- <LinearLayout -->
-<!-- android:id="@+id/contacts_header_layout" -->
-<!-- android:layout_width="fill_parent" -->
-<!-- android:layout_height="45dp" -->
-<!-- android:layout_alignParentTop="true" -->
-<!-- android:background="@drawable/header_selector" > -->
-
-<!-- <TextView -->
-<!-- android:id="@+id/contacts_heade_text" -->
-<!-- android:layout_width="wrap_content" -->
-<!-- android:layout_height="match_parent" -->
-<!-- android:layout_marginLeft="5dp" -->
-<!-- android:gravity="center_vertical" -->
-<!-- android:text="Contacts" -->
-<!-- android:textColor="@color/White" -->
-<!-- android:textSize="@dimen/header_text_size" -->
-<!-- android:textStyle="bold" /> -->
-<!-- </LinearLayout> -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:weightSum="1" >
-
-    <TextView
-        android:id="@+id/txtDisplayName"
-        android:layout_width="304dp"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/textView1"
+    
+    
+    <CheckBox
+        android:id="@+id/cbDisplayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:text=">"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignParentLeft="true"
+        android:text="CheckBox" />
 
 </RelativeLayout>
