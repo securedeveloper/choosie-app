@@ -1,8 +1,10 @@
 package com.choozie.app;
 
 import com.choozie.app.models.User;
+import com.choozie.app.models.UserDetails;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,6 +23,8 @@ public class ProfileEditActivity extends Activity {
 	private EditText etNickname;
 	private ImageButton ibUserPhoto;
 	private ImageButton ibSaveChanges;
+	private UserDetails userDetails;
+	private EditText etInfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +32,33 @@ public class ProfileEditActivity extends Activity {
 		setContentView(R.layout.activity_profile_edit);
 
 		Intent intent = getIntent();
-		user = intent.getParcelableExtra(Constants.IntentsCodes.user);
+		//user = intent.getParcelableExtra(Constants.IntentsCodes.user);
+		userDetails = intent.getParcelableExtra(Constants.IntentsCodes.userDetails);
 
-		ibSaveChanges = (ImageButton) findViewById(R.id.edit_profile_save_changes_image_button);
-		etNickname = (EditText) findViewById(R.id.edit_profile_nickname_text);
-		ibUserPhoto = (ImageButton) findViewById(R.id.edit_profile_user_photo);
-		String userImagePath = Utils.getFileNameForURL(user.getPhotoURL());
+		// initialize all components in the activity
+		initializeComponents();
+		
+		fillUserDetails();
+	}
+
+	private void fillUserDetails() {
+		// photo
+		String userImagePath = Utils.getFileNameForURL(userDetails.user.getPhotoURL());
 		Utils.setImageFromPath(userImagePath, ibUserPhoto);
+		
+		// nickname + info
+		etNickname.setText(userDetails.nickname);
+		etInfo.setText(userDetails.info);
+	}
+
+	private void initializeComponents() {
+		// initialize all views
+		ibSaveChanges = (ImageButton) findViewById(R.id.edit_profile_save_changes_image_button);
+		ibUserPhoto = (ImageButton) findViewById(R.id.edit_profile_user_photo);
+		etNickname = (EditText) findViewById(R.id.edit_profile_nickname_text);
+		etInfo = (EditText) findViewById(R.id.edit_profile_info_text);
+		
+		// initialize all listeners
 		ibSaveChanges.setOnClickListener(saveChangesClickListener);
 	}
 

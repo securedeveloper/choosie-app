@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileActivity"
-    android:background="@color/White" >
+    android:background="@color/White"
+    tools:context=".ProfileActivity" >
 
     <RelativeLayout
         android:id="@+id/header_layout"
@@ -36,6 +36,17 @@
             android:contentDescription="@string/general_content_description"
             android:src="@drawable/pencil"
             android:visibility="invisible" />
+
+        <ImageButton
+            android:id="@+id/profile_invite_image_button"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/profile_edit_image_button"
+            android:background="@drawable/header_selector"
+            android:contentDescription="@string/general_content_description"
+            android:src="@drawable/icon_invite" />
+
     </RelativeLayout>
 
     <ListView

@@ -38,10 +38,10 @@
     <string name="title_activity_gallery">GalleryActivty</string>
     <string name="title_activity_camera_main">CameraMainActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
-    <string name="posts">Posts:</string>
+    <string name="posts">My Posts:</string>
     <string name="title_activity_post">PostActivity</string>
     <string name="new_post">New Post</string>
-    <string name="votes">Votes:</string>
+    <string name="votes">My Votes:</string>
     <string name="bio_watermark">Write a short bio by clicking the Edit button</string>
     <string name="title_activity_profile_edit">ProfileEditActivity</string>
     <string name="edit_profile_header_text">Edit Profile</string>
@@ -49,5 +49,6 @@
     <string name="bio_hint">Write a short bio...</string>
     <string name="nickname">Nickname: </string>
     <string name="info">Info: </string>
+    <string name="title_activity_contacts">ContactsActivity</string>
 
 </resources>

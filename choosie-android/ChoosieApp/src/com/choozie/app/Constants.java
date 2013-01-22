@@ -59,6 +59,7 @@ public class Constants {
 		public static final int CAMERA_GALLERY_CROP = 20;
 		public static final int PROFILE_SCREEN = 0;
 		public static final int EDIT_PROFILE_SCREEN = 21;
+		public static final int PICK_CONTACT = 22;
 	}
 
 	public static class IntentsCodes {
@@ -94,6 +95,7 @@ public class Constants {
 		public static final String stayOnScreen = "stayOnScreen";
 		public static final String user = "user";
 		public static final String fbUid = "fbUid";
+		public static final String userDetails = "userDetails";
 	}
 
 	public static class Notifications {

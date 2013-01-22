@@ -5,15 +5,21 @@ import com.choozie.app.controllers.FeedListAdapter;
 import com.choozie.app.controllers.SuperController;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.User;
+import com.choozie.app.models.UserDetails;
 import com.choozie.app.views.BottomNavigationBarView;
 import com.choozie.app.views.PostViewActionsHandler;
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.app.Activity;
 import android.content.Intent;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -30,12 +36,8 @@ public class ProfileActivity extends Activity {
 	private FeedListAdapter choosiePostsItemAdapter;
 	private PostViewActionsHandler actionHandler;
 	private ImageButton ibEdit;
-	private OnClickListener edit_button_listener = new OnClickListener() {
-		
-		public void onClick(View v) {
-			startProfileEditActivity();
-		}
-	};
+	private TextView tvInvite;
+	private ImageButton ibInvite;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +47,20 @@ public class ProfileActivity extends Activity {
 		Intent intent = getIntent();
 		user = intent.getParcelableExtra(Constants.IntentsCodes.user);
 
-		ibEdit = (ImageButton)findViewById(R.id.profile_edit_image_button);
-		ibEdit.setOnClickListener(edit_button_listener );
+		ibEdit = (ImageButton) findViewById(R.id.profile_edit_image_button);
+		ibEdit.setOnClickListener(editButtonListener);
+		// tvInvite = (TextView)findViewById(R.id.profile_invite);
+		ibInvite = (ImageButton) findViewById(R.id.profile_invite_image_button);
+		ibInvite.setOnClickListener(inviteFriendListener);
+		//
+
 		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
 
 		BottomNavigationBarView customView = new BottomNavigationBarView(this,
 				this, Screen.USER_PROFILE);
 		bottomView.addView(customView);
-		
-		// Set the Profile nagivation bar as 'selected' only
+
+		// Set the Profile navigation bar as 'selected' only
 		// if I enter my own profile.
 		if (user.isActiveUser()) {
 			customView
@@ -94,10 +101,33 @@ public class ProfileActivity extends Activity {
 		startTheListView();
 	}
 
+	protected void inviteFriend() {
+		Intent intent = new Intent(this, ContactsActivity.class);
+		startActivity(intent);
+
+		// Intent intent = new Intent(Intent.ACTION_PICK,
+		// ContactsContract.Contacts.CONTENT_URI);
+		// startActivityForResult(intent, Constants.RequestCodes.PICK_CONTACT);
+	}
+
 	protected void startProfileEditActivity() {
+		
+		UserDetails ud = getProfileDetailsFromServer(user.getFbUid());
+		
 		Intent intent = new Intent(this, ProfileEditActivity.class);
-		intent.putExtra(Constants.IntentsCodes.user, this.user);
-		startActivityForResult(intent, Constants.RequestCodes.EDIT_PROFILE_SCREEN);
+		intent.putExtra(Constants.IntentsCodes.userDetails, ud);
+		startActivityForResult(intent,
+				Constants.RequestCodes.EDIT_PROFILE_SCREEN);
+	}
+
+	private UserDetails getProfileDetailsFromServer(String fbUid) {
+		// get profile details from server
+		//UserDetails ud = Client.getInstance().getProfileDetailsFromServer(fbUid);
+		UserDetails ud = null; // TODO: remove this.
+		if (ud == null) {
+			ud = new UserDetails(user);
+		}
+		return ud;
 	}
 
 	private void startTheListView() {
@@ -150,25 +180,44 @@ public class ProfileActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 
-		case Constants.RequestCodes.COMMENT:
-			if (resultCode == Activity.RESULT_OK) {
-				String text = data.getStringExtra(Constants.IntentsCodes.text);
-				String post_key = data
-						.getStringExtra(Constants.IntentsCodes.post_key);
-				SuperController.commentFor(post_key, text, this,
-						choosiePostsItemAdapter);
-			}
-			break;
-		case Constants.RequestCodes.NEW_POST:
-			if (resultCode == Activity.RESULT_OK) {
-				choosiePostsItemAdapter.refreshFeed();
-			}
+//		case Constants.RequestCodes.COMMENT:
+//			if (resultCode == Activity.RESULT_OK) {
+//				String text = data.getStringExtra(Constants.IntentsCodes.text);
+//				String post_key = data
+//						.getStringExtra(Constants.IntentsCodes.post_key);
+//				SuperController.commentFor(post_key, text, this,
+//						choosiePostsItemAdapter);
+//			}
+//			break;
+//		case Constants.RequestCodes.NEW_POST:
+//			if (resultCode == Activity.RESULT_OK) {
+//				choosiePostsItemAdapter.refreshFeed();
+//			}
 		case Constants.RequestCodes.EDIT_PROFILE_SCREEN:
 			if (resultCode == Activity.RESULT_OK) {
 				
 			}
+			break;
+		case Constants.RequestCodes.PICK_CONTACT:
+			if (resultCode == Activity.RESULT_OK) {
+				Uri uri = data.getData();
+			}
+			break;
 		}
 	}
+
+	private OnClickListener editButtonListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			startProfileEditActivity();
+		}
+	};
+	private OnClickListener inviteFriendListener = new OnClickListener() {
+
+		public void onClick(View v) {
+			inviteFriend();
+		}
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

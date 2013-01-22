@@ -44,6 +44,7 @@ import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
 import com.choozie.app.models.FacebookDetails;
 import com.choozie.app.models.User;
+import com.choozie.app.models.UserDetails;
 import com.choozie.app.models.UserManger;
 import com.choozie.app.models.Vote;
 import com.facebook.Response;
@@ -673,4 +674,14 @@ public class RealClient extends Client {
 		return new User(userName, photoURL, fbUid);
 	}
 
+	public UserDetails getUserDetails(User user) {
+		UserDetails ud = new UserDetails(user);
+		/*
+		 * TODO: send HTTP request to server and get response
+		 * 
+		 * Parse response into the UserDetails
+		 */
+		
+		return ud;
+	}
 }
