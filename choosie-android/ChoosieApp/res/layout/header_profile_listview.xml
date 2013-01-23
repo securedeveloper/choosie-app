@@ -51,31 +51,6 @@
             android:text="0" />
     </TableRow>
 
-    <TableRow
-        android:id="@+id/profile_num_votes_row"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/profile_num_posts_row"
-        android:layout_below="@+id/profile_info_text"
-        android:layout_marginLeft="32dp"
-        android:layout_toRightOf="@+id/profile_num_posts_row" >
-
-        <TextView
-            android:id="@+id/profile_num_votes_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/profile_details_margin"
-            android:contentDescription="@string/general_content_description"
-            android:text="@string/votes" />
-
-        <TextView
-            android:id="@+id/profile_num_votes_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/general_content_description"
-            android:text="0" />
-    </TableRow>
-
     <EditText
         android:id="@+id/profile_info_text"
         android:layout_width="wrap_content"
@@ -95,5 +70,42 @@
         android:maxLines="2"
         android:minLines="2"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TableRow
+        android:id="@+id/profile_num_votes_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/profile_num_posts_row"
+        android:layout_marginLeft="15dp"
+        android:layout_toRightOf="@+id/profile_num_posts_row" >
+
+        <TextView
+            android:id="@+id/profile_num_votes_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/profile_details_margin"
+            android:contentDescription="@string/general_content_description"
+            android:text="@string/votes" />
+
+        <TextView
+            android:id="@+id/profile_num_votes_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/general_content_description"
+            android:text="0" />
+    </TableRow>
+
+    <TextView
+        android:id="@+id/tvInvite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/profile_info_text"
+        android:layout_alignTop="@+id/profile_num_votes_row"
+        android:text="@string/invite"
+        android:textAppearance="?android:attr/textAppearanceButton"
+        android:textColor="@color/CornflowerBlue"
+        android:textColorLink="@color/Black"
+        android:textStyle="bold"
+        android:typeface="normal" />
 
 </RelativeLayout>

@@ -15,6 +15,7 @@ import android.provider.ContactsContract;
 import android.app.Activity;
 import android.content.Intent;
 import android.test.suitebuilder.annotation.SmallTest;
+import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,30 +48,12 @@ public class ProfileActivity extends Activity {
 		Intent intent = getIntent();
 		user = intent.getParcelableExtra(Constants.IntentsCodes.user);
 
-		ibEdit = (ImageButton) findViewById(R.id.profile_edit_image_button);
-		ibEdit.setOnClickListener(editButtonListener);
-		// tvInvite = (TextView)findViewById(R.id.profile_invite);
-		ibInvite = (ImageButton) findViewById(R.id.profile_invite_image_button);
-		ibInvite.setOnClickListener(inviteFriendListener);
-		//
+		handleActionHandler();
+		
+		initializeComponents();
+	}
 
-		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
-
-		BottomNavigationBarView customView = new BottomNavigationBarView(this,
-				this, Screen.USER_PROFILE);
-		bottomView.addView(customView);
-
-		// Set the Profile navigation bar as 'selected' only
-		// if I enter my own profile.
-		if (user.isActiveUser()) {
-			customView
-					.changeSelectedButton((RelativeLayout) findViewById(R.id.view_navBar_layout_button_profile));
-			ibEdit.setVisibility(View.VISIBLE);
-		}
-
-		tvFullName = (TextView) findViewById(R.id.profile_user_name);
-		tvFullName.setText(user.getUserName());
-
+	private void handleActionHandler() {
 		final ProfileActivity thisActivity = this;
 		actionHandler = new PostViewActionsHandler() {
 
@@ -97,23 +80,55 @@ public class ProfileActivity extends Activity {
 				return thisActivity;
 			}
 		};
+	}
 
+	private void initializeComponents() {
+		
 		startTheListView();
+		
+		// initialize all resources
+		ibEdit = (ImageButton) findViewById(R.id.profile_edit_image_button);
+		ibEdit.setOnClickListener(editButtonListener);
+		tvFullName = (TextView) findViewById(R.id.profile_user_name);
+		tvFullName.setText(user.getUserName());
+		tvInvite = (TextView) findViewById(R.id.tvInvite);
+		tvInvite.setVisibility(View.GONE);
+		tvInvite.setOnClickListener(inviteFriendListener);
+
+		// initialize bottom navigation bar
+		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
+		BottomNavigationBarView customView = new BottomNavigationBarView(this,
+				this, Screen.USER_PROFILE);
+		bottomView.addView(customView);
+
+		// Set the Profile navigation bar as 'selected' only
+		// if I enter my own profile.
+		if (user.isActiveUser()) {
+			
+			customView
+					.changeSelectedButton((RelativeLayout) findViewById(R.id.view_navBar_layout_button_profile));
+			ibEdit.setVisibility(View.VISIBLE);
+			tvInvite.setVisibility(View.VISIBLE);	
+		}
 	}
 
 	protected void inviteFriend() {
-		Intent intent = new Intent(this, ContactsActivity.class);
-		startActivity(intent);
 
-		// Intent intent = new Intent(Intent.ACTION_PICK,
-		// ContactsContract.Contacts.CONTENT_URI);
-		// startActivityForResult(intent, Constants.RequestCodes.PICK_CONTACT);
+		Linkify.addLinks(tvInvite, Linkify.ALL);
+
+		Intent sendIntent = new Intent();
+		sendIntent.setAction(Intent.ACTION_SEND);
+		sendIntent.putExtra(Intent.EXTRA_TEXT,
+				getResources().getText(R.string.invite_message));
+		sendIntent.setType("text/plain");
+		startActivity(Intent.createChooser(sendIntent, getResources()
+				.getString(R.string.invite_title)));
 	}
 
 	protected void startProfileEditActivity() {
-		
+
 		UserDetails ud = getProfileDetailsFromServer(user.getFbUid());
-		
+
 		Intent intent = new Intent(this, ProfileEditActivity.class);
 		intent.putExtra(Constants.IntentsCodes.userDetails, ud);
 		startActivityForResult(intent,
@@ -122,7 +137,8 @@ public class ProfileActivity extends Activity {
 
 	private UserDetails getProfileDetailsFromServer(String fbUid) {
 		// get profile details from server
-		//UserDetails ud = Client.getInstance().getProfileDetailsFromServer(fbUid);
+		// UserDetails ud =
+		// Client.getInstance().getProfileDetailsFromServer(fbUid);
 		UserDetails ud = null; // TODO: remove this.
 		if (ud == null) {
 			ud = new UserDetails(user);
@@ -180,22 +196,22 @@ public class ProfileActivity extends Activity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 
-//		case Constants.RequestCodes.COMMENT:
-//			if (resultCode == Activity.RESULT_OK) {
-//				String text = data.getStringExtra(Constants.IntentsCodes.text);
-//				String post_key = data
-//						.getStringExtra(Constants.IntentsCodes.post_key);
-//				SuperController.commentFor(post_key, text, this,
-//						choosiePostsItemAdapter);
-//			}
-//			break;
-//		case Constants.RequestCodes.NEW_POST:
-//			if (resultCode == Activity.RESULT_OK) {
-//				choosiePostsItemAdapter.refreshFeed();
-//			}
+		// case Constants.RequestCodes.COMMENT:
+		// if (resultCode == Activity.RESULT_OK) {
+		// String text = data.getStringExtra(Constants.IntentsCodes.text);
+		// String post_key = data
+		// .getStringExtra(Constants.IntentsCodes.post_key);
+		// SuperController.commentFor(post_key, text, this,
+		// choosiePostsItemAdapter);
+		// }
+		// break;
+		// case Constants.RequestCodes.NEW_POST:
+		// if (resultCode == Activity.RESULT_OK) {
+		// choosiePostsItemAdapter.refreshFeed();
+		// }
 		case Constants.RequestCodes.EDIT_PROFILE_SCREEN:
 			if (resultCode == Activity.RESULT_OK) {
-				
+
 			}
 			break;
 		case Constants.RequestCodes.PICK_CONTACT:

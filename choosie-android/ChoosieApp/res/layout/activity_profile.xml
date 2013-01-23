@@ -37,15 +37,15 @@
             android:src="@drawable/pencil"
             android:visibility="invisible" />
 
-        <ImageButton
-            android:id="@+id/profile_invite_image_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/profile_edit_image_button"
-            android:background="@drawable/header_selector"
-            android:contentDescription="@string/general_content_description"
-            android:src="@drawable/icon_invite" />
+<!--         <ImageButton -->
+<!--             android:id="@+id/profile_invite_image_button" -->
+<!--             android:layout_width="45dp" -->
+<!--             android:layout_height="45dp" -->
+<!--             android:layout_alignParentBottom="true" -->
+<!--             android:layout_toLeftOf="@+id/profile_edit_image_button" -->
+<!--             android:background="@drawable/header_selector" -->
+<!--             android:contentDescription="@string/general_content_description" -->
+<!--             android:src="@drawable/icon_invite" /> -->
 
     </RelativeLayout>
 

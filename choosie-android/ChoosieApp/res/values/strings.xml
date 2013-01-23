@@ -50,5 +50,8 @@
     <string name="nickname">Nickname: </string>
     <string name="info">Info: </string>
     <string name="title_activity_contacts">ContactsActivity</string>
+    <string name="invite_message">Hey!\nCheck out Choozie. A new app for instant opinions on Fashion Dilemmas!\nDownload @ Google Play:\nhttps://play.google.com/store/apps/details?id=com.choozie.app</string>
+    <string name="invite_title">Invite a Friend</string>
+    <string name="invite">Invite</string>
 
 </resources>
