@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -17,7 +19,7 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 	private final Activity _context;
 
 	public ContactAdapter(Activity context, List<Contact> contacts) {
-		super(context, R.layout.activity_contacts, contacts);
+		super(context, R.layout.contactlistitem, contacts);
 		this._contacts = contacts;
 		this._context = context;
 	}
@@ -44,16 +46,22 @@ public class ContactAdapter extends ArrayAdapter<Contact> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View view = null;
+		View view = convertView;
+		ViewHolder viewHolder = null;
 		if (convertView == null) {
 			LayoutInflater inflater = _context.getLayoutInflater();
 			view = inflater.inflate(R.layout.contactlistitem, null);
-			final ViewHolder viewHolder = new ViewHolder();
+			viewHolder = new ViewHolder();
 			viewHolder._cbContactName = (CheckBox) view.findViewById(R.id.cbDisplayName);
 			viewHolder.setContact(_contacts.get(position));
 			view.setTag(viewHolder);
+		} else {
+			viewHolder = (ViewHolder) view.getTag();
+			viewHolder._cbContactName = (CheckBox) view.findViewById(R.id.cbDisplayName);
+			viewHolder.setContact(_contacts.get(position));
 		}
 
 		return view;
 	}
+	
 }
