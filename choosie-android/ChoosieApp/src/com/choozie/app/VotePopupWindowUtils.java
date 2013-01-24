@@ -243,9 +243,11 @@ public class VotePopupWindowUtils {
 
 			public void onClick(View v) {
 				User user = null;
-				if (v.getId() == R.id.voteView_voterPhoto1) {
+				// If clicked the voter 1 photo/name
+				if (v.getId() == R.id.voteView_voterPhoto1
+						|| v.getId() == R.id.voteView_name1) {
 					user = item.getUser1();
-				} else {
+				} else { //clicked voter 2 phote/name
 					user = item.getUser2();
 				}
 				if (user != null) {
