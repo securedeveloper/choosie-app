@@ -13,6 +13,7 @@ import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
 import com.choozie.app.models.FacebookDetails;
 import com.choozie.app.models.User;
+import com.choozie.app.models.UserDetails;
 import com.choozie.app.models.Vote;
 
 public class MockClient extends Client {
@@ -115,4 +116,14 @@ public class MockClient extends Client {
 		return null;
 	}
 
+	public void updateUserDetailsInfo(UserDetails userDetails,
+			Callback<Void, Void, Void> callback) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void getUserDetails(User user,
+			Callback<Void, Void, UserDetails> callback) {
+		// TODO Auto-generated method stub
+	}
 }

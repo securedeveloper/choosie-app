@@ -47,8 +47,8 @@
     <string name="edit_profile_header_text">Edit Profile</string>
     <string name="nickname_hint">Your Nickname</string>
     <string name="bio_hint">Write a short bio...</string>
-    <string name="nickname">Nickname: </string>
-    <string name="info">Info: </string>
+    <string name="nickname">Nickname </string>
+    <string name="info">Info </string>
     <string name="title_activity_contacts">ContactsActivity</string>
     <string name="invite_message">Hey!\nCheck out Choozie. A new app for instant opinions on Fashion Dilemmas!\nDownload @ Google Play:\nhttps://play.google.com/store/apps/details?id=com.choozie.app</string>
     <string name="invite_title">Invite a Friend</string>
@@ -56,5 +56,11 @@
     <string name="nav_bar_home">HOME</string>
     <string name="nav_bar_post">POST</string>
     <string name="nav_bar_me">ME</string>
+    <string-array name="genders">
+        <item >Gender</item>
+        <item >Male</item>
+        <item >Female</item>
+    </string-array>
+    <string name="gender">Gender</string>
 
 </resources>

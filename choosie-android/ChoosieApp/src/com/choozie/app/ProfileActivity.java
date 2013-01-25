@@ -39,6 +39,9 @@ public class ProfileActivity extends Activity {
 	private ImageButton ibEdit;
 	private TextView tvInvite;
 	private ImageButton ibInvite;
+	private UserDetails userDetails;
+	private TextView tvNumPosts;
+	private TextView tvNumVotes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +52,16 @@ public class ProfileActivity extends Activity {
 		user = intent.getParcelableExtra(Constants.IntentsCodes.user);
 
 		handleActionHandler();
-		
+
 		initializeComponents();
+
+		refreshUserDetails();
+	}
+
+	private void refreshUserDetails() {
+		// Gets all user details from server
+		// and refreshes the private member 'userDetails'
+		refreshProfileDetailsFromServer(user);
 	}
 
 	private void handleActionHandler() {
@@ -83,17 +94,23 @@ public class ProfileActivity extends Activity {
 	}
 
 	private void initializeComponents() {
-		
+
 		startTheListView();
-		
+
 		// initialize all resources
 		ibEdit = (ImageButton) findViewById(R.id.profile_edit_image_button);
-		ibEdit.setOnClickListener(editButtonListener);
+		tvInvite = (TextView) findViewById(R.id.tvInvite);
 		tvFullName = (TextView) findViewById(R.id.profile_user_name);
 		tvFullName.setText(user.getUserName());
-		tvInvite = (TextView) findViewById(R.id.tvInvite);
-		tvInvite.setVisibility(View.GONE);
+		tvNumPosts = (TextView) findViewById(R.id.profile_num_posts_number);
+		tvNumVotes = (TextView) findViewById(R.id.profile_num_votes_number);
+
+		// set all listeners
+		ibEdit.setOnClickListener(editButtonListener);
 		tvInvite.setOnClickListener(inviteFriendListener);
+
+		// set visibility
+		tvInvite.setVisibility(View.GONE);
 
 		// initialize bottom navigation bar
 		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
@@ -104,11 +121,11 @@ public class ProfileActivity extends Activity {
 		// Set the Profile navigation bar as 'selected' only
 		// if I enter my own profile.
 		if (user.isActiveUser()) {
-			
+
 			customView
 					.changeSelectedButton((RelativeLayout) findViewById(R.id.view_navBar_layout_button_profile));
 			ibEdit.setVisibility(View.VISIBLE);
-			tvInvite.setVisibility(View.VISIBLE);	
+			tvInvite.setVisibility(View.VISIBLE);
 		}
 	}
 
@@ -127,23 +144,36 @@ public class ProfileActivity extends Activity {
 
 	protected void startProfileEditActivity() {
 
-		UserDetails ud = getProfileDetailsFromServer(user.getFbUid());
+		refreshProfileDetailsFromServer(user);
 
 		Intent intent = new Intent(this, ProfileEditActivity.class);
-		intent.putExtra(Constants.IntentsCodes.userDetails, ud);
+		intent.putExtra(Constants.IntentsCodes.userDetails, userDetails);
 		startActivityForResult(intent,
 				Constants.RequestCodes.EDIT_PROFILE_SCREEN);
 	}
 
-	private UserDetails getProfileDetailsFromServer(String fbUid) {
+	private void refreshProfileDetailsFromServer(final User user) {
 		// get profile details from server
-		// UserDetails ud =
-		// Client.getInstance().getProfileDetailsFromServer(fbUid);
-		UserDetails ud = null; // TODO: remove this.
-		if (ud == null) {
-			ud = new UserDetails(user);
-		}
-		return ud;
+		Client.getInstance().getUserDetails(user,
+				new Callback<Void, Void, UserDetails>() {
+					@Override
+					public void onFinish(UserDetails ud) {
+						if (ud == null) {
+							L.i("ud equals NULL. creating new UserDtails(user)");
+							ud = new UserDetails(user);
+						}
+
+						// Setting all the details in the VIEW
+						userDetails = ud;
+						setAllDetails(userDetails);
+					}
+				});
+	}
+
+	protected void setAllDetails(UserDetails ud) {
+
+		tvNumPosts.setText(String.valueOf(ud.getNumPosts()));
+		tvNumVotes.setText(String.valueOf(ud.getNumVotes()));
 	}
 
 	private void startTheListView() {

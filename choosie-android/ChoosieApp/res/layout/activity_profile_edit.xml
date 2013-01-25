@@ -59,55 +59,109 @@
         <TableRow
             android:id="@+id/edit_profile_nickname_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/profile_details_margin"
+            android:paddingTop="@dimen/profile_details_margin" >
 
             <TextView
                 android:id="@+id/edit_profile_nickname_label"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:text="@string/nickname"
-                android:textAppearance="?android:attr/textAppearanceMediumInverse"
-                android:textColor="@color/Black" />
+                android:layout_weight="0.25"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/dark_grey_like" />
 
             <EditText
                 android:id="@+id/edit_profile_nickname_text"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="@dimen/view_choosie_post_text_margin"
-                android:layout_weight="1"
+                android:layout_weight="0.75"
                 android:background="@color/White"
                 android:ems="10"
                 android:hint="@string/nickname_hint"
                 android:inputType="text|textNoSuggestions"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
+                android:maxLength="25" />
+
         </TableRow>
+        
+        <View
+            android:id="@+id/view1"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/Gray"
+            android:layout_marginTop="@dimen/profile_details_margin"
+            android:layout_marginBottom="@dimen/profile_details_margin"/>
 
         <TableRow
             android:id="@+id/edit_profile_info_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/share_button_magin" >
+            android:paddingBottom="@dimen/profile_details_margin"
+            android:paddingTop="@dimen/profile_details_margin" >
 
             <TextView
                 android:id="@+id/edit_profile_info_label"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:text="@string/info"
-                android:textAppearance="?android:attr/textAppearanceMediumInverse"
-                android:textColor="@color/Black" />
+                android:layout_weight="0.25"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/dark_grey_like" />
 
             <EditText
                 android:id="@+id/edit_profile_info_text"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="@dimen/view_choosie_post_text_margin"
-                android:layout_weight="1"
+                android:layout_weight="0.75"
                 android:background="@color/White"
+                android:gravity="top|left"
                 android:ems="10"
                 android:hint="@string/bio_hint"
-                android:inputType="text"
-                android:singleLine="true" />
+                android:inputType="textMultiLine"
+                android:singleLine="false"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
+                android:lines="3"
+                android:maxLines="3"
+                android:minLines="3" />
+
         </TableRow>
+
+        <View
+            android:id="@+id/View01"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/profile_details_margin"
+            android:layout_marginTop="@dimen/profile_details_margin"
+            android:background="@color/Gray" />
+
     </TableLayout>
+
+    <TextView
+        android:id="@+id/edit_profile_full_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/edit_profile_user_photo"
+        android:layout_toRightOf="@+id/edit_profile_user_photo"
+        android:text="First Last"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/CornflowerBlue"
+        android:textStyle="bold" />
+
+    <Spinner
+        android:id="@+id/edit_profile_gender_spinner"
+        android:layout_width="65dp"
+        android:layout_height="40dp"
+        android:layout_toRightOf="@+id/edit_profile_user_photo"
+        android:background="@color/White"
+        android:entries="@array/genders"
+        android:gravity="center|top"
+        android:layout_below="@+id/edit_profile_full_name" />
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.choozie.app;
 
+import com.choozie.app.client.Client;
 import com.choozie.app.models.User;
 import com.choozie.app.models.UserDetails;
 
@@ -11,20 +12,28 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.FocusFinder;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 public class ProfileEditActivity extends Activity {
 
 	private User user;
+	private UserDetails userDetails;
 	private EditText etNickname;
 	private ImageButton ibUserPhoto;
 	private ImageButton ibSaveChanges;
-	private UserDetails userDetails;
 	private EditText etInfo;
+	private TextView tvFullName;
+	private Spinner spGender;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,23 +41,26 @@ public class ProfileEditActivity extends Activity {
 		setContentView(R.layout.activity_profile_edit);
 
 		Intent intent = getIntent();
-		//user = intent.getParcelableExtra(Constants.IntentsCodes.user);
-		userDetails = intent.getParcelableExtra(Constants.IntentsCodes.userDetails);
+		// user = intent.getParcelableExtra(Constants.IntentsCodes.user);
+		userDetails = intent
+				.getParcelableExtra(Constants.IntentsCodes.userDetails);
 
 		// initialize all components in the activity
 		initializeComponents();
-		
+
 		fillUserDetails();
 	}
 
 	private void fillUserDetails() {
 		// photo
-		String userImagePath = Utils.getFileNameForURL(userDetails.user.getPhotoURL());
+		String userImagePath = Utils.getFileNameForURL(userDetails.getUser()
+				.getPhotoURL());
 		Utils.setImageFromPath(userImagePath, ibUserPhoto);
-		
-		// nickname + info
-		etNickname.setText(userDetails.nickname);
-		etInfo.setText(userDetails.info);
+
+		// full name + nickname + info
+		etNickname.setText(userDetails.getNickname());
+		etInfo.setText(userDetails.getInfo());
+		tvFullName.setText(userDetails.getUser().getUserName());
 	}
 
 	private void initializeComponents() {
@@ -57,15 +69,45 @@ public class ProfileEditActivity extends Activity {
 		ibUserPhoto = (ImageButton) findViewById(R.id.edit_profile_user_photo);
 		etNickname = (EditText) findViewById(R.id.edit_profile_nickname_text);
 		etInfo = (EditText) findViewById(R.id.edit_profile_info_text);
-		
+		tvFullName = (TextView) findViewById(R.id.edit_profile_full_name);
+		spGender = (Spinner) findViewById(R.id.edit_profile_gender_spinner);
+
 		// initialize all listeners
 		ibSaveChanges.setOnClickListener(saveChangesClickListener);
+		spGender.setOnItemSelectedListener(genderSelectedListener);
 	}
 
 	protected void saveChanges() {
 		// TODO Auto-generated method stub
 		// TODO: send changes to server in order to SAVE
-		showDialog(Constants.DialogId.ERROR);
+
+		// TODO: change this to Constants.DialogId.WAIT_LOADING
+		// showDialog(Constants.DialogId.ERROR);
+
+		Client.getInstance().updateUserDetailsInfo(userDetails,
+				new Callback<Void, Void, Void>() {
+					@Override
+					public void onPre(Void param) {
+						L.i("showing WAIT_SAVING dialog");
+						showDialog(Constants.DialogId.WAIT_SAVING);
+					}
+
+					@Override
+					public void onProgress(Void param) {
+						L.i("onProgress");
+					}
+
+					@Override
+					public void onFinish(Void param) {
+						L.i("returning to previous activity");
+						returnToPreviousActivity(Activity.RESULT_OK);
+					}
+				});
+	}
+
+	protected void returnToPreviousActivity(int result) {
+		setResult(result);
+		finish();
 	}
 
 	@Override
@@ -78,8 +120,7 @@ public class ProfileEditActivity extends Activity {
 			builder.setMessage("This will discard all your changes.");
 			builder.setCancelable(true);
 			builder.setPositiveButton("OK", new OkOnClickListener());
-			builder.setNegativeButton("Cancel",
-					new CancelOnClickListener());
+			builder.setNegativeButton("Cancel", new CancelOnClickListener());
 			AlertDialog dialog = builder.create();
 			dialog.show();
 			break;
@@ -93,6 +134,7 @@ public class ProfileEditActivity extends Activity {
 
 		case Constants.DialogId.ERROR:
 			AlertDialog.Builder builderError = new AlertDialog.Builder(this);
+			// TODO: change this to an ERROR MSG
 			builderError.setMessage("Operation is not implemented yet.");
 			builderError.setCancelable(false);
 			builderError.setPositiveButton("OK", new OkOnClickListener());
@@ -140,5 +182,37 @@ public class ProfileEditActivity extends Activity {
 			saveChanges();
 		}
 	};
+
+	private OnItemSelectedListener genderSelectedListener = new OnItemSelectedListener() {
+
+		public void onItemSelected(AdapterView<?> parent, View view, int pos,
+				long id) {
+			switch (pos) {
+			case 1:
+				userDetails.setGender(Constants.Gender.MALE);
+				break;
+			case 2:
+				userDetails.setGender(Constants.Gender.FEMALE);
+				break;
+			default:
+				userDetails.setGender("");
+				break;
+			}
+			L.i("Set userDetails.gender: " + userDetails.getGender());
+		}
+
+		public void onNothingSelected(AdapterView<?> arg0) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			showDialog(Constants.DialogId.EXIT_ALERT_DIALOG);
+		}
+		return true;
+	}
 
 }

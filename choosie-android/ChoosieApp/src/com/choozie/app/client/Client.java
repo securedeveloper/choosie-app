@@ -17,6 +17,7 @@ import com.choozie.app.controllers.FeedCacheKey;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.FacebookDetails;
 import com.choozie.app.models.User;
+import com.choozie.app.models.UserDetails;
 
 public abstract class Client {
 
@@ -131,5 +132,11 @@ public abstract class Client {
 	public abstract void unregisterGCM(String registrationId);
 
 	public abstract User getActiveUser();
+
+	public abstract void getUserDetails(User user,
+			Callback<Void, Void, UserDetails> callback);
+
+	public abstract void updateUserDetailsInfo(UserDetails userDetails,
+			Callback<Void, Void, Void> callback);
 
 }

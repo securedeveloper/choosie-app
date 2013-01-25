@@ -16,7 +16,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -37,18 +36,12 @@ import com.choozie.app.L;
 import com.choozie.app.NewChoosiePostData;
 import com.choozie.app.Utils;
 import com.choozie.app.NewChoosiePostData.PostType;
-import com.choozie.app.caches.CacheCallback;
-import com.choozie.app.caches.Caches;
 import com.choozie.app.controllers.FeedCacheKey;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
-import com.choozie.app.models.FacebookDetails;
 import com.choozie.app.models.User;
 import com.choozie.app.models.UserDetails;
-import com.choozie.app.models.UserManger;
 import com.choozie.app.models.Vote;
-import com.facebook.Response;
-
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
@@ -674,14 +667,149 @@ public class RealClient extends Client {
 		return new User(userName, photoURL, fbUid);
 	}
 
-	public UserDetails getUserDetails(User user) {
+	@Override
+	public void getUserDetails(final User user,
+			final Callback<Void, Void, UserDetails> callback) {
+
+		AsyncTask<Void, Void, String> getUserDetailsTask = new AsyncTask<Void, Void, String>() {
+
+			@Override
+			protected void onPreExecute() {
+				callback.onPre(null);
+			}
+
+			@Override
+			protected String doInBackground(Void... p) {
+				callback.onProgress(null);
+
+				// create the GET request
+				String uri = Constants.URIs.USER + "/" + user.getFbUid();
+				final HttpGet httpGetRequest = new HttpGet(uri);
+
+				// enable on server hebrew sync
+				final HttpParams params = new BasicHttpParams();
+				HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+				HttpProtocolParams.setContentCharset(params, "UTF-8");
+				params.setBooleanParameter("http.protocol.expect-continue",
+						false);
+
+				final HttpClient client = new DefaultHttpClient(params);
+				HttpResponse response = null;
+				String responseString = "";
+				try {
+					L.i("Executing GET request : " + httpGetRequest.getURI());
+					response = client.execute(httpGetRequest);
+					responseString = EntityUtils.toString(response.getEntity());
+					L.i("responseString = " + responseString);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				return responseString;
+			}
+
+			protected void onPostExecute(String response) {
+				callback.onFinish(parseResponseUserDetails(user, response));
+			}
+		};
+		getUserDetailsTask.execute();
+	}
+
+	private UserDetails parseResponseUserDetails(User user, String response) {
+
 		UserDetails ud = new UserDetails(user);
-		/*
-		 * TODO: send HTTP request to server and get response
-		 * 
-		 * Parse response into the UserDetails
-		 */
-		
+		if (response != null) {
+			try {
+				L.i("Creating JSON from " + response);
+				JSONObject json = new JSONObject(response);
+
+				ud.setNickname(json.getString("nick"));
+				ud.setInfo(json.getString("info"));
+				ud.setNumPosts(json.getInt("num_posts"));
+				ud.setNumVotes(json.getInt("num_votes"));
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return ud;
+	}
+
+	public void updateUserDetailsInfo(final UserDetails ud,
+			Callback<Void, Void, Void> callback) {
+		L.i("updateUserDetailsInfo() - Start creating the HTTP request");
+
+		HttpPost postRequest = createUpdateUserDetailsRequest(ud);
+
+		executeUpdateUserDetailsRequest(postRequest, callback);
+
+	}
+
+	private HttpPost createUpdateUserDetailsRequest(UserDetails ud) {
+		HttpPost postRequest = new HttpPost(Constants.URIs.NEW_USER_DETAILS_URI);
+		L.i("Created POST request with URI: \"" + postRequest.getURI() + "\"");
+
+		MultipartEntity entity = new MultipartEntity(
+				HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		// create the POST request with the details
+		try {
+			entity.addPart("fb_uid", new StringBody(ud.getUser().getFbUid()));
+			entity.addPart("nickname",
+					new StringBody(ud.getNickname(), Charset.forName("UTF-8")));
+			entity.addPart("info",
+					new StringBody(ud.getInfo(), Charset.forName("UTF-8")));
+
+			postRequest.setEntity(entity);
+		} catch (UnsupportedEncodingException e) {
+			// change return code to FALSE
+			L.e("updateUserDetailsInfo()",
+					"UnsupportedEncodingException - failed");
+			e.printStackTrace();
+		}
+
+		return postRequest;
+	}
+
+	private void executeUpdateUserDetailsRequest(final HttpPost postRequest,
+			final Callback<Void, Void, Void> callback) {
+		AsyncTask<Void, Void, HttpResponse> updateDetailsPostRequest = new AsyncTask<Void, Void, HttpResponse>() {
+
+			@Override
+			protected void onPreExecute() {
+				callback.onPre(null);
+			}
+
+			@Override
+			protected HttpResponse doInBackground(Void... params) {
+				HttpClient client = new DefaultHttpClient();
+				HttpResponse response = null;
+				L.i("Created the DefaultHttpClient()");
+
+				// execute the POST request
+				try {
+					response = client.execute(postRequest);
+					L.i("Executed the POST request!");
+				} catch (Exception e) {
+					// change return code to FALSE
+					L.e("updateUserDetailsInfo()",
+							"Failed executing the POST request in updateUserDetailsInfo()");
+					e.printStackTrace();
+				}
+				return response;
+			}
+
+			@Override
+			protected void onProgressUpdate(Void... values) {
+				callback.onProgress(null);
+			}
+
+			@Override
+			protected void onPostExecute(HttpResponse result) {
+				callback.onFinish(null);
+			}
+		};
+		updateDetailsPostRequest.execute();
 	}
 }
