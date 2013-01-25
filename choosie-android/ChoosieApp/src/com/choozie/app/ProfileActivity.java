@@ -55,7 +55,7 @@ public class ProfileActivity extends Activity {
 
 		initializeComponents();
 
-		refreshUserDetails();
+		
 	}
 
 	private void refreshUserDetails() {
@@ -96,7 +96,7 @@ public class ProfileActivity extends Activity {
 	private void initializeComponents() {
 
 		startTheListView();
-
+		
 		// initialize all resources
 		ibEdit = (ImageButton) findViewById(R.id.profile_edit_image_button);
 		tvInvite = (TextView) findViewById(R.id.tvInvite);
@@ -105,6 +105,8 @@ public class ProfileActivity extends Activity {
 		tvNumPosts = (TextView) findViewById(R.id.profile_num_posts_number);
 		tvNumVotes = (TextView) findViewById(R.id.profile_num_votes_number);
 
+		refreshUserDetails();
+		
 		// set all listeners
 		ibEdit.setOnClickListener(editButtonListener);
 		tvInvite.setOnClickListener(inviteFriendListener);

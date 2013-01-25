@@ -722,9 +722,9 @@ public class RealClient extends Client {
 			try {
 				L.i("Creating JSON from " + response);
 				JSONObject json = new JSONObject(response);
-
-				ud.setNickname(json.getString("nick"));
-				ud.setInfo(json.getString("info"));
+				
+				ud.setNickname(json.getString("nick").equals("null") ? "" : json.getString("nick"));
+				ud.setInfo(json.getString("info").equals("null") ? "" : json.getString("info"));
 				ud.setNumPosts(json.getInt("num_posts"));
 				ud.setNumVotes(json.getInt("num_votes"));
 
