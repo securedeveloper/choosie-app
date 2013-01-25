@@ -27,14 +27,14 @@
 
         <ImageButton
             android:id="@+id/profile_edit_image_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:background="@drawable/header_selector"
             android:contentDescription="@string/general_content_description"
-            android:src="@drawable/pencil"
+            android:src="@drawable/icon_edit"
             android:visibility="invisible" />
 
 <!--         <ImageButton -->

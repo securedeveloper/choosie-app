@@ -28,13 +28,13 @@
 
         <ImageButton
             android:id="@+id/edit_profile_save_changes_image_button"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:background="@drawable/header_selector"
             android:contentDescription="@string/general_content_description"
-            android:src="@drawable/post_icon" />
+            android:src="@drawable/icon_check" />
 
     </RelativeLayout>
 
