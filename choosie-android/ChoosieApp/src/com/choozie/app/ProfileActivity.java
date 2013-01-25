@@ -171,7 +171,7 @@ public class ProfileActivity extends Activity {
 	}
 
 	protected void setAllDetails(UserDetails ud) {
-
+		L.i("Setting all user details - " + userDetails.toString());
 		tvNumPosts.setText(String.valueOf(ud.getNumPosts()));
 		tvNumVotes.setText(String.valueOf(ud.getNumVotes()));
 	}

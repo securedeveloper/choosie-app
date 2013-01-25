@@ -67,4 +67,12 @@ public class User implements Parcelable{
 	public boolean isActiveUser() {
 		return this.fbUid.equals(Client.getInstance().getActiveUser().getFbUid());
 	}
+	
+	@Override
+	public String toString() {
+		String str = "User: " + this.getUserName() + "\n" +
+				"fb_uid: " + this.getFbUid() + "\n" + 
+				"Photo URL: " + this.getPhotoURL() + "\n";
+		return str;
+	}
 }

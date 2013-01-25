@@ -123,4 +123,14 @@ public class UserDetails implements Parcelable {
 		}
 	};
 
+	@Override
+	public String toString() {
+		String str = "User Details: \n" + user.toString() +
+				"nick: " + this.getNickname() + "\n" +
+				"info: " + this.getInfo() + "\n" +
+				"gender: " + this.getGender() + "\n" +
+				"num_posts: " + this.getNumPosts() + "\n" +
+				"num_votes: " + this.getNumVotes() + "\n";
+		return str;
+	}
 }
