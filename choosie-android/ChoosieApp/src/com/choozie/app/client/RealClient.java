@@ -722,11 +722,17 @@ public class RealClient extends Client {
 			try {
 				L.i("Creating JSON from " + response);
 				JSONObject json = new JSONObject(response);
-				
-				ud.setNickname(json.getString("nick").equals("null") ? "" : json.getString("nick"));
-				ud.setInfo(json.getString("info").equals("null") ? "" : json.getString("info"));
+
+				ud.setNickname(json.getString("nick").equals("null") ? ""
+						: json.getString("nick"));
+				ud.setInfo(json.getString("info").equals("null") ? "" : json
+						.getString("info"));
 				ud.setNumPosts(json.getInt("num_posts"));
 				ud.setNumVotes(json.getInt("num_votes"));
+
+				// String d = json.getString("created_at");
+				// Date date = Utils.convertStringToDateUTC(d);
+				// L.i("bla " + date.toString());
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -747,28 +753,25 @@ public class RealClient extends Client {
 	}
 
 	private HttpPost createUpdateUserDetailsRequest(UserDetails ud) {
-		HttpPost postRequest = new HttpPost(Constants.URIs.NEW_USER_DETAILS_URI);
+		HttpPost postRequest = new HttpPost(
+				Constants.URIs.EDIT_USER_DETAILS_URI + "/"
+						+ ud.getUser().getFbUid());
 		L.i("Created POST request with URI: \"" + postRequest.getURI() + "\"");
 
 		MultipartEntity entity = new MultipartEntity(
 				HttpMultipartMode.BROWSER_COMPATIBLE);
 
-		// create the POST request with the details
 		try {
-			entity.addPart("fb_uid", new StringBody(ud.getUser().getFbUid()));
-			entity.addPart("nickname",
-					new StringBody(ud.getNickname(), Charset.forName("UTF-8")));
-			entity.addPart("info",
-					new StringBody(ud.getInfo(), Charset.forName("UTF-8")));
-
-			postRequest.setEntity(entity);
+			entity.addPart("nick", new StringBody(ud.getNickname()));
+			entity.addPart("info", new StringBody(ud.getInfo()));
 		} catch (UnsupportedEncodingException e) {
-			// change return code to FALSE
-			L.e("updateUserDetailsInfo()",
-					"UnsupportedEncodingException - failed");
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		postRequest.setEntity(entity);
+		L.i("Update user details POST request = \"" + postRequest.getURI()
+				+ "\"");
 		return postRequest;
 	}
 

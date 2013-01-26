@@ -78,18 +78,13 @@ public class ProfileEditActivity extends Activity {
 	}
 
 	protected void saveChanges() {
-		// TODO Auto-generated method stub
-		// TODO: send changes to server in order to SAVE
-
-		// TODO: change this to Constants.DialogId.WAIT_LOADING
-		// showDialog(Constants.DialogId.ERROR);
-
-		Client.getInstance().updateUserDetailsInfo(userDetails,
+		UserDetails ud = getDetailsFromEditForm();
+		Client.getInstance().updateUserDetailsInfo(ud,
 				new Callback<Void, Void, Void>() {
 					@Override
 					public void onPre(Void param) {
 						L.i("showing WAIT_SAVING dialog");
-						showDialog(Constants.DialogId.WAIT_SAVING);
+						showDialog(Constants.DialogId.WAIT_LOADING);
 					}
 
 					@Override
@@ -103,6 +98,16 @@ public class ProfileEditActivity extends Activity {
 						returnToPreviousActivity(Activity.RESULT_OK);
 					}
 				});
+	}
+
+	private UserDetails getDetailsFromEditForm() {
+		UserDetails ud = new UserDetails(userDetails.getUser());
+
+		ud.setNickname(etNickname.getText().toString());
+		ud.setInfo(etInfo.getText().toString());
+
+		L.i("User Details from the edit form: " + ud.toString());
+		return ud;
 	}
 
 	protected void returnToPreviousActivity(int result) {

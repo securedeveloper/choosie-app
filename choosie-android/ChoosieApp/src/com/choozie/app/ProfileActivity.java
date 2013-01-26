@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -42,6 +43,8 @@ public class ProfileActivity extends Activity {
 	private UserDetails userDetails;
 	private TextView tvNumPosts;
 	private TextView tvNumVotes;
+	private TextView tvNickname;
+	private EditText etInfo;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +57,6 @@ public class ProfileActivity extends Activity {
 		handleActionHandler();
 
 		initializeComponents();
-
-		
 	}
 
 	private void refreshUserDetails() {
@@ -96,17 +97,18 @@ public class ProfileActivity extends Activity {
 	private void initializeComponents() {
 
 		startTheListView();
-		
+
 		// initialize all resources
 		ibEdit = (ImageButton) findViewById(R.id.profile_edit_image_button);
 		tvInvite = (TextView) findViewById(R.id.tvInvite);
 		tvFullName = (TextView) findViewById(R.id.profile_user_name);
-		tvFullName.setText(user.getUserName());
 		tvNumPosts = (TextView) findViewById(R.id.profile_num_posts_number);
 		tvNumVotes = (TextView) findViewById(R.id.profile_num_votes_number);
+		etInfo = (EditText) findViewById(R.id.profile_info_text);
 
+		tvFullName.setText(user.getUserName());
 		refreshUserDetails();
-		
+
 		// set all listeners
 		ibEdit.setOnClickListener(editButtonListener);
 		tvInvite.setOnClickListener(inviteFriendListener);
@@ -174,8 +176,18 @@ public class ProfileActivity extends Activity {
 
 	protected void setAllDetails(UserDetails ud) {
 		L.i("Setting all user details - " + userDetails.toString());
+
 		tvNumPosts.setText(String.valueOf(ud.getNumPosts()));
 		tvNumVotes.setText(String.valueOf(ud.getNumVotes()));
+		etInfo.setText(ud.getInfo());
+
+		if (!ud.getNickname().equals("")) {
+			L.i("nickname is not empty! using Nick Name");
+			tvFullName.setText(ud.getNickname());
+		} else {
+			L.i("nickname is empty! using Full Name");
+			tvFullName.setText(user.getUserName());
+		}
 	}
 
 	private void startTheListView() {
@@ -227,23 +239,10 @@ public class ProfileActivity extends Activity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-
-		// case Constants.RequestCodes.COMMENT:
-		// if (resultCode == Activity.RESULT_OK) {
-		// String text = data.getStringExtra(Constants.IntentsCodes.text);
-		// String post_key = data
-		// .getStringExtra(Constants.IntentsCodes.post_key);
-		// SuperController.commentFor(post_key, text, this,
-		// choosiePostsItemAdapter);
-		// }
-		// break;
-		// case Constants.RequestCodes.NEW_POST:
-		// if (resultCode == Activity.RESULT_OK) {
-		// choosiePostsItemAdapter.refreshFeed();
-		// }
 		case Constants.RequestCodes.EDIT_PROFILE_SCREEN:
 			if (resultCode == Activity.RESULT_OK) {
-
+				L.i("Returned from Edit Profile Activity with results = OK");
+				refreshProfileDetailsFromServer(user);
 			}
 			break;
 		case Constants.RequestCodes.PICK_CONTACT:
@@ -273,5 +272,4 @@ public class ProfileActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_profile, menu);
 		return true;
 	}
-
 }
