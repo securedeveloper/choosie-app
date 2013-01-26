@@ -5,18 +5,19 @@ import com.choozie.app.models.User;
 import com.choozie.app.models.UserDetails;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.FocusFinder;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
@@ -26,7 +27,6 @@ import android.widget.TextView;
 
 public class ProfileEditActivity extends Activity {
 
-	private User user;
 	private UserDetails userDetails;
 	private EditText etNickname;
 	private ImageButton ibUserPhoto;
@@ -34,6 +34,7 @@ public class ProfileEditActivity extends Activity {
 	private EditText etInfo;
 	private TextView tvFullName;
 	private Spinner spGender;
+	private TextView tvInfoLabel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,16 @@ public class ProfileEditActivity extends Activity {
 		initializeComponents();
 
 		fillUserDetails();
+
+		initializeListeners();
+	}
+
+	private void initializeListeners() {
+		// initialize all listeners
+		ibSaveChanges.setOnClickListener(saveChangesClickListener);
+		spGender.setOnItemSelectedListener(genderSelectedListener);
+		etInfo.setOnFocusChangeListener(infoFocusChangedListeners);
+		etInfo.addTextChangedListener(infoTextChangeListner);
 	}
 
 	private void fillUserDetails() {
@@ -60,6 +71,7 @@ public class ProfileEditActivity extends Activity {
 		// full name + nickname + info
 		etNickname.setText(userDetails.getNickname());
 		etInfo.setText(userDetails.getInfo());
+		userDetails.getInfo().length();
 		tvFullName.setText(userDetails.getUser().getUserName());
 	}
 
@@ -69,12 +81,9 @@ public class ProfileEditActivity extends Activity {
 		ibUserPhoto = (ImageButton) findViewById(R.id.edit_profile_user_photo);
 		etNickname = (EditText) findViewById(R.id.edit_profile_nickname_text);
 		etInfo = (EditText) findViewById(R.id.edit_profile_info_text);
+		tvInfoLabel = (TextView) findViewById(R.id.edit_profile_info_label);
 		tvFullName = (TextView) findViewById(R.id.edit_profile_full_name);
 		spGender = (Spinner) findViewById(R.id.edit_profile_gender_spinner);
-
-		// initialize all listeners
-		ibSaveChanges.setOnClickListener(saveChangesClickListener);
-		spGender.setOnItemSelectedListener(genderSelectedListener);
 	}
 
 	protected void saveChanges() {
@@ -84,7 +93,7 @@ public class ProfileEditActivity extends Activity {
 					@Override
 					public void onPre(Void param) {
 						L.i("showing WAIT_SAVING dialog");
-						showDialog(Constants.DialogId.WAIT_LOADING);
+						showDialog(Constants.DialogId.WAIT_SAVING);
 					}
 
 					@Override
@@ -130,7 +139,7 @@ public class ProfileEditActivity extends Activity {
 			dialog.show();
 			break;
 
-		case Constants.DialogId.WAIT_LOADING:
+		case Constants.DialogId.WAIT_SAVING:
 			ProgressDialog dialog1 = new ProgressDialog(this);
 			dialog1.setMessage("Saving changes...");
 			dialog1.setIndeterminate(true);
@@ -209,6 +218,37 @@ public class ProfileEditActivity extends Activity {
 		public void onNothingSelected(AdapterView<?> arg0) {
 			// TODO Auto-generated method stub
 
+		}
+	};
+
+	private TextWatcher infoTextChangeListner = new TextWatcher() {
+
+		public void afterTextChanged(Editable s) {
+			tvInfoLabel.setText(Constants.USER_INFO_MAX_LEN - s.length()
+					+ " more");
+		}
+
+		public void beforeTextChanged(CharSequence s, int start, int count,
+				int after) {
+			// TODO Auto-generated method stub
+
+		}
+
+		public void onTextChanged(CharSequence s, int start, int before,
+				int count) {
+			// TODO Auto-generated method stub
+
+		}
+	};
+
+	private OnFocusChangeListener infoFocusChangedListeners = new OnFocusChangeListener() {
+
+		public void onFocusChange(View v, boolean hasFocus) {
+			if (!hasFocus) {
+				tvInfoLabel.setText(getResources().getString(R.string.info));
+			} else {
+				etInfo.addTextChangedListener(infoTextChangeListner);
+			}
 		}
 	};
 

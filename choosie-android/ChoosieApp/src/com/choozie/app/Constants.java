@@ -20,7 +20,7 @@ public class Constants {
 		public static final String NEW_COMMENT_URI = ROOT_URL + "/comments/new";
 		public static final String POSTS_URI = ROOT_URL + "/posts";
 		public static final String USER = ROOT_URL + "/user";
-		public static final String NEW_USER_DETAILS_URI = ROOT_URL + "/user_details/new";
+		public static final String EDIT_USER_DETAILS_URI = ROOT_URL + "/user/edit";
 		public static final String mainDirectoryPath = Environment
 				.getExternalStorageDirectory()
 				+ File.separator
@@ -139,5 +139,7 @@ public class Constants {
 		public static final String MALE = "Male";
 		public static final String FEMALE = "Female";
 	}
+	
+	public static int USER_INFO_MAX_LEN = 80;
 
 }

@@ -129,7 +129,8 @@
                 android:textStyle="bold"
                 android:lines="3"
                 android:maxLines="3"
-                android:minLines="3" />
+                android:minLines="3"
+                android:maxLength="80" />
 
         </TableRow>
 
