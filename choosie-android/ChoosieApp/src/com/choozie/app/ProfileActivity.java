@@ -62,7 +62,21 @@ public class ProfileActivity extends Activity {
 	private void refreshUserDetails() {
 		// Gets all user details from server
 		// and refreshes the private member 'userDetails'
-		refreshProfileDetailsFromServer(user);
+
+		if (user.equals(Client.getInstance().getActiveUser())) {
+			L.i("Refresh my own details");
+			if (Client.getInstance().getActiveUserDetails() == null) {
+				L.i("Details needs to be Saved. UserDetails in Client is null");
+				refreshProfileDetailsFromServer(user, true);
+			} else {
+				L.i("Details are up to date. just fill them in.");
+				userDetails = Client.getInstance().getActiveUserDetails();
+				setAllDetails(userDetails);
+			}
+		} else {
+			L.i("Refresh the details of another user (NOT ME!)");
+			refreshProfileDetailsFromServer(user, false);
+		}
 	}
 
 	private void handleActionHandler() {
@@ -106,7 +120,6 @@ public class ProfileActivity extends Activity {
 		tvNumVotes = (TextView) findViewById(R.id.profile_num_votes_number);
 		etInfo = (EditText) findViewById(R.id.profile_info_text);
 
-		tvFullName.setText(user.getUserName());
 		refreshUserDetails();
 
 		// set all listeners
@@ -148,7 +161,8 @@ public class ProfileActivity extends Activity {
 
 	protected void startProfileEditActivity() {
 
-		refreshProfileDetailsFromServer(user);
+		// TODO: i don't think we need this line.
+		refreshProfileDetailsFromServer(user, false);
 
 		Intent intent = new Intent(this, ProfileEditActivity.class);
 		intent.putExtra(Constants.IntentsCodes.userDetails, userDetails);
@@ -156,9 +170,10 @@ public class ProfileActivity extends Activity {
 				Constants.RequestCodes.EDIT_PROFILE_SCREEN);
 	}
 
-	private void refreshProfileDetailsFromServer(final User user) {
+	private void refreshProfileDetailsFromServer(final User user,
+			final boolean forceUpdate) {
 		// get profile details from server
-		Client.getInstance().getUserDetails(user,
+		Client.getInstance().getUserDetailsFromServer(user,
 				new Callback<Void, Void, UserDetails>() {
 					@Override
 					public void onFinish(UserDetails ud) {
@@ -167,9 +182,16 @@ public class ProfileActivity extends Activity {
 							ud = new UserDetails(user);
 						}
 
+						if (forceUpdate) {
+							Client.getInstance().setActiveUserDetails(
+									ud);
+						}
+						
 						// Setting all the details in the VIEW
 						userDetails = ud;
 						setAllDetails(userDetails);
+
+						
 					}
 				});
 	}
@@ -233,7 +255,6 @@ public class ProfileActivity extends Activity {
 
 		String userImagePath = Utils.getFileNameForURL(user.getPhotoURL());
 		Utils.setImageFromPath(userImagePath, ibUserPicture);
-
 	}
 
 	@Override
@@ -242,8 +263,15 @@ public class ProfileActivity extends Activity {
 		case Constants.RequestCodes.EDIT_PROFILE_SCREEN:
 			if (resultCode == Activity.RESULT_OK) {
 				L.i("Returned from Edit Profile Activity with results = OK");
-				refreshProfileDetailsFromServer(user);
+
+				// no need to forceUpdate
+				// already updated in EditProfileActivity
+				refreshProfileDetailsFromServer(user, false);
 			}
+			break;
+			
+		case Constants.RequestCodes.NEW_POST:
+			refreshProfileDetailsFromServer(user, true);
 			break;
 		case Constants.RequestCodes.PICK_CONTACT:
 			if (resultCode == Activity.RESULT_OK) {

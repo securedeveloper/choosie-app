@@ -122,7 +122,7 @@ public class MockClient extends Client {
 	}
 
 	@Override
-	public void getUserDetails(User user,
+	public void getUserDetailsFromServer(User user,
 			Callback<Void, Void, UserDetails> callback) {
 		// TODO Auto-generated method stub
 	}

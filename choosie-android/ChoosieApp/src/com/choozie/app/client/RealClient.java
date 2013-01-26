@@ -668,7 +668,7 @@ public class RealClient extends Client {
 	}
 
 	@Override
-	public void getUserDetails(final User user,
+	public void getUserDetailsFromServer(final User user,
 			final Callback<Void, Void, UserDetails> callback) {
 
 		AsyncTask<Void, Void, String> getUserDetailsTask = new AsyncTask<Void, Void, String>() {

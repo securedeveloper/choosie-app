@@ -22,6 +22,7 @@ import com.choozie.app.models.UserDetails;
 public abstract class Client {
 
 	protected FacebookDetails fbDetails;
+	private UserDetails userDetails;
 
 	private static Client instance = new RealClient();
 
@@ -133,10 +134,24 @@ public abstract class Client {
 
 	public abstract User getActiveUser();
 
-	public abstract void getUserDetails(User user,
+	public abstract void getUserDetailsFromServer(User user,
 			Callback<Void, Void, UserDetails> callback);
 
 	public abstract void updateUserDetailsInfo(UserDetails userDetails,
 			Callback<Void, Void, Void> callback);
+
+	public UserDetails getActiveUserDetails() {
+		if (userDetails != null)
+			L.i("getActiveUserDetails() - " + userDetails.toString());
+		else 
+			L.i("getActiveUserDetails() - activeUserDetails is null");
+		
+		return userDetails;
+	}
+
+	public void setActiveUserDetails(UserDetails userDetails) {
+		L.i("setActiveUserDetails() - " + userDetails.toString());
+		this.userDetails = userDetails;
+	}
 
 }

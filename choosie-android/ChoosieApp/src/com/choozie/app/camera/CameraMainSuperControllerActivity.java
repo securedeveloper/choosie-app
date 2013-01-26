@@ -802,6 +802,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 						@Override
 						public void onFinish(Void param) {
 							// progressBar.setVisibility(View.GONE);
+							int numPosts = Client.getInstance().getActiveUserDetails().getNumPosts();
+							Client.getInstance().getActiveUserDetails().setNumPosts(++numPosts);
 							goBackToChoosieActivity(Activity.RESULT_OK);
 						}
 					});

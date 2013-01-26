@@ -88,6 +88,7 @@ public class ProfileEditActivity extends Activity {
 
 	protected void saveChanges() {
 		UserDetails ud = getDetailsFromEditForm();
+		Client.getInstance().setActiveUserDetails(ud);
 		Client.getInstance().updateUserDetailsInfo(ud,
 				new Callback<Void, Void, Void>() {
 					@Override
@@ -110,13 +111,16 @@ public class ProfileEditActivity extends Activity {
 	}
 
 	private UserDetails getDetailsFromEditForm() {
-		UserDetails ud = new UserDetails(userDetails.getUser());
+		userDetails.setNickname(etNickname.getText().toString());
+		userDetails.setInfo(etInfo.getText().toString());
+		
+//		UserDetails ud = new UserDetails(userDetails.getUser());
+//
+//		ud.setNickname(etNickname.getText().toString());
+//		ud.setInfo(etInfo.getText().toString());
 
-		ud.setNickname(etNickname.getText().toString());
-		ud.setInfo(etInfo.getText().toString());
-
-		L.i("User Details from the edit form: " + ud.toString());
-		return ud;
+		L.i("User Details from the edit form: " + userDetails.toString());
+		return userDetails;
 	}
 
 	protected void returnToPreviousActivity(int result) {
@@ -261,3 +265,4 @@ public class ProfileEditActivity extends Activity {
 	}
 
 }
+
