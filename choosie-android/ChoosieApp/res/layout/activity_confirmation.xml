@@ -68,12 +68,90 @@
         android:background="@drawable/hider_selector" >
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/confirmation_layout_bottom"
-        android:layout_width="fill_parent"
-        android:layout_height="100dp"
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/camera_header_selector" >
-    </RelativeLayout>
+        android:scrollbars="none" >
+
+        <RelativeLayout
+            android:id="@+id/confirmation_layout_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:background="@drawable/camera_header_selector" >
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_none"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:src="@drawable/frame_none_icon" />
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_black"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/confirmation_image_frame_none"
+                android:src="@drawable/frame_black_icon" />
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_white"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/confirmation_image_frame_black"
+                android:src="@drawable/frame_white_icon" />
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_pattern"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/confirmation_image_frame_white"
+                android:src="@drawable/frame_pattern_icon" />
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_pattern2"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/confirmation_image_frame_pattern"
+                android:src="@drawable/frame_pattern2_icon" />
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_pattern3"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/confirmation_image_frame_pattern2"
+                android:src="@drawable/frame_pattern3_icon" />
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_pattern4"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/confirmation_image_frame_pattern3"
+                android:src="@drawable/frame_pattern4_icon" />
+
+            <ImageView
+                android:id="@+id/confirmation_image_frame_pattern5"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:layout_toRightOf="@+id/confirmation_image_frame_pattern4"
+                android:src="@drawable/frame_pattern5_icon" />
+        </RelativeLayout>
+    </HorizontalScrollView>
 
 </RelativeLayout>

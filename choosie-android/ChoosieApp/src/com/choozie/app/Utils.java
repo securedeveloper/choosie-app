@@ -337,7 +337,7 @@ public class Utils {
 
 		Bitmap bitmap = null;
 		try {
-			bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+			bitmap = Bitmap.createBitmap(width, height, Config.RGB_565);
 			Canvas c = new Canvas(bitmap);
 			// Resources res = getResources();
 

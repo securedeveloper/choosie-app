@@ -84,6 +84,8 @@ public class CameraMainSuperControllerActivity extends Activity {
 
 	private File imageFile1;
 	private File imageFile2;
+	private int frameId1 = 0;
+	private int frameId2 = 0;
 
 	private Bitmap image1BitmapTot;
 	private Bitmap image2BitmapTot;
@@ -159,7 +161,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				.getDisplayMetrics().density;
 		int topHeight = Math.round(50 * density);
 
-		// set heights and shit
+		// set heights
 		Utils.setImageViewSize(mImageMiddle, Utils.getScreenWidth() / 2,
 				Utils.getScreenWidth() / 2);
 		Utils.setImageViewSize(mImage1, Utils.getScreenWidth() / 2,
@@ -280,7 +282,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 	protected void handleImage1Click() {
 
 		startConfirmActivity(Constants.RequestCodes.CAMERA_CONFIRM_FIRST,
-				imagePath1);
+				imagePath1, frameId1);
 	}
 
 	protected void handleImage2Click() {
@@ -289,14 +291,14 @@ public class CameraMainSuperControllerActivity extends Activity {
 			if (image2BitmapTot != null) {
 				startConfirmActivity(
 						Constants.RequestCodes.CAMERA_CONFIRM_SECOND,
-						imagePath2);
+						imagePath2, frameId2);
 			} else {
 				startNewCameraActivity(
 						Constants.RequestCodes.CAMERA_PICURE_SECOND, imagePath2);
 			}
 		} else if (postType == PostType.YesNo) {
 			startConfirmActivity(Constants.RequestCodes.CAMERA_CONFIRM_FIRST,
-					imagePath1);
+					imagePath1, frameId1);
 		}
 	}
 
@@ -450,6 +452,7 @@ public class CameraMainSuperControllerActivity extends Activity {
 				L.i("CameraMainActivity - got back from first confirm, startNewCameraActivity, imaggePath2 = "
 						+ imagePath2);
 				saveImage1Bitmap();
+				frameId1 = 0;
 				setImages();
 				isFirstTimeReturnFromCamera = false;
 			} else if (resultCode == Activity.RESULT_CANCELED) {
@@ -491,6 +494,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 				L.i("CameraMainActivity - got back from first confirm, startNewCameraActivity, imaggePath2 = "
 						+ imagePath2);
 				saveImage1Bitmap();
+				if (data != null) {
+					frameId1 = data.getIntExtra(Constants.IntentsCodes.frameId,
+							0);
+				}
 				setImages();
 
 			} else if (resultCode == Activity.RESULT_CANCELED) {
@@ -514,6 +521,14 @@ public class CameraMainSuperControllerActivity extends Activity {
 				// user confirmed. starting NewPostActivity
 				Utils.galleryAddPic(Uri.fromFile(imageFile2), this);
 				saveImage2Bitmap();
+				if (data != null) {
+					frameId2 = data.getIntExtra(Constants.IntentsCodes.frameId,
+							0);
+					if (frameId2 != 0) {
+						image2BitmapTot = Utils.combine(image2BitmapTot,
+								getResources().getDrawable(frameId2));
+					}
+				}
 				mImage2.setBackgroundDrawable(null);
 				mImage2.setImageBitmap(image2BitmapTot);
 
@@ -556,6 +571,10 @@ public class CameraMainSuperControllerActivity extends Activity {
 	}
 
 	private void setImages() {
+		if (frameId1 != 0) {
+			image1BitmapTot = Utils.combine(image1BitmapTot, getResources()
+					.getDrawable(frameId1));
+		}
 		if (postType == PostType.TOT) {
 			mImage1.setImageBitmap(image1BitmapTot);
 		} else if (postType == PostType.YesNo) {
@@ -614,13 +633,14 @@ public class CameraMainSuperControllerActivity extends Activity {
 		finish();
 	}
 
-	private void startConfirmActivity(int requestCode, String path) {
+	private void startConfirmActivity(int requestCode, String path, int frameId) {
 		Intent intent = new Intent(this.getApplication(),
 				ConfirmationActivity.class);
 		bundle.remove(Constants.IntentsCodes.path);
 		L.i("CameraMain - inserting to intent path = " + path);
 		intent.putExtra(Constants.IntentsCodes.path, path);
 		intent.putExtras(bundle);
+		intent.putExtra(Constants.IntentsCodes.frameId, frameId);
 		startActivityForResult(intent, requestCode);
 	}
 
