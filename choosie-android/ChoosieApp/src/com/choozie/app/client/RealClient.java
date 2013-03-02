@@ -227,13 +227,13 @@ public class RealClient extends Client {
 		MultipartEntity reqEntity = new MultipartEntity(
 				HttpMultipartMode.BROWSER_COMPATIBLE);
 
-		reqEntity.addPart("fb_uid", new StringBody(this.getFacebookDetails()
+		reqEntity.addPart("fb_uid", new StringBody(this.getFacebookDetailsOfLoogedInUser()
 				.getFb_uid()));
 		reqEntity.addPart("fb_access_token", new StringBody(this
-				.getFacebookDetails().getAccess_token()));
+				.getFacebookDetailsOfLoogedInUser().getAccess_token()));
 		reqEntity.addPart(
 				"fb_access_token_expdate",
-				new StringBody(String.valueOf(this.getFacebookDetails()
+				new StringBody(String.valueOf(this.getFacebookDetailsOfLoogedInUser()
 						.getAccess_token_expdate())));
 		postRequest.setEntity(reqEntity);
 	}
@@ -243,7 +243,7 @@ public class RealClient extends Client {
 		MultipartEntity reqEntity = new MultipartEntity(
 				HttpMultipartMode.BROWSER_COMPATIBLE);
 
-		reqEntity.addPart("fb_uid", new StringBody(this.getFacebookDetails()
+		reqEntity.addPart("fb_uid", new StringBody(this.getFacebookDetailsOfLoogedInUser()
 				.getFb_uid()));
 		reqEntity.addPart("device_id", new StringBody(deviceId));
 		postRequest.setEntity(reqEntity);
@@ -275,7 +275,7 @@ public class RealClient extends Client {
 		multipartContent.addPart("question", new StringBody(data.getQuestion(),
 				Charset.forName("UTF-8")));
 		multipartContent.addPart("fb_uid", new StringBody(this
-				.getFacebookDetails().getFb_uid()));
+				.getFacebookDetailsOfLoogedInUser().getFb_uid()));
 		multipartContent.addPart("post_type_id",
 				new StringBody(data.getPostTypeAsString()));
 
@@ -283,17 +283,17 @@ public class RealClient extends Client {
 		if (data.isShareOnFacebook()) {
 			multipartContent.addPart("share_to_fb", new StringBody("on"));
 			multipartContent.addPart("fb_access_token", new StringBody(this
-					.getFacebookDetails().getAccess_token()));
+					.getFacebookDetailsOfLoogedInUser().getAccess_token()));
 			multipartContent.addPart(
 					"fb_access_token_expdate",
-					new StringBody(String.valueOf(this.getFacebookDetails()
+					new StringBody(String.valueOf(this.getFacebookDetailsOfLoogedInUser()
 							.getAccess_token_expdate())));
 
 			L.i("share_to_fb = on");
 			L.i("fb_access_token = "
-					+ this.getFacebookDetails().getAccess_token());
+					+ this.getFacebookDetailsOfLoogedInUser().getAccess_token());
 			L.i("fb_access_token_expdate = "
-					+ String.valueOf(this.getFacebookDetails()
+					+ String.valueOf(this.getFacebookDetailsOfLoogedInUser()
 							.getAccess_token_expdate()));
 		}
 
@@ -430,9 +430,8 @@ public class RealClient extends Client {
 		JSONArray allComments = jsonObject.getJSONArray("comments");
 		List<Comment> comments = buildCommentsFromJson(postKey, allComments);
 
-		return new ChoosiePostData(getFacebookDetails(), postKey, photo1URL,
-				photo2URL, question, author, createdAtUTC, votes, comments,
-				postType);
+		return new ChoosiePostData(postKey, photo1URL, photo2URL, question,
+				author, createdAtUTC, votes, comments, postType);
 	}
 
 	private User buildUserFromJson(JSONObject userJsonObject)
@@ -490,7 +489,7 @@ public class RealClient extends Client {
 		// try {
 		getRequest = new HttpGet(Constants.URIs.NEW_VOTE_URI + "?which_photo="
 				+ Integer.toString(whichPhoto) + "&post_key=" + postKey
-				+ "&fb_uid=" + this.getFacebookDetails().getFb_uid());
+				+ "&fb_uid=" + this.getFacebookDetailsOfLoogedInUser().getFb_uid());
 		// postRequest = createVoteHttpPostRequest(choosiePost, whichPhoto);
 		// } catch (UnsupportedEncodingException e1) {
 		// // TODO Auto-generated catch block
@@ -598,7 +597,7 @@ public class RealClient extends Client {
 
 		try {
 			multipartContent.addPart("fb_uid", new StringBody(this
-					.getFacebookDetails().getFb_uid()));
+					.getFacebookDetailsOfLoogedInUser().getFb_uid()));
 			multipartContent.addPart("text", new StringBody(comment.getText()
 					.toString(), Charset.forName("UTF-8")));
 			multipartContent.addPart("post_key",
@@ -662,14 +661,14 @@ public class RealClient extends Client {
 	}
 
 	public User getActiveUser() {
-		String firstName = this.getFacebookDetails().getFirstName();
-		String lastName = this.getFacebookDetails().getLastName();
+		String firstName = this.getFacebookDetailsOfLoogedInUser().getFirstName();
+		String lastName = this.getFacebookDetailsOfLoogedInUser().getLastName();
 		String userName = firstName + " " + lastName;
 
 		// TODO: get photo URL of the active user.
 		String photoURL = Constants.URIs.FACEBOOK_PROFILE_PIC(this
-				.getFacebookDetails().getFb_uid());
-		String fbUid = this.getFacebookDetails().getFb_uid();
+				.getFacebookDetailsOfLoogedInUser().getFb_uid());
+		String fbUid = this.getFacebookDetailsOfLoogedInUser().getFb_uid();
 
 		return new User(userName, photoURL, fbUid);
 	}

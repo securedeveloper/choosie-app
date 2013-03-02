@@ -93,7 +93,7 @@ public abstract class Client {
 	public abstract ChoosiePostData getPostByKey(String param,
 			Callback<Void, Integer, Void> progressCallback);
 
-	public FacebookDetails getFacebookDetails() {
+	public FacebookDetails getFacebookDetailsOfLoogedInUser() {
 		return AppSettings.getFacebookDetailsOfLoggedInUser(context);
 	}
 

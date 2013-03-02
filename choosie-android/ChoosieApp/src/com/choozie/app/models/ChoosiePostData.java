@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.choozie.app.NewChoosiePostData.PostType;
+import com.choozie.app.client.Client;
 
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
@@ -24,17 +25,14 @@ public class ChoosiePostData {
 	private Date createdAtUTC;
 	private List<Vote> votes;
 	private List<Comment> comments;
-	private FacebookDetails loggedInUser;
 	private boolean isPostByMe;
 	private SparseIntArray votesCounter;
 	private SparseBooleanArray votedAlready;
 	private PostType postType;
 
-	public ChoosiePostData(FacebookDetails loggedInUser, String postKey,
-			String photo1URL, String photo2URL, String question, User author,
-			Date createdAtUTC, List<Vote> votes, List<Comment> comments,
-			PostType postType) {
-		this.loggedInUser = loggedInUser;
+	public ChoosiePostData(String postKey, String photo1URL, String photo2URL,
+			String question, User author, Date createdAtUTC, List<Vote> votes,
+			List<Comment> comments, PostType postType) {
 		this.postKey = postKey;
 		this.photo1URL = photo1URL;
 		this.photo2URL = photo2URL;
@@ -48,7 +46,8 @@ public class ChoosiePostData {
 		// TODO: Remove this null check after fixing the 'Loading item' hack
 		// from FeedListAdapter
 		this.isPostByMe = author != null
-				&& (loggedInUser.getFb_uid().equals(author.getFbUid()));
+				&& (Client.getInstance().getFacebookDetailsOfLoogedInUser()
+						.getFb_uid().equals(author.getFbUid()));
 	}
 
 	private void initVotes(List<Vote> votes) {
@@ -67,7 +66,8 @@ public class ChoosiePostData {
 		for (Vote vote : votes) {
 
 			// Check if post is by me
-			if (vote.getUser().getFbUid() == loggedInUser.getFb_uid()) {
+			if (vote.getUser().getFbUid() == Client.getInstance()
+					.getFacebookDetailsOfLoogedInUser().getFb_uid()) {
 				this.isPostByMe = true;
 			}
 
@@ -76,7 +76,10 @@ public class ChoosiePostData {
 			votesCounter.put(vote_for, votesCounter.get(vote_for) + 1);
 
 			// Remember what the logged in user already voted for
-			if (vote.getUser().getFbUid().equals(this.loggedInUser.getFb_uid())) {
+			if (vote.getUser()
+					.getFbUid()
+					.equals(Client.getInstance()
+							.getFacebookDetailsOfLoogedInUser().getFb_uid())) {
 				votedAlready.put(vote_for, true);
 			}
 

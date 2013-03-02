@@ -78,10 +78,10 @@ public class MockClient extends Client {
 		String fbUID = "77345345";
 		String userPhotoUrl = "http://graph.facebook.com/jonathan.erez/picture";
 
-		ChoosiePostData mockPost = new ChoosiePostData(getFacebookDetails(), postKey,
-				photo1URL, photo2URL, question, new User(userName,
-						userPhotoUrl, fbUID), new Date(),
-				new ArrayList<Vote>(), new ArrayList<Comment>(), PostType.TOT);
+		ChoosiePostData mockPost = new ChoosiePostData(postKey, photo1URL,
+				photo2URL, question, new User(userName, userPhotoUrl, fbUID),
+				new Date(), new ArrayList<Vote>(), new ArrayList<Comment>(),
+				PostType.TOT);
 		return mockPost;
 	}
 
