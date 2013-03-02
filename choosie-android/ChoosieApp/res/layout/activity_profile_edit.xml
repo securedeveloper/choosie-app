@@ -35,7 +35,6 @@
             android:background="@drawable/header_selector"
             android:contentDescription="@string/general_content_description"
             android:src="@drawable/icon_check" />
-
     </RelativeLayout>
 
     <ImageButton
@@ -67,8 +66,8 @@
                 android:id="@+id/edit_profile_nickname_label"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:text="@string/nickname"
                 android:layout_weight="0.25"
+                android:text="@string/nickname"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/dark_grey_like" />
 
@@ -82,20 +81,19 @@
                 android:ems="10"
                 android:hint="@string/nickname_hint"
                 android:inputType="text|textNoSuggestions"
+                android:maxLength="25"
                 android:singleLine="true"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold"
-                android:maxLength="25" />
-
+                android:textStyle="bold" />
         </TableRow>
-        
+
         <View
             android:id="@+id/view1"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@color/Gray"
+            android:layout_marginBottom="@dimen/profile_details_margin"
             android:layout_marginTop="@dimen/profile_details_margin"
-            android:layout_marginBottom="@dimen/profile_details_margin"/>
+            android:background="@color/Gray" />
 
         <TableRow
             android:id="@+id/edit_profile_info_row"
@@ -108,8 +106,8 @@
                 android:id="@+id/edit_profile_info_label"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:text="@string/info"
                 android:layout_weight="0.25"
+                android:text="@string/info"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/dark_grey_like" />
 
@@ -120,18 +118,17 @@
                 android:layout_marginLeft="@dimen/view_choosie_post_text_margin"
                 android:layout_weight="0.75"
                 android:background="@color/White"
-                android:gravity="top|left"
                 android:ems="10"
+                android:gravity="top|left"
                 android:hint="@string/bio_hint"
                 android:inputType="textMultiLine"
-                android:singleLine="false"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold"
                 android:lines="3"
+                android:maxLength="80"
                 android:maxLines="3"
                 android:minLines="3"
-                android:maxLength="80" />
-
+                android:singleLine="false"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold" />
         </TableRow>
 
         <View
@@ -141,7 +138,6 @@
             android:layout_marginBottom="@dimen/profile_details_margin"
             android:layout_marginTop="@dimen/profile_details_margin"
             android:background="@color/Gray" />
-
     </TableLayout>
 
     <TextView
@@ -154,15 +150,5 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/CornflowerBlue"
         android:textStyle="bold" />
-
-    <Spinner
-        android:id="@+id/edit_profile_gender_spinner"
-        android:layout_width="65dp"
-        android:layout_height="40dp"
-        android:layout_toRightOf="@+id/edit_profile_user_photo"
-        android:background="@color/White"
-        android:entries="@array/genders"
-        android:gravity="center|top"
-        android:layout_below="@+id/edit_profile_full_name" />
 
 </RelativeLayout>

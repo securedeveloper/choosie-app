@@ -1,9 +1,13 @@
 package com.choozie.app;
 
+import java.io.File;
+
+import com.choozie.app.caches.CacheCallback;
+import com.choozie.app.caches.Caches;
 import com.choozie.app.client.Client;
-import com.choozie.app.models.User;
 import com.choozie.app.models.UserDetails;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,6 +15,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -18,11 +23,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 public class ProfileEditActivity extends Activity {
@@ -33,7 +35,6 @@ public class ProfileEditActivity extends Activity {
 	private ImageButton ibSaveChanges;
 	private EditText etInfo;
 	private TextView tvFullName;
-	private Spinner spGender;
 	private TextView tvInfoLabel;
 
 	@Override
@@ -57,16 +58,27 @@ public class ProfileEditActivity extends Activity {
 	private void initializeListeners() {
 		// initialize all listeners
 		ibSaveChanges.setOnClickListener(saveChangesClickListener);
-		spGender.setOnItemSelectedListener(genderSelectedListener);
 		etInfo.setOnFocusChangeListener(infoFocusChangedListeners);
 		etInfo.addTextChangedListener(infoTextChangeListner);
+		ibUserPhoto.setOnClickListener(editUserPhotoListener);
 	}
 
 	private void fillUserDetails() {
 		// photo
-		String userImagePath = Utils.getFileNameForURL(userDetails.getUser()
-				.getPhotoURL());
-		Utils.setImageFromPath(userImagePath, ibUserPhoto);
+		Caches.getInstance()
+				.getPhotosCache()
+				.getValue(userDetails.getUser().getPhotoURL(),
+						new CacheCallback<String, Bitmap>() {
+							public void onValueReady(String key, Bitmap result) {
+								if (result != null) {
+									ibUserPhoto.setImageBitmap(result);
+								}
+							}
+						});
+
+		// String userImagePath = Utils.getFileNameForURL(userDetails.getUser()
+		// .getPhotoURL());
+		// Utils.setImageFromPath(userImagePath, ibUserPhoto);
 
 		// full name + nickname + info
 		etNickname.setText(userDetails.getNickname());
@@ -83,7 +95,6 @@ public class ProfileEditActivity extends Activity {
 		etInfo = (EditText) findViewById(R.id.edit_profile_info_text);
 		tvInfoLabel = (TextView) findViewById(R.id.edit_profile_info_label);
 		tvFullName = (TextView) findViewById(R.id.edit_profile_full_name);
-		spGender = (Spinner) findViewById(R.id.edit_profile_gender_spinner);
 	}
 
 	protected void saveChanges() {
@@ -113,11 +124,11 @@ public class ProfileEditActivity extends Activity {
 	private UserDetails getDetailsFromEditForm() {
 		userDetails.setNickname(etNickname.getText().toString());
 		userDetails.setInfo(etInfo.getText().toString());
-		
-//		UserDetails ud = new UserDetails(userDetails.getUser());
-//
-//		ud.setNickname(etNickname.getText().toString());
-//		ud.setInfo(etInfo.getText().toString());
+
+		// UserDetails ud = new UserDetails(userDetails.getUser());
+		//
+		// ud.setNickname(etNickname.getText().toString());
+		// ud.setInfo(etInfo.getText().toString());
 
 		L.i("User Details from the edit form: " + userDetails.toString());
 		return userDetails;
@@ -201,30 +212,6 @@ public class ProfileEditActivity extends Activity {
 		}
 	};
 
-	private OnItemSelectedListener genderSelectedListener = new OnItemSelectedListener() {
-
-		public void onItemSelected(AdapterView<?> parent, View view, int pos,
-				long id) {
-			switch (pos) {
-			case 1:
-				userDetails.setGender(Constants.Gender.MALE);
-				break;
-			case 2:
-				userDetails.setGender(Constants.Gender.FEMALE);
-				break;
-			default:
-				userDetails.setGender("");
-				break;
-			}
-			L.i("Set userDetails.gender: " + userDetails.getGender());
-		}
-
-		public void onNothingSelected(AdapterView<?> arg0) {
-			// TODO Auto-generated method stub
-
-		}
-	};
-
 	private TextWatcher infoTextChangeListner = new TextWatcher() {
 
 		public void afterTextChanged(Editable s) {
@@ -256,6 +243,13 @@ public class ProfileEditActivity extends Activity {
 		}
 	};
 
+	private OnClickListener editUserPhotoListener = new OnClickListener() {
+
+		public void onClick(View arg0) {
+			editUserPhoto(arg0);
+		}
+	};
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -264,5 +258,44 @@ public class ProfileEditActivity extends Activity {
 		return true;
 	}
 
-}
+	protected void editUserPhoto(final View arg0) {
+		L.i("PostScreenController - enter startdialog");
+		final File tempFile = createImageFile(arg0.getId());
 
+		AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
+		myAlertDialog.setTitle("Upload Pictures Option");
+		myAlertDialog.setMessage("How do you want to set your picture?");
+
+		myAlertDialog.setPositiveButton("Camera",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg1, int arg3) {
+						TakePhoto(arg0, Uri.fromFile(tempFile));
+					}
+				});
+
+		myAlertDialog.setNegativeButton("Gallery",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface arg2, int arg1) {
+						takeImageFromGallery(arg0);
+					}
+				});
+
+		myAlertDialog.show();
+	}
+
+	protected void takeImageFromGallery(View arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	protected void TakePhoto(View arg0, Uri fromFile) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private File createImageFile(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
