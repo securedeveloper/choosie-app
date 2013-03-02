@@ -139,7 +139,7 @@ public class BottomNavigationBarView extends LinearLayout {
 			// changeSelectedButton((RelativeLayout)findViewById(R.id.view_navBar_layout_button_feed));
 			Intent intent = new Intent(activity.getApplicationContext(),
 					ChoosieActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 			activity.startActivity(intent);
 		}
 	}
