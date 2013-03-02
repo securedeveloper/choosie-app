@@ -208,7 +208,7 @@
 
                             <ImageView
                                 android:id="@+id/feed_image_vote_icon2"
-                                style="@style/VotingButtonOnChoosiePostView"
+                                style="@style/VotingButtonOnChoosiePostViewRight"
                                 android:layout_alignParentRight="true"
                                 android:src="@drawable/thumbsupuntouched" />
                         </RelativeLayout>

@@ -29,6 +29,7 @@ import android.text.style.StyleSpan;
 
 import android.view.LayoutInflater;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -156,32 +157,28 @@ public class ChoosiePostView extends RelativeLayout {
 			postViewHolder.layoutForRightPhoto
 					.setBackgroundColor(getResources().getColor(
 							R.color.Transparent));
-
-			L.i(post.getPhoto2URL());
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgViewCenter,
 					postViewHolder.progressBarCenter,
 					postViewHolder.voteButton1, true);
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgViewCenter,
 					postViewHolder.progressBarCenter,
 					postViewHolder.voteButton2, true);
-			int screenWidth = Utils.getScreenWidth();
-			resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
-					postViewHolder.voteButton1, postViewHolder.voteButton2);
 		} else {
 			loadImageToView(post.getPhoto1URL(), postViewHolder.imgView1,
 					postViewHolder.progressBar1, postViewHolder.voteButton1);
 			loadImageToView(post.getPhoto2URL(), postViewHolder.imgView2,
 					postViewHolder.progressBar2, postViewHolder.voteButton2);
-			int screenWidth = Utils.getScreenWidth();
-			resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
-					postViewHolder.voteButton1, postViewHolder.voteButton2);
 
 		}
+		int screenWidth = Utils.getScreenWidth();
+		resizeViews((int) (screenWidth / 5.5), (int) (screenWidth / 5.5),
+				postViewHolder.voteButton1, postViewHolder.voteButton2);
+
 		loadImageToView(post.getAuthor().getPhotoURL(),
 				postViewHolder.feed_userimage, null, null);
 		loadCommentsToView(post, postViewHolder);
 
-		// DECIDE IF SHOW RESUTLS OR NOT
+		// DECIDE IF SHOW RESULTS OR NOT
 		if (choosiePost.isVotedAlready() || choosiePost.isPostByMe()) {
 			ChangeVotingResultsVisibility(postViewHolder.votes1,
 					postViewHolder.votes2, View.VISIBLE);
@@ -550,7 +547,8 @@ public class ChoosiePostView extends RelativeLayout {
 	}
 
 	private void loadImageToView(String urlToLoad, final ImageView imageView,
-			final ProgressBar progressBar, final ImageView img, boolean bigPhoto) {
+			final ProgressBar progressBar, final ImageView voteButtonImage,
+			boolean bigPhoto) {
 
 		lastRequestOnImageView.put(imageView, urlToLoad);
 		Cache<String, Bitmap> cache;
@@ -566,13 +564,14 @@ public class ChoosiePostView extends RelativeLayout {
 					return;
 				}
 				imageView.setImageBitmap(result);
+				imageView.setScaleType(ScaleType.CENTER_CROP);
 				imageView.setVisibility(View.VISIBLE);
 				if (progressBar != null) {
 					progressBar.setVisibility(View.GONE);
 				}
-				if (img != null) {
-					img.setVisibility(View.VISIBLE);
-					img.bringToFront();
+				if (voteButtonImage != null) {
+					voteButtonImage.setVisibility(View.VISIBLE);
+					voteButtonImage.bringToFront();
 				}
 			}
 
