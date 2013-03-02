@@ -147,9 +147,9 @@ public abstract class Client {
 	public UserDetails getActiveUserDetails() {
 		if (userDetails != null)
 			L.i("getActiveUserDetails() - " + userDetails.toString());
-		else
+		else {
 			L.i("getActiveUserDetails() - activeUserDetails is null");
-
+		}
 		return userDetails;
 	}
 

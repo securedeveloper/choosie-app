@@ -136,7 +136,7 @@ public class ChoosiePostView extends RelativeLayout {
 		this.choosiePost = post;
 
 		postViewHolder.feedtext.setText(post.getQuestion());
-		postViewHolder.feed_name.setText(post.getAuthor().getUserName());
+		postViewHolder.feed_name.setText(post.getAuthor().getDisplayName());
 		postViewHolder.time_text.setText(Utils
 				.getTimeDifferenceTextFromNow(post.getCreatedAt()));
 
@@ -517,7 +517,7 @@ public class ChoosiePostView extends RelativeLayout {
 		TextView tv = new TextView(actionsHandler.getActivity());
 
 		final SpannableStringBuilder sb = new SpannableStringBuilder(comment
-				.getUser().getUserName() + " " + comment.getText());
+				.getUser().getDisplayName() + " " + comment.getText());
 
 		// Same as the User textColor in the XML.
 		// TODO: Make it a resource that both use
@@ -525,7 +525,7 @@ public class ChoosiePostView extends RelativeLayout {
 				Color.rgb(42, 30, 176));
 
 		// Span to make text bold
-		int charsToBoldify = comment.getUser().getUserName().length();
+		int charsToBoldify = comment.getUser().getDisplayName().length();
 		sb.setSpan(blueLinkColor, 0, charsToBoldify,
 				Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 

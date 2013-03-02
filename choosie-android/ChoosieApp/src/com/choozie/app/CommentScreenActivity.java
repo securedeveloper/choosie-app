@@ -8,6 +8,7 @@ import com.choozie.app.caches.Caches;
 import com.choozie.app.camera.YesNoUtils;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.CommentData;
+import com.choozie.app.models.User;
 import com.choozie.app.models.UserManger;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.nullwire.trace.ExceptionHandler;
@@ -177,31 +178,33 @@ public class CommentScreenActivity extends Activity {
 
 		// fill the adapter:
 
-		ArrayList<String> nameList = new ArrayList<String>();
+//		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<String> commentList = new ArrayList<String>();
-		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
+//		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
 		ArrayList<CharSequence> createdAtList = new ArrayList<CharSequence>();
-		ArrayList<String> fbUidList = new ArrayList<String>();
+		ArrayList<User> userList = new ArrayList<User>();
+//		ArrayList<String> fbUidList = new ArrayList<String>();
 
-		nameList = intent
-				.getStringArrayListExtra(Constants.IntentsCodes.nameList);
+//		nameList = intent
+//				.getStringArrayListExtra(Constants.IntentsCodes.nameList);
 		commentList = intent
 				.getStringArrayListExtra(Constants.IntentsCodes.commentList);
-		commentierPhotoUrlList = intent
-				.getStringArrayListExtra(Constants.IntentsCodes.commentierPhotoUrlList);
+//		commentierPhotoUrlList = intent
+//				.getStringArrayListExtra(Constants.IntentsCodes.commentierPhotoUrlList);
 		createdAtList = intent
 				.getCharSequenceArrayListExtra(Constants.IntentsCodes.createdAtList);
-		fbUidList = intent
-				.getStringArrayListExtra(Constants.IntentsCodes.fbUid);
+		userList = intent
+				.getParcelableArrayListExtra(Constants.IntentsCodes.userList);
+//		fbUidList = intent
+//				.getStringArrayListExtra(Constants.IntentsCodes.fbUid);
+		
 
 		// if there are no comments - put a dummy item for showing the pictures
-		if (nameList.size() == 0) {
+		if (commentList.size() == 0) {
 			adi.add(new CommentData(true));
 		} else {
-			for (int i = 0; i < nameList.size(); i++) {
-				CommentData newCommentData = new CommentData(nameList.get(i),
-						commentList.get(i), commentierPhotoUrlList.get(i),
-						createdAtList.get(i), fbUidList.get(i));
+			for (int i = 0; i < commentList.size(); i++) {
+				CommentData newCommentData = new CommentData(commentList.get(i), createdAtList.get(i), userList.get(i));
 				adi.add(newCommentData);
 			}
 		}

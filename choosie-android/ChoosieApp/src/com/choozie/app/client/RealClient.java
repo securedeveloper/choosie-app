@@ -440,7 +440,8 @@ public class RealClient extends Client {
 				+ userJsonObject.getString("last_name");
 		String authorPhotoURL = userJsonObject.getString("avatar");
 		String authorFBUid = userJsonObject.getString("fb_uid");
-		User author = new User(authorName, authorPhotoURL, authorFBUid);
+		String authorDisplayName = userJsonObject.getString("display_name");
+		User author = new User(authorName, authorPhotoURL, authorFBUid, authorDisplayName);
 		return author;
 	}
 
@@ -670,7 +671,8 @@ public class RealClient extends Client {
 				.getFacebookDetailsOfLoogedInUser().getFb_uid());
 		String fbUid = this.getFacebookDetailsOfLoogedInUser().getFb_uid();
 
-		return new User(userName, photoURL, fbUid);
+		//NICKNAME
+		return new User(userName, photoURL, fbUid, "");
 	}
 
 	@Override
@@ -768,8 +770,8 @@ public class RealClient extends Client {
 				HttpMultipartMode.BROWSER_COMPATIBLE);
 
 		try {
-			entity.addPart("nick", new StringBody(ud.getNickname()));
-			entity.addPart("info", new StringBody(ud.getInfo()));
+			entity.addPart("nick", new StringBody(ud.getNickname(), Charset.forName("UTF-8")));
+			entity.addPart("info", new StringBody(ud.getInfo(), Charset.forName("UTF-8")));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -792,7 +794,14 @@ public class RealClient extends Client {
 
 			@Override
 			protected HttpResponse doInBackground(Void... params) {
-				HttpClient client = new DefaultHttpClient();
+				
+				// enable on server hebrew sync
+				HttpParams httpParams = new BasicHttpParams();
+				HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+				HttpProtocolParams.setContentCharset(httpParams, "UTF-8");
+				httpParams.setBooleanParameter("http.protocol.expect-continue", false);
+				
+				HttpClient client = new DefaultHttpClient(httpParams);
 				HttpResponse response = null;
 				L.i("Created the DefaultHttpClient()");
 

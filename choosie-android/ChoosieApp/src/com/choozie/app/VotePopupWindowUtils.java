@@ -260,10 +260,10 @@ public class VotePopupWindowUtils {
 		final VoteViewHolder holder = voteViewHolder;
 		if (item.getUser1() != null) {
 			// set the voter1 names
-			setTextOntv(item.getUser1().getUserName(), voteViewHolder.tv1);
+			setTextOntv(item.getUser1().getDisplayName(), voteViewHolder.tv1);
 			// set the voter1 photo
 			L.d("createViewVotes - name1 != null, getting from cache, name = "
-					+ item.getUser1().getUserName());
+					+ item.getUser1().getDisplayName());
 			Caches.getInstance()
 					.getPhotosCache()
 					.getValue(item.getUser1().getPhotoURL(),
@@ -288,11 +288,11 @@ public class VotePopupWindowUtils {
 
 		if (item.getUser2() != null) {
 			// set the voter2 names
-			setTextOntv(item.getUser2().getUserName(), voteViewHolder.tv2);
+			setTextOntv(item.getUser2().getDisplayName(), voteViewHolder.tv2);
 
 			// set the voter2 photo
 			L.d("name2 != null, getting from cache, name = "
-					+ item.getUser2().getUserName());
+					+ item.getUser2().getDisplayName());
 			Caches.getInstance()
 					.getPhotosCache()
 					.getValue(item.getUser2().getPhotoURL(),

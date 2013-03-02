@@ -9,11 +9,13 @@ public class User implements Parcelable{
 	private String userName;
 	private String photoURL;
 	private String fbUid;
+	private String displayName;
    
-	public User(String userName, String photoURL, String fbUid) {
+	public User(String userName, String photoURL, String fbUid, String displayName) {
 		this.userName = userName;
 		this.photoURL = photoURL;
 		this.fbUid = fbUid;
+		this.displayName = displayName;
 	}
 
 	public User(Parcel in) {
@@ -24,6 +26,7 @@ public class User implements Parcelable{
 		this.userName = in.readString();
 		this.photoURL = in.readString();
 		this.fbUid = in.readString();
+		this.displayName = in.readString();
 	}
 	
 	public String getUserName() {
@@ -38,6 +41,14 @@ public class User implements Parcelable{
 		return fbUid;
 	}
 
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	public int describeContents() {
 		return 0;
 	}
@@ -46,6 +57,7 @@ public class User implements Parcelable{
 		dest.writeString(userName);
 		dest.writeString(photoURL);
 		dest.writeString(fbUid);
+		dest.writeString(displayName);
 	}
 	
 	public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -72,7 +84,9 @@ public class User implements Parcelable{
 	public String toString() {
 		String str = "User: " + this.getUserName() + "\n" +
 				"fb_uid: " + this.getFbUid() + "\n" + 
-				"Photo URL: " + this.getPhotoURL() + "\n";
+				"Photo URL: " + this.getPhotoURL() + "\n" +
+				"Display Name: " + this.getDisplayName();
 		return str;
 	}
+
 }

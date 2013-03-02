@@ -1,35 +1,32 @@
 package com.choozie.app.models;
 
+import com.choozie.app.client.Client;
+
 public class CommentData {
 
-	private final String name;
 	private final String comment;
-	private final String commentierPhotoUrl;
-	private final String fbUid;
 	private final CharSequence createdAt;
 	private final boolean isDummyComment;
+	private final User user;
 
-	public CommentData(String name, String comment, String commentierPhotoUrl,
-			CharSequence createdAt, String fbUid) {
-		this.name = name;
+	public CommentData(String comment, CharSequence createdAt, User user) {
 		this.comment = comment;
-		this.commentierPhotoUrl = commentierPhotoUrl;
 		this.createdAt = createdAt;
 		this.isDummyComment = false;
-		this.fbUid = fbUid;
+		this.user = user;
 	}
 
 	public CommentData(boolean isDummyComment) {
-		this.name = null;
 		this.comment = null;
-		this.commentierPhotoUrl = null;
 		this.createdAt = null;
 		this.isDummyComment = true;
-		this.fbUid = null;
+		this.user = null;
 	}
 
 	public String getName() {
-		return this.name;
+		if (user != null)
+			return this.user.getDisplayName();
+		return "";
 	}
 
 	public String getComment() {
@@ -37,7 +34,9 @@ public class CommentData {
 	}
 
 	public String getCommentierPhotoUrl() {
-		return this.commentierPhotoUrl;
+		if (user != null)
+			return this.user.getPhotoURL();
+		return "";
 	}
 
 	public CharSequence getCreatedAt() {
@@ -49,6 +48,6 @@ public class CommentData {
 	}
 
 	public User getUser() {
-		return new User(getName(), getCommentierPhotoUrl(), this.fbUid);
+		return user;
 	}
 }

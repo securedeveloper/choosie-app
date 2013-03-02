@@ -22,6 +22,7 @@ import com.choozie.app.caches.Caches;
 import com.choozie.app.client.Client;
 import com.choozie.app.models.ChoosiePostData;
 import com.choozie.app.models.Comment;
+import com.choozie.app.models.User;
 import com.choozie.app.models.Vote;
 import com.choozie.app.models.VoteHandler;
 import com.choozie.app.views.PostViewActionsHandler;
@@ -199,31 +200,34 @@ public class SuperController implements PostViewActionsHandler {
 		intent.putExtra(Constants.IntentsCodes.openVotesWindow, openVotesWindow);
 
 		// create the comments list
-		ArrayList<String> nameList = new ArrayList<String>();
+//		ArrayList<String> nameList = new ArrayList<String>();
 		ArrayList<String> commentList = new ArrayList<String>();
-		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
+//		ArrayList<String> commentierPhotoUrlList = new ArrayList<String>();
 		ArrayList<CharSequence> createdAtList = new ArrayList<CharSequence>();
-		ArrayList<String> fbUidList = new ArrayList<String>();
+		ArrayList<User> userList = new ArrayList<User>();
+//		ArrayList<String> fbUidList = new ArrayList<String>();
 
 		for (Comment comment : choosiePost.getComments()) {
-			nameList.add(comment.getUser().getUserName());
+//			nameList.add(comment.getUser().getUserName());
 			commentList.add(comment.getText());
-			commentierPhotoUrlList.add(comment.getUser().getPhotoURL());
+//			commentierPhotoUrlList.add(comment.getUser().getPhotoURL());
 			createdAtList.add(Utils.getTimeDifferenceTextFromNow(comment
 					.getCreatedAt()));
-			fbUidList.add(comment.getUser().getFbUid());
+//			fbUidList.add(comment.getUser().getFbUid());
+			userList.add(comment.getUser());
 		}
 
-		intent.putStringArrayListExtra(Constants.IntentsCodes.nameList,
-				nameList);
+//		intent.putStringArrayListExtra(Constants.IntentsCodes.nameList,
+//				nameList);
 		intent.putStringArrayListExtra(Constants.IntentsCodes.commentList,
 				commentList);
-		intent.putStringArrayListExtra(
-				Constants.IntentsCodes.commentierPhotoUrlList,
-				commentierPhotoUrlList);
+//		intent.putStringArrayListExtra(
+//				Constants.IntentsCodes.commentierPhotoUrlList,
+//				commentierPhotoUrlList);
 		intent.putCharSequenceArrayListExtra(
 				Constants.IntentsCodes.createdAtList, createdAtList);
-		intent.putStringArrayListExtra(Constants.IntentsCodes.fbUid, fbUidList);
+		intent.putParcelableArrayListExtra(Constants.IntentsCodes.userList, userList);
+//		intent.putStringArrayListExtra(Constants.IntentsCodes.fbUid, fbUidList);
 
 		// this is to make sure that the user has the photos in his sd
 		Caches.getInstance()
