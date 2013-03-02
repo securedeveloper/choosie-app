@@ -126,6 +126,7 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 
 	String lastCursor;
 	private ChoosiePostData loadingItem;
+	private Runnable emptyFeedHandler;
 
 	private void update(FeedResponse param) {
 		L.i("FeedListAdapter: update. Posts count: " + param.getPosts().size()
@@ -187,9 +188,11 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 			break;
 		case FEED_UPDATED:
 			hideLoadingItem();
+			runEmptyListAdapterIfEmpty();
 			break;
 		case FEED_COMPLETE:
 			hideLoadingItem();
+			runEmptyListAdapterIfEmpty();
 			break;
 		case ERROR:
 			hideLoadingItem();
@@ -198,6 +201,12 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		}
 		L.i("Finished changing to state " + this.state);
 
+	}
+
+	private void runEmptyListAdapterIfEmpty() {
+		if (getCount() == 0 && emptyFeedHandler != null) {
+			emptyFeedHandler.run();
+		}
 	}
 
 	private void showErrorToast() {
@@ -311,6 +320,10 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		L.i("findPoitionByPostKey: did not find the position of post \""
 				+ postKey + "\"");
 		return -1;
+	}
+
+	public void setOnEmptyFeedHandler(Runnable emptyFeedHandler) {
+		this.emptyFeedHandler = emptyFeedHandler;
 	}
 
 }

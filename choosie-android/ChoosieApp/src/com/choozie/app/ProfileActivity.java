@@ -236,11 +236,15 @@ public class ProfileActivity extends Activity {
 
 		initializeHeader(header);
 
-		View footer = getLayoutInflater().inflate(
+		final View footer = getLayoutInflater().inflate(
 				R.layout.footer_profile_listview, null);
 
 		listView.addHeaderView(header);
-		listView.addFooterView(footer);
+		choosiePostsItemAdapter.setOnEmptyFeedHandler(new Runnable() {
+			public void run() {
+				listView.addFooterView(footer);
+			}
+		});
 
 		listView.setAdapter(choosiePostsItemAdapter);
 
