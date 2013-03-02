@@ -101,6 +101,8 @@ public class ConfirmationActivity extends Activity {
 		RelativeLayout topHideLayot = (RelativeLayout) findViewById(R.id.confirmation_hide_layout_top);
 		RelativeLayout bottomtLayot = (RelativeLayout) findViewById(R.id.confirmation_layout_bottom);
 		RelativeLayout bottomHideLayot = (RelativeLayout) findViewById(R.id.confirmation_hide_layout_bottom);
+		
+		/* for enabling the frames
 		ImageView frameBlackImage = (ImageView) findViewById(R.id.confirmation_image_frame_black);
 		ImageView framewhiteImage = (ImageView) findViewById(R.id.confirmation_image_frame_white);
 		ImageView frameNoneImage = (ImageView) findViewById(R.id.confirmation_image_frame_none);
@@ -109,6 +111,8 @@ public class ConfirmationActivity extends Activity {
 		ImageView framePattern3Image = (ImageView) findViewById(R.id.confirmation_image_frame_pattern3);
 		ImageView framePattern4Image = (ImageView) findViewById(R.id.confirmation_image_frame_pattern4);
 		ImageView framePattern5Image = (ImageView) findViewById(R.id.confirmation_image_frame_pattern5);
+		ImageView framePattern6Image = (ImageView) findViewById(R.id.confirmation_image_frame_pattern6);
+		ImageView framePattern7Image = (ImageView) findViewById(R.id.confirmation_image_frame_pattern7);*/
 
 		Utils.setImageViewSize(topLayot, topWrapperHeight, 0);
 		Utils.setImageViewSize(topHideLayot, topHideHeight, 0);
@@ -116,6 +120,7 @@ public class ConfirmationActivity extends Activity {
 		Utils.setImageViewSize(bottomtLayot, bottomWrapperHeight, 0);
 		Utils.setImageViewSize(bottomHideLayot, bottomHideHeight, 0);
 
+		/* for enabling the frames
 		Utils.setImageViewSize(frameBlackImage, bottomWrapperHeight,
 				bottomWrapperHeight);
 		Utils.setImageViewSize(framewhiteImage, bottomWrapperHeight,
@@ -132,6 +137,11 @@ public class ConfirmationActivity extends Activity {
 				bottomWrapperHeight);
 		Utils.setImageViewSize(framePattern5Image, bottomWrapperHeight,
 				bottomWrapperHeight);
+		Utils.setImageViewSize(framePattern6Image, bottomWrapperHeight,
+				bottomWrapperHeight);
+		Utils.setImageViewSize(framePattern7Image, bottomWrapperHeight,
+				bottomWrapperHeight); */
+				
 
 		ImageView rotateImageView = (ImageView) findViewById(R.id.confirmation_rotateImage1);
 		Utils.setImageViewSize(rotateImageView, topWrapperHeight,
@@ -166,13 +176,14 @@ public class ConfirmationActivity extends Activity {
 			}
 		});
 
-		OnClickListener frameListenere = new OnClickListener() {
+		/*OnClickListener frameListenere = new OnClickListener() {
 
 			public void onClick(View v) {
 				handleFrame(v);
 			}
-		};
+		}; */
 
+		/* for enabling the frames
 		frameBlackImage.setOnClickListener(frameListenere);
 		framewhiteImage.setOnClickListener(frameListenere);
 		frameNoneImage.setOnClickListener(frameListenere);
@@ -181,8 +192,11 @@ public class ConfirmationActivity extends Activity {
 		framePattern3Image.setOnClickListener(frameListenere);
 		framePattern4Image.setOnClickListener(frameListenere);
 		framePattern5Image.setOnClickListener(frameListenere);
+		framePattern6Image.setOnClickListener(frameListenere);
+		framePattern7Image.setOnClickListener(frameListenere);*/
 	}
 
+	/* for enanling frames
 	protected void handleFrame(View v) {
 
 		if (rotatedBitmap == null) {
@@ -226,6 +240,14 @@ public class ConfirmationActivity extends Activity {
 		case R.id.confirmation_image_frame_pattern5:
 			frameId = R.drawable.frame_pattern5;
 			break;
+
+		case R.id.confirmation_image_frame_pattern6:
+			frameId = R.drawable.frame_pattern6;
+			break;
+
+		case R.id.confirmation_image_frame_pattern7:
+			frameId = R.drawable.frame_pattern7;
+			break;
 		}
 
 		if (frameId != 0) {
@@ -238,7 +260,7 @@ public class ConfirmationActivity extends Activity {
 				screenWidth, screenWidth, false);
 
 		pictureImageView.setImageBitmap(scalledBitmapToShow);
-	}
+	} */
 
 	protected void handleRotate() {
 
