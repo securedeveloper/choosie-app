@@ -11,16 +11,13 @@ import com.choozie.app.views.PostViewActionsHandler;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.app.Activity;
 import android.content.Intent;
-import android.test.suitebuilder.annotation.SmallTest;
 import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -39,7 +36,6 @@ public class ProfileActivity extends Activity {
 	private PostViewActionsHandler actionHandler;
 	private ImageButton ibEdit;
 	private TextView tvInvite;
-	private ImageButton ibInvite;
 	private UserDetails userDetails;
 	private TextView tvNumPosts;
 	private TextView tvNumVotes;
@@ -202,6 +198,14 @@ public class ProfileActivity extends Activity {
 		tvNumPosts.setText(String.valueOf(ud.getNumPosts()));
 		tvNumVotes.setText(String.valueOf(ud.getNumVotes()));
 		etInfo.setText(ud.getInfo());
+		
+		// If you are in your own profile OR you are in another user's
+		// profile and he wrote some Info --> show the info
+		if (Client.getInstance().getActiveUser().equals(ud.getUser())
+				|| (!Client.getInstance().getActiveUser().equals(ud.getUser())
+				&& (!ud.getInfo().equals("")))) {
+			etInfo.setVisibility(View.VISIBLE);
+		}
 
 		if (!ud.getNickname().equals("")) {
 			L.i("nickname is not empty! using Nick Name");
