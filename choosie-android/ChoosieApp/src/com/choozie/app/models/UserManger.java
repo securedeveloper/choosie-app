@@ -23,6 +23,8 @@ public class UserManger {
 	public void goToProfile() {
 		Intent intent = new Intent(activity.getApplication(),
 				ProfileActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+
 		intent.putExtra(Constants.IntentsCodes.user, user);
 		activity.startActivity(intent);
 	}

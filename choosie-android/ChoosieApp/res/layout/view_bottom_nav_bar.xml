@@ -19,8 +19,8 @@
             android:background="@drawable/selected_button"
             android:clickable="true"
             android:visibility="visible" >
-                        
-        <ImageView
+
+            <ImageView
                 android:id="@+id/view_navBar_layout_button_image_feed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,22 +29,21 @@
                 android:clickable="true"
                 android:contentDescription="@string/general_content_description"
                 android:src="@drawable/icon_home" />
-            
-<!--             android:src="@drawable/list_button" -->
-<!--                 android:layout_width="45dp" -->
-<!--                 android:layout_height="30dp" -->
 
-        <TextView
-            android:id="@+id/view_navBar_text_feed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/view_navBar_layout_button_image_feed"
-            android:layout_centerHorizontal="true"
-            android:text="@string/nav_bar_home"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textSize="@dimen/nav_bar_text_size"
-            android:textColor="@color/White" />
+            <!-- android:src="@drawable/list_button" -->
+            <!-- android:layout_width="45dp" -->
+            <!-- android:layout_height="30dp" -->
 
+            <TextView
+                android:id="@+id/view_navBar_text_feed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view_navBar_layout_button_image_feed"
+                android:layout_centerHorizontal="true"
+                android:text="@string/nav_bar_home"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/White"
+                android:textSize="@dimen/nav_bar_text_size" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -65,8 +64,8 @@
                 android:clickable="true"
                 android:contentDescription="@string/general_content_description"
                 android:src="@drawable/icon_camera" />
-            
-<!--             android:src="@drawable/camera" -->
+
+            <!-- android:src="@drawable/camera" -->
 
             <TextView
                 android:id="@+id/view_navBar_text_post"
@@ -74,11 +73,11 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/view_navBar_layout_button_image_post"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="1.5dp"
                 android:text="@string/nav_bar_post"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="@dimen/nav_bar_text_size"
-                android:textColor="@color/White" />
-
+                android:textColor="@color/White"
+                android:textSize="@dimen/nav_bar_text_size" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -99,8 +98,8 @@
                 android:clickable="true"
                 android:contentDescription="@string/general_content_description"
                 android:src="@drawable/icon_profile" />
-            
-<!--             android:src="@drawable/user_blue" -->
+
+            <!-- android:src="@drawable/user_blue" -->
 
             <TextView
                 android:id="@+id/view_navBar_text_profile"
@@ -110,11 +109,9 @@
                 android:layout_centerHorizontal="true"
                 android:text="@string/nav_bar_me"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="@dimen/nav_bar_text_size"
-                android:textColor="@color/White" />
-
+                android:textColor="@color/White"
+                android:textSize="@dimen/nav_bar_text_size" />
         </RelativeLayout>
-
     </LinearLayout>
 
 </merge>
