@@ -1,5 +1,7 @@
 package com.choozie.app;
 
+import com.choozie.app.caches.CacheCallback;
+import com.choozie.app.caches.Caches;
 import com.choozie.app.client.Client;
 import com.choozie.app.controllers.FeedListAdapter;
 import com.choozie.app.controllers.SuperController;
@@ -13,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.text.util.Linkify;
 import android.view.Menu;
 import android.view.View;
@@ -127,7 +130,8 @@ public class ProfileActivity extends Activity {
 
 		// initialize bottom navigation bar
 		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
-		Screen screen = (user.isActiveUser())? Screen.USER_PROFILE : Screen.OTHER_USER_PROFILE ; 
+		Screen screen = (user.isActiveUser()) ? Screen.USER_PROFILE
+				: Screen.OTHER_USER_PROFILE;
 		BottomNavigationBarView customView = new BottomNavigationBarView(this,
 				this, screen);
 		bottomView.addView(customView);
@@ -180,15 +184,13 @@ public class ProfileActivity extends Activity {
 						}
 
 						if (forceUpdate) {
-							Client.getInstance().setActiveUserDetails(
-									ud);
+							Client.getInstance().setActiveUserDetails(ud);
 						}
-						
+
 						// Setting all the details in the VIEW
 						userDetails = ud;
 						setAllDetails(userDetails);
 
-						
 					}
 				});
 	}
@@ -199,12 +201,12 @@ public class ProfileActivity extends Activity {
 		tvNumPosts.setText(String.valueOf(ud.getNumPosts()));
 		tvNumVotes.setText(String.valueOf(ud.getNumVotes()));
 		etInfo.setText(ud.getInfo());
-		
+
 		// If you are in your own profile OR you are in another user's
 		// profile and he wrote some Info --> show the info
 		if (Client.getInstance().getActiveUser().equals(ud.getUser())
-				|| (!Client.getInstance().getActiveUser().equals(ud.getUser())
-				&& (!ud.getInfo().equals("")))) {
+				|| (!Client.getInstance().getActiveUser().equals(ud.getUser()) && (!ud
+						.getInfo().equals("")))) {
 			etInfo.setVisibility(View.VISIBLE);
 		}
 
@@ -258,8 +260,19 @@ public class ProfileActivity extends Activity {
 		ibUserPicture = (ImageButton) header
 				.findViewById(R.id.profile_user_picture);
 
-		String userImagePath = Utils.getFileNameForURL(user.getPhotoURL());
-		Utils.setImageFromPath(userImagePath, ibUserPicture);
+		Caches.getInstance()
+				.getPhotosCache()
+				.getValue(user.getPhotoURL(),
+						new CacheCallback<String, Bitmap>() {
+							public void onValueReady(String key, Bitmap result) {
+								if (result != null) {
+									ibUserPicture.setImageBitmap(result);
+								}
+							}
+						});
+
+		// String userImagePath = Utils.getFileNameForURL(user.getPhotoURL());
+		// Utils.setImageFromPath(userImagePath, ibUserPicture);
 	}
 
 	@Override
@@ -274,7 +287,7 @@ public class ProfileActivity extends Activity {
 				refreshProfileDetailsFromServer(user, false);
 			}
 			break;
-			
+
 		case Constants.RequestCodes.NEW_POST:
 			refreshProfileDetailsFromServer(user, true);
 			break;
