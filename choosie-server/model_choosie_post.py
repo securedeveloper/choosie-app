@@ -243,7 +243,10 @@ class ChoosiePost(db.Model):
 
     if is_new:
       user = CacheController.get_user_by_fb_id(self.user_fb_id)
-      user.num_votes += 1
+      if user.num_votes:
+        user.num_votes += 1
+      else:
+        user.num_votes = 1
       user.put()
       CacheController.invalidate_user_fb_id(user.fb_uid)
 
