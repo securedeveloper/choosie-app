@@ -127,8 +127,9 @@ public class ProfileActivity extends Activity {
 
 		// initialize bottom navigation bar
 		LinearLayout bottomView = (LinearLayout) findViewById(R.id.profile_bottom_nav_bar);
+		Screen screen = (user.isActiveUser())? Screen.USER_PROFILE : Screen.OTHER_USER_PROFILE ; 
 		BottomNavigationBarView customView = new BottomNavigationBarView(this,
-				this, Screen.USER_PROFILE);
+				this, screen);
 		bottomView.addView(customView);
 
 		// Set the Profile navigation bar as 'selected' only

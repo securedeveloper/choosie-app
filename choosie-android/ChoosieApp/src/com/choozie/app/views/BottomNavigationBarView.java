@@ -120,7 +120,6 @@ public class BottomNavigationBarView extends LinearLayout {
 					.getActiveUser());
 			um.goToProfile();
 		}
-
 	}
 
 	private void switchToPostScreen() {
