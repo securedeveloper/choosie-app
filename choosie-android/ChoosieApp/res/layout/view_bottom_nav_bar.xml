@@ -16,7 +16,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/selected_button_alpha"
+            android:background="@drawable/selected_button"
             android:clickable="true"
             android:visibility="visible" >
                         
