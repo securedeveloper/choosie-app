@@ -10,7 +10,10 @@ class UserEditHandler(webapp2.RequestHandler):
      user = CacheController.get_user_by_fb_id(fb_uid)
      nick = self.request.get("nick")
      info = self.request.get("info")
-     user.nick = nick
+     if nick == "":
+       user.nick = None
+     else:
+       user.nick = nick
      user.info = info
      user.put()
      CacheController.invalidate_user_fb_id(fb_uid)

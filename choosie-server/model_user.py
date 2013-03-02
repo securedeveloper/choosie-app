@@ -52,11 +52,18 @@ class User(db.Model):
                   fb_access_token_expdate = fb_access_token_expdate)
       return user
 
+    def display_name(self):
+      if self.nick is None:
+        return self.first_name + " " + self.last_name
+
+      return self.nick
+
     def to_short_json(self):
       return {"fb_uid": self.fb_uid,
               "first_name": self.first_name,
               "last_name": self.last_name,
-              "avatar": Utils.get_avatar(self.username)}
+              "avatar": Utils.get_avatar(self.username),
+              "display_name": self.display_name()}
 
     # def set_friends(self):
     #   graph = facebook.GraphAPI(self.fb_access_token)

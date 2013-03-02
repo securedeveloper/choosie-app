@@ -192,7 +192,7 @@ class ChoosiePost(db.Model):
                     if u.device_id is not None and user.fb_uid != choosie_post.user_fb_id]
 
       result = NotifyHandler.send_notifiction(NotifyHandler.notify_type["new_post"],
-                                              self.get_user().name(), 
+                                              self.get_user().display_name(), 
                                               str(choosie_post_key),
                                               recipients)
 
@@ -207,7 +207,7 @@ class ChoosiePost(db.Model):
     db.run_in_transaction(ChoosiePost.add_comment_to_post_transaction, self.key(), comment)
     if self.user_fb_id != comment.user_fb_id:
       # device_id = self.get_user().device_id
-      commenter_name = comment.get_user().name()
+      commenter_name = comment.get_user().display_name()
       deferred.defer(self.notify_comment_async, self.key(), self.user_fb_id, commenter_name)
 
   @staticmethod
@@ -247,8 +247,8 @@ class ChoosiePost(db.Model):
       user.put()
       CacheController.invalidate_user_fb_id(user.fb_uid)
 
-    if self.user_fb_id != vote.user_fb_id and self.created_at > datetime.datetime.now() - datetime.timedelta(0.2): # if i didnt vote on my self and the post was uploaded less then 5 hours ago
-      vote_from = vote.get_user().name()
+    if self.user_fb_id != vote.user_fb_id and self.created_at > datetime.datetime.now() - datetime.timedelta(0.1): # if i didnt vote on my self and the post was uploaded less then 2.5 hours ago
+      vote_from = vote.get_user().display_name()
       deferred.defer(self.notify_vote_async, self.key(), self.user_fb_id, vote_from)
 
   @staticmethod
