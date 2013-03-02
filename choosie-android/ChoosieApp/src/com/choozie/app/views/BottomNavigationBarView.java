@@ -110,6 +110,7 @@ public class BottomNavigationBarView extends LinearLayout {
 		case R.id.view_navBar_layout_button_profile:
 		case R.id.view_navBar_layout_button_image_profile:
 			switchToProfileScreen();
+			break;
 		}
 
 	}
@@ -150,6 +151,8 @@ public class BottomNavigationBarView extends LinearLayout {
 			else
 				rl.setBackgroundResource(R.drawable.unselected_button);
 		}
+		
+		
 	}
 
 }
