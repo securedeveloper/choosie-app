@@ -41,6 +41,7 @@ public class StartActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Client.getInstance().setContext(getApplicationContext());
 
 		ExceptionHandler.register(this, Constants.URIs.CRASH_REPORT);
 

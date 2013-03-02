@@ -8,8 +8,12 @@ import java.net.URL;
 
 import org.apache.http.util.ByteArrayBuffer;
 
+import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import com.choozie.app.AppSettings;
 import com.choozie.app.Callback;
 import com.choozie.app.L;
 import com.choozie.app.NewChoosiePostData;
@@ -21,17 +25,21 @@ import com.choozie.app.models.UserDetails;
 
 public abstract class Client {
 
-	protected FacebookDetails fbDetails;
 	private UserDetails userDetails;
+
+	private Context context;
 
 	private static Client instance = new RealClient();
 
 	protected Client() {
-
 	}
 
 	public static Client getInstance() {
 		return instance;
+	}
+
+	public void setContext(Context context) {
+		this.context = context;
 	}
 
 	public abstract void sendCommentToServer(String post_key, String text,
@@ -85,16 +93,12 @@ public abstract class Client {
 	public abstract ChoosiePostData getPostByKey(String param,
 			Callback<Void, Integer, Void> progressCallback);
 
-	public boolean isLoggedIn() {
-		return this.fbDetails != null;
-	}
-
 	public FacebookDetails getFacebookDetails() {
-		return this.fbDetails;
+		return AppSettings.getFacebookDetailsOfLoggedInUser(context);
 	}
 
 	public void setFacebookDetails(FacebookDetails fbDetails) {
-		this.fbDetails = fbDetails;
+		AppSettings.saveFacebookDetailsOfLoggedInUser(context, fbDetails);
 	}
 
 	private byte[] downloadFile(Callback<Void, Integer, Void> progressCallback,
@@ -143,9 +147,9 @@ public abstract class Client {
 	public UserDetails getActiveUserDetails() {
 		if (userDetails != null)
 			L.i("getActiveUserDetails() - " + userDetails.toString());
-		else 
+		else
 			L.i("getActiveUserDetails() - activeUserDetails is null");
-		
+
 		return userDetails;
 	}
 

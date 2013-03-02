@@ -153,14 +153,14 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onRegistered(Context context, String registrationId) {
 		L.i(TAG + " Device registered: regId = " + registrationId);
-
+		Client.getInstance().setContext(context);
 		Client.getInstance().registerGCM(registrationId);
 	}
 
 	@Override
 	protected void onUnregistered(Context context, String registrationId) {
 		L.i(TAG + " Device unregistered");
-
+		Client.getInstance().setContext(context);
 		Client.getInstance().unregisterGCM(registrationId);
 	}
 
