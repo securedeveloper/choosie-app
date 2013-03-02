@@ -60,7 +60,11 @@ public class ProfileEditActivity extends Activity {
 		ibSaveChanges.setOnClickListener(saveChangesClickListener);
 		etInfo.setOnFocusChangeListener(infoFocusChangedListeners);
 		etInfo.addTextChangedListener(infoTextChangeListner);
-		ibUserPhoto.setOnClickListener(editUserPhotoListener);
+		
+		// TODO
+		// This is the listener to EDIT USER PROFILE PIC
+		// Disabled for now until it's implemented in Server
+		//ibUserPhoto.setOnClickListener(editUserPhotoListener);
 	}
 
 	private void fillUserDetails() {
