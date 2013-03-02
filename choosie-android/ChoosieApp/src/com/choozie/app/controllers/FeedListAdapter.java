@@ -1,10 +1,8 @@
 package com.choozie.app.controllers;
 
-import com.choozie.app.Callback;
-import com.choozie.app.Constants;
 import com.choozie.app.L;
 import com.choozie.app.NewChoosiePostData.PostType;
-import com.choozie.app.caches.Cache;
+import com.choozie.app.R;
 import com.choozie.app.caches.CacheCallback;
 import com.choozie.app.caches.Caches;
 import com.choozie.app.client.FeedResponse;
@@ -17,6 +15,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -75,8 +74,6 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 	}
 
 	private View buildLoadingItemView() {
-		RelativeLayout loadingItemLayout = new RelativeLayout(this.getContext());
-
 		final int TEXT_VIEW_ID = 32555;
 		final int PROGRESS_BAR_ID = 32556;
 
@@ -106,11 +103,25 @@ public class FeedListAdapter extends ArrayAdapter<ChoosiePostData> {
 		progressBar.setLayoutParams(progressBarLayoutParams);
 		textView.setLayoutParams(textViewLayoutParams);
 
+		RelativeLayout loadingItemLayout = new RelativeLayout(this.getContext());
+
+		loadingItemLayout.setBackgroundDrawable(getContext().getResources()
+				.getDrawable(R.drawable.feed_item_border));
+
 		loadingItemLayout.addView(progressBar);
 		loadingItemLayout.addView(textView);
-		loadingItemLayout.setPadding(0, 8, 0, 8);
+		loadingItemLayout.setPadding(0, 20, 0, 20);
 
-		return loadingItemLayout;
+		RelativeLayout.LayoutParams loadingItemLayoutParams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		loadingItemLayout.setLayoutParams(loadingItemLayoutParams);
+		loadingItemLayoutParams.setMargins(10, 10, 10, 10);
+
+		RelativeLayout wrapper = new RelativeLayout(this.getContext());
+		wrapper.addView(loadingItemLayout);
+
+		return wrapper;
 	}
 
 	String lastCursor;

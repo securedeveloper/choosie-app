@@ -6,8 +6,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/post_box_border"
-        android:layout_margin="5dp" >
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/feed_item_border" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -301,16 +304,6 @@
                 android:maxWidth="40dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/comment_bubble" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
         </LinearLayout>
     </LinearLayout>
 

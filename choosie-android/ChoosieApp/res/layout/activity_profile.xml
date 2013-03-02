@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Black"
+    android:background="#575863"
     tools:context=".ProfileActivity" >
 
     <RelativeLayout
@@ -24,7 +24,7 @@
             android:textColor="@color/White"
             android:textSize="@dimen/header_text_size"
             android:textStyle="bold" />
-        
+
         <ImageButton
             android:id="@+id/profile_edit_image_button"
             android:layout_width="wrap_content"
@@ -43,10 +43,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/header_layout"
-        android:divider="#00000000"
+        android:background="#00000000"
         android:cacheColorHint="#00000000"
-        android:listSelector="#00000000"
-        android:background="#00000000" >
+        android:divider="#00000000"
+        android:dividerHeight="12dp"
+        android:listSelector="#00000000" >
     </ListView>
 
     <LinearLayout

@@ -76,7 +76,7 @@
         android:layout_height="fill_parent"
         android:layout_above="@+id/bottom_nav_bar"
         android:layout_below="@+id/header_layout"
-        android:background="@color/Black"
+        android:background="#575863"
         android:visibility="visible" >
     </RelativeLayout>
 

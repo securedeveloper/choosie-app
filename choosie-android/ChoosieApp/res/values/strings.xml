@@ -42,17 +42,17 @@
     <string name="title_activity_post">PostActivity</string>
     <string name="new_post">New Post</string>
     <string name="votes">My Votes:</string>
-    <string name="bio_watermark">Write a short bio by clicking the Edit button</string>
+    <string name="bio_watermark">Add a short bio by clicking the Edit button.</string>
     <string name="title_activity_profile_edit">ProfileEditActivity</string>
     <string name="edit_profile_header_text">Edit Profile</string>
-    <string name="nickname_hint">Your Nickname</string>
+    <string name="nickname_hint">Your nickname</string>
     <string name="bio_hint">Write a short bio...</string>
-    <string name="nickname">Nickname </string>
-    <string name="info">Info </string>
+    <string name="nickname">Nickname:</string>
+    <string name="info">Info:</string>
     <string name="title_activity_contacts">ContactsActivity</string>
     <string name="invite_message">Hey!\nCheck out Choozie. A new app for instant opinions on Fashion Dilemmas!\nDownload @ Google Play:\nhttps://play.google.com/store/apps/details?id=com.choozie.app</string>
     <string name="invite_title">Invite a Friend</string>
-    <string name="invite">Invite A Friend</string>
+    <string name="invite">Invite a Friend</string>
     <string name="nav_bar_home">HOME</string>
     <string name="nav_bar_post">POST</string>
     <string name="nav_bar_me">ME</string>

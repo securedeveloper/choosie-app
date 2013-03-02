@@ -200,23 +200,29 @@ public class ProfileActivity extends Activity {
 
 		tvNumPosts.setText(String.valueOf(ud.getNumPosts()));
 		tvNumVotes.setText(String.valueOf(ud.getNumVotes()));
-		etInfo.setText(ud.getInfo());
 
-		// If you are in your own profile OR you are in another user's
-		// profile and he wrote some Info --> show the info
-		if (Client.getInstance().getActiveUser().equals(ud.getUser())
-				|| (!Client.getInstance().getActiveUser().equals(ud.getUser()) && (!ud
-						.getInfo().equals("")))) {
-			etInfo.setVisibility(View.VISIBLE);
+		// If this is another user's profile (not the user who is currently
+		// using
+		// the app) and the bio is empty: put a placeholder text.
+		String bio = ud.getInfo().trim();
+		if (!isLoggedInUser(ud) && bio.isEmpty()) {
+			bio = "A Choozie user.";
 		}
 
-		if (!ud.getNickname().equals("")) {
+		etInfo.setText(bio);
+		etInfo.setVisibility(View.VISIBLE);
+
+		if (!ud.getNickname().trim().isEmpty()) {
 			L.i("nickname is not empty! using Nick Name");
 			tvFullName.setText(ud.getNickname());
 		} else {
 			L.i("nickname is empty! using Full Name");
 			tvFullName.setText(user.getUserName());
 		}
+	}
+
+	private boolean isLoggedInUser(UserDetails ud) {
+		return Client.getInstance().getActiveUser().equals(ud.getUser());
 	}
 
 	private void startTheListView() {
@@ -248,7 +254,7 @@ public class ProfileActivity extends Activity {
 				/* maybe add a padding */
 				boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount - 3;
 				if (loadMore) {
-					L.i("LOADMORE");
+					// L.i("LOADMORE");
 					choosiePostsItemAdapter.appendToList();
 				}
 			}
