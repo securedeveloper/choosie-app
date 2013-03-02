@@ -60,7 +60,9 @@ class PostsHandler(webapp2.RequestHandler):
         user.put()
         CacheController.invalidate_user_fb_id(user.fb_uid)
 
-
+    user.num_posts += 1
+    user.put()
+    CacheController.invalidate_user_fb_id(user.fb_uid)
     photo1_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo1')))
     if post_type_id == 1:
       photo2_blob_key = Utils.write_file_to_blobstore(self.shrinkImage(self.request.get('photo2')))

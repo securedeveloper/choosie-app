@@ -236,10 +236,17 @@ class ChoosiePost(db.Model):
     updated_post.put()
     CacheController.set_model(updated_post)
 
-  def add_vote_to_post(self, vote):
+  def add_vote_to_post(self, vote, is_new):
     db.run_in_transaction(ChoosiePost.add_vote_to_post_transaction, self.key(), vote)
     logging.info("user_id" + self.user_fb_id)
     logging.info("vote_id " + vote.user_fb_id)
+
+    if is_new:
+      user = CacheController.get_user_by_fb_id(self.user_fb_id)
+      user.num_votes += 1
+      user.put()
+      CacheController.invalidate_user_fb_id(user.fb_uid)
+
     if self.user_fb_id != vote.user_fb_id and self.created_at > datetime.datetime.now() - datetime.timedelta(0.2): # if i didnt vote on my self and the post was uploaded less then 5 hours ago
       vote_from = vote.get_user().name()
       deferred.defer(self.notify_vote_async, self.key(), self.user_fb_id, vote_from)

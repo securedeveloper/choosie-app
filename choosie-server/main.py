@@ -15,6 +15,8 @@ from scrape_handler import ScrapeHandler
 from notify_handler import NotifyHandler
 from register_device_handler import RegisterDeviceHandler
 from collect_crash_handler import CollectCrashHandler
+from user_handler import UserHandler
+from user_edit_handler import UserEditHandler
 
 app = webapp2.WSGIApplication([('/', HomepageHandler),
                                ('/posts/new', PostsHandler),
@@ -30,6 +32,8 @@ app = webapp2.WSGIApplication([('/', HomepageHandler),
                                ('/send', NotifyHandler),
                                ('/register', RegisterDeviceHandler),
                                ('/scrape_fb', ScrapeHandler),
-                               ('/collectcrash', CollectCrashHandler)
+                               ('/collectcrash', CollectCrashHandler),
+                               ('/user/(\d+)', UserHandler),
+                               ('/user/edit/(\d+)', UserEditHandler)
                                ],
                               debug=True)
